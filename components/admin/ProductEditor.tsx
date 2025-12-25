@@ -1,0 +1,1117 @@
+'use client';
+
+import React, { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import {
+  Save,
+  Upload,
+  Plus,
+  X,
+  Link as LinkIcon,
+  Code,
+  Layers,
+  Tag,
+  Globe,
+  Zap,
+  Image as ImageIcon,
+  GripVertical,
+  Trash2,
+  Loader2,
+  ArrowLeft,
+  History,
+  File,
+} from 'lucide-react';
+import ProductVersionManager from '@/components/seller/ProductVersionManager';
+import { uploadNewVersion } from '@/lib/productFiles';
+import {
+  getProductById,
+  createProduct,
+  updateProduct,
+  type DbProduct,
+  type ProductPayload,
+} from '@/lib/products';
+import { fetchCategories, type DbCategory } from '@/lib/categories';
+import { useToast } from '@/context/ToastContext';
+
+interface ProductEditorProps {
+  mode: 'create' | 'edit';
+  productId?: string;
+}
+
+type ProductFormat = 'Theme' | 'Template' | 'Landing' | 'MiniApp' | 'Bundle';
+
+interface EditorProduct {
+  name: string;
+  price: number;
+  originalPrice: number;
+  description: string;
+  category: string;
+  format: ProductFormat;
+  image: string;
+  gallery: string[];
+  author: string;
+  isActive: boolean;
+  isFeatured: boolean;
+  isNew: boolean;
+  // Digital Product Specific
+  demoUrl: string;
+  fileFormat: string;
+  compatibility: string;
+  version: string;
+  tags: string[];
+  features: string[];
+  techStack: string[];
+  // Affiliate
+  commissionRate: number;
+}
+
+const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
+  const router = useRouter();
+  const toast = useToast();
+  const isEditMode = mode === 'edit';
+
+  // Data states
+  const [categories, setCategories] = useState<DbCategory[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadingGallery, setUploadingGallery] = useState(false);
+  const [uploadingProductFile, setUploadingProductFile] = useState(false);
+  const coverInputRef = React.useRef<HTMLInputElement>(null);
+  const galleryInputRef = React.useRef<HTMLInputElement>(null);
+  const productFileInputRef = React.useRef<HTMLInputElement>(null);
+
+  // Product file state (for new products)
+  const [productFile, setProductFile] = useState<{
+    url: string;
+    size: number;
+    name: string;
+  } | null>(null);
+
+  const [product, setProduct] = useState<EditorProduct>({
+    name: '',
+    price: 0,
+    originalPrice: 0,
+    description: '',
+    category: '',
+    format: 'Theme',
+    image: '',
+    gallery: [],
+    author: 'DigitalMart',
+    isActive: true,
+    isFeatured: false,
+    isNew: true,
+    demoUrl: '',
+    fileFormat: '',
+    compatibility: '',
+    version: '1.0.0',
+    tags: [],
+    features: [],
+    techStack: [],
+    commissionRate: 10,
+  });
+
+  const [newTag, setNewTag] = useState('');
+  const [newFeature, setNewFeature] = useState('');
+  const [newTech, setNewTech] = useState('');
+  const [newGalleryUrl, setNewGalleryUrl] = useState('');
+
+  // Load data
+  const loadData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const cats = await fetchCategories();
+      setCategories(cats);
+
+      if (isEditMode && productId) {
+        const found = await getProductById(Number(productId));
+        if (found) {
+          setProduct({
+            name: found.name,
+            price: Number(found.price),
+            originalPrice: Number(found.original_price) || 0,
+            description: found.description || '',
+            category: String(found.category_id || ''),
+            format: found.format as ProductFormat,
+            image: found.image,
+            gallery: found.images || [],
+            author: found.author,
+            isActive: found.status === 'active',
+            isFeatured: found.is_featured,
+            isNew: found.is_new,
+            demoUrl: found.demo_url || '',
+            fileFormat: '',
+            compatibility: '',
+            version: '1.0.0',
+            tags: found.tags || [],
+            features: found.features || [],
+            techStack: found.tech_stack || [],
+            commissionRate: Number((found as any).commission_rate) || 10,
+          });
+        } else {
+          toast.error('Không tìm thấy sản phẩm');
+          router.push('/admin/products');
+        }
+      }
+    } catch (error) {
+      console.error('Load error:', error);
+      toast.error('Không thể tải dữ liệu');
+    } finally {
+      setLoading(false);
+    }
+  }, [isEditMode, productId, router, toast]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  // Handle cover image upload
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const res = await fetch('/api/upload/product-image', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+
+      setProduct(prev => ({ ...prev, image: data.url }));
+      toast.success('Tải ảnh bìa thành công!');
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error('Không thể tải ảnh lên');
+    } finally {
+      setUploadingImage(false);
+      if (coverInputRef.current) coverInputRef.current.value = '';
+    }
+  };
+
+  // Handle gallery images upload
+  const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setUploadingGallery(true);
+    try {
+      const formData = new FormData();
+      Array.from(files).forEach(file => {
+        formData.append('files', file);
+      });
+
+      const res = await fetch('/api/upload/product-gallery', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+
+      setProduct(prev => ({ ...prev, gallery: [...prev.gallery, ...data.urls] }));
+      toast.success(`Đã tải ${data.urls.length} ảnh thành công!`);
+    } catch (error) {
+      console.error('Gallery upload error:', error);
+      toast.error('Không thể tải ảnh lên');
+    } finally {
+      setUploadingGallery(false);
+      if (galleryInputRef.current) galleryInputRef.current.value = '';
+    }
+  };
+
+  // Handle product file upload
+  const handleProductFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const allowedExtensions = ['.zip', '.rar', '.7z', '.pdf', '.tar', '.gz'];
+    const hasValidExtension = allowedExtensions.some(ext => file.name.toLowerCase().endsWith(ext));
+
+    if (!hasValidExtension) {
+      toast.error('Chỉ hỗ trợ file: ZIP, RAR, 7Z, PDF');
+      return;
+    }
+
+    if (file.size > 500 * 1024 * 1024) {
+      toast.error('File quá lớn! Tối đa 500MB');
+      return;
+    }
+
+    setUploadingProductFile(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const res = await fetch('/api/upload/product-file', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+
+      setProductFile({
+        url: data.url,
+        size: file.size,
+        name: file.name,
+      });
+      toast.success(`Đã upload: ${file.name}`);
+    } catch (error: any) {
+      console.error('Product file upload error:', error);
+      toast.error(error.message || 'Không thể tải file lên');
+    } finally {
+      setUploadingProductFile(false);
+      if (productFileInputRef.current) productFileInputRef.current.value = '';
+    }
+  };
+
+  const handleSave = async () => {
+    if (!product.name.trim()) {
+      toast.error('Vui lòng nhập tên sản phẩm');
+      return;
+    }
+    if (!product.price || product.price <= 0) {
+      toast.error('Vui lòng nhập giá hợp lệ');
+      return;
+    }
+    if (!product.image) {
+      toast.error('Vui lòng thêm ảnh sản phẩm');
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const payload: ProductPayload = {
+        name: product.name.trim(),
+        description: product.description || null,
+        price: product.price,
+        original_price: product.originalPrice || null,
+        image: product.image,
+        images: product.gallery,
+        format: product.format,
+        category_id: product.category ? Number(product.category) : null,
+        author: product.author || 'DigitalMart',
+        is_new: product.isNew,
+        is_featured: product.isFeatured,
+        status: product.isActive ? 'active' : 'draft',
+        demo_url: product.demoUrl || null,
+        tags: product.tags,
+        features: product.features,
+        tech_stack: product.techStack,
+        commission_rate: product.commissionRate,
+      };
+
+      if (isEditMode && productId) {
+        await updateProduct(Number(productId), payload);
+        toast.success('Cập nhật sản phẩm thành công!');
+      } else {
+        const newProduct = await createProduct(payload);
+
+        // If product file was uploaded, create the first version
+        if (productFile && newProduct?.id) {
+          try {
+            await uploadNewVersion({
+              product_id: newProduct.id,
+              version: product.version || '1.0.0',
+              file_url: productFile.url,
+              file_size: productFile.size,
+              changelog: 'Initial release',
+              is_current: true,
+            });
+          } catch (fileError) {
+            console.error('Error creating product file:', fileError);
+            // Don't fail the whole operation, product is already created
+          }
+        }
+
+        toast.success('Tạo sản phẩm thành công!');
+      }
+
+      router.push('/admin/products');
+    } catch (error: any) {
+      console.error('Save error:', error);
+      toast.error(error.message || 'Không thể lưu sản phẩm');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 size={32} className="animate-spin text-orange-600" />
+      </div>
+    );
+  }
+
+  const handleAddTag = () => {
+    if (newTag.trim() && !product.tags.includes(newTag.trim())) {
+      setProduct({ ...product, tags: [...product.tags, newTag.trim()] });
+      setNewTag('');
+    }
+  };
+
+  const handleRemoveTag = (tag: string) => {
+    setProduct({ ...product, tags: product.tags.filter(t => t !== tag) });
+  };
+
+  const handleAddFeature = () => {
+    if (newFeature.trim() && !product.features.includes(newFeature.trim())) {
+      setProduct({ ...product, features: [...product.features, newFeature.trim()] });
+      setNewFeature('');
+    }
+  };
+
+  const handleRemoveFeature = (feature: string) => {
+    setProduct({ ...product, features: product.features.filter(f => f !== feature) });
+  };
+
+  const handleAddTech = () => {
+    if (newTech.trim() && !product.techStack.includes(newTech.trim())) {
+      setProduct({ ...product, techStack: [...product.techStack, newTech.trim()] });
+      setNewTech('');
+    }
+  };
+
+  const handleRemoveTech = (tech: string) => {
+    setProduct({ ...product, techStack: product.techStack.filter(t => t !== tech) });
+  };
+
+  return (
+    <div className="max-w-6xl mx-auto animate-fade-in space-y-6">
+      {/* Header Actions */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 text-xs sm:text-sm text-slate-500 mb-1">
+            <button
+              type="button"
+              onClick={() => router.push('/admin/products')}
+              className="cursor-pointer hover:text-orange-600 font-medium"
+            >
+              Sản phẩm
+            </button>
+            <span>/</span>
+            <span>{isEditMode ? 'Chỉnh sửa' : 'Thêm mới'}</span>
+          </div>
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900">
+            {isEditMode
+              ? product.name || 'Chỉnh sửa sản phẩm'
+              : 'Thêm Sản Phẩm Mới'}
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+            Điền đầy đủ thông tin để sản phẩm hiển thị đẹp trên storefront.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2 sm:gap-3">
+          <button
+            type="button"
+            onClick={() => router.push('/admin/products')}
+            className="px-4 py-2 bg-white border border-slate-200 text-slate-600 text-sm font-bold rounded-xl hover:bg-slate-50 transition-colors"
+          >
+            Hủy bỏ
+          </button>
+          <button
+            type="button"
+            onClick={handleSave}
+            className="px-5 sm:px-6 py-2 bg-orange-600 text-white text-sm font-bold rounded-xl hover:bg-orange-700 transition-colors shadow-lg shadow-orange-200 flex items-center gap-2"
+          >
+            <Save size={18} /> Lưu Sản Phẩm
+          </button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-[2fr,1.2fr] gap-6 lg:gap-8">
+        {/* Left Column */}
+        <div className="space-y-6">
+          {/* Title & Slug */}
+          <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-100">
+            <div className="mb-4">
+              <label className="block text-sm font-bold text-slate-700 mb-2">
+                Tên sản phẩm
+              </label>
+              <input
+                type="text"
+                value={product.name}
+                onChange={e => setProduct({ ...product, name: e.target.value })}
+                className="w-full border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-orange-500 outline-none font-medium text-sm"
+                placeholder="Nhập tên sản phẩm (Theme, Template, Landing Page...)"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-slate-700 mb-2">
+                Đường dẫn (Slug)
+              </label>
+              <div className="flex flex-col sm:flex-row bg-slate-50 border border-slate-200 rounded-xl overflow-hidden">
+                <span className="px-4 py-2.5 text-slate-500 text-xs sm:text-sm border-b sm:border-b-0 sm:border-r border-slate-200">
+                  https://DigitalMart.vn/product/
+                </span>
+                <input
+                  type="text"
+                  className="flex-1 px-4 py-2.5 bg-transparent outline-none text-sm text-slate-600"
+                  placeholder="tu-dong-tao-slug"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Description */}
+          <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-100">
+            <label className="block text-sm font-bold text-slate-700 mb-2">
+              Mô tả chi tiết
+            </label>
+            <div className="border border-slate-200 rounded-xl overflow-hidden">
+              <div className="bg-slate-50 border-b border-slate-200 p-2 flex flex-wrap gap-1.5">
+                {['B', 'I', 'U', 'H1', 'H2', 'List', 'Link', 'Image'].map(
+                  tool => (
+                    <button
+                      key={tool}
+                      type="button"
+                      className="px-2 py-1 hover:bg-slate-200 rounded text-[11px] font-bold text-slate-600"
+                    >
+                      {tool}
+                    </button>
+                  )
+                )}
+              </div>
+              <textarea
+                rows={8}
+                value={product.description}
+                onChange={e =>
+                  setProduct({ ...product, description: e.target.value })
+                }
+                className="w-full p-4 outline-none resize-y text-sm"
+                placeholder="Viết mô tả hấp dẫn cho sản phẩm..."
+              />
+            </div>
+          </div>
+
+          {/* Technical Info */}
+          <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-100">
+            <h3 className="font-bold text-base sm:text-lg text-slate-900 mb-4 flex items-center gap-2">
+              <Code size={20} className="text-orange-600" />
+              Thông Tin Kỹ Thuật
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-500 mb-1.5">
+                  Demo URL
+                </label>
+                <div className="flex items-center gap-2">
+                  <LinkIcon size={16} className="text-slate-400" />
+                  <input
+                    type="url"
+                    value={product.demoUrl}
+                    onChange={e => setProduct({ ...product, demoUrl: e.target.value })}
+                    className="flex-1 border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-orange-500"
+                    placeholder="https://demo.example.com"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-500 mb-1.5">
+                  File Format
+                </label>
+                <input
+                  type="text"
+                  value={product.fileFormat}
+                  onChange={e => setProduct({ ...product, fileFormat: e.target.value })}
+                  className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-orange-500"
+                  placeholder="React, Vue, Figma, HTML..."
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-500 mb-1.5">
+                  Compatibility
+                </label>
+                <input
+                  type="text"
+                  value={product.compatibility}
+                  onChange={e => setProduct({ ...product, compatibility: e.target.value })}
+                  className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-orange-500"
+                  placeholder="React 18+, Node 16+..."
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-500 mb-1.5">
+                  Version
+                </label>
+                <input
+                  type="text"
+                  value={product.version}
+                  onChange={e => setProduct({ ...product, version: e.target.value })}
+                  className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-orange-500"
+                  placeholder="1.0.0"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Product File Upload - Only in Create mode */}
+          {!isEditMode && (
+            <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-100">
+              <h3 className="font-bold text-base sm:text-lg text-slate-900 mb-4 flex items-center gap-2">
+                <File size={20} className="text-green-600" />
+                File Sản Phẩm
+              </h3>
+              <p className="text-sm text-slate-500 mb-4">
+                Upload file sản phẩm (ZIP, RAR, 7Z, PDF). File này sẽ được gắn với version {product.version || '1.0.0'}
+              </p>
+
+              <input
+                ref={productFileInputRef}
+                type="file"
+                accept=".zip,.rar,.7z,.pdf,.tar,.gz"
+                onChange={handleProductFileUpload}
+                className="hidden"
+              />
+
+              {productFile ? (
+                <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-xl p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                      <File size={24} className="text-green-600" />
+                    </div>
+                    <div>
+                      <p className="font-bold text-green-800">{productFile.name}</p>
+                      <p className="text-sm text-green-600">
+                        {(productFile.size / (1024 * 1024)).toFixed(2)} MB
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setProductFile(null)}
+                    className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => productFileInputRef.current?.click()}
+                  disabled={uploadingProductFile}
+                  className="w-full border-2 border-dashed border-slate-300 rounded-xl p-8 text-center hover:bg-slate-50 hover:border-green-400 transition-all cursor-pointer disabled:opacity-50"
+                >
+                  {uploadingProductFile ? (
+                    <div className="flex flex-col items-center gap-3">
+                      <Loader2 size={40} className="animate-spin text-green-600" />
+                      <span className="text-slate-600 font-medium">Đang upload...</span>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center gap-3">
+                      <Upload size={40} className="text-slate-400" />
+                      <div>
+                        <p className="text-slate-700 font-bold">Click để chọn file</p>
+                        <p className="text-sm text-slate-500 mt-1">
+                          ZIP, RAR, 7Z, PDF • Tối đa 500MB
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Tags */}
+          <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-100">
+            <h3 className="font-bold text-base sm:text-lg text-slate-900 mb-4 flex items-center gap-2">
+              <Tag size={20} className="text-purple-600" />
+              Tags
+            </h3>
+            <div className="flex flex-wrap gap-2 mb-3">
+              {product.tags.map((tag, idx) => (
+                <span
+                  key={idx}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-purple-50 text-purple-700 rounded-lg text-xs font-semibold"
+                >
+                  {tag}
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveTag(tag)}
+                    className="text-purple-400 hover:text-purple-700"
+                  >
+                    <X size={14} />
+                  </button>
+                </span>
+              ))}
+            </div>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newTag}
+                onChange={e => setNewTag(e.target.value)}
+                onKeyPress={e => e.key === 'Enter' && handleAddTag()}
+                className="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-500"
+                placeholder="Thêm tag mới..."
+              />
+              <button
+                type="button"
+                onClick={handleAddTag}
+                className="px-4 py-2 bg-purple-600 text-white text-sm font-bold rounded-lg hover:bg-purple-700"
+              >
+                <Plus size={16} />
+              </button>
+            </div>
+          </div>
+
+          {/* Features */}
+          <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-100">
+            <h3 className="font-bold text-base sm:text-lg text-slate-900 mb-4 flex items-center gap-2">
+              <Zap size={20} className="text-amber-600" />
+              Tính Năng
+            </h3>
+            <div className="space-y-2 mb-3">
+              {product.features.map((feature, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-center justify-between p-3 bg-amber-50 rounded-lg"
+                >
+                  <span className="text-sm text-amber-800">{feature}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveFeature(feature)}
+                    className="text-amber-400 hover:text-amber-700"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newFeature}
+                onChange={e => setNewFeature(e.target.value)}
+                onKeyPress={e => e.key === 'Enter' && handleAddFeature()}
+                className="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-amber-500"
+                placeholder="Thêm tính năng mới..."
+              />
+              <button
+                type="button"
+                onClick={handleAddFeature}
+                className="px-4 py-2 bg-amber-600 text-white text-sm font-bold rounded-lg hover:bg-amber-700"
+              >
+                <Plus size={16} />
+              </button>
+            </div>
+          </div>
+
+          {/* Tech Stack */}
+          <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-100">
+            <h3 className="font-bold text-base sm:text-lg text-slate-900 mb-4 flex items-center gap-2">
+              <Layers size={20} className="text-blue-600" />
+              Tech Stack
+            </h3>
+            <div className="flex flex-wrap gap-2 mb-3">
+              {product.techStack.map((tech, idx) => (
+                <span
+                  key={idx}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-xs font-semibold"
+                >
+                  {tech}
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveTech(tech)}
+                    className="text-blue-400 hover:text-blue-700"
+                  >
+                    <X size={14} />
+                  </button>
+                </span>
+              ))}
+            </div>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newTech}
+                onChange={e => setNewTech(e.target.value)}
+                onKeyPress={e => e.key === 'Enter' && handleAddTech()}
+                className="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="React, Vue, TypeScript..."
+              />
+              <button
+                type="button"
+                onClick={handleAddTech}
+                className="px-4 py-2 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700"
+              >
+                <Plus size={16} />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column */}
+        <div className="space-y-6">
+          {/* Status */}
+          <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-100">
+            <h3 className="font-bold text-xs text-slate-900 mb-4 uppercase tracking-wider">
+              Trạng thái
+            </h3>
+            <div className="space-y-3 text-sm">
+              <label className="flex items-center justify-between p-3 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50">
+                <span className="font-medium text-slate-700">Đang bán</span>
+                <div
+                  onClick={() =>
+                    setProduct({ ...product, isActive: !product.isActive })
+                  }
+                  className={`w-10 h-5 ${product.isActive ? 'bg-orange-500' : 'bg-slate-300'
+                    } rounded-full relative cursor-pointer transition-colors`}
+                >
+                  <div
+                    className={`w-3 h-3 bg-white rounded-full absolute top-1 transition-all ${product.isActive ? 'right-1' : 'left-1'
+                      }`}
+                  />
+                </div>
+              </label>
+              <label className="flex items-center justify-between p-3 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50">
+                <span className="font-medium text-slate-700">
+                  Sản phẩm nổi bật
+                </span>
+                <div
+                  onClick={() =>
+                    setProduct({
+                      ...product,
+                      isFeatured: !product.isFeatured,
+                    })
+                  }
+                  className={`w-10 h-5 ${product.isFeatured ? 'bg-orange-500' : 'bg-slate-300'
+                    } rounded-full relative cursor-pointer transition-colors`}
+                >
+                  <div
+                    className={`w-3 h-3 bg-white rounded-full absolute top-1 transition-all ${product.isFeatured ? 'right-1' : 'left-1'
+                      }`}
+                  />
+                </div>
+              </label>
+              <label className="flex items-center justify-between p-3 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50">
+                <span className="font-medium text-slate-700">
+                  Sản phẩm mới
+                </span>
+                <div
+                  onClick={() =>
+                    setProduct({
+                      ...product,
+                      isNew: !product.isNew,
+                    })
+                  }
+                  className={`w-10 h-5 ${product.isNew ? 'bg-emerald-500' : 'bg-slate-300'
+                    } rounded-full relative cursor-pointer transition-colors`}
+                >
+                  <div
+                    className={`w-3 h-3 bg-white rounded-full absolute top-1 transition-all ${product.isNew ? 'right-1' : 'left-1'
+                      }`}
+                  />
+                </div>
+              </label>
+            </div>
+          </div>
+
+          {/* Category & Format */}
+          <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-100">
+            <h3 className="font-bold text-xs text-slate-900 mb-4 uppercase tracking-wider">
+              Phân loại
+            </h3>
+            <div className="space-y-4 text-sm">
+              <div>
+                <label className="block text-xs font-bold text-slate-500 mb-1.5">
+                  Loại sản phẩm
+                </label>
+                <select
+                  value={product.format}
+                  onChange={e =>
+                    setProduct({ ...product, format: e.target.value as ProductFormat })
+                  }
+                  className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-orange-500"
+                >
+                  <option value="Theme">Theme / UI Kit</option>
+                  <option value="Template">Template (Figma, Notion, etc.)</option>
+                  <option value="Landing">Landing Page</option>
+                  <option value="MiniApp">Mini App / Tool</option>
+                  <option value="Bundle">Bundle</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-500 mb-1.5">
+                  Danh mục
+                </label>
+                <select
+                  value={product.category}
+                  onChange={e =>
+                    setProduct({ ...product, category: e.target.value })
+                  }
+                  className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-orange-500"
+                >
+                  {categories.map(cat => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-500 mb-1.5">
+                  Tác giả / Nhà sản xuất
+                </label>
+                <input
+                  type="text"
+                  value={product.author}
+                  onChange={e =>
+                    setProduct({ ...product, author: e.target.value })
+                  }
+                  className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-orange-500"
+                  placeholder="Nhập tên tác giả..."
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Pricing */}
+          <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-100">
+            <h3 className="font-bold text-xs text-slate-900 mb-4 uppercase tracking-wider">
+              Giá bán
+            </h3>
+            <div className="space-y-4 text-sm">
+              <div>
+                <label className="block text-xs font-bold text-slate-500 mb-1.5">
+                  Giá niêm yết
+                </label>
+                <input
+                  type="number"
+                  min={0}
+                  value={product.originalPrice}
+                  onChange={e =>
+                    setProduct({
+                      ...product,
+                      originalPrice: Number(e.target.value),
+                    })
+                  }
+                  className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-orange-500"
+                  placeholder="0"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-500 mb-1.5">
+                  Giá khuyến mãi
+                </label>
+                <input
+                  type="number"
+                  min={0}
+                  value={product.price}
+                  onChange={e =>
+                    setProduct({ ...product, price: Number(e.target.value) })
+                  }
+                  className="w-full border border-orange-200 bg-orange-50 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-orange-500 font-bold text-orange-700"
+                  placeholder="0"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Affiliate Commission */}
+          <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-100">
+            <h3 className="font-bold text-xs text-slate-900 mb-4 uppercase tracking-wider flex items-center gap-2">
+              🤝 Hoa Hồng Affiliate
+            </h3>
+            <div className="space-y-4 text-sm">
+              <div>
+                <label className="block text-xs font-bold text-slate-500 mb-1.5">
+                  Tỷ lệ hoa hồng (%)
+                </label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    min={0}
+                    max={50}
+                    value={product.commissionRate}
+                    onChange={e =>
+                      setProduct({
+                        ...product,
+                        commissionRate: Math.min(50, Math.max(0, Number(e.target.value))),
+                      })
+                    }
+                    className="w-24 border border-purple-200 bg-purple-50 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-purple-500 font-bold text-purple-700"
+                    placeholder="10"
+                  />
+                  <span className="text-slate-500 font-medium">%</span>
+                </div>
+                <p className="text-xs text-slate-400 mt-2">
+                  Affiliate sẽ nhận được {product.commissionRate}% ({(product.price * product.commissionRate / 100).toLocaleString('vi-VN')}₫) cho mỗi đơn hàng thành công.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Cover Image */}
+          <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-100">
+            <h3 className="font-bold text-xs text-slate-900 mb-4 uppercase tracking-wider">
+              Ảnh Bìa
+            </h3>
+            {/* Hidden file input */}
+            <input
+              ref={coverInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="hidden"
+            />
+            {product.image ? (
+              <div className="relative rounded-xl overflow-hidden group border border-slate-200">
+                <img src={product.image} alt="Preview" className="w-full" />
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button
+                    type="button"
+                    onClick={() => coverInputRef.current?.click()}
+                    className="bg-white text-slate-900 px-4 py-2 rounded-lg font-bold text-xs sm:text-sm hover:bg-slate-100"
+                  >
+                    Thay đổi ảnh
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => coverInputRef.current?.click()}
+                disabled={uploadingImage}
+                className="w-full border-2 border-dashed border-slate-300 rounded-xl p-6 text-center hover:bg-slate-50 transition-colors cursor-pointer group disabled:opacity-50"
+              >
+                <div className="w-12 h-12 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-violet-50 group-hover:text-violet-600 transition-colors">
+                  {uploadingImage ? <Loader2 size={24} className="animate-spin" /> : <Upload size={24} />}
+                </div>
+                <p className="text-sm font-bold text-slate-600">
+                  {uploadingImage ? 'Đang tải lên...' : 'Tải ảnh bìa sản phẩm'}
+                </p>
+                <p className="text-xs text-slate-400 mt-1">
+                  PNG, JPG tối đa 5MB
+                </p>
+              </button>
+            )}
+          </div>
+
+          {/* Gallery */}
+          <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-100">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-bold text-xs text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                <ImageIcon size={16} className="text-violet-600" />
+                Thư Viện Ảnh
+              </h3>
+              <span className="text-xs text-slate-500">{product.gallery.length} ảnh</span>
+            </div>
+
+            {/* Gallery Grid */}
+            {product.gallery.length > 0 && (
+              <div className="grid grid-cols-3 gap-2 mb-4">
+                {product.gallery.map((img, idx) => (
+                  <div
+                    key={idx}
+                    className="relative aspect-square rounded-xl overflow-hidden group border border-slate-200 cursor-grab"
+                  >
+                    <img src={img} alt={`Gallery ${idx + 1}`} className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button
+                        type="button"
+                        onClick={() => setProduct({
+                          ...product,
+                          gallery: product.gallery.filter((_, i) => i !== idx)
+                        })}
+                        className="p-2 bg-white rounded-lg text-rose-600 hover:bg-rose-50"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                    <div className="absolute top-1 left-1 p-1 bg-white/80 rounded text-slate-500 opacity-0 group-hover:opacity-100">
+                      <GripVertical size={12} />
+                    </div>
+                    <div className="absolute bottom-1 right-1 px-1.5 py-0.5 bg-black/60 text-white text-xs rounded">
+                      {idx + 1}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Add Image */}
+            <div className="space-y-3">
+              {/* Hidden gallery file input */}
+              <input
+                ref={galleryInputRef}
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleGalleryUpload}
+                className="hidden"
+              />
+              <div className="flex gap-2">
+                <input
+                  type="url"
+                  value={newGalleryUrl}
+                  onChange={e => setNewGalleryUrl(e.target.value)}
+                  placeholder="Nhập URL ảnh..."
+                  className="flex-1 border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-violet-500"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (newGalleryUrl.trim()) {
+                      setProduct({ ...product, gallery: [...product.gallery, newGalleryUrl.trim()] });
+                      setNewGalleryUrl('');
+                    }
+                  }}
+                  className="px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors"
+                >
+                  <Plus size={18} />
+                </button>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => galleryInputRef.current?.click()}
+                disabled={uploadingGallery}
+                className="w-full border-2 border-dashed border-slate-200 rounded-xl p-4 text-center hover:bg-slate-50 hover:border-violet-300 transition-all cursor-pointer group disabled:opacity-50"
+              >
+                <div className="flex items-center justify-center gap-3">
+                  <div className="w-10 h-10 bg-slate-100 text-slate-400 rounded-lg flex items-center justify-center group-hover:bg-violet-50 group-hover:text-violet-600 transition-colors">
+                    {uploadingGallery ? <Loader2 size={20} className="animate-spin" /> : <Upload size={20} />}
+                  </div>
+                  <div className="text-left">
+                    <p className="text-sm font-semibold text-slate-600">
+                      {uploadingGallery ? 'Đang tải lên...' : 'Click để tải nhiều ảnh'}
+                    </p>
+                    <p className="text-xs text-slate-400">
+                      PNG, JPG, WEBP • Chọn nhiều ảnh cùng lúc
+                    </p>
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          {/* Version Management - Only show in Edit mode */}
+          {isEditMode && productId && (
+            <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+              <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                <History size={20} className="text-orange-600" />
+                Quản lý phiên bản file
+              </h3>
+              <p className="text-sm text-slate-500 mb-4">
+                Upload các phiên bản file mới. Khách hàng đã mua sẽ tự động nhận thông báo.
+              </p>
+              <ProductVersionManager
+                productId={parseInt(productId)}
+                productName={product.name || 'Sản phẩm'}
+              />
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProductEditor;

@@ -1,0 +1,305 @@
+/* Import Google Fonts - must be first */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700;800&display=swap');
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body {
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
+  background-color: #f8fafc;
+  /* Slate 50 */
+}
+
+/* Dark Mode Base */
+.dark body,
+html.dark body {
+  background-color: #0f172a;
+  color: #e2e8f0;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+/* Dark Mode for common elements */
+.dark .bg-white {
+  background-color: #1e293b !important;
+}
+
+.dark .bg-slate-50 {
+  background-color: #0f172a !important;
+}
+
+.dark .bg-slate-100 {
+  background-color: #1e293b !important;
+}
+
+.dark .text-slate-900 {
+  color: #f1f5f9 !important;
+}
+
+.dark .text-slate-700 {
+  color: #cbd5e1 !important;
+}
+
+.dark .text-slate-600 {
+  color: #94a3b8 !important;
+}
+
+.dark .border-slate-100,
+.dark .border-slate-200 {
+  border-color: #334155 !important;
+}
+
+.dark .shadow-sm,
+.dark .shadow-lg,
+.dark .shadow-xl {
+  --tw-shadow-color: rgba(0, 0, 0, 0.5);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Playfair Display', serif;
+}
+
+
+/* ============================================
+   CUSTOM SCROLLBAR - PREMIUM DESIGN
+   ============================================ */
+
+
+/* Webkit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: linear-gradient(to bottom, #f1f5f9, #e2e8f0);
+  border-radius: 10px;
+  margin: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  /* DARK ORANGE GRADIENT THEME */
+  background: linear-gradient(180deg, #ea580c, #dc2626, #d97706);
+  border-radius: 10px;
+  border: 2px solid #f1f5f9;
+  transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #c2410c, #b91c1c, #b45309);
+  border-color: #e2e8f0;
+  box-shadow: 0 0 12px rgba(234, 88, 12, 0.4);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(180deg, #9a3412, #991b1b, #92400e);
+}
+
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  /* thumb dark orange, track slate */
+  scrollbar-color: #ea580c #f1f5f9;
+}
+
+
+/* ============================================
+   HORIZONTAL SCROLLBAR (cho các phần tử overflow-x)
+   ============================================ */
+.scrollbar-horizontal::-webkit-scrollbar {
+  height: 8px;
+}
+
+.scrollbar-horizontal::-webkit-scrollbar-track {
+  background: #f8fafc;
+  border-radius: 10px;
+}
+
+.scrollbar-horizontal::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #ea580c, #dc2626);
+  border-radius: 10px;
+  border: 2px solid #f8fafc;
+}
+
+
+/* ============================================
+   NO SCROLLBAR (khi cần ẩn)
+   ============================================ */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+
+/* ============================================
+   THIN SCROLLBAR (cho modal, dropdown)
+   ============================================ */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(234, 88, 12, 0.3);
+  border-radius: 10px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(234, 88, 12, 0.6);
+}
+
+
+/* ============================================
+   GLASS SCROLLBAR (cho glassmorphism design)
+   ============================================ */
+.scrollbar-glass::-webkit-scrollbar {
+  width: 10px;
+}
+
+.scrollbar-glass::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+}
+
+.scrollbar-glass::-webkit-scrollbar-thumb {
+  background: rgba(234, 88, 12, 0.5);
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.scrollbar-glass::-webkit-scrollbar-thumb:hover {
+  background: rgba(234, 88, 12, 0.7);
+  box-shadow: 0 0 15px rgba(234, 88, 12, 0.5);
+}
+
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(100%) scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes scrollbar-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 8px rgba(234, 88, 12, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 0 16px rgba(234, 88, 12, 0.6);
+  }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+
+
+/* ============================================
+   SMOOTH SCROLL với SNAP (cho carousel)
+   ============================================ */
+.snap-x {
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+}
+
+.snap-start {
+  scroll-snap-align: start;
+}
+
+.snap-center {
+  scroll-snap-align: center;
+}
+
+
+/* ============================================
+   SELECTION STYLING
+   ============================================ */
+::selection {
+  background-color: #ea580c;
+  color: white;
+}
+
+::-moz-selection {
+  background-color: #ea580c;
+  color: white;
+}
+
+
+/* ============================================
+   FOCUS OUTLINE
+   ============================================ */
+:focus-visible {
+  outline: 2px solid #ea580c;
+  outline-offset: 2px;
+}
+
+
+/* ============================================
+   LOADING SKELETON
+   ============================================ */
+@keyframes skeleton-loading {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg,
+      #f1f5f9 0%,
+      #e2e8f0 50%,
+      #f1f5f9 100%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+}

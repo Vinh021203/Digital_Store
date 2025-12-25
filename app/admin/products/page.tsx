@@ -1,0 +1,548 @@
+'use client';
+
+import React, { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import {
+  Search,
+  Plus,
+  Edit3,
+  Trash2,
+  Palette,
+  Globe,
+  Code,
+  Zap,
+  Package,
+  Star,
+  Eye,
+  MoreHorizontal,
+  FolderTree,
+  Layers,
+  Tag,
+  Settings,
+  ChevronDown,
+  RefreshCw,
+  Loader2,
+  CheckCircle,
+  Clock,
+  XCircle,
+  FileEdit,
+} from 'lucide-react';
+import {
+  fetchAllProducts,
+  deleteProduct,
+  getProductStats,
+  type DbProduct,
+} from '@/lib/products';
+import { fetchCategories, type DbCategory } from '@/lib/categories';
+import { useToast } from '@/context/ToastContext';
+
+type ProductTypeFilter = 'all' | 'theme' | 'template' | 'landing' | 'miniapp' | 'bundle';
+type StatusFilter = 'all' | 'active' | 'draft' | 'pending' | 'rejected';
+
+const PAGE_SIZE = 10;
+
+const ProductsManager = () => {
+  const router = useRouter();
+  const toast = useToast();
+
+  // Data states
+  const [products, setProducts] = useState<DbProduct[]>([]);
+  const [categories, setCategories] = useState<DbCategory[]>([]);
+  const [stats, setStats] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Filter states
+  const [filterType, setFilterType] = useState<ProductTypeFilter>('all');
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [activeActionId, setActiveActionId] = useState<number | null>(null);
+  const [showActionsMenu, setShowActionsMenu] = useState(false);
+
+  // Load data
+  const loadData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const [productsData, categoriesData, statsData] = await Promise.all([
+        fetchAllProducts({
+          status: statusFilter !== 'all' ? statusFilter : undefined,
+          format: filterType !== 'all' ? filterType.charAt(0).toUpperCase() + filterType.slice(1) : undefined,
+          category_id: categoryFilter !== 'all' ? Number(categoryFilter) : undefined,
+          search: searchTerm || undefined,
+        }),
+        fetchCategories(),
+        getProductStats(),
+      ]);
+
+      setProducts(productsData);
+      setCategories(categoriesData);
+      setStats(statsData);
+    } catch (error) {
+      console.error('Error loading data:', error);
+      toast.error('Không thể tải dữ liệu');
+    } finally {
+      setLoading(false);
+    }
+  }, [filterType, statusFilter, categoryFilter, searchTerm, toast]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  // Pagination
+  const totalItems = products.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
+  const paginatedProducts = products.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE
+  );
+
+  // Helpers
+  const getFormatStyle = (format: string) => {
+    switch (format) {
+      case 'Theme':
+        return 'bg-indigo-50 text-indigo-700 border-indigo-100';
+      case 'Template':
+        return 'bg-purple-50 text-purple-700 border-purple-100';
+      case 'Landing':
+        return 'bg-emerald-50 text-emerald-700 border-emerald-100';
+      case 'MiniApp':
+        return 'bg-amber-50 text-amber-700 border-amber-100';
+      case 'Bundle':
+      default:
+        return 'bg-rose-50 text-rose-700 border-rose-100';
+    }
+  };
+
+  const getFormatIcon = (format: string) => {
+    switch (format) {
+      case 'Theme':
+        return <Palette size={12} />;
+      case 'Template':
+        return <Code size={12} />;
+      case 'Landing':
+        return <Globe size={12} />;
+      case 'MiniApp':
+        return <Zap size={12} />;
+      case 'Bundle':
+      default:
+        return <Package size={12} />;
+    }
+  };
+
+  const getStatusStyle = (status: string) => {
+    switch (status) {
+      case 'active':
+        return { icon: <CheckCircle size={14} />, bg: 'bg-emerald-50 text-emerald-700', label: 'Hoạt động' };
+      case 'draft':
+        return { icon: <FileEdit size={14} />, bg: 'bg-slate-100 text-slate-600', label: 'Nháp' };
+      case 'pending':
+        return { icon: <Clock size={14} />, bg: 'bg-amber-50 text-amber-700', label: 'Chờ duyệt' };
+      case 'rejected':
+        return { icon: <XCircle size={14} />, bg: 'bg-rose-50 text-rose-700', label: 'Từ chối' };
+      default:
+        return { icon: null, bg: 'bg-slate-100 text-slate-600', label: status };
+    }
+  };
+
+  const handleChangeFilterType = (type: ProductTypeFilter) => {
+    setFilterType(type);
+    setCurrentPage(1);
+  };
+
+  const handleDelete = async (product: DbProduct) => {
+    if (!confirm(`Bạn có chắc chắn muốn xóa "${product.name}"?`)) return;
+
+    try {
+      await deleteProduct(product.id);
+      toast.success('Xóa sản phẩm thành công!');
+      await loadData();
+    } catch (error: any) {
+      console.error('Delete error:', error);
+      toast.error(error.message || 'Không thể xóa sản phẩm');
+    }
+  };
+
+  return (
+    <div className="space-y-6 animate-fade-in" onClick={() => setActiveActionId(null)}>
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
+            Danh Sách Sản Phẩm
+          </h2>
+          <p className="text-sm text-slate-500">
+            Quản lý Themes, Templates, Landing Pages và các sản phẩm digital.
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={loadData}
+            disabled={loading}
+            className="p-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50"
+            title="Làm mới"
+          >
+            <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
+          </button>
+
+          {/* Actions Menu */}
+          <div className="relative">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowActionsMenu(!showActionsMenu);
+              }}
+              className="flex items-center gap-2 bg-white border border-slate-200 text-slate-700 px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-50 transition-colors"
+            >
+              <Settings size={18} />
+              Quản lý
+              <ChevronDown size={16} className={`transition-transform ${showActionsMenu ? 'rotate-180' : ''}`} />
+            </button>
+            {showActionsMenu && (
+              <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-100 py-2 z-50 animate-fade-in">
+                <button
+                  onClick={() => {
+                    router.push('/admin/products/categories');
+                    setShowActionsMenu(false);
+                  }}
+                  className="w-full px-4 py-2.5 text-left text-sm font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 flex items-center gap-3"
+                >
+                  <FolderTree size={18} />
+                  Quản lý Danh mục
+                </button>
+                <button
+                  onClick={() => {
+                    router.push('/admin/products/inventory');
+                    setShowActionsMenu(false);
+                  }}
+                  className="w-full px-4 py-2.5 text-left text-sm font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 flex items-center gap-3"
+                >
+                  <Layers size={18} />
+                  Quản lý Tồn kho
+                </button>
+                <button
+                  onClick={() => {
+                    router.push('/admin/products/licenses');
+                    setShowActionsMenu(false);
+                  }}
+                  className="w-full px-4 py-2.5 text-left text-sm font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 flex items-center gap-3"
+                >
+                  <Tag size={18} />
+                  Quản lý Licenses
+                </button>
+              </div>
+            )}
+          </div>
+          <button
+            onClick={() => router.push('/admin/products/new')}
+            className="flex items-center gap-2 bg-indigo-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200"
+          >
+            <Plus size={18} /> Thêm Sản Phẩm
+          </button>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+          <p className="text-xs text-slate-500 uppercase font-bold">Tổng sản phẩm</p>
+          <p className="text-2xl font-bold text-slate-900">{stats?.total || 0}</p>
+          <p className="text-[11px] text-slate-400 mt-1">
+            {stats?.active || 0} hoạt động
+          </p>
+        </div>
+        <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+          <p className="text-xs text-slate-500 uppercase font-bold">Themes</p>
+          <p className="text-2xl font-bold text-indigo-600">{stats?.byFormat?.Theme || 0}</p>
+          <p className="text-[11px] text-slate-400 mt-1">UI Kits & Web Themes</p>
+        </div>
+        <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+          <p className="text-xs text-slate-500 uppercase font-bold">Templates</p>
+          <p className="text-2xl font-bold text-purple-600">{stats?.byFormat?.Template || 0}</p>
+          <p className="text-[11px] text-slate-400 mt-1">Figma, Notion, Email</p>
+        </div>
+        <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+          <p className="text-xs text-slate-500 uppercase font-bold">Landing & Apps</p>
+          <p className="text-2xl font-bold text-emerald-600">
+            {(stats?.byFormat?.Landing || 0) + (stats?.byFormat?.MiniApp || 0)}
+          </p>
+          <p className="text-[11px] text-slate-400 mt-1">Landing Pages & MiniApps</p>
+        </div>
+      </div>
+
+      {/* List Container */}
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden min-h-[500px]">
+        {/* Toolbar */}
+        <div className="p-4 border-b border-slate-100 flex flex-col lg:flex-row gap-4 justify-between bg-slate-50/50">
+          {/* Type Filter Tabs */}
+          <div className="flex gap-2 p-1 bg-slate-200/50 rounded-lg w-fit overflow-x-auto">
+            {[
+              { key: 'all', label: 'Tất cả', count: stats?.total || 0 },
+              { key: 'theme', label: 'Theme', count: stats?.byFormat?.Theme || 0 },
+              { key: 'template', label: 'Template', count: stats?.byFormat?.Template || 0 },
+              { key: 'landing', label: 'Landing', count: stats?.byFormat?.Landing || 0 },
+              { key: 'miniapp', label: 'MiniApp', count: stats?.byFormat?.MiniApp || 0 },
+              { key: 'bundle', label: 'Bundle', count: stats?.byFormat?.Bundle || 0 },
+            ].map(tab => (
+              <button
+                key={tab.key}
+                onClick={() => handleChangeFilterType(tab.key as ProductTypeFilter)}
+                className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${filterType === tab.key
+                  ? 'bg-white shadow text-slate-900'
+                  : 'text-slate-500 hover:text-slate-700'
+                  }`}
+              >
+                {tab.label}
+                <span className={`px-1.5 py-0.5 rounded text-[10px] ${filterType === tab.key ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100'
+                  }`}>
+                  {tab.count}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          {/* Right side filters */}
+          <div className="flex gap-3 items-center flex-wrap">
+            <select
+              value={statusFilter}
+              onChange={e => {
+                setStatusFilter(e.target.value as StatusFilter);
+                setCurrentPage(1);
+              }}
+              className="px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer"
+            >
+              <option value="all">Tất cả trạng thái</option>
+              <option value="active">Hoạt động</option>
+              <option value="draft">Nháp</option>
+              <option value="pending">Chờ duyệt</option>
+              <option value="rejected">Từ chối</option>
+            </select>
+
+            <select
+              value={categoryFilter}
+              onChange={e => {
+                setCategoryFilter(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer"
+            >
+              <option value="all">Tất cả danh mục</option>
+              {categories.map(cat => (
+                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              ))}
+            </select>
+
+            <div className="relative w-56">
+              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Tìm sản phẩm..."
+                className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+                value={searchTerm}
+                onChange={e => {
+                  setSearchTerm(e.target.value);
+                  setCurrentPage(1);
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Loading */}
+        {loading && (
+          <div className="flex items-center justify-center py-16">
+            <Loader2 size={32} className="animate-spin text-indigo-600" />
+          </div>
+        )}
+
+        {/* Table */}
+        {!loading && (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse min-w-[900px]">
+              <thead className="bg-slate-50 text-xs text-slate-500 uppercase font-bold tracking-wider">
+                <tr>
+                  <th className="px-6 py-4 pl-8">Sản phẩm</th>
+                  <th className="px-6 py-4">Loại</th>
+                  <th className="px-6 py-4">Danh mục</th>
+                  <th className="px-6 py-4">Giá</th>
+                  <th className="px-6 py-4">Trạng thái</th>
+                  <th className="px-6 py-4">Rating</th>
+                  <th className="px-6 py-4 text-right pr-8">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-50">
+                {paginatedProducts.map(product => {
+                  const statusInfo = getStatusStyle(product.status);
+                  return (
+                    <tr
+                      key={product.id}
+                      className="hover:bg-slate-50/50 transition-colors group"
+                    >
+                      <td className="px-6 py-4 pl-8">
+                        <div className="flex items-center gap-4">
+                          <div className="w-14 h-14 rounded-xl overflow-hidden border border-slate-100 flex-shrink-0 bg-slate-100">
+                            {product.image ? (
+                              <img
+                                src={product.image}
+                                alt={product.name}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center">
+                                <Package size={24} className="text-slate-300" />
+                              </div>
+                            )}
+                          </div>
+                          <div>
+                            <p className="font-bold text-slate-900 text-sm line-clamp-1">
+                              {product.name}
+                            </p>
+                            <p className="text-xs text-slate-500 mt-0.5">
+                              by {product.author}
+                            </p>
+                            {product.is_new && (
+                              <span className="inline-block mt-1 px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded">
+                                NEW
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold border ${getFormatStyle(product.format)}`}>
+                          {getFormatIcon(product.format)}
+                          {product.format}
+                        </span>
+                      </td>
+
+                      <td className="px-6 py-4">
+                        <span className="text-sm text-slate-600">
+                          {product.category?.name || '-'}
+                        </span>
+                      </td>
+
+                      <td className="px-6 py-4">
+                        <div>
+                          <span className="block font-bold text-slate-900">
+                            {Number(product.price).toLocaleString('vi-VN')}₫
+                          </span>
+                          {product.original_price && Number(product.original_price) > Number(product.price) && (
+                            <span className="text-xs text-slate-400 line-through">
+                              {Number(product.original_price).toLocaleString('vi-VN')}₫
+                            </span>
+                          )}
+                        </div>
+                      </td>
+
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold ${statusInfo.bg}`}>
+                          {statusInfo.icon}
+                          {statusInfo.label}
+                        </span>
+                      </td>
+
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-1">
+                          <Star size={14} className="text-amber-400 fill-amber-400" />
+                          <span className="font-bold text-slate-700">{Number(product.rating).toFixed(1)}</span>
+                          <span className="text-xs text-slate-400">({product.reviews_count})</span>
+                        </div>
+                      </td>
+
+                      <td className="px-6 py-4 text-right pr-8 relative">
+                        <button
+                          onClick={e => {
+                            e.stopPropagation();
+                            setActiveActionId(prev => prev === product.id ? null : product.id);
+                          }}
+                          className={`p-2 rounded-lg transition-colors ${activeActionId === product.id
+                            ? 'bg-indigo-50 text-indigo-600'
+                            : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
+                            }`}
+                        >
+                          <MoreHorizontal size={20} />
+                        </button>
+
+                        {activeActionId === product.id && (
+                          <div className="absolute right-8 top-12 w-44 bg-white rounded-xl shadow-xl border border-slate-100 z-10 overflow-hidden animate-fade-in">
+                            <div className="p-1">
+                              <button
+                                onClick={() => router.push(`/admin/products/${product.id}`)}
+                                className="w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+                              >
+                                <Edit3 size={16} className="text-slate-400" />
+                                Chỉnh sửa
+                              </button>
+                              <button className="w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2">
+                                <Eye size={16} className="text-slate-400" />
+                                Xem trước
+                              </button>
+                              <div className="my-1 border-t border-slate-100" />
+                              <button
+                                onClick={() => handleDelete(product)}
+                                className="w-full text-left px-4 py-2.5 text-sm text-rose-600 hover:bg-rose-50 flex items-center gap-2 font-medium"
+                              >
+                                <Trash2 size={16} />
+                                Xóa sản phẩm
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* Empty state */}
+        {!loading && products.length === 0 && (
+          <div className="p-12 text-center text-slate-500">
+            <Package size={48} className="mx-auto text-slate-300 mb-3" />
+            <h3 className="text-lg font-semibold text-slate-700 mb-1">Chưa có sản phẩm</h3>
+            <p className="text-sm mb-4">Thêm sản phẩm đầu tiên để bắt đầu</p>
+            <button
+              onClick={() => router.push('/admin/products/new')}
+              className="inline-flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700"
+            >
+              <Plus size={16} /> Thêm Sản Phẩm
+            </button>
+          </div>
+        )}
+
+        {/* Pagination */}
+        {!loading && products.length > 0 && (
+          <div className="p-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-50/40 text-xs text-slate-500">
+            <span>
+              Hiển thị{' '}
+              {totalItems === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1} -{' '}
+              {Math.min(currentPage * PAGE_SIZE, totalItems)} / {totalItems} sản phẩm
+            </span>
+            <div className="flex gap-2">
+              <button
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                className="px-3 py-1 border border-slate-200 rounded-lg font-bold hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Trước
+              </button>
+              <button
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                className="px-3 py-1 border border-slate-200 rounded-lg font-bold hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Sau
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default ProductsManager;
