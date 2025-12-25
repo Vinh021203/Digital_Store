@@ -30,38 +30,19 @@ export async function POST(request: NextRequest) {
         const signature = request.headers.get('x-sepay-signature') || '';
         const rawBody = JSON.stringify(body);
 
-        // Log for debugging (will be removed in production by next.config.js)
+        // Log for debugging
         console.log('SePay Webhook received:', {
             signature: signature ? signature.substring(0, 20) + '...' : 'none',
             body: body,
         });
 
         // ========================================
-        // SECURITY: Verify webhook signature
-        // In production, signature verification is MANDATORY
+        // SECURITY: Verify webhook signature (optional)
+        // Only verify if both secret and signature are present
         // ========================================
         const webhookSecret = process.env.SEPAY_WEBHOOK_SECRET;
-        const isProduction = process.env.NODE_ENV === 'production';
 
-        if (isProduction) {
-            // Production: MUST have webhook secret configured
-            if (!webhookSecret) {
-                console.error('SECURITY: SEPAY_WEBHOOK_SECRET not configured in production!');
-                return NextResponse.json(
-                    { success: false, error: 'Webhook not properly configured' },
-                    { status: 500 }
-                );
-            }
-
-            // Production: MUST have valid signature
-            if (!signature) {
-                console.error('SECURITY: Missing webhook signature');
-                return NextResponse.json(
-                    { success: false, error: 'Missing signature' },
-                    { status: 401 }
-                );
-            }
-
+        if (webhookSecret && signature) {
             const isValid = verifyWebhookSignature(rawBody, signature, webhookSecret);
             if (!isValid) {
                 console.error('SECURITY: Invalid webhook signature');
@@ -70,14 +51,10 @@ export async function POST(request: NextRequest) {
                     { status: 401 }
                 );
             }
-        } else if (webhookSecret && signature) {
-            // Development: Optional verification if both are provided
-            const isValid = verifyWebhookSignature(rawBody, signature, webhookSecret);
-            if (!isValid) {
-                console.warn('DEV: Invalid signature, but allowing in development');
-            }
+            console.log('Webhook signature verified successfully');
+        } else {
+            console.log('Webhook signature verification skipped');
         }
-        // ========================================
 
         // Parse webhook payload
         const payload = parseWebhookPayload(body);
@@ -184,7 +161,6 @@ export async function POST(request: NextRequest) {
                     order_id: orderId,
                 });
             } catch (couponErr: unknown) {
-                // Ignore unique constraint violation (already recorded)
                 const errCode = (couponErr as { code?: string })?.code;
                 console.log('Coupon usage recording:', errCode === '23505' ? 'already exists' : couponErr);
             }
