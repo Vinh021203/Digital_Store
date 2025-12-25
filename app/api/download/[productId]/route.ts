@@ -38,13 +38,17 @@ export async function GET(
         const adminClient = createAdminClient();
 
         // Check if user has valid license for this product
-        const { data: license, error: licenseError } = await adminClient
+        // Use order + limit to get latest license if user has multiple
+        const { data: licenses, error: licenseError } = await adminClient
             .from('licenses')
             .select('id, status, type, downloads_this_month, downloads_limit')
             .eq('user_id', user.id)
             .eq('product_id', productIdNum)
             .eq('status', 'active')
-            .maybeSingle();
+            .order('created_at', { ascending: false })
+            .limit(1);
+
+        const license = licenses?.[0] || null;
 
         if (licenseError) {
             console.error('License check error:', licenseError);
