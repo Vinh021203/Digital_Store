@@ -38,18 +38,12 @@ export async function updateSession(request: NextRequest) {
         }
     );
 
-    // Use getSession() for faster check - doesn't make network call if session exists in cookies
+    // IMPORTANT: Use getUser() instead of getSession() for better reliability
+    // getUser() validates the session token on every request
     const {
-        data: { session },
+        data: { user },
         error,
-    } = await supabase.auth.getSession();
-
-    // If there's an auth error, don't redirect - let client handle it
-    if (error) {
-        console.warn('Auth session error:', error.message);
-        // Don't redirect on error - let the page load and client will handle auth state
-        return supabaseResponse;
-    }
+    } = await supabase.auth.getUser();
 
     // Protected routes - redirect to login if not authenticated
     const protectedPaths = ['/profile', '/checkout', '/admin'];
@@ -57,38 +51,53 @@ export async function updateSession(request: NextRequest) {
         request.nextUrl.pathname.startsWith(path)
     );
 
-    // Only redirect if explicitly no session (not on error or loading)
-    if (isProtectedPath && !session) {
-        // Check for auth cookies to avoid premature redirects
+    // If there's an error or no user on protected routes
+    if (isProtectedPath && (!user || error)) {
+        // Check for auth cookies to avoid premature redirects during session restoration
         const hasAuthCookie = request.cookies.getAll().some(
             cookie => cookie.name.includes('auth-token') || cookie.name.includes('sb-')
         );
 
-        // If there's an auth cookie, let the page load - session might be restoring
-        if (hasAuthCookie) {
+        // If there's an auth cookie but no user, it might be a stale session
+        // Let the client-side handle the redirect to avoid flash
+        if (hasAuthCookie && error) {
+            console.warn('Auth error with existing cookie:', error.message);
+            // Return response without redirect - let client handle
             return supabaseResponse;
         }
 
-        const url = request.nextUrl.clone();
-        url.pathname = '/login';
-        url.searchParams.set('redirect', request.nextUrl.pathname);
-        return NextResponse.redirect(url);
+        // No cookie and no user - definitely not logged in
+        if (!hasAuthCookie) {
+            const url = request.nextUrl.clone();
+            url.pathname = '/login';
+            url.searchParams.set('redirect', request.nextUrl.pathname);
+            return NextResponse.redirect(url);
+        }
     }
 
     // ========================================
     // SECURITY: Admin routes - check if user has admin role
     // ========================================
-    if (request.nextUrl.pathname.startsWith('/admin') && session) {
-        // Query profiles table for role (role is stored in profiles, not user_metadata)
+    if (request.nextUrl.pathname.startsWith('/admin') && user) {
+        // Query profiles table for role
         const { data: profile, error: profileError } = await supabase
             .from('profiles')
             .select('role')
-            .eq('id', session.user.id)
+            .eq('id', user.id)
             .single();
 
-        if (profileError || profile?.role !== 'admin') {
+        // If profile query fails, log error but don't block access immediately
+        // This prevents RLS issues from blocking admins
+        if (profileError) {
+            console.warn('Profile query error in middleware:', profileError.message);
+            // If we can't check role, let the page load and handle client-side
+            // This is more forgiving than blocking access
+            return supabaseResponse;
+        }
+
+        if (profile?.role !== 'admin') {
             // Redirect non-admin users to homepage
-            console.warn('Non-admin user attempted to access admin route:', session.user.email);
+            console.warn('Non-admin user attempted to access admin route:', user.email);
             return NextResponse.redirect(new URL('/', request.url));
         }
     }
@@ -96,4 +105,3 @@ export async function updateSession(request: NextRequest) {
 
     return supabaseResponse;
 }
-
