@@ -3,8 +3,8 @@
 // Sends license delivery email to customer
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
-import { sendLicenseDeliveryEmail, sendOrderConfirmationEmail } from '@/lib/email';
+import { createAdminClient } from '@/lib/supabase/server';
+import { sendLicenseDeliveryEmail } from '@/lib/email';
 
 // Webhook secret for validation (set in Supabase trigger)
 const WEBHOOK_SECRET = process.env.INTERNAL_WEBHOOK_SECRET || 'digitalmart-internal-webhook';
@@ -30,8 +30,8 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Get user and product info from database
-        const supabase = await createClient();
+        // Use admin client to bypass RLS (webhook has no user session)
+        const supabase = createAdminClient();
 
         // Get user profile
         const { data: profile, error: profileError } = await supabase
