@@ -32,10 +32,10 @@ export interface QRCodeData {
 // ============================================
 export function getSepayConfig(): SepayConfig {
     return {
-        bankCode: process.env.SEPAY_BANK_CODE || '970422',
-        bankName: process.env.SEPAY_BANK_NAME || 'MBBank',
-        accountNumber: process.env.SEPAY_ACCOUNT_NUMBER || '',
-        accountName: process.env.SEPAY_ACCOUNT_NAME || '',
+        bankCode: process.env.NEXT_PUBLIC_SEPAY_BANK_CODE || '970422',
+        bankName: process.env.NEXT_PUBLIC_SEPAY_BANK_NAME || 'MBBank',
+        accountNumber: process.env.NEXT_PUBLIC_SEPAY_ACCOUNT_NUMBER || '',
+        accountName: process.env.NEXT_PUBLIC_SEPAY_ACCOUNT_NAME || '',
     };
 }
 
