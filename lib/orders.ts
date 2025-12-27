@@ -346,3 +346,5 @@ export async function getOrderStats() {
         totalRevenue: paid.reduce((sum, o) => sum + Number(o.total), 0),
     };
 }
+
+
