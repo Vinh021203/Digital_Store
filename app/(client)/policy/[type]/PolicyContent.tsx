@@ -94,7 +94,7 @@ const POLICY_CONTENT: Record<string, {
             {
                 title: 'Quy trình yêu cầu',
                 icon: FileText,
-                content: 'Gửi yêu cầu hoàn tiền đến email support@digitalmart.vn với thông tin: mã đơn hàng, email đăng ký, lý do hoàn tiền chi tiết, và bằng chứng (screenshot/video nếu có). Chúng tôi sẽ xem xét trong 24-48 giờ.'
+                content: 'Gửi yêu cầu hoàn tiền đến email veutong961@gmail.com với thông tin: mã đơn hàng, email đăng ký, lý do hoàn tiền chi tiết, và bằng chứng (screenshot/video nếu có). Chúng tôi sẽ xem xét trong 24-48 giờ.'
             },
             {
                 title: 'Thời gian xử lý',

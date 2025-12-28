@@ -548,14 +548,17 @@ const TESTIMONIALS = [
 ];
 
 const TestimonialsSection = memo(() => {
+  // Duplicate testimonials for seamless infinite scroll
+  const allTestimonials = [...TESTIMONIALS, ...TESTIMONIALS, ...TESTIMONIALS];
+
   return (
     <section className="py-12 md:py-24 bg-slate-50 relative overflow-hidden">
       {/* Decorative Elements */}
       <div className="absolute top-0 left-0 w-full h-20 md:h-32 bg-gradient-to-b from-slate-900 to-transparent" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="relative z-10">
         {/* Header */}
-        <div className="text-center mb-8 md:mb-16">
+        <div className="text-center mb-8 md:mb-12 px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -576,48 +579,70 @@ const TestimonialsSection = memo(() => {
           </motion.h2>
         </div>
 
-        {/* Testimonials - Horizontal scroll on mobile */}
-        <div className="-mx-4 px-4 md:mx-0 md:px-0">
-          <div className="flex md:grid md:grid-cols-3 gap-4 md:gap-8 overflow-x-auto md:overflow-visible pb-4 md:pb-0 snap-x snap-mandatory no-scrollbar">
-            {TESTIMONIALS.map((testimonial, index) => (
-              <motion.div
-                key={testimonial.name}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.15 }}
-                className="flex-shrink-0 w-[300px] md:w-auto snap-start bg-white rounded-2xl md:rounded-3xl p-5 md:p-8 shadow-lg md:shadow-xl shadow-slate-200/50 border border-slate-100 hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-500"
+        {/* Infinite Slider Container */}
+        <div className="relative">
+          {/* Fade edges */}
+          <div className="absolute left-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-r from-slate-50 to-transparent z-10" />
+          <div className="absolute right-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-l from-slate-50 to-transparent z-10" />
+
+          {/* Sliding Track */}
+          <div className="flex animate-slide-testimonials">
+            {allTestimonials.map((testimonial, index) => (
+              <div
+                key={`${testimonial.name}-${index}`}
+                className="flex-shrink-0 w-[320px] md:w-[400px] mx-3 md:mx-4"
               >
-                {/* Stars */}
-                <div className="flex gap-0.5 md:gap-1 mb-4 md:mb-6">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 md:w-5 md:h-5 fill-amber-400 text-amber-400" />
-                  ))}
-                </div>
-
-                {/* Content */}
-                <p className="text-slate-600 text-sm md:text-lg leading-relaxed mb-5 md:mb-8 line-clamp-4 md:line-clamp-none">
-                  "{testimonial.content}"
-                </p>
-
-                {/* Author */}
-                <div className="flex items-center gap-3 md:gap-4">
-                  <div className="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-white text-base md:text-xl font-bold shadow-lg">
-                    {testimonial.avatar}
+                <div className="bg-white rounded-2xl md:rounded-3xl p-5 md:p-8 shadow-lg md:shadow-xl shadow-slate-200/50 border border-slate-100 hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-500 h-full">
+                  {/* Stars */}
+                  <div className="flex gap-0.5 md:gap-1 mb-4 md:mb-6">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 md:w-5 md:h-5 fill-amber-400 text-amber-400" />
+                    ))}
                   </div>
-                  <div>
-                    <p className="font-bold text-slate-900 text-sm md:text-base">{testimonial.name}</p>
-                    <p className="text-xs md:text-sm text-slate-500">{testimonial.role}</p>
+
+                  {/* Content */}
+                  <p className="text-slate-600 text-sm md:text-base leading-relaxed mb-5 md:mb-8 min-h-[80px] md:min-h-[100px]">
+                    "{testimonial.content}"
+                  </p>
+
+                  {/* Author */}
+                  <div className="flex items-center gap-3 md:gap-4">
+                    <div className="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-white text-base md:text-xl font-bold shadow-lg">
+                      {testimonial.avatar}
+                    </div>
+                    <div>
+                      <p className="font-bold text-slate-900 text-sm md:text-base">{testimonial.name}</p>
+                      <p className="text-xs md:text-sm text-slate-500">{testimonial.role}</p>
+                    </div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
       </div>
+
+      {/* Animation Styles */}
+      <style jsx global>{`
+        @keyframes slide-testimonials {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-33.33%);
+          }
+        }
+        .animate-slide-testimonials {
+          animation: slide-testimonials 25s linear infinite;
+        }
+        .animate-slide-testimonials:hover {
+          animation-play-state: paused;
+        }
+      `}</style>
     </section>
   );
 });
+
 
 TestimonialsSection.displayName = 'TestimonialsSection';
 

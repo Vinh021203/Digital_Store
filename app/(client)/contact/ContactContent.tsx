@@ -11,7 +11,7 @@ import {
 import { useToast } from '@/context/ToastContext';
 
 const CONTACT_INFO = [
-    { icon: Mail, label: 'Email hỗ trợ', value: 'support@digitalmart.vn', href: 'mailto:support@digitalmart.vn', color: 'blue' },
+    { icon: Mail, label: 'Email hỗ trợ', value: 'veutong961@gmail.com', href: 'mailto:support@digitalmart.vn', color: 'blue' },
     { icon: Phone, label: 'Hotline', value: '0971 386 588', href: 'tel:0971386588', color: 'emerald' },
     { icon: MapPin, label: 'Địa chỉ', value: 'Hạ Long, Quảng Ninh', href: '#', color: 'rose' },
     { icon: Clock, label: 'Giờ làm việc', value: '8:00 - 22:00 hàng ngày', href: '#', color: 'amber' },

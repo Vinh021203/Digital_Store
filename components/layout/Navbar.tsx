@@ -214,12 +214,12 @@ const Navbar = () => {
             <div className="flex items-center gap-4 text-slate-400">
               <span className="flex items-center gap-1.5 hover:text-white transition-colors">
                 <Mail size={14} className="text-orange-400" />
-                digitalmart.vn@gmail.com
+                veutong961@gmail.com
               </span>
               <span className="w-px h-3 bg-slate-700" />
               <span className="flex items-center gap-1.5 hover:text-white transition-colors">
                 <Phone size={14} className="text-orange-400" />
-                0909.123.456
+                0971.386.588
               </span>
             </div>
 
