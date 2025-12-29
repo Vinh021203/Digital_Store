@@ -8,8 +8,6 @@ import {
   Lock,
   ArrowRight,
   AlertCircle,
-  User,
-  ShieldCheck,
   Eye,
   EyeOff,
   Sparkles,
@@ -99,15 +97,7 @@ export default function LoginPage() {
     }
   };
 
-  const fillDemoUser = () => {
-    setEmail('user@example.com');
-    setPassword('password123');
-  };
 
-  const fillDemoAdmin = () => {
-    setEmail('admin@homelife.com');
-    setPassword('admin123');
-  };
 
   return (
     <div className="min-h-screen flex overflow-hidden font-sans text-slate-800">
@@ -244,33 +234,7 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Demo Accounts */}
-          <div className="mt-8">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-slate-200" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-3 bg-white text-slate-400 font-medium">Demo Accounts</span>
-              </div>
-            </div>
-            <div className="mt-4 grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={fillDemoUser}
-                className="flex items-center justify-center gap-2 py-2.5 px-4 border border-slate-200 rounded-xl bg-white text-sm font-bold text-slate-700 hover:bg-orange-50 hover:border-orange-200 hover:text-orange-600 transition-all"
-              >
-                <User size={16} /> User
-              </button>
-              <button
-                type="button"
-                onClick={fillDemoAdmin}
-                className="flex items-center justify-center gap-2 py-2.5 px-4 border border-slate-200 rounded-xl bg-white text-sm font-bold text-slate-700 hover:bg-orange-50 hover:border-orange-200 hover:text-orange-600 transition-all"
-              >
-                <ShieldCheck size={16} /> Admin
-              </button>
-            </div>
-          </div>
+
 
           {/* Register Link */}
           <p className="mt-8 text-center text-sm text-slate-600">
@@ -315,12 +279,12 @@ export default function LoginPage() {
             </p>
             <footer className="flex items-center gap-4">
               <img
-                src="https://i.pravatar.cc/48?img=32"
+                src="https://res.cloudinary.com/dsdwhh7eu/image/upload/v1764469468/avatars/ddifmxn36ltzom9istep.jpg"
                 alt=""
                 className="w-12 h-12 rounded-full border-2 border-white"
               />
               <div>
-                <p className="text-white font-bold">Nguyễn Văn A</p>
+                <p className="text-white font-bold">Lương Thế Vinh</p>
                 <p className="text-orange-200 text-sm">Frontend Developer</p>
               </div>
             </footer>

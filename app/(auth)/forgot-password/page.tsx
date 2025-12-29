@@ -206,12 +206,12 @@ const ForgotPasswordPage = () => {
             </p>
             <footer className="flex items-center gap-4">
               <img
-                src="https://i.pravatar.cc/48?img=45"
+                src="https://res.cloudinary.com/dsdwhh7eu/image/upload/v1764469468/avatars/ddifmxn36ltzom9istep.jpg"
                 alt=""
                 className="w-12 h-12 rounded-full border-2 border-white"
               />
               <div>
-                <p className="text-white font-bold">Trần Minh B</p>
+                <p className="text-white font-bold">Lương Thế Vinh</p>
                 <p className="text-orange-200 text-sm">Product Designer</p>
               </div>
             </footer>

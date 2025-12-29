@@ -94,16 +94,17 @@ const MobileBottomNav = () => {
 
   return (
     <>
-      {/* Safe area spacer */}
-      <div className="h-16 md:hidden" />
+      {/* Safe area spacer - adjusted for proper spacing */}
+      <div className="h-[60px] md:hidden" />
 
       {/* Bottom Nav */}
       <nav
-        className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 h-16 pb-safe z-40 md:hidden shadow-[0_-2px_10px_rgba(0,0,0,0.05)]"
+        className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-40 md:hidden shadow-[0_-2px_10px_rgba(0,0,0,0.05)]"
         role="navigation"
         aria-label="Mobile bottom navigation"
+        style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
       >
-        <div className="grid grid-cols-5 h-full max-w-md mx-auto">
+        <div className="grid grid-cols-5 h-[60px] max-w-md mx-auto">
           {navItems.map((item) => (
             <NavItem
               key={item.to}
@@ -112,20 +113,7 @@ const MobileBottomNav = () => {
             />
           ))}
         </div>
-
-        {/* iPhone safe area */}
-        <div className="absolute bottom-0 left-0 right-0 h-safe bg-white" />
       </nav>
-
-      {/* Styles */}
-      <style jsx global>{`
-        .pb-safe {
-          padding-bottom: env(safe-area-inset-bottom);
-        }
-        .h-safe {
-          height: env(safe-area-inset-bottom);
-        }
-      `}</style>
     </>
   );
 };

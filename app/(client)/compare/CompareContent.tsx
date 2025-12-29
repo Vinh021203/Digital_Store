@@ -172,17 +172,130 @@ export default function ComparePage() {
                     </div>
                 )}
 
-                {/* --- MAIN COMPARISON TABLE --- */}
-                <div className="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
+                {/* --- MOBILE CARD VIEW --- */}
+                <div className="md:hidden">
+                    <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
+                        {compareList.map((item, index) => (
+                            <div
+                                key={item.id}
+                                className="flex-shrink-0 w-[85vw] max-w-[320px] bg-white rounded-2xl border border-slate-200 shadow-lg snap-center"
+                            >
+                                {/* Product Header */}
+                                <div className="relative p-4 border-b border-slate-100">
+                                    <button
+                                        onClick={() => removeFromCompare(item.id)}
+                                        className="absolute top-3 right-3 p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                                    >
+                                        <X size={16} />
+                                    </button>
+
+                                    {analysis?.bestPrice.id === item.id && (
+                                        <div className="absolute top-3 left-3 bg-emerald-500 text-white text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1">
+                                            <Wallet size={10} /> BEST PRICE
+                                        </div>
+                                    )}
+                                    {analysis?.bestRating.id === item.id && (
+                                        <div className="absolute top-3 left-3 bg-amber-500 text-white text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1">
+                                            <Trophy size={10} /> TOP RATED
+                                        </div>
+                                    )}
+
+                                    <div className="w-full aspect-[16/10] relative rounded-xl overflow-hidden mb-3 mt-6">
+                                        <Image src={item.image} alt={item.name} fill className="object-cover" />
+                                    </div>
+                                    <Link href={`/product/${item.slug || item.id}`} className="block text-lg font-bold text-slate-900 hover:text-blue-600 line-clamp-2 min-h-[48px]">
+                                        {item.name}
+                                    </Link>
+                                    <div className="flex items-center gap-2 mt-2">
+                                        <span className="text-2xl font-black text-blue-600">{item.price.toLocaleString()}₫</span>
+                                        {item.originalPrice && (
+                                            <span className="text-sm text-slate-400 line-through">{item.originalPrice.toLocaleString()}₫</span>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Product Info */}
+                                <div className="p-4 space-y-4">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-sm font-medium text-slate-500">Rating</span>
+                                        <div className="flex items-center gap-1 bg-amber-50 px-3 py-1 rounded-full border border-amber-100">
+                                            <span className="font-bold text-amber-700">{item.rating || 5}</span>
+                                            <Star size={14} className="fill-amber-500 text-amber-500" />
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-sm font-medium text-slate-500">Thể loại</span>
+                                        <span className="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-sm font-bold">
+                                            {typeof item.category === 'string' ? item.category : (item.category as any)?.name || 'Resource'}
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-sm font-medium text-slate-500">Responsive</span>
+                                        <div className="w-7 h-7 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
+                                            <Check size={14} strokeWidth={3} />
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-sm font-medium text-slate-500">Công nghệ</span>
+                                        <div className="flex gap-1">
+                                            {['React', 'Tailwind'].map(tech => (
+                                                <span key={tech} className="text-[10px] font-bold border border-slate-200 px-2 py-0.5 rounded text-slate-500">{tech}</span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-sm font-medium text-slate-500">Cập nhật</span>
+                                        <span className="text-sm font-medium text-emerald-600">Miễn phí trọn đời</span>
+                                    </div>
+                                </div>
+
+                                {/* Action */}
+                                <div className="p-4 pt-0">
+                                    <button
+                                        onClick={() => handleAddToCart(item)}
+                                        className="w-full flex items-center justify-center gap-2 bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-blue-600 transition-all"
+                                    >
+                                        <ShoppingCart size={18} />
+                                        Thêm vào giỏ
+                                    </button>
+                                </div>
+
+                                {/* Card Index */}
+                                <div className="text-center pb-3">
+                                    <span className="text-xs text-slate-400">{index + 1} / {compareList.length}</span>
+                                </div>
+                            </div>
+                        ))}
+
+                        {/* Add More Card */}
+                        {compareList.length < 3 && (
+                            <Link
+                                href="/products"
+                                className="flex-shrink-0 w-[85vw] max-w-[320px] bg-white rounded-2xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-4 min-h-[400px] snap-center hover:border-blue-300 hover:bg-blue-50/50 transition-all"
+                            >
+                                <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center">
+                                    <Plus size={32} className="text-slate-400" />
+                                </div>
+                                <span className="text-slate-500 font-bold">Thêm sản phẩm</span>
+                            </Link>
+                        )}
+                    </div>
+
+                    {/* Scroll Hint */}
+                    <p className="text-center text-xs text-slate-400 mt-2">← Vuốt để xem thêm →</p>
+                </div>
+
+                {/* --- DESKTOP COMPARISON TABLE --- */}
+                <div className="hidden md:block bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full min-w-[800px]">
                             <thead>
                                 <tr className="border-b border-slate-100">
-                                    <th className="p-6 text-left w-64 bg-slate-50/50 backdrop-blur sticky left-0 z-20">
+                                    <th className="p-4 md:p-6 text-left w-24 md:w-64 bg-slate-50 sticky left-0 z-20 border-r border-slate-100 hidden md:table-cell">
                                         <div className="text-sm font-bold text-slate-400 uppercase tracking-wider">Sản phẩm</div>
                                     </th>
                                     {compareList.map(item => (
-                                        <th key={item.id} className="p-6 w-80 align-top relative group">
+                                        <th key={item.id} className="p-4 md:p-6 w-56 md:w-80 align-top relative group">
                                             {analysis?.bestPrice.id === item.id && (
                                                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-500 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg z-10 flex items-center gap-1">
                                                     <Wallet size={10} /> BEST PRICE
@@ -235,10 +348,11 @@ export default function ComparePage() {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td className="p-6 font-bold text-slate-700 sticky left-0 bg-white/95 backdrop-blur">Rating</td>
+                                    <td className="p-4 md:p-6 font-bold text-slate-700 sticky left-0 bg-white border-r border-slate-100 hidden md:table-cell">Rating</td>
                                     {compareList.map(item => (
-                                        <td key={item.id} className="p-6 text-center">
-                                            <div className="flex flex-col items-center gap-2">
+                                        <td key={item.id} className="p-4 md:p-6 text-center">
+                                            <span className="block text-[10px] font-bold text-slate-400 uppercase mb-1 md:hidden">Rating</span>
+                                            <div className="flex flex-col items-center gap-1 md:gap-2">
                                                 <div className="flex items-center justify-center gap-1 bg-amber-50 px-3 py-1 rounded-full border border-amber-100">
                                                     <span className="font-bold text-amber-700">{item.rating || 5}</span>
                                                     <Star size={14} className="fill-amber-500 text-amber-500" />
@@ -250,9 +364,10 @@ export default function ComparePage() {
                                     {compareList.length < 3 && <td></td>}
                                 </tr>
                                 <tr>
-                                    <td className="p-6 font-bold text-slate-700 sticky left-0 bg-white/95 backdrop-blur">Thể loại</td>
+                                    <td className="p-4 md:p-6 font-bold text-slate-700 sticky left-0 bg-white border-r border-slate-100 hidden md:table-cell">Thể loại</td>
                                     {compareList.map(item => (
-                                        <td key={item.id} className="p-6 text-center">
+                                        <td key={item.id} className="p-4 md:p-6 text-center">
+                                            <span className="block text-[10px] font-bold text-slate-400 uppercase mb-1 md:hidden">Thể loại</span>
                                             <span className="inline-block px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-sm font-bold">
                                                 {typeof item.category === 'string' ? item.category : (item.category as any)?.name || 'Resource'}
                                             </span>
@@ -268,9 +383,10 @@ export default function ComparePage() {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td className="p-6 font-bold text-slate-700 sticky left-0 bg-white/95 backdrop-blur">Responsive</td>
+                                    <td className="p-4 md:p-6 font-bold text-slate-700 sticky left-0 bg-white border-r border-slate-100 hidden md:table-cell">Responsive</td>
                                     {compareList.map(item => (
-                                        <td key={item.id} className="p-6 text-center">
+                                        <td key={item.id} className="p-4 md:p-6 text-center">
+                                            <span className="block text-[10px] font-bold text-slate-400 uppercase mb-1 md:hidden">Responsive</span>
                                             <div className="flex justify-center">
                                                 <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
                                                     <Check size={16} strokeWidth={3} />
@@ -281,9 +397,10 @@ export default function ComparePage() {
                                     {compareList.length < 3 && <td></td>}
                                 </tr>
                                 <tr>
-                                    <td className="p-6 font-bold text-slate-700 sticky left-0 bg-white/95 backdrop-blur">Công nghệ</td>
+                                    <td className="p-4 md:p-6 font-bold text-slate-700 sticky left-0 bg-white border-r border-slate-100 hidden md:table-cell">Công nghệ</td>
                                     {compareList.map(item => (
-                                        <td key={item.id} className="p-6 text-center">
+                                        <td key={item.id} className="p-4 md:p-6 text-center">
+                                            <span className="block text-[10px] font-bold text-slate-400 uppercase mb-1 md:hidden">Công nghệ</span>
                                             <div className="flex flex-wrap justify-center gap-1">
                                                 {['React', 'Tailwind'].map(tech => (
                                                     <span key={tech} className="text-[10px] font-bold border border-slate-200 px-2 py-0.5 rounded text-slate-500">{tech}</span>
@@ -294,9 +411,10 @@ export default function ComparePage() {
                                     {compareList.length < 3 && <td></td>}
                                 </tr>
                                 <tr>
-                                    <td className="p-6 font-bold text-slate-700 sticky left-0 bg-white/95 backdrop-blur">Cập nhật</td>
+                                    <td className="p-4 md:p-6 font-bold text-slate-700 sticky left-0 bg-white border-r border-slate-100 hidden md:table-cell">Cập nhật</td>
                                     {compareList.map(item => (
-                                        <td key={item.id} className="p-6 text-center">
+                                        <td key={item.id} className="p-4 md:p-6 text-center">
+                                            <span className="block text-[10px] font-bold text-slate-400 uppercase mb-1 md:hidden">Cập nhật</span>
                                             <span className="text-sm font-medium text-slate-600">Miễn phí trọn đời</span>
                                         </td>
                                     ))}
@@ -305,7 +423,7 @@ export default function ComparePage() {
 
                                 {/* -- Actions -- */}
                                 <tr className="bg-slate-50">
-                                    <td className="p-6 sticky left-0 bg-slate-50"></td>
+                                    <td className="p-4 md:p-6 sticky left-0 bg-slate-50 border-r border-slate-100 hidden md:table-cell"></td>
                                     {compareList.map(item => (
                                         <td key={item.id} className="p-6">
                                             <button
