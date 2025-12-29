@@ -123,13 +123,19 @@ const HeroSection = memo(() => {
             {/* Trust Indicators */}
             <div className="flex items-center gap-6 mt-10 justify-center lg:justify-start">
               <div className="flex -space-x-2">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <div
+                {[
+                  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
+                  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face',
+                  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face',
+                  'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face',
+                  'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face',
+                ].map((src, i) => (
+                  <img
                     key={i}
-                    className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-red-400 border-2 border-slate-900 flex items-center justify-center text-white text-xs font-bold"
-                  >
-                    {String.fromCharCode(64 + i)}
-                  </div>
+                    src={src}
+                    alt={`User ${i + 1}`}
+                    className="w-10 h-10 rounded-full border-2 border-slate-900 object-cover"
+                  />
                 ))}
               </div>
               <div>
@@ -227,25 +233,82 @@ const HeroSection = memo(() => {
 HeroSection.displayName = 'HeroSection';
 
 // ============================================
+// ANIMATED COUNTER HOOK
+// ============================================
+const useCountUp = (end: number, duration: number = 2000, start: number = 0) => {
+  const [count, setCount] = useState(start);
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !isVisible) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, [isVisible]);
+
+  useEffect(() => {
+    if (!isVisible) return;
+
+    let startTime: number;
+    const animate = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.floor(start + (end - start) * easeOut));
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+    requestAnimationFrame(animate);
+  }, [isVisible, end, duration, start]);
+
+  return { count, ref };
+};
+
+// ============================================
 // STATS SECTION
 // ============================================
 const StatsSection = memo(() => {
+  const stat1 = useCountUp(1000, 2000);
+  const stat2 = useCountUp(50, 2000);
+  const stat3 = useCountUp(49, 1500); // 4.9 * 10
+
+  const statsData = [
+    { ...STATS[0], displayValue: `${stat1.count.toLocaleString()}+`, ref: stat1.ref },
+    { ...STATS[1], displayValue: `${stat2.count}K+`, ref: stat2.ref },
+    { ...STATS[2], displayValue: (stat3.count / 10).toFixed(1), ref: stat3.ref },
+    { ...STATS[3], displayValue: STATS[3].value, ref: null },
+  ];
+
   return (
     <section className="relative -mt-16 z-20">
       <div className="max-w-6xl mx-auto px-4">
         <div className="bg-white rounded-2xl shadow-xl p-8 grid grid-cols-2 md:grid-cols-4 gap-6">
-          {STATS.map((stat, index) => (
+          {statsData.map((stat, index) => (
             <motion.div
               key={stat.label}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
               className="text-center"
+              ref={stat.ref}
             >
               <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-orange-100 to-red-100 rounded-xl mb-3">
                 <stat.icon className="w-6 h-6 text-orange-600" />
               </div>
-              <p className="text-3xl font-black text-slate-900 mb-1">{stat.value}</p>
+              <p className="text-3xl font-black text-slate-900 mb-1">{stat.displayValue}</p>
               <p className="text-sm text-slate-500">{stat.label}</p>
             </motion.div>
           ))}

@@ -84,6 +84,112 @@ const DemoPreviewModal = ({ isOpen, onClose, demoUrl, productName }: {
     );
 };
 
+// Image Lightbox Modal Component
+const ImageLightbox = ({
+    isOpen,
+    onClose,
+    images,
+    currentIndex,
+    onNavigate
+}: {
+    isOpen: boolean;
+    onClose: () => void;
+    images: string[];
+    currentIndex: number;
+    onNavigate: (index: number) => void;
+}) => {
+    if (!isOpen || images.length === 0) return null;
+
+    const handlePrev = () => {
+        onNavigate(currentIndex === 0 ? images.length - 1 : currentIndex - 1);
+    };
+
+    const handleNext = () => {
+        onNavigate(currentIndex === images.length - 1 ? 0 : currentIndex + 1);
+    };
+
+    // Keyboard navigation
+    React.useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') onClose();
+            if (e.key === 'ArrowLeft') handlePrev();
+            if (e.key === 'ArrowRight') handleNext();
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [currentIndex]);
+
+    return (
+        <div
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-md animate-in fade-in duration-200"
+            style={{ top: 0, left: 0, right: 0, bottom: 0, marginTop: 0 }}
+            onClick={onClose}
+        >
+            {/* Close Button */}
+            <button
+                onClick={onClose}
+                className="absolute top-4 right-4 z-10 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+            >
+                <X size={24} />
+            </button>
+
+            {/* Image Counter */}
+            <div className="absolute top-4 left-4 z-10 px-4 py-2 rounded-full bg-white/10 text-white text-sm font-medium">
+                {currentIndex + 1} / {images.length}
+            </div>
+
+            {/* Navigation Buttons */}
+            {images.length > 1 && (
+                <>
+                    <button
+                        onClick={(e) => { e.stopPropagation(); handlePrev(); }}
+                        className="absolute left-4 z-10 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+                    >
+                        <ChevronRight size={24} className="rotate-180" />
+                    </button>
+                    <button
+                        onClick={(e) => { e.stopPropagation(); handleNext(); }}
+                        className="absolute right-4 z-10 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+                    >
+                        <ChevronRight size={24} />
+                    </button>
+                </>
+            )}
+
+            {/* Main Image */}
+            <div
+                className="relative w-[90vw] h-[75vh] !mt-0"
+                onClick={(e) => e.stopPropagation()}
+            >
+                <Image
+                    src={images[currentIndex]}
+                    alt={`Image ${currentIndex + 1}`}
+                    fill
+                    className="object-contain"
+                    sizes="90vw"
+                    priority
+                />
+            </div>
+
+            {/* Thumbnail Strip */}
+            {images.length > 1 && (
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 p-2 bg-black/50 rounded-xl backdrop-blur-md overflow-x-auto max-w-[90vw]">
+                    {images.map((img, idx) => (
+                        <button
+                            key={idx}
+                            onClick={(e) => { e.stopPropagation(); onNavigate(idx); }}
+                            className={`relative w-16 h-12 rounded-lg overflow-hidden flex-shrink-0 transition-all ${idx === currentIndex ? 'ring-2 ring-orange-500 opacity-100' : 'opacity-50 hover:opacity-80'
+                                }`}
+                        >
+                            <Image src={img} alt="" fill className="object-cover" />
+                        </button>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+};
+
 export default function ProductDetailPage() {
     const params = useParams();
     const router = useRouter();
@@ -97,6 +203,8 @@ export default function ProductDetailPage() {
     const [activeTab, setActiveTab] = useState('overview');
     const [openFaq, setOpenFaq] = useState<number | null>(null);
     const [showDemoModal, setShowDemoModal] = useState(false);
+    const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+    const [showLightbox, setShowLightbox] = useState(false);
 
     const productId = params.id as string;
 
@@ -223,50 +331,89 @@ export default function ProductDetailPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-12">
                     {/* LEFT COLUMN - Images (7 cols) */}
                     <div className="lg:col-span-7 space-y-6">
-                        <div className="relative aspect-[16/10] rounded-3xl overflow-hidden bg-white border border-slate-100 shadow-sm group">
-                            <Image
-                                src={product.image}
-                                alt={product.name}
-                                fill
-                                className="object-cover transition-transform duration-700 group-hover:scale-105"
-                                priority
-                            />
+                        {/* Main Image */}
+                        {(() => {
+                            const allImages = [product.image, ...(product.images || [])].filter(Boolean);
+                            const currentImage = allImages[selectedImageIndex] || product.image;
 
-                            {/* Floating Badges */}
-                            <div className="absolute top-6 left-6 flex flex-col gap-2">
-                                {product.isNew && (
-                                    <span className="bg-blue-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg shadow-blue-600/20 backdrop-blur-md flex items-center gap-1.5 w-fit">
-                                        <Zap size={12} fill="currentColor" /> NEW ARRIVAL
-                                    </span>
-                                )}
-                                {discountPercent > 0 && (
-                                    <span className="bg-rose-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg shadow-rose-600/20 backdrop-blur-md flex items-center gap-1.5 w-fit">
-                                        <Tag size={12} /> SALE -{discountPercent}%
-                                    </span>
-                                )}
-                            </div>
-
-                            {/* Action Overlay Button */}
-                            {product.demoUrl && (
-                                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20 backdrop-blur-[2px]">
-                                    <button
-                                        onClick={() => setShowDemoModal(true)}
-                                        className="bg-white/95 text-slate-900 px-8 py-4 rounded-2xl font-bold flex items-center gap-3 shadow-2xl hover:scale-105 transition-transform"
+                            return (
+                                <>
+                                    <div
+                                        className="relative aspect-[16/10] rounded-3xl overflow-hidden bg-white border border-slate-100 shadow-sm group cursor-zoom-in"
+                                        onClick={() => setShowLightbox(true)}
                                     >
-                                        <Play size={20} className="text-orange-600 fill-orange-600" /> Xem Demo Trực Tiếp
-                                    </button>
-                                </div>
-                            )}
-                        </div>
+                                        <Image
+                                            src={currentImage}
+                                            alt={product.name}
+                                            fill
+                                            className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                            priority
+                                        />
 
-                        {/* Thumbnail Grid (Placeholder for gallery) */}
-                        <div className="grid grid-cols-4 gap-4">
-                            {[product.image, ...Array(3).fill(product.image)].map((img, i) => (
-                                <div key={i} className={`relative aspect-video rounded-xl overflow-hidden border-2 cursor-pointer transition-all ${i === 0 ? 'border-orange-500 ring-2 ring-orange-500/20' : 'border-slate-100 hover:border-slate-300'}`}>
-                                    <Image src={img} alt="" fill className="object-cover" />
-                                </div>
-                            ))}
-                        </div>
+                                        {/* Floating Badges */}
+                                        <div className="absolute top-6 left-6 flex flex-col gap-2">
+                                            {product.isNew && (
+                                                <span className="bg-blue-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg shadow-blue-600/20 backdrop-blur-md flex items-center gap-1.5 w-fit">
+                                                    <Zap size={12} fill="currentColor" /> NEW ARRIVAL
+                                                </span>
+                                            )}
+                                            {discountPercent > 0 && (
+                                                <span className="bg-rose-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg shadow-rose-600/20 backdrop-blur-md flex items-center gap-1.5 w-fit">
+                                                    <Tag size={12} /> SALE -{discountPercent}%
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        {/* Zoom Icon Overlay */}
+                                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20 backdrop-blur-[2px]">
+                                            <div className="bg-white/95 text-slate-900 px-6 py-3 rounded-2xl font-bold flex items-center gap-2 shadow-2xl">
+                                                <Eye size={20} className="text-orange-600" /> Xem ảnh lớn
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Thumbnail Grid */}
+                                    <div className="grid grid-cols-4 gap-3 md:gap-4">
+                                        {allImages.slice(0, 4).map((img, i) => (
+                                            <button
+                                                key={i}
+                                                onClick={() => setSelectedImageIndex(i)}
+                                                className={`relative aspect-video rounded-xl overflow-hidden border-2 cursor-pointer transition-all hover:scale-[1.02] ${i === selectedImageIndex
+                                                    ? 'border-orange-500 ring-2 ring-orange-500/20 shadow-lg'
+                                                    : 'border-slate-200 hover:border-slate-400'
+                                                    }`}
+                                            >
+                                                <Image src={img} alt="" fill className="object-cover" />
+                                                {i === 3 && allImages.length > 4 && (
+                                                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white font-bold">
+                                                        +{allImages.length - 4}
+                                                    </div>
+                                                )}
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    {/* Demo Button - Separate from gallery */}
+                                    {product.demoUrl && (
+                                        <button
+                                            onClick={() => setShowDemoModal(true)}
+                                            className="w-full bg-gradient-to-r from-orange-500 to-rose-500 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:scale-[1.01] transition-all"
+                                        >
+                                            <Play size={20} className="fill-white" /> Xem Demo Trực Tiếp
+                                        </button>
+                                    )}
+
+                                    {/* Lightbox Modal */}
+                                    <ImageLightbox
+                                        isOpen={showLightbox}
+                                        onClose={() => setShowLightbox(false)}
+                                        images={allImages}
+                                        currentIndex={selectedImageIndex}
+                                        onNavigate={setSelectedImageIndex}
+                                    />
+                                </>
+                            );
+                        })()}
 
                         {/* Tech Specs / Highlights */}
                         <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
@@ -506,24 +653,117 @@ export default function ProductDetailPage() {
                     </div>
 
                     {/* Sidebar / Extra Info */}
-                    <div className="lg:col-span-4 space-y-8">
-                        <div className="bg-orange-600 rounded-3xl p-8 text-white relative overflow-hidden">
+                    <div className="lg:col-span-4 space-y-6">
+                        <div className="bg-orange-600 rounded-2xl p-6 text-white relative overflow-hidden">
                             <div className="absolute top-0 right-0 -m-8 opacity-10">
-                                <Star size={180} fill="currentColor" />
+                                <Star size={140} fill="currentColor" />
                             </div>
-                            <h3 className="text-2xl font-black mb-4 relative z-10">Bạn cần hỗ trợ?</h3>
-                            <p className="text-white/80 mb-6 relative z-10 text-sm leading-relaxed">Đội ngũ kỹ thuật của chúng tôi luôn sẵn sàng hỗ trợ bạn 24/7 để giải đáp mọi thắc mắc.</p>
-                            <button className="w-full bg-white text-orange-600 py-3 rounded-xl font-bold hover:bg-orange-50 transition-colors shadow-lg relative z-10">
+                            <h3 className="text-xl font-black mb-3 relative z-10">Bạn cần hỗ trợ?</h3>
+                            <p className="text-white/80 mb-4 relative z-10 text-sm leading-relaxed">Đội ngũ kỹ thuật sẵn sàng hỗ trợ 24/7.</p>
+                            <button className="w-full bg-white text-orange-600 py-2.5 rounded-xl font-bold hover:bg-orange-50 transition-colors shadow-lg relative z-10 text-sm">
                                 Liên hệ ngay
                             </button>
+                        </div>
+
+                        {/* Trust Badges in Sidebar */}
+                        <div className="bg-white rounded-2xl p-5 border border-slate-100">
+                            <h4 className="font-bold text-slate-900 text-sm mb-4 uppercase tracking-wide">Cam kết của chúng tôi</h4>
+                            <div className="grid grid-cols-2 gap-4">
+                                {[
+                                    { icon: ShieldCheck, title: 'Bảo mật', desc: 'SSL 256-bit' },
+                                    { icon: RotateCcw, title: 'Hoàn tiền', desc: '30 ngày' },
+                                    { icon: Download, title: 'Tải ngay', desc: 'Sau thanh toán' },
+                                    { icon: MessageCircle, title: 'Hỗ trợ', desc: '24/7' },
+                                ].map((item, i) => (
+                                    <div key={i} className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl">
+                                        <div className="w-9 h-9 bg-orange-100 rounded-lg flex items-center justify-center text-orange-600 flex-shrink-0">
+                                            <item.icon size={18} />
+                                        </div>
+                                        <div>
+                                            <p className="font-bold text-slate-900 text-xs">{item.title}</p>
+                                            <p className="text-[10px] text-slate-500">{item.desc}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Related Products */}
-                <div className="mt-8 pt-8 border-t border-slate-200">
+                <div className="mt-6">
                     <RelatedProducts currentProduct={product} relatedProducts={relatedProducts} />
                 </div>
+
+                {/* CTA Section - Explore More */}
+                <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Blog CTA */}
+                    <Link href="/blog" className="group relative bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 overflow-hidden hover:shadow-2xl transition-all">
+                        <div className="absolute top-0 right-0 opacity-10">
+                            <FileCode size={160} />
+                        </div>
+                        <div className="relative z-10">
+                            <span className="inline-flex items-center gap-2 px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full text-xs font-bold uppercase mb-3">
+                                <Zap size={12} /> Resources
+                            </span>
+                            <h3 className="text-xl font-black text-white mb-2">Khám Phá Blog</h3>
+                            <p className="text-slate-400 mb-4 text-sm leading-relaxed">
+                                Hướng dẫn, tips & tricks, và cập nhật mới nhất về web development.
+                            </p>
+                            <div className="flex items-center gap-2 text-orange-400 font-bold group-hover:gap-4 transition-all text-sm">
+                                Đọc ngay <ArrowRight size={16} />
+                            </div>
+                        </div>
+                    </Link>
+
+                    {/* Community CTA */}
+                    <Link href="/contact" className="group relative bg-gradient-to-br from-orange-600 to-rose-600 rounded-2xl p-6 overflow-hidden hover:shadow-2xl hover:shadow-orange-500/30 transition-all">
+                        <div className="absolute top-0 right-0 opacity-10">
+                            <Users size={160} />
+                        </div>
+                        <div className="relative z-10">
+                            <span className="inline-flex items-center gap-2 px-3 py-1 bg-white/20 text-white rounded-full text-xs font-bold uppercase mb-3">
+                                <MessageCircle size={12} /> Support
+                            </span>
+                            <h3 className="text-xl font-black text-white mb-2">Tham Gia Cộng Đồng</h3>
+                            <p className="text-white/80 mb-4 text-sm leading-relaxed">
+                                Kết nối với developers, chia sẻ kinh nghiệm và nhận hỗ trợ 24/7.
+                            </p>
+                            <div className="flex items-center gap-2 text-white font-bold group-hover:gap-4 transition-all text-sm">
+                                Tham gia ngay <ArrowRight size={16} />
+                            </div>
+                        </div>
+                    </Link>
+                </div>
+
+                {/* Newsletter Section */}
+                <div className="mt-6 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 rounded-2xl p-6 md:p-8 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px]" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-orange-600/20 rounded-full blur-3xl" />
+
+                    <div className="relative z-10 max-w-2xl mx-auto text-center">
+                        <span className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500/10 border border-orange-500/20 text-orange-400 rounded-full text-sm font-bold mb-4">
+                            <Star size={14} className="fill-current" /> Đừng bỏ lỡ
+                        </span>
+                        <h3 className="text-xl md:text-2xl font-black text-white mb-3">
+                            Nhận Thông Báo Sản Phẩm Mới
+                        </h3>
+                        <p className="text-slate-400 mb-6 text-sm">
+                            Đăng ký để nhận thông tin về sản phẩm mới và khuyến mãi độc quyền!
+                        </p>
+                        <div className="flex gap-3 max-w-md mx-auto">
+                            <input
+                                type="email"
+                                placeholder="Email của bạn..."
+                                className="flex-1 px-4 py-3 bg-white/10 border border-white/10 rounded-xl text-white placeholder:text-slate-400 focus:outline-none focus:border-orange-500 text-sm"
+                            />
+                            <button className="px-6 py-3 bg-orange-600 text-white font-bold rounded-xl hover:bg-orange-700 transition-colors shadow-lg shadow-orange-500/30 text-sm">
+                                Đăng ký
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             {/* Demo Modal */}

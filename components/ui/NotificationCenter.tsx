@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
     Bell, X, Check, CheckCheck, Trash2, DollarSign, Package,
-    Gift, AlertCircle, Star, Clock, Ticket, Users, Loader2
+    Gift, AlertCircle, Star, Clock, Ticket, Users, Loader2, PartyPopper
 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
@@ -14,6 +14,8 @@ import {
     markAllNotificationsRead,
     deleteNotification,
     deleteReadNotifications,
+    subscribeToNotifications,
+    unsubscribeFromNotifications,
     type DbNotification
 } from '@/lib/notifications';
 
@@ -28,6 +30,7 @@ const getTypeIcon = (type: DbNotification['type']) => {
         case 'affiliate': return <Users size={16} className="text-green-500" />;
         case 'promotion': return <Gift size={16} className="text-purple-500" />;
         case 'system': return <AlertCircle size={16} className="text-slate-500" />;
+        case 'welcome': return <PartyPopper size={16} className="text-pink-500" />;
         default: return <Bell size={16} className="text-slate-500" />;
     }
 };
@@ -40,6 +43,7 @@ const getTypeBgColor = (type: DbNotification['type']) => {
         case 'affiliate': return 'bg-green-100';
         case 'promotion': return 'bg-purple-100';
         case 'system': return 'bg-slate-100';
+        case 'welcome': return 'bg-pink-100';
         default: return 'bg-slate-100';
     }
 };
@@ -76,7 +80,10 @@ export function NotificationCenter({ isOpen, onClose, onCountChange }: Notificat
     const [actionLoading, setActionLoading] = useState<number | null>(null);
 
     const loadNotifications = useCallback(async () => {
-        if (!user?.id) return;
+        if (!user?.id) {
+            setLoading(false);
+            return;
+        }
         setLoading(true);
         try {
             const data = await fetchUserNotifications(user.id, { limit: 20 });
@@ -184,13 +191,13 @@ export function NotificationCenter({ isOpen, onClose, onCountChange }: Notificat
         <>
             {/* Backdrop - click outside to close */}
             <div
-                className="fixed inset-0 z-40 bg-transparent"
+                className="fixed inset-0 z-[100] bg-transparent"
                 onClick={onClose}
                 aria-hidden="true"
             />
 
             {/* Dropdown */}
-            <div className="absolute right-0 top-full mt-2 w-96 max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-50 animate-fade-in">
+            <div className="absolute right-0 top-full mt-2 w-96 max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-[101] animate-fade-in">
                 {/* Header */}
                 <div className="p-4 border-b border-slate-100 bg-gradient-to-r from-orange-50 to-amber-50">
                     <div className="flex items-center justify-between mb-3">
@@ -242,6 +249,12 @@ export function NotificationCenter({ isOpen, onClose, onCountChange }: Notificat
                     {loading ? (
                         <div className="p-8 text-center">
                             <Loader2 size={32} className="mx-auto text-orange-600 animate-spin" />
+                        </div>
+                    ) : !user?.id ? (
+                        <div className="p-8 text-center">
+                            <Bell size={40} className="mx-auto text-slate-200 mb-3" />
+                            <p className="text-slate-500 mb-2">Vui lòng đăng nhập</p>
+                            <p className="text-xs text-slate-400">Để xem thông báo của bạn</p>
                         </div>
                     ) : filteredNotifications.length === 0 ? (
                         <div className="p-8 text-center">
@@ -349,12 +362,13 @@ export function NotificationBadge({ count }: { count: number }) {
 }
 
 // ============================================
-// Hook to use notifications (with real data)
+// Hook to use notifications (with real data + realtime)
 // ============================================
 export function useNotifications() {
     const { user } = useAuth();
     const [unreadCount, setUnreadCount] = useState(0);
     const [loading, setLoading] = useState(true);
+    const channelRef = useRef<any>(null);
 
     useEffect(() => {
         const loadCount = async () => {
@@ -375,14 +389,31 @@ export function useNotifications() {
 
         loadCount();
 
-        // Poll every 30 seconds
-        const interval = setInterval(loadCount, 30000);
-        return () => clearInterval(interval);
+        // Setup realtime subscription
+        if (user?.id) {
+            channelRef.current = subscribeToNotifications(user.id, (newNotification) => {
+                // New notification arrived - increment count
+                if (!newNotification.is_read) {
+                    setUnreadCount(prev => prev + 1);
+                }
+            });
+        }
+
+        // Fallback polling every 60 seconds
+        const interval = setInterval(loadCount, 60000);
+
+        return () => {
+            clearInterval(interval);
+            if (channelRef.current) {
+                unsubscribeFromNotifications(channelRef.current);
+            }
+        };
     }, [user?.id]);
 
     return {
         unreadCount,
         loading,
+        setUnreadCount,
         refresh: async () => {
             if (!user?.id) return;
             const count = await getUnreadNotificationCount(user.id);

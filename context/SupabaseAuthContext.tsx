@@ -11,6 +11,7 @@ import {
 import type { User, Session, AuthChangeEvent } from '@supabase/supabase-js';
 import { getSupabaseClient } from '@/lib/supabase/client';
 import { logUserLogin, logUserLogout, logLoginFailed, createActivityLog } from '@/lib/activityLogs';
+import { createWelcomeNotification } from '@/lib/notifications';
 
 interface UserProfile {
   id: string;
@@ -166,6 +167,9 @@ export function SupabaseAuthProvider({ children }: SupabaseAuthProviderProps) {
           details: 'Đăng ký tài khoản mới',
           severity: 'success',
         });
+
+        // Send welcome notifications to new user
+        await createWelcomeNotification(data.user.id, name);
       }
 
       return { error: null };
