@@ -248,7 +248,7 @@ const NewsletterPopup = () => {
 
               {/* Description */}
               <p className="text-slate-600 mb-6 sm:mb-8 leading-relaxed text-sm sm:text-base">
-                Để lại email để nhận ngay cuốn Ebook <strong className="text-orange-600">"Kỹ Năng Tự Học Vượt Trội"</strong> và mã giảm giá <strong className="text-amber-600">20%</strong> cho đơn hàng đầu tiên.
+                Để lại email để nhận ngay cuốn Ebook <strong className="text-orange-700">"Kỹ Năng Tự Học Vượt Trội"</strong> và mã giảm giá <strong className="text-amber-700">20%</strong> cho đơn hàng đầu tiên.
               </p>
 
               {/* Form */}

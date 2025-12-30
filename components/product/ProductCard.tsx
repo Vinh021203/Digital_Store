@@ -148,7 +148,7 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
 
           <div className="mt-auto flex items-center justify-between">
             <div className="flex flex-col">
-              <span className="text-xl font-black text-orange-600">{product.price.toLocaleString('vi-VN')}₫</span>
+              <span className="text-xl font-black text-orange-700">{product.price.toLocaleString('vi-VN')}₫</span>
               {product.originalPrice && (
                 <span className="text-xs text-slate-500 line-through">
                   {product.originalPrice.toLocaleString('vi-VN')}₫
@@ -191,19 +191,19 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
         <div className="absolute top-2 left-2 flex gap-1">
           {/* Format Badge */}
           {product.format && (
-            <span className={`text-white text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider shadow-sm flex items-center gap-0.5 ${product.format === 'Theme' ? 'bg-orange-600' :
-              product.format === 'Landing' ? 'bg-red-600' :
-                product.format === 'Template' ? 'bg-amber-600' :
-                  product.format === 'MiniApp' ? 'bg-rose-600' : 'bg-orange-500'
+            <span className={`text-white text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider shadow-sm flex items-center gap-0.5 ${product.format === 'Theme' ? 'bg-orange-700' :
+              product.format === 'Landing' ? 'bg-red-700' :
+                product.format === 'Template' ? 'bg-amber-700' :
+                  product.format === 'MiniApp' ? 'bg-rose-700' : 'bg-orange-600'
               }`}>
-              {product.format === 'Theme' || product.format === 'Landing' ? <Package size={8} /> : <PlayCircle size={8} />}
+              {product.format === 'Theme' || product.format === 'Landing' ? <Package size={9} /> : <PlayCircle size={9} />}
               {product.format}
             </span>
           )}
 
           {/* New Badge */}
           {product.isNew && (
-            <span className="bg-pink-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider shadow-sm">
+            <span className="bg-pink-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider shadow-sm">
               MỚI
             </span>
           )}
@@ -211,7 +211,7 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
 
         {/* Discount Badge */}
         {discount > 0 && (
-          <span className="absolute top-2 right-2 bg-rose-500 text-white text-[10px] font-black px-1.5 py-0.5 rounded shadow-sm">
+          <span className="absolute top-2 right-2 bg-rose-600 text-white text-[11px] font-black px-1.5 py-0.5 rounded shadow-sm">
             -{discount}%
           </span>
         )}
@@ -315,7 +315,7 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
         <div className="flex items-center justify-between mt-auto gap-2">
           {/* Price */}
           <div className="flex flex-col min-w-0 flex-shrink">
-            <span className="text-sm md:text-base font-black text-orange-600 truncate">
+            <span className="text-sm md:text-base font-black text-orange-700 truncate">
               {product.price.toLocaleString('vi-VN')}₫
             </span>
             {product.originalPrice && (

@@ -57,7 +57,7 @@ const getMessage = (notification: SocialProofNotification) => {
                 <>
                     <span className="font-bold text-slate-900">{notification.name}</span>
                     <span className="text-slate-600"> vừa mua </span>
-                    <span className="font-bold text-orange-600">{notification.product}</span>
+                    <span className="font-bold text-orange-700">{notification.product}</span>
                 </>
             );
         case 'review':
@@ -65,7 +65,7 @@ const getMessage = (notification: SocialProofNotification) => {
                 <>
                     <span className="font-bold text-slate-900">{notification.name}</span>
                     <span className="text-slate-600"> đã đánh giá </span>
-                    <span className="font-bold text-orange-600">{notification.product}</span>
+                    <span className="font-bold text-orange-700">{notification.product}</span>
                     {notification.rating && (
                         <span className="inline-flex items-center gap-0.5 ml-1">
                             {Array.from({ length: notification.rating }).map((_, i) => (
@@ -78,9 +78,9 @@ const getMessage = (notification: SocialProofNotification) => {
         case 'viewing':
             return (
                 <>
-                    <span className="font-bold text-blue-600">{notification.name}</span>
+                    <span className="font-bold text-blue-700">{notification.name}</span>
                     <span className="text-slate-600"> đang xem </span>
-                    <span className="font-bold text-orange-600">{notification.product}</span>
+                    <span className="font-bold text-orange-700">{notification.product}</span>
                 </>
             );
     }
@@ -100,9 +100,9 @@ export default function SocialProofNotifications() {
             try {
                 // Fetch latest approved reviews with product info
                 const reviews = await fetchAllReviews({ isApproved: true, limit: 10 });
-                
+
                 const generatedNotifications: SocialProofNotification[] = [];
-                
+
                 // Convert reviews to notifications
                 reviews.forEach((review: DbReview, idx: number) => {
                     if (review.product && review.user) {
@@ -117,7 +117,7 @@ export default function SocialProofNotifications() {
                             time: getRandomTime(),
                             rating: review.rating,
                         });
-                        
+
                         // Add fake purchase notification for variety
                         if (idx < 5) {
                             const randomUser = DEMO_USERS[(idx + 3) % DEMO_USERS.length];
@@ -207,10 +207,9 @@ export default function SocialProofNotifications() {
             <div className={`absolute left-0 top-0 w-1 h-full ${getBgColor(currentNotification.type)}`} />
 
             {/* Product Image or Icon */}
-            <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden ${
-                currentNotification.type === 'purchase' ? 'bg-green-100' :
-                currentNotification.type === 'review' ? 'bg-amber-100' : 'bg-blue-100'
-            }`}>
+            <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden ${currentNotification.type === 'purchase' ? 'bg-green-100' :
+                    currentNotification.type === 'review' ? 'bg-amber-100' : 'bg-blue-100'
+                }`}>
                 {currentNotification.productImage ? (
                     <Image
                         src={currentNotification.productImage}
@@ -229,7 +228,7 @@ export default function SocialProofNotifications() {
                 <p className="text-xs leading-snug">
                     {getMessage(currentNotification)}
                 </p>
-                <p className="text-[10px] text-slate-400 mt-0.5 flex items-center gap-1">
+                <p className="text-[10px] text-slate-500 mt-0.5 flex items-center gap-1">
                     <CheckCircle size={8} className="text-green-500" />
                     {currentNotification.location && `${currentNotification.location} • `}
                     {currentNotification.time}
