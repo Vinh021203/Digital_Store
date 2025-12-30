@@ -34,7 +34,7 @@ export const metadata: Metadata = {
         address: false,
         telephone: false,
     },
-    metadataBase: new URL('https://digitalmart.vn'),
+    metadataBase: new URL('https://martdigitalhub.vercel.app'),
     alternates: {
         canonical: '/',
         languages: {
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
         type: 'website',
         locale: 'vi_VN',
         alternateLocale: 'en_US',
-        url: 'https://digitalmart.vn',
+        url: 'https://martdigitalhub.vercel.app',
         siteName: 'DigitalMart - Digital Products Marketplace',
         title: 'DigitalMart - Premium Digital Products',
         description: 'Marketplace sản phẩm số hàng đầu Việt Nam. Themes, Templates, Landing Pages, Mini Apps.',
