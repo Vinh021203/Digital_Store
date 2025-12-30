@@ -150,7 +150,7 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
             <div className="flex flex-col">
               <span className="text-xl font-black text-orange-600">{product.price.toLocaleString('vi-VN')}₫</span>
               {product.originalPrice && (
-                <span className="text-xs text-slate-400 line-through">
+                <span className="text-xs text-slate-500 line-through">
                   {product.originalPrice.toLocaleString('vi-VN')}₫
                 </span>
               )}
@@ -293,7 +293,7 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
         {/* Category */}
         <Link
           href={`/products?category=${product.category}`}
-          className="text-[9px] md:text-[10px] text-orange-600 uppercase tracking-wider font-bold hover:text-orange-700 transition-colors mb-1"
+          className="text-[10px] md:text-xs text-orange-700 uppercase tracking-wider font-bold hover:text-orange-800 transition-colors mb-1 py-0.5 inline-block"
         >
           {typeof product.category === 'string' ? product.category : (product.category as any)?.name || 'Uncategorized'}
         </Link>
@@ -301,7 +301,7 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
         {/* Title */}
         <Link
           href={`/product/${(product as any).slug || product.id}`}
-          className="font-bold text-slate-900 text-[11px] md:text-sm mb-0.5 line-clamp-2 hover:text-orange-600 transition-colors leading-tight"
+          className="font-bold text-slate-900 text-xs md:text-sm mb-0.5 line-clamp-2 hover:text-orange-600 transition-colors leading-tight py-0.5 block"
         >
           {product.name}
         </Link>
@@ -319,7 +319,7 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
               {product.price.toLocaleString('vi-VN')}₫
             </span>
             {product.originalPrice && (
-              <span className="text-[9px] md:text-[10px] text-slate-400 line-through truncate">
+              <span className="text-[10px] md:text-xs text-slate-500 line-through truncate">
                 {product.originalPrice.toLocaleString('vi-VN')}₫
               </span>
             )}

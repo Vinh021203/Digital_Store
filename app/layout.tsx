@@ -108,6 +108,13 @@ export default function RootLayout({
 }) {
     return (
         <html lang="vi" className={`${inter.variable} ${playfair.variable}`}>
+            <head>
+                {/* Preconnect to critical origins for faster loading */}
+                <link rel="preconnect" href="https://enxndlrdqotqaoatjkvo.supabase.co" />
+                <link rel="dns-prefetch" href="https://enxndlrdqotqaoatjkvo.supabase.co" />
+                <link rel="preconnect" href="https://images.unsplash.com" />
+                <link rel="dns-prefetch" href="https://images.unsplash.com" />
+            </head>
             <body className="font-sans antialiased bg-slate-50" suppressHydrationWarning>
                 <NavigationProgress />
                 <Providers>

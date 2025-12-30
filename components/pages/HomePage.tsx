@@ -175,7 +175,7 @@ const HeroSection = memo(() => {
                       <span className="px-2 py-1 bg-orange-500/20 text-orange-400 text-xs font-bold rounded">THEME</span>
                       <span className="px-2 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded">NEW</span>
                     </div>
-                    <h3 className="text-xl font-bold text-white mb-2">Dashboard Pro React</h3>
+                    <h2 className="text-xl font-bold text-white mb-2">Dashboard Pro React</h2>
                     <p className="text-slate-400 text-sm mb-4">Modern admin dashboard with 50+ pages</p>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">

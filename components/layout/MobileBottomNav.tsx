@@ -39,7 +39,7 @@ const NavItem = memo<NavItemProps>(({ to, icon: Icon, label, badge = 0, isActive
           <Icon
             size={22}
             strokeWidth={isActive ? 2.5 : 2}
-            className={isActive ? 'text-orange-600' : 'text-slate-400'}
+            className={isActive ? 'text-orange-600' : 'text-slate-500'}
           />
         </div>
 
@@ -52,7 +52,7 @@ const NavItem = memo<NavItemProps>(({ to, icon: Icon, label, badge = 0, isActive
       </div>
 
       {/* Label */}
-      <span className={`text-[10px] font-semibold mt-0.5 ${isActive ? 'text-orange-600' : 'text-slate-400'
+      <span className={`text-[10px] font-semibold mt-0.5 ${isActive ? 'text-orange-600' : 'text-slate-500'
         }`}>
         {label}
       </span>
