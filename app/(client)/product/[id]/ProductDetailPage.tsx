@@ -156,18 +156,15 @@ const ImageLightbox = ({
                 </>
             )}
 
-            {/* Main Image */}
+            {/* Main Image - Contained Size */}
             <div
-                className="relative w-[90vw] h-[75vh] !mt-0"
+                className="absolute inset-0 flex items-center justify-center p-16"
                 onClick={(e) => e.stopPropagation()}
             >
-                <Image
+                <img
                     src={images[currentIndex]}
                     alt={`Image ${currentIndex + 1}`}
-                    fill
-                    className="object-contain"
-                    sizes="90vw"
-                    priority
+                    className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
                 />
             </div>
 
@@ -393,15 +390,6 @@ export default function ProductDetailPage() {
                                         ))}
                                     </div>
 
-                                    {/* Demo Button - Separate from gallery */}
-                                    {product.demoUrl && (
-                                        <button
-                                            onClick={() => setShowDemoModal(true)}
-                                            className="w-full bg-gradient-to-r from-orange-500 to-rose-500 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:scale-[1.01] transition-all"
-                                        >
-                                            <Play size={20} className="fill-white" /> Xem Demo Trực Tiếp
-                                        </button>
-                                    )}
 
                                     {/* Lightbox Modal */}
                                     <ImageLightbox
@@ -499,28 +487,44 @@ export default function ProductDetailPage() {
                                     </button>
 
                                     <div className="grid grid-cols-2 gap-3">
-                                        {product.demoUrl && (
-                                            <button
-                                                onClick={() => setShowDemoModal(true)}
-                                                className="px-4 py-3 rounded-xl border border-slate-200 font-bold text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-colors flex items-center justify-center gap-2"
-                                            >
-                                                <Eye size={18} /> Xem Demo
-                                            </button>
+                                        {(product as any).demo_url && (
+                                            <>
+                                                <button
+                                                    onClick={() => setShowDemoModal(true)}
+                                                    className="px-4 py-3 rounded-xl border border-slate-200 font-bold text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-colors flex items-center justify-center gap-2"
+                                                >
+                                                    <Eye size={18} /> Xem Demo
+                                                </button>
+                                                <a
+                                                    href={(product as any).demo_url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="px-4 py-3 rounded-xl border border-orange-200 bg-orange-50 font-bold text-orange-600 hover:bg-orange-100 hover:border-orange-300 transition-colors flex items-center justify-center gap-2"
+                                                >
+                                                    <ExternalLink size={18} /> Mở Tab mới
+                                                </a>
+                                            </>
                                         )}
-                                        <div className="flex gap-2">
-                                            <button
-                                                onClick={handleToggleWishlist}
-                                                className={`flex-1 rounded-xl border flex items-center justify-center transition-colors ${isWishlisted ? 'border-rose-200 bg-rose-50 text-rose-500' : 'border-slate-200 hover:border-rose-200 hover:text-rose-500 text-slate-400'}`}
-                                            >
-                                                <Heart size={20} fill={isWishlisted ? 'currentColor' : 'none'} />
-                                            </button>
-                                            <button
-                                                onClick={handleToggleCompare}
-                                                className={`flex-1 rounded-xl border flex items-center justify-center transition-colors ${isComparing ? 'border-blue-200 bg-blue-50 text-blue-500' : 'border-slate-200 hover:border-blue-200 hover:text-blue-500 text-slate-400'}`}
-                                            >
-                                                <ArrowRightLeftIcon size={20} />
-                                            </button>
-                                        </div>
+                                    </div>
+                                    <div className="flex gap-3">
+                                        <button
+                                            onClick={handleToggleWishlist}
+                                            className={`flex-1 h-12 rounded-xl border flex items-center justify-center gap-2 font-medium transition-all ${isWishlisted
+                                                ? 'border-rose-300 bg-rose-50 text-rose-600'
+                                                : 'border-slate-200 hover:border-rose-300 hover:bg-rose-50 hover:text-rose-500 text-slate-500'}`}
+                                        >
+                                            <Heart size={20} fill={isWishlisted ? 'currentColor' : 'none'} />
+                                            <span className="text-sm">Yêu thích</span>
+                                        </button>
+                                        <button
+                                            onClick={handleToggleCompare}
+                                            className={`flex-1 h-12 rounded-xl border flex items-center justify-center gap-2 font-medium transition-all ${isComparing
+                                                ? 'border-blue-300 bg-blue-50 text-blue-600'
+                                                : 'border-slate-200 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-500 text-slate-500'}`}
+                                        >
+                                            <ArrowRightLeftIcon size={20} />
+                                            <span className="text-sm">So sánh</span>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -569,20 +573,54 @@ export default function ProductDetailPage() {
                             <div className="p-8">
                                 {activeTab === 'overview' && (
                                     <div className="prose max-w-none prose-slate prose-headings:font-black prose-a:text-orange-600">
-                                        <h3>Mô tả sản phẩm</h3>
-                                        <p className="text-slate-600 leading-relaxed text-lg">{product.description}</p>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                                        {/* Render description with preserved line breaks */}
+                                        <div className="text-slate-600 leading-relaxed text-lg whitespace-pre-line">
+                                            {product.description}
+                                        </div>
 
+                                        {/* Features and Tech Stack Section */}
                                         <div className="my-8 grid grid-cols-1 md:grid-cols-2 gap-4 not-prose">
-                                            <div className="bg-slate-50 p-6 rounded-2xl">
-                                                <h4 className="font-bold text-slate-900 mb-2">Tính năng chính</h4>
-                                                <ul className="space-y-2">
-                                                    {[1, 2, 3, 4].map(i => <li key={i} className="flex gap-2 text-slate-600 text-sm"><Check size={16} className="text-green-500" /> Feature description item {i}</li>)}
-                                                </ul>
-                                            </div>
-                                            <div className="relative h-full min-h-[200px] rounded-2xl overflow-hidden">
-                                                <Image src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015" alt="Feature" fill className="object-cover" />
-                                            </div>
+                                            {/* Features */}
+                                            {(product as any).features && (product as any).features.length > 0 && (
+                                                <div className="bg-slate-50 p-6 rounded-2xl">
+                                                    <h4 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
+                                                        <Zap size={18} className="text-orange-600" />
+                                                        Tính năng chính
+                                                    </h4>
+                                                    <ul className="space-y-2">
+                                                        {(product as any).features.map((feature: string, i: number) => (
+                                                            <li key={i} className="flex gap-2 text-slate-600 text-sm">
+                                                                <Check size={16} className="text-green-500 flex-shrink-0 mt-0.5" />
+                                                                {feature}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            )}
+
+                                            {/* Tech Stack */}
+                                            {(product as any).techStack && (product as any).techStack.length > 0 && (
+                                                <div className="bg-blue-50 p-6 rounded-2xl">
+                                                    <h4 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
+                                                        <Code size={18} className="text-blue-600" />
+                                                        Tech Stack
+                                                    </h4>
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {(product as any).techStack.map((tech: string, i: number) => (
+                                                            <span key={i} className="px-3 py-1.5 bg-white rounded-lg text-sm font-medium text-slate-700 border border-blue-100">
+                                                                {tech}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* Fallback image if no features/techStack */}
+                                            {!(product as any).features?.length && !(product as any).techStack?.length && (
+                                                <div className="relative h-full min-h-[200px] rounded-2xl overflow-hidden md:col-span-2">
+                                                    <Image src={product.image || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015"} alt="Feature" fill className="object-cover" />
+                                                </div>
+                                            )}
                                         </div>
 
                                         {product.tags && (
@@ -627,25 +665,83 @@ export default function ProductDetailPage() {
                                 )}
 
                                 {activeTab === 'details' && (
-                                    <div className="space-y-6">
-                                        <h3 className="font-bold text-slate-900 text-lg">Thông số kỹ thuật</h3>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-                                            {[
-                                                { l: 'Phiên bản', v: (product as any).version || '1.0.0' },
-                                                { l: 'Ngày cập nhật', v: '22/12/2024' },
-                                                { l: 'Framework', v: 'React, Next.js 14' },
-                                                { l: 'Language', v: 'TypeScript' },
-                                                { l: 'Styling', v: 'Tailwind CSS' },
-                                                { l: 'Database', v: 'Supabase / Firebase' },
-                                                { l: 'Dokumentation', v: 'Included (PDF, Web)' },
-                                                { l: 'Browser Support', v: 'Chrome, Firefox, Safari, Edge' },
-                                            ].map((item, i) => (
-                                                <div key={i} className="flex justify-between py-3 border-b border-slate-100 last:border-0">
-                                                    <span className="text-slate-500 text-sm font-medium">{item.l}</span>
-                                                    <span className="text-slate-900 text-sm font-bold">{item.v}</span>
+                                    <div className="space-y-8">
+                                        {/* Technical Specs */}
+                                        <div>
+                                            <h3 className="font-bold text-slate-900 text-lg mb-4 flex items-center gap-2">
+                                                <Monitor size={20} className="text-orange-600" />
+                                                Thông số kỹ thuật
+                                            </h3>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 bg-slate-50 p-6 rounded-2xl">
+                                                {[
+                                                    { l: 'Phiên bản', v: (product as any).version || '1.0.0' },
+                                                    { l: 'Ngày cập nhật', v: product.updatedAt ? new Date(product.updatedAt).toLocaleDateString('vi-VN') : new Date().toLocaleDateString('vi-VN') },
+                                                    { l: 'File Format', v: (product as any).fileFormat || 'React, Next.js' },
+                                                    { l: 'Compatibility', v: (product as any).compatibility || 'React 18+, Node 16+' },
+                                                    { l: 'Hỗ trợ', v: '6 tháng miễn phí' },
+                                                ].map((item, i) => (
+                                                    <div key={i} className="flex justify-between py-3 border-b border-slate-200 last:border-0">
+                                                        <span className="text-slate-500 text-sm font-medium">{item.l}</span>
+                                                        <span className="text-slate-900 text-sm font-bold text-right max-w-[60%]">{item.v}</span>
+                                                    </div>
+                                                ))}
+
+                                                {/* Demo URL - Clickable Link */}
+                                                <div className="flex justify-between py-3 border-b border-slate-200 last:border-0 md:col-span-2">
+                                                    <span className="text-slate-500 text-sm font-medium">Demo URL</span>
+                                                    {(product as any).demo_url ? (
+                                                        <a
+                                                            href={(product as any).demo_url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="text-orange-600 text-sm font-bold flex items-center gap-1.5 hover:text-orange-700 hover:underline transition-colors"
+                                                        >
+                                                            <ExternalLink size={14} />
+                                                            Xem Demo Live
+                                                        </a>
+                                                    ) : (
+                                                        <span className="text-slate-400 text-sm">Không có</span>
+                                                    )}
                                                 </div>
-                                            ))}
+                                            </div>
                                         </div>
+
+                                        {/* Features Section */}
+                                        {(product as any).features && (product as any).features.length > 0 && (
+                                            <div>
+                                                <h3 className="font-bold text-slate-900 text-lg mb-4 flex items-center gap-2">
+                                                    <Zap size={20} className="text-orange-600" />
+                                                    Tính năng
+                                                </h3>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                                    {(product as any).features.map((feature: string, i: number) => (
+                                                        <div key={i} className="flex items-center gap-3 p-4 bg-green-50 rounded-xl border border-green-100">
+                                                            <div className="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center text-green-600 flex-shrink-0">
+                                                                <Check size={16} strokeWidth={3} />
+                                                            </div>
+                                                            <span className="text-slate-700 text-sm font-medium">{feature}</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* Tech Stack Section */}
+                                        {(product as any).techStack && (product as any).techStack.length > 0 && (
+                                            <div>
+                                                <h3 className="font-bold text-slate-900 text-lg mb-4 flex items-center gap-2">
+                                                    <Code size={20} className="text-blue-600" />
+                                                    Tech Stack
+                                                </h3>
+                                                <div className="flex flex-wrap gap-2">
+                                                    {(product as any).techStack.map((tech: string, i: number) => (
+                                                        <span key={i} className="px-4 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl text-sm font-bold text-blue-700 border border-blue-100">
+                                                            {tech}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                             </div>
@@ -696,7 +792,7 @@ export default function ProductDetailPage() {
                 </div>
 
                 {/* CTA Section - Explore More */}
-                <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Blog CTA */}
                     <Link href="/blog" className="group relative bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 overflow-hidden hover:shadow-2xl transition-all">
                         <div className="absolute top-0 right-0 opacity-10">
@@ -767,11 +863,11 @@ export default function ProductDetailPage() {
             </div>
 
             {/* Demo Modal */}
-            {product.demoUrl && (
+            {(product as any).demo_url && (
                 <DemoPreviewModal
                     isOpen={showDemoModal}
                     onClose={() => setShowDemoModal(false)}
-                    demoUrl={product.demoUrl}
+                    demoUrl={(product as any).demo_url}
                     productName={product.name}
                 />
             )}

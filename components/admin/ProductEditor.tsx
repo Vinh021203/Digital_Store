@@ -22,6 +22,7 @@ import {
   File,
 } from 'lucide-react';
 import ProductVersionManager from '@/components/seller/ProductVersionManager';
+import RichTextEditor from '@/components/admin/RichTextEditor';
 import { uploadNewVersion } from '@/lib/productFiles';
 import {
   getProductById,
@@ -465,30 +466,12 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
             <label className="block text-sm font-bold text-slate-700 mb-2">
               Mô tả chi tiết
             </label>
-            <div className="border border-slate-200 rounded-xl overflow-hidden">
-              <div className="bg-slate-50 border-b border-slate-200 p-2 flex flex-wrap gap-1.5">
-                {['B', 'I', 'U', 'H1', 'H2', 'List', 'Link', 'Image'].map(
-                  tool => (
-                    <button
-                      key={tool}
-                      type="button"
-                      className="px-2 py-1 hover:bg-slate-200 rounded text-[11px] font-bold text-slate-600"
-                    >
-                      {tool}
-                    </button>
-                  )
-                )}
-              </div>
-              <textarea
-                rows={8}
-                value={product.description}
-                onChange={e =>
-                  setProduct({ ...product, description: e.target.value })
-                }
-                className="w-full p-4 outline-none resize-y text-sm"
-                placeholder="Viết mô tả hấp dẫn cho sản phẩm..."
-              />
-            </div>
+            <RichTextEditor
+              value={product.description}
+              onChange={(html) => setProduct({ ...product, description: html })}
+              placeholder="Viết mô tả hấp dẫn cho sản phẩm..."
+              minHeight={250}
+            />
           </div>
 
           {/* Technical Info */}

@@ -16,6 +16,7 @@ import { useSupabaseAuth } from '@/context/SupabaseAuthContext';
 import { useToast } from '@/context/ToastContext';
 import { BLOG_CATEGORIES, BLOG_TAGS } from '@/lib/blog';
 import SafeHTML from '@/components/ui/SafeHTML';
+import RichTextEditor from '@/components/admin/RichTextEditor';
 
 export default function NewBlogPage() {
     const router = useRouter();
@@ -200,16 +201,14 @@ export default function NewBlogPage() {
                             {/* Content */}
                             <div>
                                 <label className="block text-sm font-bold text-slate-700 mb-2">
-                                    Nội dung (HTML)
+                                    Nội dung
                                 </label>
-                                <textarea
+                                <RichTextEditor
                                     value={formData.content}
-                                    onChange={e => setFormData(prev => ({ ...prev, content: e.target.value }))}
-                                    placeholder="<h2>Tiêu đề phần 1</h2>\n<p>Nội dung...</p>"
-                                    rows={15}
-                                    className="w-full border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none font-mono text-sm resize-none"
+                                    onChange={(html) => setFormData(prev => ({ ...prev, content: html }))}
+                                    placeholder="Viết nội dung bài viết..."
+                                    minHeight={350}
                                 />
-                                <p className="text-xs text-slate-400 mt-1">Hỗ trợ HTML: h1-h6, p, ul, ol, li, strong, em, a, img, blockquote</p>
                             </div>
                         </div>
                     </div>

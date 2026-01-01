@@ -15,6 +15,7 @@ import { getPostById, updatePost, type DbBlogPost } from '@/lib/blog';
 import { useToast } from '@/context/ToastContext';
 import { BLOG_CATEGORIES, BLOG_TAGS } from '@/lib/blog';
 import SafeHTML from '@/components/ui/SafeHTML';
+import RichTextEditor from '@/components/admin/RichTextEditor';
 
 export default function EditBlogPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
@@ -213,13 +214,13 @@ export default function EditBlogPage({ params }: { params: Promise<{ id: string 
 
                             <div>
                                 <label className="block text-sm font-bold text-slate-700 mb-2">
-                                    Nội dung (HTML)
+                                    Nội dung
                                 </label>
-                                <textarea
+                                <RichTextEditor
                                     value={formData.content}
-                                    onChange={e => setFormData(prev => ({ ...prev, content: e.target.value }))}
-                                    rows={15}
-                                    className="w-full border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none font-mono text-sm resize-none"
+                                    onChange={(html: string) => setFormData(prev => ({ ...prev, content: html }))}
+                                    placeholder="Viết nội dung bài viết..."
+                                    minHeight={350}
                                 />
                             </div>
                         </div>
