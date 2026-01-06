@@ -107,10 +107,10 @@ export function ProfileEditForm({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col md:flex-row animate-fade-in">
+      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col md:flex-row animate-fade-in">
 
         {/* Left Panel - Orange Branding */}
-        <div className="w-full md:w-2/5 bg-orange-600 p-6 md:p-8 text-white relative overflow-hidden flex flex-col items-center justify-center min-h-[200px] md:min-h-[500px]">
+        <div className="w-full md:w-2/5 bg-orange-600 p-4 md:p-6 text-white relative overflow-hidden flex flex-col items-center justify-center min-h-[140px] md:min-h-0">
           {/* Background Pattern */}
           <div className="absolute inset-0 opacity-10">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,white_1px,transparent_1px)] bg-[size:20px_20px]" />
@@ -142,7 +142,7 @@ export function ProfileEditForm({
         </div>
 
         {/* Right Panel - Form */}
-        <div className="w-full md:w-3/5 p-6 md:p-8 relative">
+        <div className="w-full md:w-3/5 p-5 md:p-6 relative overflow-y-auto max-h-[70vh] md:max-h-none">
           {/* Close Button */}
           <button
             type="button"
@@ -178,8 +178,8 @@ export function ProfileEditForm({
                 type="button"
                 onClick={() => setActiveTab('avatar')}
                 className={`flex-1 py-2.5 px-4 rounded-xl text-sm font-bold transition-all ${activeTab === 'avatar'
-                    ? 'bg-orange-600 text-white'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-orange-600 text-white'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                   }`}
               >
                 <Camera size={14} className="inline mr-2" />
@@ -189,8 +189,8 @@ export function ProfileEditForm({
                 type="button"
                 onClick={() => setActiveTab('cover')}
                 className={`flex-1 py-2.5 px-4 rounded-xl text-sm font-bold transition-all ${activeTab === 'cover'
-                    ? 'bg-orange-600 text-white'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-orange-600 text-white'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                   }`}
               >
                 <Image size={14} className="inline mr-2" />
