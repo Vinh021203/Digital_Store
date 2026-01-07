@@ -248,7 +248,7 @@ export async function getProductBySlug(slug: string): Promise<DbProduct | null> 
     `)
     .eq('slug', slug)
     .eq('status', 'active')
-    .single();
+    .maybeSingle();
 
   if (error) {
     console.error('Error fetching product by slug:', error);

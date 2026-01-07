@@ -59,6 +59,40 @@ const FEATURES = [
 // HERO SECTION
 // ============================================
 const HeroSection = memo(() => {
+  const [heroProducts, setHeroProducts] = useState<Product[]>([]);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Fetch 5 products for hero slider
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const products = await fetchActiveProducts({ limit: 5 });
+        setHeroProducts(products);
+      } catch (error) {
+        console.error('Failed to load hero products:', error);
+      }
+    };
+    loadProducts();
+  }, []);
+
+  // Auto-slide every 4 seconds
+  useEffect(() => {
+    if (heroProducts.length === 0) return;
+
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroProducts.length);
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [heroProducts.length]);
+
+  const currentProduct = heroProducts[currentSlide];
+
+  // Format price helper
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('vi-VN').format(price) + '₫';
+  };
+
   return (
     <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       {/* Background Effects */}
@@ -149,7 +183,7 @@ const HeroSection = memo(() => {
             </div>
           </motion.div>
 
-          {/* Right Content - Product Preview */}
+          {/* Right Content - Product Slider */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -157,38 +191,90 @@ const HeroSection = memo(() => {
             className="relative hidden lg:block"
           >
             <div className="relative">
-              {/* Main Card */}
+              {/* Main Card with AnimatePresence for smooth transitions */}
               <div className="relative z-10 bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-1 shadow-2xl">
                 <div className="bg-slate-900 rounded-xl overflow-hidden">
-                  <div className="relative w-full h-72">
-                    <Image
-                      src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80"
-                      alt="Premium Theme Preview"
-                      fill
-                      priority
-                      sizes="(max-width: 1024px) 100vw, 50vw"
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="p-6">
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className="px-2 py-1 bg-orange-500/20 text-orange-400 text-xs font-bold rounded">THEME</span>
-                      <span className="px-2 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded">NEW</span>
-                    </div>
-                    <h2 className="text-xl font-bold text-white mb-2">Dashboard Pro React</h2>
-                    <p className="text-slate-400 text-sm mb-4">Modern admin dashboard with 50+ pages</p>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="text-2xl font-black text-orange-400">599K₫</span>
-                        <span className="text-sm text-slate-500 line-through">1.2M₫</span>
+                  <AnimatePresence mode="wait">
+                    {currentProduct ? (
+                      <motion.div
+                        key={currentProduct.id}
+                        initial={{ opacity: 0, x: 100 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -100 }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <Link href={`/product/${currentProduct.id}`}>
+                          <div className="relative w-full h-72">
+                            <Image
+                              src={currentProduct.image || currentProduct.gallery?.[0] || '/placeholder.jpg'}
+                              alt={currentProduct.name}
+                              fill
+                              priority
+                              sizes="(max-width: 1024px) 100vw, 50vw"
+                              className="object-cover"
+                            />
+                          </div>
+                          <div className="p-6">
+                            <div className="flex items-center gap-2 mb-3">
+                              <span className="px-2 py-1 bg-orange-500/20 text-orange-400 text-xs font-bold rounded uppercase">
+                                {currentProduct.category || 'THEME'}
+                              </span>
+                              {currentProduct.isNew && (
+                                <span className="px-2 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded">NEW</span>
+                              )}
+                            </div>
+                            <h2 className="text-xl font-bold text-white mb-2 line-clamp-1">{currentProduct.name}</h2>
+                            <p className="text-slate-400 text-sm mb-4 line-clamp-1">
+                              {currentProduct.description?.slice(0, 60)}...
+                            </p>
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <span className="text-2xl font-black text-orange-400">
+                                  {formatPrice(currentProduct.price)}
+                                </span>
+                                {currentProduct.originalPrice && currentProduct.originalPrice > currentProduct.price && (
+                                  <span className="text-sm text-slate-500 line-through">
+                                    {formatPrice(currentProduct.originalPrice)}
+                                  </span>
+                                )}
+                              </div>
+                              <span className="px-4 py-2 bg-orange-600 text-white font-bold rounded-lg">
+                                Xem Chi Tiết
+                              </span>
+                            </div>
+                          </div>
+                        </Link>
+                      </motion.div>
+                    ) : (
+                      // Fallback static card while loading
+                      <div>
+                        <div className="relative w-full h-72 bg-slate-800 animate-pulse" />
+                        <div className="p-6">
+                          <div className="h-6 bg-slate-800 rounded w-1/3 mb-3 animate-pulse" />
+                          <div className="h-6 bg-slate-800 rounded w-2/3 mb-2 animate-pulse" />
+                          <div className="h-4 bg-slate-800 rounded w-1/2 mb-4 animate-pulse" />
+                        </div>
                       </div>
-                      <button className="px-4 py-2 bg-orange-600 text-white font-bold rounded-lg hover:bg-orange-700 transition-colors">
-                        Download
-                      </button>
-                    </div>
-                  </div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </div>
+
+              {/* Slide Indicators */}
+              {heroProducts.length > 0 && (
+                <div className="flex justify-center gap-2 mt-4">
+                  {heroProducts.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentSlide(index)}
+                      className={`w-2 h-2 rounded-full transition-all duration-300 ${index === currentSlide
+                        ? 'w-8 bg-orange-500'
+                        : 'bg-slate-600 hover:bg-slate-500'
+                        }`}
+                    />
+                  ))}
+                </div>
+              )}
 
               {/* Floating Cards */}
               <motion.div
