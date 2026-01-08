@@ -217,8 +217,12 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                 <div className="h-20 flex items-center justify-between px-6 border-b border-slate-800/60 bg-[#0f172a]">
                     {!sidebarCollapsed && (
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-gradient-to-tr from-orange-600 to-violet-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-orange-500/30">
-                                <BookOpen size={22} strokeWidth={2.5} />
+                            <div className="w-10 h-10 flex items-center justify-center">
+                                <img
+                                    src="/favicon.png"
+                                    alt="DigitalMart Logo"
+                                    className="w-10 h-10 object-contain"
+                                />
                             </div>
                             <div>
                                 <span className="font-extrabold text-xl tracking-tight text-white block leading-none">DigitalMart</span>
@@ -261,28 +265,28 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                                                 title={sidebarCollapsed ? item.label : ''}
                                             >
                                                 {/* Left side */}
-                                                <div className={`flex items-center ${sidebarCollapsed ? '' : 'gap-3'}`}>
-                                                    <span className={`transition-colors ${isActive ? 'text-white' : 'text-slate-500 group-hover:text-orange-400'}`}>
+                                                <div className={`flex items-center flex-1 min-w-0 ${sidebarCollapsed ? '' : 'gap-3'}`}>
+                                                    <span className={`transition-colors flex-shrink-0 ${isActive ? 'text-white' : 'text-slate-500 group-hover:text-orange-400'}`}>
                                                         {item.icon}
                                                     </span>
-                                                    {!sidebarCollapsed && item.label}
+                                                    {!sidebarCollapsed && <span className="truncate">{item.label}</span>}
                                                 </div>
 
                                                 {/* Badges - Only show when not collapsed */}
                                                 {!sidebarCollapsed && (
-                                                    <>
+                                                    <div className="ml-2 flex-shrink-0">
                                                         {item.badge && (
-                                                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isActive ? 'bg-white/20 text-white' : badgeColors[item.badgeColor || 'blue']
+                                                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${isActive ? 'bg-white/20 text-white' : badgeColors[item.badgeColor || 'blue']
                                                                 }`}>
                                                                 {item.badge}
                                                             </span>
                                                         )}
                                                         {item.isNew && !item.badge && (
-                                                            <span className="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-400">
+                                                            <span className="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-400 whitespace-nowrap">
                                                                 <Sparkles size={10} /> NEW
                                                             </span>
                                                         )}
-                                                    </>
+                                                    </div>
                                                 )}
 
                                                 {/* Active Indicator */}

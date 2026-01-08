@@ -28,6 +28,9 @@ const STATS = [
 // ============================================
 // FEATURES DATA
 // ============================================
+// ============================================
+// FEATURES DATA
+// ============================================
 const FEATURES = [
   {
     icon: Zap,
@@ -39,21 +42,33 @@ const FEATURES = [
     icon: Shield,
     title: 'Lifetime Updates',
     description: 'Cập nhật miễn phí trọn đời',
-    color: 'red',
+    color: 'blue',
   },
   {
     icon: Award,
     title: 'Premium Quality',
     description: 'Kiểm duyệt chất lượng cao',
-    color: 'amber',
+    color: 'purple',
   },
   {
     icon: Users,
     title: 'Community Support',
     description: 'Cộng đồng hỗ trợ 24/7',
-    color: 'rose',
+    color: 'green',
   },
 ];
+
+// Helper for feature colors
+const getFeatureColorClasses = (color: string) => {
+  const colors: Record<string, { bg: string, shadow: string, text: string, border: string }> = {
+    orange: { bg: 'bg-orange-500', shadow: 'shadow-orange-500/25', text: 'group-hover:text-orange-400', border: 'hover:border-orange-500/30' },
+    blue: { bg: 'bg-blue-500', shadow: 'shadow-blue-500/25', text: 'group-hover:text-blue-400', border: 'hover:border-blue-500/30' },
+    purple: { bg: 'bg-purple-500', shadow: 'shadow-purple-500/25', text: 'group-hover:text-purple-400', border: 'hover:border-purple-500/30' },
+    green: { bg: 'bg-green-500', shadow: 'shadow-green-500/25', text: 'group-hover:text-green-400', border: 'hover:border-green-500/30' },
+  };
+  return colors[color] || colors.orange;
+};
+
 
 // ============================================
 // HERO SECTION
@@ -637,29 +652,38 @@ const FeaturesSection = memo(() => {
         {/* Features Grid - Horizontal scroll on mobile */}
         <div className="-mx-4 px-4 md:mx-0 md:px-0">
           <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 overflow-x-auto md:overflow-visible pb-4 md:pb-0 snap-x snap-mandatory no-scrollbar">
-            {FEATURES.map((feature, index) => (
-              <motion.div
-                key={feature.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="group relative flex-shrink-0 w-[280px] md:w-auto snap-start"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-orange-600/20 to-red-600/20 rounded-2xl md:rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="relative p-5 md:p-8 bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl md:rounded-3xl hover:border-orange-500/30 transition-all duration-500 h-full">
-                  <div className="w-12 h-12 md:w-16 md:h-16 bg-orange-500 rounded-xl md:rounded-2xl flex items-center justify-center text-white mb-4 md:mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg shadow-orange-500/25">
-                    <feature.icon className="w-6 h-6 md:w-8 md:h-8" strokeWidth={1.5} />
+            {FEATURES.map((feature, index) => {
+              const colorClasses = getFeatureColorClasses(feature.color);
+              return (
+                <motion.div
+                  key={feature.title}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  className="group relative flex-shrink-0 w-[280px] md:w-auto snap-start"
+                >
+                  <div className={`absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 rounded-2xl md:rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                  <div className={`relative p-5 md:p-8 bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl md:rounded-3xl ${colorClasses.border} transition-all duration-500 h-full`}>
+                    <div className="relative">
+                      {/* Pulse Effect Background */}
+                      <div className={`absolute inset-0 ${colorClasses.bg} rounded-xl md:rounded-2xl opacity-20 animate-ping group-hover:animate-none`} />
+
+                      <div className={`relative w-12 h-12 md:w-16 md:h-16 ${colorClasses.bg} rounded-xl md:rounded-2xl flex items-center justify-center text-white mb-4 md:mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg ${colorClasses.shadow}`}>
+                        <feature.icon className="w-6 h-6 md:w-8 md:h-8" strokeWidth={1.5} />
+                      </div>
+                    </div>
+
+                    <h3 className={`text-base md:text-xl font-bold text-white mb-2 md:mb-3 ${colorClasses.text} transition-colors`}>
+                      {feature.title}
+                    </h3>
+                    <p className="text-slate-400 leading-relaxed text-sm md:text-base">
+                      {feature.description}
+                    </p>
                   </div>
-                  <h3 className="text-base md:text-xl font-bold text-white mb-2 md:mb-3 group-hover:text-orange-400 transition-colors">
-                    {feature.title}
-                  </h3>
-                  <p className="text-slate-400 leading-relaxed text-sm md:text-base">
-                    {feature.description}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -676,21 +700,21 @@ const TESTIMONIALS = [
   {
     name: 'Minh Tuấn',
     role: 'Senior Developer @ FPT Software',
-    avatar: 'M',
+    avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=100&h=100&fit=crop&crop=faces',
     content: 'Đã mua hơn 10 themes từ DigitalMart. Code sạch, documentation đầy đủ, support team phản hồi rất nhanh. Tiết kiệm cho team tôi hàng trăm giờ development.',
     rating: 5,
   },
   {
     name: 'Thu Hương',
     role: 'CEO @ Startup Việt',
-    avatar: 'T',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=faces',
     content: 'Landing page template giúp startup tôi launch sản phẩm chỉ trong 1 tuần. Conversion rate tăng 45% so với design cũ. Đầu tư xứng đáng!',
     rating: 5,
   },
   {
     name: 'Đức Anh',
     role: 'Freelance Designer',
-    avatar: 'Đ',
+    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=faces',
     content: 'Là freelancer, tôi cần template chất lượng để giao dự án nhanh cho khách. DigitalMart chính là partner đáng tin cậy, updates miễn phí lifetime là điểm cộng lớn.',
     rating: 5,
   },
@@ -756,8 +780,14 @@ const TestimonialsSection = memo(() => {
 
                   {/* Author */}
                   <div className="flex items-center gap-3 md:gap-4">
-                    <div className="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-white text-base md:text-xl font-bold shadow-lg">
-                      {testimonial.avatar}
+                    <div className="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl overflow-hidden border-2 border-orange-100 shadow-lg">
+                      <Image
+                        src={testimonial.avatar}
+                        alt={testimonial.name}
+                        width={100}
+                        height={100}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                     <div>
                       <p className="font-bold text-slate-900 text-sm md:text-base">{testimonial.name}</p>
