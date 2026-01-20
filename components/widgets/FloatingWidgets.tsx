@@ -375,7 +375,7 @@ const FloatingWidgets = () => {
               <span className="bg-white text-slate-700 text-xs px-3 py-1.5 rounded-lg font-bold shadow-md opacity-0 group-hover:opacity-100 transition-opacity border border-orange-100">
                 0971 386 588
               </span>
-              <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full shadow-lg shadow-orange-200 flex items-center justify-center hover:from-orange-600 hover:to-red-600 transition-all hover:scale-110 active:scale-95">
+              <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full shadow-lg shadow-blue-200 flex items-center justify-center hover:from-blue-600 hover:to-blue-700 transition-all hover:scale-110 active:scale-95">
                 <Phone size={22} strokeWidth={2.5} />
               </div>
             </a>
@@ -386,7 +386,7 @@ const FloatingWidgets = () => {
                 <span className="bg-white text-slate-700 text-xs px-3 py-1.5 rounded-lg font-bold shadow-md opacity-0 group-hover:opacity-100 transition-opacity border border-orange-100">
                   Chat với AI
                 </span>
-                <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-amber-500 text-white rounded-full shadow-lg shadow-red-200 flex items-center justify-center hover:from-red-600 hover:to-amber-600 transition-all hover:scale-110 active:scale-95">
+                <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-full shadow-lg shadow-green-200 flex items-center justify-center hover:from-green-600 hover:to-emerald-700 transition-all hover:scale-110 active:scale-95">
                   <MessageCircle size={22} strokeWidth={2.5} />
                 </div>
               </button>

@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowRight, Download, Star, TrendingUp, Zap, Shield, Award,
   Users, Package, Sparkles, ChevronRight, Play, Check, Palette,
-  Layout, Code, Smartphone, Globe, Heart, Eye
+  Layout, Code, Smartphone, Globe, Heart, Eye, BarChart, Layers
 } from 'lucide-react';
 import { fetchActiveProducts } from '@/lib/products';
 import { fetchCategories } from '@/lib/categories';
@@ -387,10 +387,10 @@ const StatsSection = memo(() => {
   const stat3 = useCountUp(49, 1500); // 4.9 * 10
 
   const statsData = [
-    { ...STATS[0], displayValue: `${stat1.count.toLocaleString()}+`, ref: stat1.ref },
-    { ...STATS[1], displayValue: `${stat2.count}K+`, ref: stat2.ref },
-    { ...STATS[2], displayValue: (stat3.count / 10).toFixed(1), ref: stat3.ref },
-    { ...STATS[3], displayValue: STATS[3].value, ref: null },
+    { ...STATS[0], displayValue: `${stat1.count.toLocaleString()}+`, ref: stat1.ref, colors: { bg: 'bg-gradient-to-br from-orange-100 to-orange-200', icon: 'text-orange-600' } },
+    { ...STATS[1], displayValue: `${stat2.count}K+`, ref: stat2.ref, colors: { bg: 'bg-gradient-to-br from-blue-100 to-blue-200', icon: 'text-blue-600' } },
+    { ...STATS[2], displayValue: (stat3.count / 10).toFixed(1), ref: stat3.ref, colors: { bg: 'bg-gradient-to-br from-amber-100 to-amber-200', icon: 'text-amber-600' } },
+    { ...STATS[3], displayValue: STATS[3].value, ref: null, colors: { bg: 'bg-gradient-to-br from-green-100 to-green-200', icon: 'text-green-600' } },
   ];
 
   return (
@@ -406,8 +406,8 @@ const StatsSection = memo(() => {
               className="text-center"
               ref={stat.ref}
             >
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-orange-100 to-red-100 rounded-xl mb-3">
-                <stat.icon className="w-6 h-6 text-orange-600" />
+              <div className={`inline-flex items-center justify-center w-12 h-12 ${stat.colors.bg} rounded-xl mb-3`}>
+                <stat.icon className={`w-6 h-6 ${stat.colors.icon}`} />
               </div>
               <p className="text-3xl font-black text-slate-900 mb-1">{stat.displayValue}</p>
               <p className="text-sm text-slate-500">{stat.label}</p>
@@ -437,12 +437,37 @@ const CategoriesSection = memo(() => {
 
   const categoryIcons: Record<string, React.ReactNode> = {
     'themes': <Palette className="w-8 h-8" />,
+    'themes-ui-kits': <Palette className="w-8 h-8" />,
     'landing': <Layout className="w-8 h-8" />,
+    'landing-pages': <Layout className="w-8 h-8" />,
     'templates': <Code className="w-8 h-8" />,
+    'website-templates': <Globe className="w-8 h-8" />,
     'miniapps': <Smartphone className="w-8 h-8" />,
-    'wordpress': <Globe className="w-8 h-8" />,
+    'wordpress': <Code className="w-8 h-8" />,
     'ecommerce': <Package className="w-8 h-8" />,
+    'admin-dashboards': <BarChart className="w-8 h-8" />,
+    'figma-templates': <Layers className="w-8 h-8" />,
+    'icons-illustrations': <Sparkles className="w-8 h-8" />,
   };
+
+  // Category color mapping
+  const categoryColors: Record<string, { bg: string, text: string, border: string }> = {
+    'themes': { bg: 'bg-gradient-to-br from-orange-100 to-orange-200', text: 'text-orange-600', border: 'hover:border-orange-200' },
+    'themes-ui-kits': { bg: 'bg-gradient-to-br from-orange-100 to-orange-200', text: 'text-orange-600', border: 'hover:border-orange-200' },
+    'landing': { bg: 'bg-gradient-to-br from-blue-100 to-blue-200', text: 'text-blue-600', border: 'hover:border-blue-200' },
+    'landing-pages': { bg: 'bg-gradient-to-br from-blue-100 to-blue-200', text: 'text-blue-600', border: 'hover:border-blue-200' },
+    'templates': { bg: 'bg-gradient-to-br from-purple-100 to-purple-200', text: 'text-purple-600', border: 'hover:border-purple-200' },
+    'website-templates': { bg: 'bg-gradient-to-br from-green-100 to-green-200', text: 'text-green-600', border: 'hover:border-green-200' },
+    'miniapps': { bg: 'bg-gradient-to-br from-pink-100 to-pink-200', text: 'text-pink-600', border: 'hover:border-pink-200' },
+    'wordpress': { bg: 'bg-gradient-to-br from-indigo-100 to-indigo-200', text: 'text-indigo-600', border: 'hover:border-indigo-200' },
+    'ecommerce': { bg: 'bg-gradient-to-br from-amber-100 to-amber-200', text: 'text-amber-600', border: 'hover:border-amber-200' },
+    'admin-dashboards': { bg: 'bg-gradient-to-br from-cyan-100 to-cyan-200', text: 'text-cyan-600', border: 'hover:border-cyan-200' },
+    'figma-templates': { bg: 'bg-gradient-to-br from-rose-100 to-rose-200', text: 'text-rose-600', border: 'hover:border-rose-200' },
+    'icons-illustrations': { bg: 'bg-gradient-to-br from-violet-100 to-violet-200', text: 'text-violet-600', border: 'hover:border-violet-200' },
+  };
+
+  // Default color if category not in mapping
+  const defaultColors = { bg: 'bg-gradient-to-br from-slate-100 to-slate-200', text: 'text-slate-600', border: 'hover:border-slate-200' };
 
   return (
     <section className="py-20 bg-slate-50">
@@ -467,27 +492,30 @@ const CategoriesSection = memo(() => {
 
         {/* Categories Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {categories.map((category: any, index: number) => (
-            <motion.div
-              key={category.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-            >
-              <Link
-                href={`/products?category=${category.slug || category.id}`}
-                className="group block p-6 bg-white rounded-2xl border border-slate-100 hover:border-orange-200 hover:shadow-xl hover:shadow-orange-500/10 transition-all text-center"
+          {categories.map((category: any, index: number) => {
+            const colors = categoryColors[category.slug] || defaultColors;
+            return (
+              <motion.div
+                key={category.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
               >
-                <div className="w-16 h-16 mx-auto bg-gradient-to-br from-orange-100 to-red-100 rounded-2xl flex items-center justify-center text-orange-600 group-hover:scale-110 transition-transform mb-4">
-                  {categoryIcons[category.slug] || <Package className="w-8 h-8" />}
-                </div>
-                <h3 className="font-bold text-slate-900 mb-1 group-hover:text-orange-600 transition-colors">
-                  {category.name}
-                </h3>
-                <p className="text-sm text-slate-500">{category.product_count || 0} sản phẩm</p>
-              </Link>
-            </motion.div>
-          ))}
+                <Link
+                  href={`/products?category=${category.slug || category.id}`}
+                  className={`group block p-6 bg-white rounded-2xl border border-slate-100 ${colors.border} hover:shadow-xl transition-all text-center`}
+                >
+                  <div className={`w-16 h-16 mx-auto ${colors.bg} rounded-2xl flex items-center justify-center ${colors.text} group-hover:scale-110 transition-transform mb-4`}>
+                    {categoryIcons[category.slug] || <Package className="w-8 h-8" />}
+                  </div>
+                  <h3 className={`font-bold text-slate-900 mb-1 transition-colors ${colors.text.replace('text-', 'group-hover:text-')}`}>
+                    {category.name}
+                  </h3>
+                  <p className="text-sm text-slate-500">{category.product_count || 0} sản phẩm</p>
+                </Link>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -609,7 +637,7 @@ FeaturedProductsSection.displayName = 'FeaturedProductsSection';
 // FEATURES SECTION - Professional Dark Theme
 // ============================================
 const FeaturesSection = memo(() => {
-  return (
+  return (<>
     <section className="py-24 bg-slate-900 relative overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0">
@@ -666,10 +694,8 @@ const FeaturesSection = memo(() => {
                   <div className={`absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 rounded-2xl md:rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
                   <div className={`relative p-5 md:p-8 bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl md:rounded-3xl ${colorClasses.border} transition-all duration-500 h-full`}>
                     <div className="relative">
-                      {/* Pulse Effect Background */}
-                      <div className={`absolute inset-0 ${colorClasses.bg} rounded-xl md:rounded-2xl opacity-20 animate-ping group-hover:animate-none`} />
 
-                      <div className={`relative w-12 h-12 md:w-16 md:h-16 ${colorClasses.bg} rounded-xl md:rounded-2xl flex items-center justify-center text-white mb-4 md:mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg ${colorClasses.shadow}`}>
+                      <div className={`w-12 h-12 md:w-16 md:h-16 ${colorClasses.bg} rounded-xl md:rounded-2xl flex items-center justify-center text-white mb-4 md:mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
                         <feature.icon className="w-6 h-6 md:w-8 md:h-8" strokeWidth={1.5} />
                       </div>
                     </div>
@@ -688,6 +714,24 @@ const FeaturesSection = memo(() => {
         </div>
       </div>
     </section>
+
+    {/* Custom Glow Pulse Animation */}
+    <style jsx global>{`
+      @keyframes glow-pulse {
+        0%, 100% {
+          opacity: 0.15;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.35;
+          transform: scale(1.08);
+        }
+      }
+      .animate-float-icon {
+        animation: glow-pulse 2.5s ease-in-out infinite;
+      }
+    `}</style>
+  </>
   );
 });
 
