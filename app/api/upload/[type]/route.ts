@@ -31,11 +31,11 @@ const UPLOAD_CONFIGS: Record<string, {
     // Products
     'product-image': {
         folder: 'digitalmart/products',
-        transformation: [{ width: 800, height: 600, crop: 'fill', quality: 'auto' }],
+        transformation: [{ width: 1600, height: 1200, crop: 'limit', quality: 'auto' }],
     },
     'product-gallery': {
         folder: 'digitalmart/products/gallery',
-        transformation: [{ width: 1200, height: 800, crop: 'fill', quality: 'auto' }],
+        transformation: [{ width: 1600, height: 1200, crop: 'limit', quality: 'auto' }],
         multiple: true,
     },
 

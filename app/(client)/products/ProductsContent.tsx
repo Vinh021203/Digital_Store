@@ -377,7 +377,8 @@ function ProductsPageContent() {
         }
 
         if (selectedCategory) {
-            result = result.filter(p => p.category?.slug === selectedCategory);
+            // product.category is already the category slug (string)
+            result = result.filter(p => p.category === selectedCategory);
         }
 
         if (formatFilter) {

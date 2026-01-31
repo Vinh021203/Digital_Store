@@ -101,7 +101,7 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
         {/* Image Container */}
         <Link
           href={`/product/${(product as any).slug || product.id}`}
-          className="relative w-1/3 max-w-[200px] overflow-hidden bg-slate-100"
+          className="relative w-1/3 max-w-[280px] aspect-[16/9] overflow-hidden bg-slate-100"
         >
           <Image
             src={product.image}
@@ -172,7 +172,7 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
       {/* Image Container */}
       <Link
         href={`/product/${(product as any).slug || product.id}`}
-        className="block relative aspect-[3/4] overflow-hidden bg-slate-100"
+        className="block relative aspect-[16/9] overflow-hidden bg-slate-100"
       >
         {/* Image with Next.js optimization */}
         <Image
