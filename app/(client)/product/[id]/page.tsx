@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getProductBySlug, getProductById } from '@/lib/products';
+import { getProductById, getProductBySlug } from '@/lib/products';
 import ProductDetailPage from './ProductDetailPage';
 
 interface Props {
@@ -8,16 +8,13 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
-    // Await params in Next.js 15+
     const { id } = await params;
 
-    // Try to get product by slug first, then by ID
     let product = await getProductBySlug(id);
 
     if (!product) {
-      // Try as numeric ID
-      const numericId = parseInt(id);
-      if (!isNaN(numericId)) {
+      const numericId = Number.parseInt(id, 10);
+      if (!Number.isNaN(numericId)) {
         product = await getProductById(numericId);
       }
     }
@@ -25,13 +22,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     if (!product) {
       return {
         title: 'Sản phẩm không tìm thấy',
+        robots: {
+          index: false,
+          follow: false,
+        },
       };
     }
 
-    const title = `${product.name} - DigitalMart`;
-    const description = product.description || `Mua ${product.name} chất lượng cao với giá ${product.price.toLocaleString('vi-VN')}₫. ${product.category?.name || 'Sản phẩm số'} chuyên nghiệp từ ${product.author || 'DigitalMart'}.`;
+    const title = product.name;
+    const plainDescription = product.description?.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+    const description =
+      plainDescription ||
+      `Mua ${product.name} chất lượng cao với giá ${product.price.toLocaleString('vi-VN')}₫. ${product.category?.name || 'Sản phẩm số'} chuyên nghiệp từ ${product.author || 'DigitalMart'}.`;
+    const productPath = `/product/${product.slug || product.id}`;
 
-    // Create keywords from product info
     const keywords = [
       product.name,
       product.category?.name,
@@ -45,11 +49,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     return {
       title,
-      description: description.substring(0, 160), // Limit to 160 chars for SEO
+      description: description.substring(0, 160),
       keywords: keywords.join(', '),
       authors: [{ name: product.author || 'DigitalMart' }],
       openGraph: {
-        type: 'website', // Next.js only supports: website, article, book, profile, music.*, video.*
+        type: 'website',
         title,
         description,
         images: [
@@ -69,18 +73,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         images: [product.image],
       },
       alternates: {
-        canonical: `/product/${product.slug}`,
+        canonical: productPath,
       },
     };
   } catch (error) {
     console.error('Error generating metadata:', error);
     return {
-      title: 'Sản phẩm - DigitalMart',
+      title: 'Sản phẩm',
     };
   }
 }
 
-// Server Component - renders client component
 export default function Page() {
   return <ProductDetailPage />;
 }

@@ -97,16 +97,14 @@ export default function LoginPage() {
     }
   };
 
-
-
   return (
-    <div className="min-h-screen flex overflow-hidden font-sans text-slate-800">
+    <div className="h-screen flex overflow-hidden font-sans text-slate-800">
       {/* Left Column - Form */}
-      <div className="w-full lg:w-1/2 flex flex-col justify-center p-8 sm:p-12 lg:p-20 relative animate-fade-in bg-white">
+      <div className="w-full lg:w-1/2 flex flex-col justify-center p-8 sm:p-10 lg:p-12 relative animate-fade-in bg-white overflow-y-auto">
         <div className="max-w-md w-full mx-auto">
           {/* Header */}
-          <div className="mb-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-bold mb-4">
+          <div className="mb-5">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-bold mb-3">
               <Sparkles size={14} /> Chào mừng trở lại
             </div>
             <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-2">Đăng Nhập</h1>
@@ -114,7 +112,7 @@ export default function LoginPage() {
           </div>
 
           {/* Social Login */}
-          <div className="grid grid-cols-2 gap-3 mb-6">
+          <div className="grid grid-cols-2 gap-3 mb-4">
             <button
               type="button"
               onClick={handleGoogleLogin}
@@ -134,7 +132,7 @@ export default function LoginPage() {
           </div>
 
           {/* Divider */}
-          <div className="relative mb-6">
+          <div className="relative mb-4">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-slate-200" />
             </div>
@@ -143,7 +141,7 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <form className="space-y-5" onSubmit={handleLogin}>
+          <form className="space-y-4" onSubmit={handleLogin}>
             {error && (
               <div className="bg-rose-50 border-l-4 border-rose-500 p-4 flex items-center gap-3 animate-fade-in rounded-r-xl">
                 <AlertCircle className="text-rose-500 flex-shrink-0" size={20} />
@@ -237,7 +235,7 @@ export default function LoginPage() {
 
 
           {/* Register Link */}
-          <p className="mt-8 text-center text-sm text-slate-600">
+          <p className="mt-5 text-center text-sm text-slate-600">
             Chưa có tài khoản?{' '}
             <Link
               href="/register"

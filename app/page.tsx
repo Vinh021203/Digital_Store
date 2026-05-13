@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import HomePage from '@/components/pages/HomePage';
 import { Navbar, Footer } from '@/components/layout';
@@ -16,15 +16,41 @@ const FloatingWidgets = dynamic(() => import('@/components/widgets/FloatingWidge
     loading: () => null,
 });
 
-const NewsletterPopup = dynamic(() => import('@/components/marketing/NewsletterPopup'), {
-    ssr: false,
-    loading: () => null,
-});
+const DeferredHomeChrome = () => {
+    const [showMobileNav, setShowMobileNav] = useState(false);
+    const [showSupportWidget, setShowSupportWidget] = useState(false);
 
-const SocialProofNotifications = dynamic(() => import('@/components/marketing/SocialProofNotifications'), {
-    ssr: false,
-    loading: () => null,
-});
+    useEffect(() => {
+        const media = window.matchMedia('(max-width: 767px)');
+        const syncMobileNav = () => setShowMobileNav(media.matches);
+
+        syncMobileNav();
+        media.addEventListener('change', syncMobileNav);
+
+        const requestIdle = window.requestIdleCallback;
+        const cancelIdle = window.cancelIdleCallback;
+        const idleCallback =
+            typeof requestIdle === 'function'
+                ? requestIdle(() => setShowSupportWidget(true), { timeout: 12000 })
+                : window.setTimeout(() => setShowSupportWidget(true), 12000);
+
+        return () => {
+            media.removeEventListener('change', syncMobileNav);
+            if (typeof cancelIdle === 'function') {
+                cancelIdle(idleCallback);
+            } else {
+                window.clearTimeout(idleCallback);
+            }
+        };
+    }, []);
+
+    return (
+        <>
+            {showMobileNav && <MobileBottomNav />}
+            {showSupportWidget && <FloatingWidgets />}
+        </>
+    );
+};
 
 export default function Page() {
     return (
@@ -37,10 +63,7 @@ export default function Page() {
 
             <Footer />
 
-            <MobileBottomNav />
-            <FloatingWidgets />
-            <NewsletterPopup />
-            <SocialProofNotifications />
+            <DeferredHomeChrome />
         </MaintenanceGuard>
     );
 }

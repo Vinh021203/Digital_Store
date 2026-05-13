@@ -68,7 +68,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   } catch (error) {
     console.error('Error generating blog metadata:', error);
     return {
-      title: 'Blog - DigitalMart',
+      title: 'Blog',
     };
   }
 }

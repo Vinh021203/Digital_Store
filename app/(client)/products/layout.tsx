@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Sản phẩm - DigitalMart',
+    title: 'Sản phẩm',
     description: 'Khám phá kho sản phẩm số đa dạng: Themes, Templates, Landing Pages, UI Kits, Mini Apps. Chất lượng cao, giá cạnh tranh, hỗ trợ tận tâm.',
     keywords: ['themes', 'templates', 'landing pages', 'ui kits', 'wordpress themes', 'react templates', 'figma ui kits', 'sản phẩm số'],
     openGraph: {

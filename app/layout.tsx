@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { Inter, Playfair_Display } from 'next/font/google';
 import { Suspense } from 'react';
 import './globals.css';
 import './animations.css';
@@ -7,25 +6,15 @@ import './nprogress.css';
 import Providers from './providers';
 import { NavigationProgress } from '@/components/layout';
 
-const inter = Inter({
-    subsets: ['latin', 'vietnamese'],
-    variable: '--font-inter',
-    display: 'swap',
-});
-
-const playfair = Playfair_Display({
-    subsets: ['latin', 'vietnamese'],
-    variable: '--font-playfair',
-    display: 'swap',
-});
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://martdigitalhub.vercel.app';
 
 export const metadata: Metadata = {
     title: {
-        default: 'DigitalMart - Premium Digital Products Marketplace',
+        default: 'DigitalMart - Marketplace Template, Theme và Sản Phẩm Số',
         template: '%s | DigitalMart',
     },
-    description: 'Marketplace sản phẩm số chất lượng cao. Khám phá themes, landing pages, templates, mini apps và tools cho dự án của bạn. Download ngay!',
-    keywords: ['themes', 'templates', 'landing pages', 'mini apps', 'figma', 'wordpress', 'react', 'nextjs', 'digital products', 'sản phẩm số'],
+    description: 'Marketplace sản phẩm số chất lượng cao. Mua template, theme, landing page, UI kit, dashboard và source code để triển khai dự án chuyên nghiệp nhanh hơn.',
+    keywords: ['themes', 'templates', 'landing pages', 'ui kits', 'dashboard template', 'figma', 'wordpress', 'react', 'nextjs', 'digital products', 'sản phẩm số'],
     authors: [{ name: 'DigitalMart Team' }],
     creator: 'DigitalMart',
     publisher: 'DigitalMart',
@@ -34,36 +23,31 @@ export const metadata: Metadata = {
         address: false,
         telephone: false,
     },
-    metadataBase: new URL('https://martdigitalhub.vercel.app'),
+    metadataBase: new URL(siteUrl),
     alternates: {
         canonical: '/',
-        languages: {
-            'vi-VN': '/vi',
-            'en-US': '/en',
-        },
     },
     openGraph: {
         type: 'website',
         locale: 'vi_VN',
-        alternateLocale: 'en_US',
-        url: 'https://martdigitalhub.vercel.app',
-        siteName: 'DigitalMart - Digital Products Marketplace',
-        title: 'DigitalMart - Premium Digital Products',
-        description: 'Marketplace sản phẩm số hàng đầu Việt Nam. Themes, Templates, Landing Pages, Mini Apps.',
+        url: siteUrl,
+        siteName: 'DigitalMart',
+        title: 'DigitalMart - Marketplace Template, Theme và Sản Phẩm Số',
+        description: 'Mua template, theme, landing page, UI kit và dashboard chất lượng cao. Xem demo trước khi mua, tải file nhanh.',
         images: [
             {
-                url: '/og-image.jpg',
+                url: '/og-digitalmart-marketplace.png',
                 width: 1200,
                 height: 630,
-                alt: 'DigitalMart - Digital Products Marketplace',
+                alt: 'DigitalMart - Marketplace template, theme và UI kit',
             },
         ],
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'DigitalMart - Premium Digital Products',
-        description: 'Marketplace sản phẩm số hàng đầu Việt Nam. Themes, Templates, Landing Pages.',
-        images: ['/og-image.jpg'],
+        title: 'DigitalMart - Marketplace Template, Theme và Sản Phẩm Số',
+        description: 'Mua template, theme, landing page, UI kit và dashboard chất lượng cao.',
+        images: ['/og-digitalmart-marketplace.webp'],
     },
     robots: {
         index: true,
@@ -75,9 +59,6 @@ export const metadata: Metadata = {
             'max-image-preview': 'large',
             'max-snippet': -1,
         },
-    },
-    verification: {
-        google: 'your-google-verification-code',
     },
     icons: {
         icon: '/favicon.png',
@@ -107,7 +88,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     return (
-        <html lang="vi" className={`${inter.variable} ${playfair.variable}`}>
+        <html lang="vi">
             <head>
                 {/* Preconnect to critical origins for faster loading */}
                 <link rel="preconnect" href="https://enxndlrdqotqaoatjkvo.supabase.co" />

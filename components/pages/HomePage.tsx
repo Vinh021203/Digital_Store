@@ -1,330 +1,373 @@
 'use client';
 
-import React, { useState, useEffect, memo } from 'react';
+import React, { memo, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import dynamic from 'next/dynamic';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
-  ArrowRight, Download, Star, TrendingUp, Zap, Shield, Award,
-  Users, Package, Sparkles, ChevronRight, Play, Check, Palette,
-  Layout, Code, Smartphone, Globe, Heart, Eye, BarChart, Layers
+  ArrowRight,
+  Award,
+  BadgeCheck,
+  BadgePercent,
+  Boxes,
+  Brush,
+  Code,
+  Command,
+  CreditCard,
+  Database,
+  Download,
+  Eye,
+  FileStack,
+  Gauge,
+  Gem,
+  ImageIcon,
+  Layout,
+  Monitor,
+  MousePointer2,
+  Package,
+  Palette,
+  Rocket,
+  Search,
+  Shield,
+  Shapes,
+  ShoppingBag,
+  Smartphone,
+  Sparkles,
+  Star,
+  TrendingUp,
+  Wand2,
 } from 'lucide-react';
-import { fetchActiveProducts } from '@/lib/products';
 import { fetchCategories } from '@/lib/categories';
-import { ProductCard } from '@/components/product';
-import { ProductGridSkeleton } from '@/components/ui/Skeleton';
+import { fetchActiveProducts } from '@/lib/products';
 import type { Product } from '@/types';
-// ============================================
-// STATS DATA
-// ============================================
-const STATS = [
-  { value: '1,000+', label: 'Sản Phẩm Số', icon: Package },
-  { value: '50K+', label: 'Downloads', icon: Download },
-  { value: '4.9', label: 'Rating', icon: Star },
-  { value: '24/7', label: 'Hỗ Trợ', icon: Shield },
-];
 
-// ============================================
-// FEATURES DATA
-// ============================================
-// ============================================
-// FEATURES DATA
-// ============================================
-const FEATURES = [
-  {
-    icon: Zap,
-    title: 'Instant Download',
-    description: 'Tải xuống ngay sau khi thanh toán',
-    color: 'orange',
-  },
-  {
-    icon: Shield,
-    title: 'Lifetime Updates',
-    description: 'Cập nhật miễn phí trọn đời',
-    color: 'blue',
-  },
-  {
-    icon: Award,
-    title: 'Premium Quality',
-    description: 'Kiểm duyệt chất lượng cao',
-    color: 'purple',
-  },
-  {
-    icon: Users,
-    title: 'Community Support',
-    description: 'Cộng đồng hỗ trợ 24/7',
-    color: 'green',
-  },
-];
-
-// Helper for feature colors
-const getFeatureColorClasses = (color: string) => {
-  const colors: Record<string, { bg: string, shadow: string, text: string, border: string }> = {
-    orange: { bg: 'bg-orange-500', shadow: 'shadow-orange-500/25', text: 'group-hover:text-orange-400', border: 'hover:border-orange-500/30' },
-    blue: { bg: 'bg-blue-500', shadow: 'shadow-blue-500/25', text: 'group-hover:text-blue-400', border: 'hover:border-blue-500/30' },
-    purple: { bg: 'bg-purple-500', shadow: 'shadow-purple-500/25', text: 'group-hover:text-purple-400', border: 'hover:border-purple-500/30' },
-    green: { bg: 'bg-green-500', shadow: 'shadow-green-500/25', text: 'group-hover:text-green-400', border: 'hover:border-green-500/30' },
-  };
-  return colors[color] || colors.orange;
+type CategoryPreview = {
+  id: number;
+  name: string;
+  slug: string;
+  product_count?: number;
 };
 
+type ProductFormatFilter = 'all' | 'Theme' | 'Landing' | 'Template' | 'MiniApp';
 
-// ============================================
-// HERO SECTION
-// ============================================
+const aiThemeThumbnail = '/ai-theme-marketplace-thumbnail.webp';
+
+const fallbackImages = [
+  aiThemeThumbnail,
+  'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&h=800&fit=crop&auto=format',
+  'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&h=800&fit=crop&auto=format',
+  'https://images.unsplash.com/photo-1559028006-448665bd7c7f?w=1200&h=800&fit=crop&auto=format',
+  'https://images.unsplash.com/photo-1551434678-e076c223a692?w=1200&h=800&fit=crop&auto=format',
+];
+
+const formatPrice = (price: number) =>
+  new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(price);
+
+const quickSearches = ['Landing page SaaS', 'Dashboard admin', 'Theme WordPress', 'UI kit Figma', 'Template bán hàng'];
+
+const assetTypes = [
+  { label: 'Mẫu website', href: '/products?format=Template', icon: Monitor, count: '8K+', color: 'from-cyan-500 to-blue-600' },
+  { label: 'Landing page', href: '/products?format=Landing', icon: Layout, count: '3K+', color: 'from-orange-500 to-red-600' },
+  { label: 'Bộ UI kit', href: '/products?category=figma-templates', icon: Brush, count: '1K+', color: 'from-fuchsia-500 to-pink-600' },
+  { label: 'Mã nguồn', href: '/products?category=source-code', icon: Code, count: '2K+', color: 'from-emerald-500 to-teal-600' },
+  { label: 'Gói dữ liệu', href: '/products?category=templates', icon: Database, count: '900+', color: 'from-violet-500 to-indigo-600' },
+  { label: 'File ra mắt', href: '/products?category=assets', icon: FileStack, count: '700+', color: 'from-amber-500 to-orange-600' },
+];
+
+const categoryVisuals = [
+  'bg-[radial-gradient(circle_at_20%_20%,rgba(6,182,212,0.22),transparent_24%),linear-gradient(135deg,rgba(14,165,233,0.18),rgba(37,99,235,0.08))]',
+  'bg-[radial-gradient(circle_at_80%_18%,rgba(249,115,22,0.24),transparent_25%),linear-gradient(135deg,rgba(249,115,22,0.14),rgba(220,38,38,0.08))]',
+  'bg-[radial-gradient(circle_at_78%_20%,rgba(217,70,239,0.24),transparent_25%),linear-gradient(135deg,rgba(217,70,239,0.14),rgba(219,39,119,0.08))]',
+  'bg-[radial-gradient(circle_at_80%_18%,rgba(16,185,129,0.24),transparent_25%),linear-gradient(135deg,rgba(16,185,129,0.14),rgba(20,184,166,0.08))]',
+  'bg-[radial-gradient(circle_at_78%_18%,rgba(139,92,246,0.24),transparent_25%),linear-gradient(135deg,rgba(139,92,246,0.14),rgba(79,70,229,0.08))]',
+  'bg-[radial-gradient(circle_at_80%_18%,rgba(245,158,11,0.24),transparent_25%),linear-gradient(135deg,rgba(245,158,11,0.14),rgba(234,88,12,0.08))]',
+];
+
+const featureCards = [
+  {
+    icon: Rocket,
+    title: 'Launch nhanh',
+    text: 'Chọn mẫu, xem demo, tải file và bắt đầu chỉnh brand trong cùng một buổi làm việc.',
+    color: 'from-orange-500 to-rose-600',
+  },
+  {
+    icon: BadgeCheck,
+    title: 'Duyệt chất lượng',
+    text: 'Ưu tiên sản phẩm có preview rõ, cấu trúc gọn, thông tin license và hướng dẫn triển khai.',
+    color: 'from-emerald-500 to-teal-600',
+  },
+  {
+    icon: CreditCard,
+    title: 'Mua mượt',
+    text: 'Luồng CTA được đặt theo hành vi xem sản phẩm để giảm bước thừa trước thanh toán.',
+    color: 'from-sky-500 to-indigo-600',
+  },
+  {
+    icon: Wand2,
+    title: 'Cảm giác curated',
+    text: 'Trang chủ dẫn người dùng qua bộ sưu tập, xu hướng và asset type thay vì chỉ ném card sản phẩm.',
+    color: 'from-fuchsia-500 to-purple-700',
+  },
+];
+
+const categoryIconMap: Record<string, React.ElementType> = {
+  themes: Palette,
+  'themes-ui-kits': Brush,
+  landing: MousePointer2,
+  'landing-pages': MousePointer2,
+  templates: FileStack,
+  'website-templates': Monitor,
+  wordpress: Boxes,
+  ecommerce: ShoppingBag,
+  'admin-dashboards': Gauge,
+  'figma-templates': Gem,
+  'icons-illustrations': Shapes,
+  'mockups-presentations': ImageIcon,
+  'mobile-apps': Smartphone,
+  miniapps: Smartphone,
+};
+
+const getProductImage = (product?: Product, index = 0) =>
+  product?.image || product?.gallery?.[0] || fallbackImages[index % fallbackImages.length];
+
+const MobileHeroPreview = memo(() => (
+  <div className="relative overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/[0.06] p-3 backdrop-blur-xl md:hidden">
+    <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-slate-900">
+      <Image
+        src={aiThemeThumbnail}
+        alt="Thumbnail theme và template website"
+        fill
+        sizes="100vw"
+        priority
+        className="object-cover"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/15 to-transparent" />
+      <div className="absolute bottom-3 left-3 right-3">
+        <p className="text-xs font-black uppercase tracking-wide text-lime-200">Template marketplace</p>
+        <p className="mt-1 line-clamp-2 text-lg font-black text-white">Theme, landing page và UI kit sẵn sàng bán hàng</p>
+      </div>
+    </div>
+  </div>
+));
+
+MobileHeroPreview.displayName = 'MobileHeroPreview';
+
+const ProductUniverse = memo(({ products }: { products: Product[] }) => {
+  const displayProducts = products.length > 0 ? products.slice(0, 6) : [];
+  const fallbackTiles = Array.from({ length: 6 }, (_, index) => ({
+    id: `fallback-${index}`,
+    name: ['Commerce Kit', 'SaaS Dashboard', 'Creator Landing', 'UI System', 'Storefront', 'Analytics Pack'][index],
+    image: fallbackImages[index % fallbackImages.length],
+    format: ['Template', 'Dashboard', 'Landing', 'UI Kit', 'Theme', 'Pack'][index],
+  }));
+
+  const tiles = displayProducts.length
+    ? displayProducts.map((product, index) => ({
+        id: product.id,
+        name: product.name,
+        image: getProductImage(product, index),
+        format: product.format,
+      }))
+    : fallbackTiles;
+
+  return (
+    <div className="relative min-h-[330px] sm:min-h-[420px] lg:min-h-[620px]">
+      <div className="absolute inset-0 rounded-[2rem] border border-white/10 bg-white/[0.04] backdrop-blur-xl" />
+      <div className="absolute inset-4 rounded-[1.5rem] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.1),rgba(255,255,255,0.02))]" />
+
+      <div
+        className="absolute left-5 top-6 h-[132px] w-[43%] overflow-hidden rounded-2xl border border-white/15 bg-slate-900 shadow-2xl shadow-black/30 sm:left-5 sm:top-8 sm:h-56 sm:w-[46%] sm:rounded-3xl"
+      >
+        <Image src={tiles[0].image} alt={tiles[0].name} fill sizes="280px" className="object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/75 to-transparent" />
+        <div className="absolute bottom-2.5 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4">
+          <p className="text-[10px] font-black uppercase tracking-wide text-orange-200 sm:text-xs">{tiles[0].format}</p>
+          <p className="line-clamp-1 text-sm font-black text-white sm:text-lg">{tiles[0].name}</p>
+        </div>
+      </div>
+
+      <div
+        className="absolute right-5 top-10 h-[148px] w-[43%] overflow-hidden rounded-2xl border border-white/15 bg-slate-900 shadow-2xl shadow-black/40 sm:right-4 sm:top-16 sm:h-72 sm:w-[48%] sm:rounded-[2rem]"
+      >
+        <Image src={tiles[1].image} alt={tiles[1].name} fill sizes="320px" className="object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+        <div className="absolute bottom-2.5 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4">
+          <p className="text-[10px] font-black uppercase tracking-wide text-cyan-200 sm:text-xs">{tiles[1].format}</p>
+          <p className="line-clamp-2 text-sm font-black leading-tight text-white sm:text-xl">{tiles[1].name}</p>
+        </div>
+      </div>
+
+      <div
+        className="absolute bottom-8 left-5 h-[118px] w-[43%] overflow-hidden rounded-2xl border border-white/15 bg-slate-900 shadow-2xl shadow-black/30 sm:bottom-16 sm:left-8 sm:h-44 sm:w-[42%] sm:rounded-[1.75rem]"
+      >
+        <Image src={tiles[2].image} alt={tiles[2].name} fill sizes="260px" className="object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/75 to-transparent" />
+        <div className="absolute bottom-2.5 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4">
+          <p className="line-clamp-1 text-sm font-black text-white sm:text-base">{tiles[2].name}</p>
+        </div>
+      </div>
+
+      <div
+        className="absolute bottom-8 right-5 h-[118px] w-[43%] overflow-hidden rounded-2xl border border-white/15 bg-slate-900 shadow-2xl shadow-black/30 sm:bottom-8 sm:right-8 sm:h-44 sm:w-[45%] sm:rounded-3xl"
+      >
+        <Image src={tiles[3].image} alt={tiles[3].name} fill sizes="280px" className="object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+        <div className="absolute bottom-2.5 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4">
+          <p className="line-clamp-1 text-sm font-black text-white sm:text-base">{tiles[3].name}</p>
+        </div>
+      </div>
+
+      <div className="absolute left-[42%] top-[44%] hidden -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-white/15 bg-white/12 p-4 text-white shadow-2xl backdrop-blur-xl sm:block">
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-slate-950">
+            <Command className="h-5 w-5" />
+          </div>
+          <div>
+            <p className="text-xs font-bold uppercase text-white/60">Nhịp marketplace</p>
+            <p className="font-black">Tài nguyên chọn lọc</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="absolute right-6 top-[48%] hidden rounded-2xl border border-white/15 bg-lime-300 px-4 py-3 text-slate-950 shadow-2xl sm:block">
+        <p className="text-xs font-black uppercase">Conversion ready</p>
+        <p className="text-2xl font-black">+38%</p>
+      </div>
+    </div>
+  );
+});
+
+ProductUniverse.displayName = 'ProductUniverse';
+
 const HeroSection = memo(() => {
-  const [heroProducts, setHeroProducts] = useState<Product[]>([]);
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isDesktop, setIsDesktop] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchCategory, setSearchCategory] = useState<ProductFormatFilter>('all');
 
-  // Fetch 5 products for hero slider
   useEffect(() => {
+    const media = window.matchMedia('(min-width: 768px)');
+    const syncDesktop = () => setIsDesktop(media.matches);
+
+    syncDesktop();
+    media.addEventListener('change', syncDesktop);
+
+    return () => media.removeEventListener('change', syncDesktop);
+  }, []);
+
+  useEffect(() => {
+    if (!isDesktop) return;
+
     const loadProducts = async () => {
       try {
-        const products = await fetchActiveProducts({ limit: 5 });
-        setHeroProducts(products);
+        const data = await fetchActiveProducts({ limit: 8 });
+        setProducts(data);
       } catch (error) {
         console.error('Failed to load hero products:', error);
       }
     };
+
     loadProducts();
-  }, []);
+  }, [isDesktop]);
 
-  // Auto-slide every 4 seconds
-  useEffect(() => {
-    if (heroProducts.length === 0) return;
+  const handleSearch = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % heroProducts.length);
-    }, 4000);
+    const params = new URLSearchParams();
+    const query = searchTerm.trim();
 
-    return () => clearInterval(interval);
-  }, [heroProducts.length]);
+    if (query) params.set('search', query);
+    if (searchCategory !== 'all') params.set('format', searchCategory);
 
-  const currentProduct = heroProducts[currentSlide];
-
-  // Format price helper
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('vi-VN').format(price) + '₫';
+    window.location.href = `/products${params.toString() ? `?${params.toString()}` : ''}`;
   };
 
   return (
-    <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      {/* Background Effects */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-orange-600/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-red-600/20 rounded-full blur-3xl animate-pulse delay-1000" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-amber-600/10 rounded-full blur-3xl" />
-      </div>
+    <section className="relative overflow-hidden bg-[#070711] text-white">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_10%_10%,rgba(34,211,238,0.22),transparent_28%),radial-gradient(circle_at_72%_12%,rgba(244,63,94,0.2),transparent_30%),radial-gradient(circle_at_46%_88%,rgba(132,204,22,0.16),transparent_28%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.045)_1px,transparent_1px)] bg-[size:42px_42px] [mask-image:linear-gradient(to_bottom,black,transparent_88%)]" />
 
-      {/* Grid Pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px]" />
+      <div className="relative mx-auto grid min-h-[auto] max-w-7xl items-center gap-10 px-4 pb-14 pt-10 sm:px-6 sm:pb-20 sm:pt-16 lg:min-h-[calc(100vh-72px)] lg:grid-cols-[0.92fr_1.08fr] lg:px-8 lg:py-20">
+        <div>
+          <div className="mb-5 inline-flex max-w-full items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-2 text-xs font-black text-cyan-100 backdrop-blur sm:text-sm">
+            <Sparkles className="h-4 w-4 text-lime-300" />
+            <span className="truncate">Marketplace sản phẩm số cho dự án cần nổi bật</span>
+          </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left Content */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center lg:text-left"
+          <h1 className="max-w-4xl text-4xl font-black leading-[1.02] tracking-normal text-white sm:text-6xl lg:text-7xl">
+            Tìm asset đẹp.
+            <span className="block bg-gradient-to-r from-cyan-200 via-lime-200 to-orange-200 bg-clip-text text-transparent">
+              Build thương hiệu nổi bật.
+            </span>
+          </h1>
+
+          <p className="mt-5 max-w-2xl text-sm leading-7 text-slate-300 sm:text-lg sm:leading-8">
+            Trang chủ được dựng như một marketplace hiện đại: search nhanh, collection nổi bật, preview sản phẩm thật và các CTA dẫn khách tới mua hàng tự nhiên hơn.
+          </p>
+
+          <form
+            onSubmit={handleSearch}
+            className="mt-7 rounded-[1.35rem] border border-white/15 bg-white p-2 shadow-2xl shadow-black/30 sm:flex sm:items-center sm:gap-2"
           >
-            {/* Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500/10 border border-orange-500/20 rounded-full mb-6"
+            <label className="flex min-h-12 flex-1 items-center gap-3 rounded-2xl px-3 text-slate-950">
+              <Search className="h-5 w-5 flex-shrink-0 text-slate-400" />
+              <input
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+                placeholder="Tìm landing page, dashboard, UI kit..."
+                className="min-w-0 flex-1 bg-transparent text-sm font-bold outline-none placeholder:text-slate-400 sm:text-base"
+              />
+            </label>
+            <select
+              value={searchCategory}
+              onChange={(event) => setSearchCategory(event.target.value as ProductFormatFilter)}
+              className="mt-2 h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-3 text-sm font-black text-slate-700 outline-none sm:mt-0 sm:w-40"
+              aria-label="Chọn loại asset"
             >
-              <Sparkles className="w-4 h-4 text-orange-400" />
-              <span className="text-sm font-medium text-orange-400">Premium Digital Products</span>
-            </motion.div>
+              <option value="all">Tất cả</option>
+              <option value="Theme">Theme</option>
+              <option value="Landing">Landing</option>
+              <option value="Template">Template</option>
+              <option value="MiniApp">MiniApp</option>
+            </select>
+            <button
+              type="submit"
+              className="mt-2 inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-slate-950 px-5 text-sm font-black text-white transition hover:bg-orange-600 sm:mt-0 sm:w-auto"
+            >
+              Khám phá
+              <ArrowRight className="h-4 w-4" />
+            </button>
+          </form>
 
-            {/* Heading */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
-              Themes & Templates
-              <span className="block bg-gradient-to-r from-orange-400 via-red-400 to-amber-400 bg-clip-text text-transparent">
-                Cho Mọi Dự Án
-              </span>
-            </h1>
-
-            {/* Description */}
-            <p className="text-lg text-slate-400 mb-8 max-w-xl mx-auto lg:mx-0">
-              Khám phá 1,000+ themes, landing pages, templates chất lượng cao.
-              React, Next.js, WordPress, Figma và nhiều hơn nữa.
-            </p>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Link
-                href="/products"
-                className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-orange-600 to-red-600 text-white font-bold rounded-xl hover:from-orange-700 hover:to-red-700 transition-all shadow-lg hover:shadow-orange-500/30 hover:scale-105"
+          <div className="mt-3 flex flex-wrap gap-2">
+            {quickSearches.map((term) => (
+              <button
+                key={term}
+                type="button"
+                onClick={() => setSearchTerm(term)}
+                className="rounded-full border border-white/10 bg-white/[0.07] px-3 py-1.5 text-xs font-bold text-slate-300 transition hover:border-cyan-300/40 hover:bg-cyan-300/10 hover:text-white"
               >
-                Khám Phá Ngay
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <button className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/5 border border-white/10 text-white font-bold rounded-xl hover:bg-white/10 transition-all">
-                <Play className="w-5 h-5" />
-                Xem Demo
+                {term}
               </button>
-            </div>
+            ))}
+          </div>
 
-            {/* Trust Indicators */}
-            <div className="flex items-center gap-6 mt-10 justify-center lg:justify-start">
-              <div className="flex -space-x-2">
-                {[
-                  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
-                  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face',
-                  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face',
-                  'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face',
-                  'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face',
-                ].map((src, i) => (
-                  <img
-                    key={i}
-                    src={src}
-                    alt={`User ${i + 1}`}
-                    className="w-10 h-10 rounded-full border-2 border-slate-900 object-cover"
-                  />
-                ))}
+          <div className="mt-8 grid grid-cols-3 gap-2 sm:max-w-xl sm:gap-3">
+            {[
+              ['1,000+', 'tài nguyên'],
+              ['50K+', 'lượt tải'],
+              ['4.9/5', 'chất lượng'],
+            ].map(([value, label]) => (
+              <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.07] p-3 backdrop-blur">
+                <p className="text-xl font-black text-white sm:text-2xl">{value}</p>
+                <p className="mt-1 text-[11px] font-bold uppercase tracking-wide text-slate-400">{label}</p>
               </div>
-              <div>
-                <div className="flex items-center gap-1">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-                  ))}
-                </div>
-                <p className="text-sm text-slate-400">50,000+ Developers tin dùng</p>
-              </div>
-            </div>
-          </motion.div>
+            ))}
+          </div>
+        </div>
 
-          {/* Right Content - Product Slider */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="relative hidden lg:block"
-          >
-            <div className="relative">
-              {/* Main Card with AnimatePresence for smooth transitions */}
-              <div className="relative z-10 bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-1 shadow-2xl">
-                <div className="bg-slate-900 rounded-xl overflow-hidden">
-                  <AnimatePresence mode="wait">
-                    {currentProduct ? (
-                      <motion.div
-                        key={currentProduct.id}
-                        initial={{ opacity: 0, x: 100 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -100 }}
-                        transition={{ duration: 0.5 }}
-                      >
-                        <Link href={`/product/${currentProduct.id}`}>
-                          <div className="relative w-full h-72">
-                            <Image
-                              src={currentProduct.image || currentProduct.gallery?.[0] || '/placeholder.jpg'}
-                              alt={currentProduct.name}
-                              fill
-                              priority
-                              sizes="(max-width: 1024px) 100vw, 50vw"
-                              className="object-cover"
-                            />
-                          </div>
-                          <div className="p-6">
-                            <div className="flex items-center gap-2 mb-3">
-                              <span className="px-2 py-1 bg-orange-500/20 text-orange-400 text-xs font-bold rounded uppercase">
-                                {currentProduct.category || 'THEME'}
-                              </span>
-                              {currentProduct.isNew && (
-                                <span className="px-2 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded">NEW</span>
-                              )}
-                            </div>
-                            <h2 className="text-xl font-bold text-white mb-2 line-clamp-1">{currentProduct.name}</h2>
-                            <p className="text-slate-400 text-sm mb-4 line-clamp-1">
-                              {currentProduct.description?.slice(0, 60)}...
-                            </p>
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-2">
-                                <span className="text-2xl font-black text-orange-400">
-                                  {formatPrice(currentProduct.price)}
-                                </span>
-                                {currentProduct.originalPrice && currentProduct.originalPrice > currentProduct.price && (
-                                  <span className="text-sm text-slate-500 line-through">
-                                    {formatPrice(currentProduct.originalPrice)}
-                                  </span>
-                                )}
-                              </div>
-                              <span className="px-4 py-2 bg-orange-600 text-white font-bold rounded-lg">
-                                Xem Chi Tiết
-                              </span>
-                            </div>
-                          </div>
-                        </Link>
-                      </motion.div>
-                    ) : (
-                      // Fallback static card while loading
-                      <div>
-                        <div className="relative w-full h-72 bg-slate-800 animate-pulse" />
-                        <div className="p-6">
-                          <div className="h-6 bg-slate-800 rounded w-1/3 mb-3 animate-pulse" />
-                          <div className="h-6 bg-slate-800 rounded w-2/3 mb-2 animate-pulse" />
-                          <div className="h-4 bg-slate-800 rounded w-1/2 mb-4 animate-pulse" />
-                        </div>
-                      </div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              </div>
-
-              {/* Slide Indicators */}
-              {heroProducts.length > 0 && (
-                <div className="flex justify-center gap-2 mt-4">
-                  {heroProducts.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setCurrentSlide(index)}
-                      className={`w-2 h-2 rounded-full transition-all duration-300 ${index === currentSlide
-                        ? 'w-8 bg-orange-500'
-                        : 'bg-slate-600 hover:bg-slate-500'
-                        }`}
-                    />
-                  ))}
-                </div>
-              )}
-
-              {/* Floating Cards */}
-              <motion.div
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 3, repeat: Infinity }}
-                className="absolute -top-6 -right-6 bg-white rounded-xl shadow-xl p-4 z-20"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                    <Download className="w-5 h-5 text-green-600" />
-                  </div>
-                  <div>
-                    <p className="font-bold text-slate-900">12,543</p>
-                    <p className="text-xs text-slate-500">Downloads</p>
-                  </div>
-                </div>
-              </motion.div>
-
-              <motion.div
-                animate={{ y: [0, 10, 0] }}
-                transition={{ duration: 3, repeat: Infinity, delay: 1 }}
-                className="absolute -bottom-4 -left-6 bg-white rounded-xl shadow-xl p-4 z-20"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
-                    <Star className="w-5 h-5 text-amber-600" />
-                  </div>
-                  <div>
-                    <p className="font-bold text-slate-900">4.9/5.0</p>
-                    <p className="text-xs text-slate-500">Average Rating</p>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          </motion.div>
+        <MobileHeroPreview />
+        <div className="hidden md:block">
+          <ProductUniverse products={products} />
         </div>
       </div>
     </section>
@@ -333,187 +376,93 @@ const HeroSection = memo(() => {
 
 HeroSection.displayName = 'HeroSection';
 
-// ============================================
-// ANIMATED COUNTER HOOK
-// ============================================
-const useCountUp = (end: number, duration: number = 2000, start: number = 0) => {
-  const [count, setCount] = useState(start);
-  const [isVisible, setIsVisible] = useState(false);
-  const ref = React.useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !isVisible) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.5 }
-    );
-
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-
-    return () => observer.disconnect();
-  }, [isVisible]);
-
-  useEffect(() => {
-    if (!isVisible) return;
-
-    let startTime: number;
-    const animate = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const progress = Math.min((timestamp - startTime) / duration, 1);
-      const easeOut = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.floor(start + (end - start) * easeOut));
-
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      }
-    };
-    requestAnimationFrame(animate);
-  }, [isVisible, end, duration, start]);
-
-  return { count, ref };
-};
-
-// ============================================
-// STATS SECTION
-// ============================================
-const StatsSection = memo(() => {
-  const stat1 = useCountUp(1000, 2000);
-  const stat2 = useCountUp(50, 2000);
-  const stat3 = useCountUp(49, 1500); // 4.9 * 10
-
-  const statsData = [
-    { ...STATS[0], displayValue: `${stat1.count.toLocaleString()}+`, ref: stat1.ref, colors: { bg: 'bg-gradient-to-br from-orange-100 to-orange-200', icon: 'text-orange-600' } },
-    { ...STATS[1], displayValue: `${stat2.count}K+`, ref: stat2.ref, colors: { bg: 'bg-gradient-to-br from-blue-100 to-blue-200', icon: 'text-blue-600' } },
-    { ...STATS[2], displayValue: (stat3.count / 10).toFixed(1), ref: stat3.ref, colors: { bg: 'bg-gradient-to-br from-amber-100 to-amber-200', icon: 'text-amber-600' } },
-    { ...STATS[3], displayValue: STATS[3].value, ref: null, colors: { bg: 'bg-gradient-to-br from-green-100 to-green-200', icon: 'text-green-600' } },
-  ];
-
-  return (
-    <section className="relative -mt-16 z-20">
-      <div className="max-w-6xl mx-auto px-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 grid grid-cols-2 md:grid-cols-4 gap-6">
-          {statsData.map((stat, index) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="text-center"
-              ref={stat.ref}
-            >
-              <div className={`inline-flex items-center justify-center w-12 h-12 ${stat.colors.bg} rounded-xl mb-3`}>
-                <stat.icon className={`w-6 h-6 ${stat.colors.icon}`} />
-              </div>
-              <p className="text-3xl font-black text-slate-900 mb-1">{stat.displayValue}</p>
-              <p className="text-sm text-slate-500">{stat.label}</p>
-            </motion.div>
-          ))}
-        </div>
+const AssetTypeRail = memo(() => (
+  <section className="bg-[#070711] px-4 pb-8 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-7xl rounded-[1.5rem] border border-white/10 bg-white/[0.06] p-2 backdrop-blur-xl">
+      <div className="grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-6">
+        {assetTypes.map((item) => (
+          <Link
+            key={item.label}
+            href={item.href}
+            className="group flex min-w-0 items-center gap-2 rounded-[1.2rem] p-2.5 text-white transition hover:bg-white/10 sm:gap-3 sm:p-3"
+          >
+            <div className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${item.color} shadow-lg sm:h-12 sm:w-12 sm:rounded-2xl`}>
+              <item.icon className="h-4 w-4 sm:h-5 sm:w-5" />
+            </div>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-black">{item.label}</p>
+              <p className="text-[11px] font-bold text-slate-400 sm:text-xs">{item.count} chọn lọc</p>
+            </div>
+          </Link>
+        ))}
       </div>
-    </section>
-  );
-});
+    </div>
+  </section>
+));
 
-StatsSection.displayName = 'StatsSection';
+AssetTypeRail.displayName = 'AssetTypeRail';
 
-// ============================================
-// CATEGORIES SECTION
-// ============================================
-const CategoriesSection = memo(() => {
-  const [categories, setCategories] = useState<any[]>([]);
+const CategorySection = memo(() => {
+  const [categories, setCategories] = useState<CategoryPreview[]>([]);
 
   useEffect(() => {
     const loadCategories = async () => {
-      const data = await fetchCategories();
-      setCategories(data.slice(0, 6));
+      try {
+        const data = await fetchCategories();
+        setCategories(data.slice(0, 8));
+      } catch (error) {
+        console.error('Failed to load categories:', error);
+      }
     };
+
     loadCategories();
   }, []);
 
-  const categoryIcons: Record<string, React.ReactNode> = {
-    'themes': <Palette className="w-8 h-8" />,
-    'themes-ui-kits': <Palette className="w-8 h-8" />,
-    'landing': <Layout className="w-8 h-8" />,
-    'landing-pages': <Layout className="w-8 h-8" />,
-    'templates': <Code className="w-8 h-8" />,
-    'website-templates': <Globe className="w-8 h-8" />,
-    'miniapps': <Smartphone className="w-8 h-8" />,
-    'wordpress': <Code className="w-8 h-8" />,
-    'ecommerce': <Package className="w-8 h-8" />,
-    'admin-dashboards': <BarChart className="w-8 h-8" />,
-    'figma-templates': <Layers className="w-8 h-8" />,
-    'icons-illustrations': <Sparkles className="w-8 h-8" />,
-  };
-
-  // Category color mapping
-  const categoryColors: Record<string, { bg: string, text: string, border: string }> = {
-    'themes': { bg: 'bg-gradient-to-br from-orange-100 to-orange-200', text: 'text-orange-600', border: 'hover:border-orange-200' },
-    'themes-ui-kits': { bg: 'bg-gradient-to-br from-orange-100 to-orange-200', text: 'text-orange-600', border: 'hover:border-orange-200' },
-    'landing': { bg: 'bg-gradient-to-br from-blue-100 to-blue-200', text: 'text-blue-600', border: 'hover:border-blue-200' },
-    'landing-pages': { bg: 'bg-gradient-to-br from-blue-100 to-blue-200', text: 'text-blue-600', border: 'hover:border-blue-200' },
-    'templates': { bg: 'bg-gradient-to-br from-purple-100 to-purple-200', text: 'text-purple-600', border: 'hover:border-purple-200' },
-    'website-templates': { bg: 'bg-gradient-to-br from-green-100 to-green-200', text: 'text-green-600', border: 'hover:border-green-200' },
-    'miniapps': { bg: 'bg-gradient-to-br from-pink-100 to-pink-200', text: 'text-pink-600', border: 'hover:border-pink-200' },
-    'wordpress': { bg: 'bg-gradient-to-br from-indigo-100 to-indigo-200', text: 'text-indigo-600', border: 'hover:border-indigo-200' },
-    'ecommerce': { bg: 'bg-gradient-to-br from-amber-100 to-amber-200', text: 'text-amber-600', border: 'hover:border-amber-200' },
-    'admin-dashboards': { bg: 'bg-gradient-to-br from-cyan-100 to-cyan-200', text: 'text-cyan-600', border: 'hover:border-cyan-200' },
-    'figma-templates': { bg: 'bg-gradient-to-br from-rose-100 to-rose-200', text: 'text-rose-600', border: 'hover:border-rose-200' },
-    'icons-illustrations': { bg: 'bg-gradient-to-br from-violet-100 to-violet-200', text: 'text-violet-600', border: 'hover:border-violet-200' },
-  };
-
-  // Default color if category not in mapping
-  const defaultColors = { bg: 'bg-gradient-to-br from-slate-100 to-slate-200', text: 'text-slate-600', border: 'hover:border-slate-200' };
-
   return (
-    <section className="py-20 bg-slate-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-orange-100 text-orange-700 rounded-full font-bold text-sm mb-4"
-          >
-            <Package className="w-4 h-4" />
-            Danh Mục Sản Phẩm
-          </motion.div>
-          <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-4">
-            Khám Phá Theo Danh Mục
-          </h2>
-          <p className="text-slate-600 max-w-2xl mx-auto">
-            Tìm kiếm sản phẩm phù hợp với nhu cầu của bạn từ các danh mục đa dạng
+    <section className="bg-slate-50 py-10 sm:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-7 grid gap-4 sm:mb-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
+          <div>
+            <p className="mb-3 inline-flex rounded-full bg-slate-950 px-4 py-2 text-xs font-black text-lime-200 sm:text-sm">Khám phá danh mục</p>
+            <h2 className="text-2xl font-black leading-tight text-slate-950 sm:text-5xl">Duyệt tài nguyên theo mục tiêu dự án.</h2>
+          </div>
+          <p className="max-w-2xl text-sm leading-6 text-slate-600 sm:text-base sm:leading-7 lg:ml-auto">
+            Người dùng marketplace không muốn đọc quá nhiều. Họ muốn nhìn đúng nhóm tài nguyên, thấy số lượng, bấm vào và bắt đầu lọc sản phẩm.
           </p>
         </div>
 
-        {/* Categories Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {categories.map((category: any, index: number) => {
-            const colors = categoryColors[category.slug] || defaultColors;
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          {categories.map((category, index) => {
+            const Icon = categoryIconMap[category.slug] || Package;
+            const color = assetTypes[index % assetTypes.length].color;
+
             return (
-              <motion.div
-                key={category.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
+              <div key={category.id}>
                 <Link
                   href={`/products?category=${category.slug || category.id}`}
-                  className={`group block p-6 bg-white rounded-2xl border border-slate-100 ${colors.border} hover:shadow-xl transition-all text-center`}
+                  className="group relative flex min-h-[118px] overflow-hidden rounded-2xl border border-slate-200 bg-white p-3 shadow-sm transition hover:-translate-y-1 hover:shadow-2xl hover:shadow-slate-200 sm:min-h-[150px] sm:rounded-[1.4rem] sm:p-4"
                 >
-                  <div className={`w-16 h-16 mx-auto ${colors.bg} rounded-2xl flex items-center justify-center ${colors.text} group-hover:scale-110 transition-transform mb-4`}>
-                    {categoryIcons[category.slug] || <Package className="w-8 h-8" />}
+                  <div className={`absolute inset-0 ${categoryVisuals[index % categoryVisuals.length]}`} />
+                  <div className="absolute bottom-3 right-3 grid grid-cols-2 gap-1 opacity-60 transition group-hover:opacity-90">
+                    <span className="h-8 w-10 rounded-lg bg-white/55 shadow-sm" />
+                    <span className="h-8 w-10 rounded-lg bg-white/35 shadow-sm" />
+                    <span className="h-8 w-10 rounded-lg bg-white/35 shadow-sm" />
+                    <span className="h-8 w-10 rounded-lg bg-white/55 shadow-sm" />
                   </div>
-                  <h3 className={`font-bold text-slate-900 mb-1 transition-colors ${colors.text.replace('text-', 'group-hover:text-')}`}>
-                    {category.name}
-                  </h3>
-                  <p className="text-sm text-slate-500">{category.product_count || 0} sản phẩm</p>
+                  <div className="relative flex h-full w-full flex-col justify-between">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${color} text-white shadow-lg sm:h-12 sm:w-12`}>
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <ArrowRight className="mt-2 h-4 w-4 text-slate-300 transition group-hover:translate-x-1 group-hover:text-orange-600 sm:h-5 sm:w-5" />
+                    </div>
+                    <div className="mt-5 max-w-[75%] sm:max-w-[70%]">
+                      <h3 className="line-clamp-2 text-sm font-black leading-tight text-slate-950 sm:text-lg">{category.name}</h3>
+                      <p className="mt-2 text-xs font-bold text-slate-500 sm:text-sm">{category.product_count || 0} sản phẩm</p>
+                    </div>
+                  </div>
                 </Link>
-              </motion.div>
+              </div>
             );
           })}
         </div>
@@ -522,108 +471,138 @@ const CategoriesSection = memo(() => {
   );
 });
 
-CategoriesSection.displayName = 'CategoriesSection';
+CategorySection.displayName = 'CategorySection';
 
-// ============================================
-// FEATURED PRODUCTS SECTION
-// ============================================
+const EditorialProductCard = memo(({ product, index }: { product: Product; index: number }) => {
+  const palette = [
+    'from-orange-500 to-rose-600',
+    'from-cyan-500 to-blue-600',
+    'from-lime-500 to-emerald-600',
+    'from-fuchsia-500 to-purple-700',
+  ][index % 4];
+
+  return (
+    <article
+      className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-2xl hover:shadow-slate-200 sm:rounded-[1.6rem]"
+    >
+      <Link href={`/product/${product.slug || product.id}`} className="block">
+        <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
+          <Image src={getProductImage(product, index)} alt={product.name} fill sizes="(max-width: 768px) 50vw, 25vw" className="object-cover transition duration-700 group-hover:scale-105" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-transparent opacity-90" />
+          <div className="absolute left-2.5 top-2.5 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-black text-slate-950 backdrop-blur sm:left-4 sm:top-4 sm:px-3 sm:text-xs">
+            {product.format}
+          </div>
+          {product.originalPrice && product.originalPrice > product.price && (
+            <div className={`absolute right-2.5 top-2.5 rounded-full bg-gradient-to-r ${palette} px-2.5 py-1 text-[10px] font-black text-white sm:right-4 sm:top-4 sm:px-3 sm:text-xs`}>
+              Deal
+            </div>
+          )}
+          <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between gap-2 sm:bottom-4 sm:left-4 sm:right-4 sm:gap-3">
+            <div>
+              <p className="hidden text-xs font-bold uppercase tracking-wide text-white/60 sm:block">Xem trước</p>
+              <h3 className="line-clamp-2 text-sm font-black leading-tight text-white sm:text-lg">{product.name}</h3>
+            </div>
+            <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-white text-slate-950 transition group-hover:bg-lime-300 sm:h-10 sm:w-10">
+              <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
+            </div>
+          </div>
+        </div>
+        <div className="p-3 sm:p-4">
+          <div className="mb-2 flex items-center justify-between gap-2 sm:mb-3 sm:gap-3">
+            <p className="line-clamp-1 text-xs font-bold text-slate-500 sm:text-sm">by {product.author || 'DigitalMart'}</p>
+            <p className="text-xs font-black text-amber-600 sm:text-sm">{product.rating || '4.9'}/5</p>
+          </div>
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wide text-slate-400">Giá</p>
+              <p className="text-sm font-black text-slate-950 sm:text-lg">{formatPrice(product.price)}</p>
+            </div>
+            <span className="rounded-lg bg-slate-950 px-2.5 py-1.5 text-[10px] font-black text-white transition group-hover:bg-orange-600 sm:rounded-xl sm:px-4 sm:py-2 sm:text-xs">Xem</span>
+          </div>
+        </div>
+      </Link>
+    </article>
+  );
+});
+
+EditorialProductCard.displayName = 'EditorialProductCard';
+
 const FeaturedProductsSection = memo(() => {
-  const [activeTab, setActiveTab] = useState<'all' | 'themes' | 'landing' | 'templates'>('all');
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [activeTab, setActiveTab] = useState<ProductFormatFilter>('all');
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadProducts = async () => {
-      setLoading(true);
-      const data = await fetchActiveProducts({ limit: 20 });
-      setAllProducts(data);
-      setLoading(false);
+      try {
+        setLoading(true);
+        const data = await fetchActiveProducts({ limit: 20 });
+        setProducts(data);
+      } catch (error) {
+        console.error('Failed to load featured products:', error);
+      } finally {
+        setLoading(false);
+      }
     };
+
     loadProducts();
   }, []);
 
-  const filteredProducts = allProducts.filter((p: Product) => {
-    if (activeTab === 'all') return true;
-    if (activeTab === 'themes') return p.format === 'Theme';
-    if (activeTab === 'landing') return p.format === 'Landing';
-    if (activeTab === 'templates') return p.format === 'Template';
-    return true;
-  }).slice(0, 8);
+  const filteredProducts = useMemo(
+    () => products.filter((product) => activeTab === 'all' || product.format === activeTab).slice(0, 8),
+    [activeTab, products]
+  );
 
-  const tabs = [
-    { id: 'all', label: 'Tất Cả' },
-    { id: 'themes', label: 'Themes' },
-    { id: 'landing', label: 'Landing Pages' },
-    { id: 'templates', label: 'Templates' },
+  const tabs: Array<{ id: ProductFormatFilter; label: string }> = [
+    { id: 'all', label: 'Tất cả' },
+    { id: 'Theme', label: 'Themes' },
+    { id: 'Landing', label: 'Landing' },
+    { id: 'Template', label: 'Templates' },
+    { id: 'MiniApp', label: 'MiniApp' },
   ];
 
   return (
-    <section className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 md:gap-6 mb-6 md:mb-10">
+    <section className="bg-white py-10 sm:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 bg-orange-100 text-orange-700 rounded-full font-bold text-xs md:text-sm mb-3 md:mb-4"
-            >
-              <TrendingUp className="w-3 h-3 md:w-4 md:h-4" />
-              Bán Chạy
-            </motion.div>
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-slate-900">
-              Sản Phẩm Nổi Bật
-            </h2>
+            <p className="mb-3 inline-flex rounded-full bg-lime-200 px-4 py-2 text-sm font-black text-slate-950">Gian hàng chọn lọc</p>
+            <h2 className="text-2xl font-black leading-tight text-slate-950 sm:text-5xl">Sản phẩm không chỉ để xem. Chúng phải muốn được bấm.</h2>
           </div>
-
-          {/* Tabs - Horizontal scroll on mobile */}
-          <div className="-mx-4 px-4 md:mx-0 md:px-0">
-            <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 no-scrollbar">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id as typeof activeTab)}
-                  className={`flex-shrink-0 px-3 md:px-4 py-2 rounded-lg font-medium text-sm transition-all ${activeTab === tab.id
-                    ? 'bg-orange-600 text-white'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                    }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
+          <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex-shrink-0 rounded-full px-4 py-2 text-sm font-black transition ${
+                  activeTab === tab.id ? 'bg-slate-950 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Products Grid */}
         {loading ? (
-          <ProductGridSkeleton count={8} viewMode="grid" />
+          <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+            {Array.from({ length: 8 }).map((_, index) => (
+              <div key={index} className="h-64 animate-pulse rounded-2xl bg-slate-100 sm:h-80 sm:rounded-[1.6rem]" />
+            ))}
+          </div>
         ) : (
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-            <AnimatePresence mode="wait">
-              {filteredProducts.map((product: Product, index: number) => (
-                <motion.div
-                  key={product.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ delay: index * 0.05 }}
-                >
-                  <ProductCard product={product} />
-                </motion.div>
-              ))}
-            </AnimatePresence>
+          <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+            {filteredProducts.map((product, index) => (
+              <EditorialProductCard key={product.id} product={product} index={index} />
+            ))}
           </div>
         )}
 
-        {/* View All Button */}
-        <div className="text-center mt-10">
-          <Link
-            href="/products"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-all hover:scale-105"
-          >
-            Xem Tất Cả Sản Phẩm
-            <ArrowRight className="w-5 h-5" />
+        <div className="mt-10 text-center">
+          <Link href="/products" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-orange-600 px-7 font-black text-white shadow-xl shadow-orange-500/20 transition hover:bg-slate-950">
+            Mở toàn bộ marketplace
+            <ArrowRight className="h-5 w-5" />
           </Link>
         </div>
       </div>
@@ -633,480 +612,233 @@ const FeaturedProductsSection = memo(() => {
 
 FeaturedProductsSection.displayName = 'FeaturedProductsSection';
 
-// ============================================
-// FEATURES SECTION - Professional Dark Theme
-// ============================================
-const FeaturesSection = memo(() => {
-  return (<>
-    <section className="py-24 bg-slate-900 relative overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-orange-600/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl" />
-      </div>
+const ShowcaseSection = memo(() => {
+  const [products, setProducts] = useState<Product[]>([]);
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Header */}
-        <div className="text-center mb-8 md:mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 border border-slate-700 text-orange-400 rounded-full font-bold text-xs md:text-sm mb-4 md:mb-6"
-          >
-            <Award className="w-3 h-3 md:w-4 md:h-4" />
-            Tại Sao Chọn DigitalMart?
-          </motion.div>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-2xl md:text-4xl lg:text-5xl font-black text-white mb-3 md:mb-6"
-          >
-            Trải Nghiệm <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-400">Đẳng Cấp</span>
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="text-slate-400 max-w-2xl mx-auto text-sm md:text-lg px-4"
-          >
-            Chúng tôi cam kết mang đến cho bạn những sản phẩm chất lượng cao nhất
-          </motion.p>
-        </div>
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const data = await fetchActiveProducts({ limit: 4 });
+        setProducts(data);
+      } catch (error) {
+        console.error('Failed to load showcase products:', error);
+      }
+    };
 
-        {/* Features Grid - Horizontal scroll on mobile */}
-        <div className="-mx-4 px-4 md:mx-0 md:px-0">
-          <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 overflow-x-auto md:overflow-visible pb-4 md:pb-0 snap-x snap-mandatory no-scrollbar">
-            {FEATURES.map((feature, index) => {
-              const colorClasses = getFeatureColorClasses(feature.color);
-              return (
-                <motion.div
-                  key={feature.title}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  className="group relative flex-shrink-0 w-[280px] md:w-auto snap-start"
+    loadProducts();
+  }, []);
+
+  const mainProduct = products[0];
+  const supportingProducts = products.slice(1, 4);
+
+  return (
+    <section className="bg-[#f5f7fb] py-10 sm:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid overflow-hidden rounded-3xl bg-slate-950 text-white shadow-2xl shadow-slate-300 sm:rounded-[2rem] lg:grid-cols-[1.05fr_0.95fr]">
+          <div className="relative min-h-[300px] overflow-hidden sm:min-h-[420px] lg:min-h-[620px]">
+            <Image src={aiThemeThumbnail} alt="AI thumbnail website theme marketplace" fill sizes="(max-width: 1024px) 100vw, 52vw" className="object-cover" priority={false} />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/35 to-transparent" />
+            <div className="absolute bottom-3 left-3 right-3 rounded-2xl border border-white/15 bg-slate-950/78 p-4 backdrop-blur-xl sm:bottom-8 sm:left-8 sm:right-8 sm:rounded-[1.5rem] sm:p-6">
+              <div className="mb-3 flex flex-wrap gap-2 sm:mb-4">
+                <span className="inline-flex items-center gap-2 rounded-full bg-orange-500 px-3 py-1 text-xs font-black uppercase tracking-wide">
+                  <BadgePercent className="h-3.5 w-3.5" />
+                  Ảnh theme AI
+                </span>
+                <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-white/75">Xem trước rồi mua</span>
+              </div>
+              <h2 className="line-clamp-2 text-xl font-black sm:text-4xl">Theme bán site & template marketplace cao cấp</h2>
+              <p className="mt-2 max-w-2xl text-xs leading-6 text-slate-300 sm:mt-3 sm:text-base sm:leading-7">
+                Thumbnail AI riêng cho website: không còn ảnh điện thoại lạc chủ đề, tập trung vào theme, landing page, dashboard và CTA bán hàng.
+              </p>
+            </div>
+          </div>
+
+          <div className="p-4 sm:p-8 lg:p-10">
+            <p className="mb-3 inline-flex rounded-full bg-white/10 px-4 py-2 text-sm font-black text-cyan-200">Vì sao nhìn cao cấp</p>
+            <h2 className="text-2xl font-black leading-tight sm:text-5xl">Nổi bật bằng nhịp điệu, không chỉ bằng màu sắc.</h2>
+            <p className="mt-3 text-sm leading-6 text-slate-300 sm:mt-4 sm:text-base sm:leading-7">
+              Trang chủ mới dùng nhiều lớp: hero chuyển động, cards editorial, collection lớn, category rail và CTA gọn. Người dùng sẽ có cảm giác đang bước vào một cửa hàng sản phẩm số được tuyển chọn.
+            </p>
+
+            <div className="mt-5 grid gap-2 sm:mt-8 sm:gap-3">
+              {supportingProducts.map((product, index) => (
+                <Link
+                  key={product.id}
+                  href={`/product/${product.slug || product.id}`}
+                  className="group flex gap-3 rounded-2xl border border-white/10 bg-white/[0.06] p-2.5 transition hover:bg-white/[0.1] sm:gap-4 sm:rounded-[1.25rem] sm:p-3"
                 >
-                  <div className={`absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 rounded-2xl md:rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                  <div className={`relative p-5 md:p-8 bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl md:rounded-3xl ${colorClasses.border} transition-all duration-500 h-full`}>
-                    <div className="relative">
-
-                      <div className={`w-12 h-12 md:w-16 md:h-16 ${colorClasses.bg} rounded-xl md:rounded-2xl flex items-center justify-center text-white mb-4 md:mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
-                        <feature.icon className="w-6 h-6 md:w-8 md:h-8" strokeWidth={1.5} />
-                      </div>
-                    </div>
-
-                    <h3 className={`text-base md:text-xl font-bold text-white mb-2 md:mb-3 ${colorClasses.text} transition-colors`}>
-                      {feature.title}
-                    </h3>
-                    <p className="text-slate-400 leading-relaxed text-sm md:text-base">
-                      {feature.description}
-                    </p>
+                  <div className="relative h-16 w-20 flex-shrink-0 overflow-hidden rounded-xl bg-slate-800 sm:h-20 sm:w-24 sm:rounded-2xl">
+                    <Image src={getProductImage(product, index + 1)} alt={product.name} fill sizes="96px" className="object-cover transition group-hover:scale-105" />
                   </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    </section>
-
-    {/* Custom Glow Pulse Animation */}
-    <style jsx global>{`
-      @keyframes glow-pulse {
-        0%, 100% {
-          opacity: 0.15;
-          transform: scale(1);
-        }
-        50% {
-          opacity: 0.35;
-          transform: scale(1.08);
-        }
-      }
-      .animate-float-icon {
-        animation: glow-pulse 2.5s ease-in-out infinite;
-      }
-    `}</style>
-  </>
-  );
-});
-
-FeaturesSection.displayName = 'FeaturesSection';
-
-// ============================================
-// TESTIMONIALS SECTION
-// ============================================
-const TESTIMONIALS = [
-  {
-    name: 'Minh Tuấn',
-    role: 'Senior Developer @ FPT Software',
-    avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=100&h=100&fit=crop&crop=faces',
-    content: 'Đã mua hơn 10 themes từ DigitalMart. Code sạch, documentation đầy đủ, support team phản hồi rất nhanh. Tiết kiệm cho team tôi hàng trăm giờ development.',
-    rating: 5,
-  },
-  {
-    name: 'Thu Hương',
-    role: 'CEO @ Startup Việt',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=faces',
-    content: 'Landing page template giúp startup tôi launch sản phẩm chỉ trong 1 tuần. Conversion rate tăng 45% so với design cũ. Đầu tư xứng đáng!',
-    rating: 5,
-  },
-  {
-    name: 'Đức Anh',
-    role: 'Freelance Designer',
-    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=faces',
-    content: 'Là freelancer, tôi cần template chất lượng để giao dự án nhanh cho khách. DigitalMart chính là partner đáng tin cậy, updates miễn phí lifetime là điểm cộng lớn.',
-    rating: 5,
-  },
-];
-
-const TestimonialsSection = memo(() => {
-  // Duplicate testimonials for seamless infinite scroll
-  const allTestimonials = [...TESTIMONIALS, ...TESTIMONIALS, ...TESTIMONIALS];
-
-  return (
-    <section className="py-12 md:py-24 bg-slate-50 relative overflow-hidden">
-      {/* Decorative Elements */}
-      <div className="absolute top-0 left-0 w-full h-20 md:h-32 bg-gradient-to-b from-slate-900 to-transparent" />
-
-      <div className="relative z-10">
-        {/* Header */}
-        <div className="text-center mb-8 md:mb-12 px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-orange-100 text-orange-700 rounded-full font-bold text-xs md:text-sm mb-4 md:mb-6"
-          >
-            <Star className="w-3 h-3 md:w-4 md:h-4 fill-orange-500" />
-            Đánh Giá Từ Khách Hàng
-          </motion.div>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-2xl md:text-4xl lg:text-5xl font-black text-slate-900 mb-3 md:mb-6"
-          >
-            Khách Hàng Nói Gì?
-          </motion.h2>
-        </div>
-
-        {/* Infinite Slider Container */}
-        <div className="relative">
-          {/* Fade edges */}
-          <div className="absolute left-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-r from-slate-50 to-transparent z-10" />
-          <div className="absolute right-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-l from-slate-50 to-transparent z-10" />
-
-          {/* Sliding Track */}
-          <div className="flex animate-slide-testimonials">
-            {allTestimonials.map((testimonial, index) => (
-              <div
-                key={`${testimonial.name}-${index}`}
-                className="flex-shrink-0 w-[320px] md:w-[400px] mx-3 md:mx-4"
-              >
-                <div className="bg-white rounded-2xl md:rounded-3xl p-5 md:p-8 shadow-lg md:shadow-xl shadow-slate-200/50 border border-slate-100 hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-500 h-full">
-                  {/* Stars */}
-                  <div className="flex gap-0.5 md:gap-1 mb-4 md:mb-6">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 md:w-5 md:h-5 fill-amber-400 text-amber-400" />
-                    ))}
+                  <div className="min-w-0 flex-1">
+                    <p className="line-clamp-2 text-sm font-black text-white group-hover:text-lime-200 sm:text-base">{product.name}</p>
+                    <p className="mt-1 text-xs font-bold text-orange-300 sm:mt-2 sm:text-sm">{formatPrice(product.price)}</p>
                   </div>
+                  <ArrowRight className="mt-2 h-5 w-5 flex-shrink-0 text-white/30 transition group-hover:translate-x-1 group-hover:text-white" />
+                </Link>
+              ))}
+            </div>
 
-                  {/* Content */}
-                  <p className="text-slate-600 text-sm md:text-base leading-relaxed mb-5 md:mb-8 min-h-[80px] md:min-h-[100px]">
-                    "{testimonial.content}"
-                  </p>
-
-                  {/* Author */}
-                  <div className="flex items-center gap-3 md:gap-4">
-                    <div className="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl overflow-hidden border-2 border-orange-100 shadow-lg">
-                      <Image
-                        src={testimonial.avatar}
-                        alt={testimonial.name}
-                        width={100}
-                        height={100}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div>
-                      <p className="font-bold text-slate-900 text-sm md:text-base">{testimonial.name}</p>
-                      <p className="text-xs md:text-sm text-slate-500">{testimonial.role}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Animation Styles */}
-      <style jsx global>{`
-        @keyframes slide-testimonials {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-33.33%);
-          }
-        }
-        .animate-slide-testimonials {
-          animation: slide-testimonials 25s linear infinite;
-        }
-        .animate-slide-testimonials:hover {
-          animation-play-state: paused;
-        }
-      `}</style>
-    </section>
-  );
-});
-
-
-TestimonialsSection.displayName = 'TestimonialsSection';
-
-// ============================================
-// CTA SECTION - Refined Design
-// ============================================
-const CTASection = memo(() => {
-  return (
-    <section className="py-24 bg-slate-900 relative overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(249,115,22,0.15),transparent_70%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
-      </div>
-
-      <div className="max-w-5xl mx-auto px-4 text-center relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-orange-500/10 border border-orange-500/20 text-orange-400 rounded-full font-bold text-sm mb-8">
-            <Sparkles className="w-4 h-4" />
-            Bắt Đầu Ngay Hôm Nay
-          </div>
-
-          <h2 className="text-4xl md:text-6xl font-black text-white mb-6 leading-tight">
-            Biến Ý Tưởng Thành
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-red-400 to-amber-400">
-              Sản Phẩm Thực Tế
-            </span>
-          </h2>
-
-          <p className="text-xl text-slate-400 mb-12 max-w-2xl mx-auto">
-            Tiết kiệm hàng trăm giờ làm việc với themes & templates chất lượng cao từ DigitalMart
-          </p>
-
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Link
-              href="/products"
-              className="group inline-flex items-center justify-center gap-3 px-10 py-5 bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg rounded-2xl transition-all shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 hover:scale-105"
-            >
-              Khám Phá Sản Phẩm
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <Link
-              href="/contact"
-              className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-white/5 border border-white/10 text-white font-bold text-lg rounded-2xl hover:bg-white/10 transition-all"
-            >
-              Liên Hệ Tư Vấn
+            <Link href="/products?sort=popular" className="mt-8 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-6 font-black text-slate-950 transition hover:bg-lime-200">
+              Xem sản phẩm đang nổi
+              <TrendingUp className="h-5 w-5" />
             </Link>
           </div>
-
-          {/* Trust Badges */}
-          <div className="flex items-center justify-center gap-8 flex-wrap">
-            {[
-              { icon: Check, text: 'Hoàn Tiền 30 Ngày' },
-              { icon: Shield, text: 'Bảo Mật Thanh Toán' },
-              { icon: Users, text: 'Hỗ Trợ 24/7' },
-            ].map((item, i) => (
-              <motion.div
-                key={item.text}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.3 + i * 0.1 }}
-                className="flex items-center gap-2 text-slate-400"
-              >
-                <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
-                  <item.icon className="w-4 h-4 text-green-400" />
-                </div>
-                <span className="font-medium">{item.text}</span>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-      </div>
-    </section>
-  );
-});
-
-CTASection.displayName = 'CTASection';
-
-// ============================================
-// PARTNERS/BRANDS SECTION - Infinite Slider
-// ============================================
-const PartnersSection = memo(() => {
-  // SVG icons for each brand
-  const brands = [
-    {
-      name: 'React',
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-6 h-6" fill="#61DAFB">
-          <path d="M14.23 12.004a2.236 2.236 0 0 1-2.235 2.236 2.236 2.236 0 0 1-2.236-2.236 2.236 2.236 0 0 1 2.235-2.236 2.236 2.236 0 0 1 2.236 2.236zm2.648-10.69c-1.346 0-3.107.96-4.888 2.622-1.78-1.653-3.542-2.602-4.887-2.602-.41 0-.783.093-1.106.278-1.375.793-1.683 3.264-.973 6.365C1.98 8.917 0 10.42 0 12.004c0 1.59 1.99 3.097 5.043 4.03-.704 3.113-.39 5.588.988 6.38.32.187.69.275 1.102.275 1.345 0 3.107-.96 4.888-2.624 1.78 1.654 3.542 2.603 4.887 2.603.41 0 .783-.09 1.106-.275 1.374-.792 1.683-3.263.973-6.365C22.02 15.096 24 13.59 24 12.004c0-1.59-1.99-3.097-5.043-4.032.704-3.11.39-5.587-.988-6.38-.318-.184-.688-.277-1.092-.278zm-.005 1.09v.006c.225 0 .406.044.558.127.666.382.955 1.835.73 3.704-.054.46-.142.945-.25 1.44-.96-.236-2.006-.417-3.107-.534-.66-.905-1.345-1.727-2.035-2.447 1.592-1.48 3.087-2.292 4.105-2.295zm-9.77.02c1.012 0 2.514.808 4.11 2.28-.686.72-1.37 1.537-2.02 2.442-1.107.117-2.154.298-3.113.538-.112-.49-.195-.964-.254-1.42-.23-1.868.054-3.32.714-3.707.19-.09.4-.127.563-.132zm4.882 3.05c.455.468.91.992 1.36 1.564-.44-.02-.89-.034-1.345-.034-.46 0-.915.01-1.36.034.44-.572.895-1.096 1.345-1.565zM12 8.1c.74 0 1.477.034 2.202.093.406.582.802 1.203 1.183 1.86.372.64.71 1.29 1.018 1.946-.308.655-.646 1.31-1.013 1.95-.38.66-.773 1.288-1.18 1.87-.728.063-1.466.098-2.21.098-.74 0-1.477-.035-2.202-.093-.406-.582-.802-1.204-1.183-1.86-.372-.64-.71-1.29-1.018-1.946.303-.657.646-1.313 1.013-1.954.38-.66.773-1.286 1.18-1.868.728-.064 1.466-.098 2.21-.098zm-3.635.254c-.24.377-.48.763-.704 1.16-.225.39-.435.782-.635 1.174-.265-.656-.49-1.31-.676-1.947.64-.15 1.315-.283 2.015-.386zm7.26 0c.695.103 1.365.23 2.006.387-.18.632-.405 1.282-.66 1.933-.2-.39-.41-.783-.64-1.174-.225-.392-.465-.774-.705-1.146zm3.063.675c.484.15.944.317 1.375.498 1.732.74 2.852 1.708 2.852 2.476-.005.768-1.125 1.74-2.857 2.475-.42.18-.88.342-1.355.493-.28-.958-.646-1.956-1.1-2.98.45-1.017.81-2.01 1.085-2.964zm-13.395.004c.278.96.645 1.957 1.1 2.98-.45 1.017-.812 2.01-1.086 2.964-.484-.15-.944-.318-1.37-.5-1.732-.737-2.852-1.706-2.852-2.474 0-.768 1.12-1.742 2.852-2.476.42-.18.88-.342 1.356-.494zm11.678 4.28c.265.657.49 1.312.676 1.948-.64.157-1.316.29-2.016.39.24-.375.48-.762.705-1.158.225-.39.435-.788.636-1.18zm-9.945.02c.2.392.41.783.64 1.175.23.39.465.772.705 1.143-.695-.102-1.365-.23-2.006-.386.18-.63.406-1.282.66-1.93zM17.92 16.32c.112.493.2.968.254 1.423.23 1.868-.054 3.32-.714 3.708-.147.09-.338.128-.563.128-1.012 0-2.514-.807-4.11-2.28.686-.72 1.37-1.536 2.02-2.44 1.107-.118 2.154-.3 3.113-.54zm-11.83.01c.96.234 2.006.415 3.107.532.66.905 1.345 1.727 2.035 2.446-1.595 1.482-3.092 2.294-4.11 2.294-.22-.005-.406-.05-.553-.132-.666-.38-.955-1.834-.73-3.703.054-.46.142-.944.25-1.438zm4.56.64c.44.02.89.034 1.345.034.46 0 .915-.01 1.36-.034-.44.572-.895 1.095-1.345 1.565-.455-.47-.91-.993-1.36-1.565z" />
-        </svg>
-      )
-    },
-    {
-      name: 'Next.js',
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-6 h-6" fill="white">
-          <path d="M11.5725 0c-.1763 0-.3098.0013-.3584.0067-.0516.0053-.2159.021-.3636.0328-3.4088.3073-6.6017 2.1463-8.624 4.9728C1.1004 6.584.3802 8.3666.1082 10.255c-.0962.659-.108.8537-.108 1.7474s.012 1.0884.108 1.7476c.652 4.506 3.8591 8.2919 8.2087 9.6945.7789.2511 1.6.4223 2.5337.5255.3636.04 1.9354.04 2.299 0 1.6117-.1783 2.9772-.577 4.3237-1.2643.2065-.1056.2464-.1337.2183-.1573-.0188-.0139-.8987-1.1938-1.9543-2.62l-1.919-2.592-2.4047-3.5583c-1.3231-1.9564-2.4117-3.556-2.4211-3.556-.0094-.0026-.0187 1.5787-.0235 3.509-.0067 3.3802-.0093 3.5162-.0516 3.596-.061.115-.108.1618-.2064.2134-.075.0374-.1408.0445-.495.0445h-.406l-.1078-.068a.4383.4383 0 01-.1572-.1712l-.0493-.1056.0053-4.703.0067-4.7054.0726-.0915c.0376-.0493.1174-.1125.1736-.143.0962-.047.1338-.0517.5765-.0517.5765 0 .6581.0187.7561.1579.0245.0446 1.3407 2.0037 2.9277 4.3544l4.9373 7.3215 2.4517 3.6361.0516-.034c1.1062-.7221 2.2764-1.7555 3.1633-2.7945 1.8524-2.1718 2.9778-4.7758 3.3087-7.6556.1073-.9219.1194-1.8309.0359-2.7621-.3087-3.4784-1.8834-6.6379-4.4423-8.9196-1.7389-1.5498-3.8504-2.5803-6.1378-2.9945-.7234-.1308-1.3913-.1856-2.2455-.1852l-.1571.0008z" />
-        </svg>
-      )
-    },
-    {
-      name: 'WordPress',
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-6 h-6" fill="#21759B">
-          <path d="M21.469 6.825c.84 1.537 1.318 3.3 1.318 5.175 0 3.979-2.156 7.456-5.363 9.325l3.295-9.527c.615-1.54.82-2.771.82-3.864 0-.405-.026-.78-.07-1.109m-7.981.105c.647-.034 1.23-.1 1.23-.1.583-.07.514-.93-.067-.897 0 0-1.753.138-2.885.138-1.063 0-2.855-.138-2.855-.138-.585-.033-.659.858-.075.897 0 0 .549.066 1.127.1l1.674 4.587L9.11 18.72l-4.625-13.79c.647-.034 1.23-.1 1.23-.1.583-.07.514-.93-.07-.897 0 0-1.752.138-2.88.138-.203 0-.443-.005-.693-.014C4.87 1.663 8.227 0 12 0c2.813 0 5.378 1.078 7.297 2.84-.047-.004-.091-.01-.141-.01-1.063 0-1.818.928-1.818 1.923 0 .894.515 1.651 1.064 2.547.413.718.894 1.64.894 2.973 0 .922-.354 1.996-.822 3.492L17.06 16.8l-3.573-10.67zM12 22.784c-1.06 0-2.08-.16-3.044-.451l3.235-9.393 3.313 9.08c.024.053.05.1.078.146-1.12.396-2.327.618-3.582.618M1.213 12c0-1.724.377-3.36 1.05-4.83l5.782 15.845C3.816 20.862 1.213 16.772 1.213 12M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0" />
-        </svg>
-      )
-    },
-    {
-      name: 'Figma',
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-6 h-6" fill="#F24E1E">
-          <path d="M15.852 8.981h-4.588V0h4.588c2.476 0 4.49 2.014 4.49 4.49s-2.014 4.491-4.49 4.491zM12.735 7.51h3.117c1.665 0 3.019-1.355 3.019-3.019s-1.355-3.019-3.019-3.019h-3.117V7.51zm0 1.471H8.148c-2.476 0-4.49-2.014-4.49-4.49S5.672 0 8.148 0h4.588v8.981zm-4.587-7.51c-1.665 0-3.019 1.355-3.019 3.019s1.354 3.02 3.019 3.02h3.117V1.471H8.148zm4.587 15.019H8.148c-2.476 0-4.49-2.014-4.49-4.49s2.014-4.49 4.49-4.49h4.588v8.98zM8.148 8.981c-1.665 0-3.019 1.355-3.019 3.019s1.355 3.019 3.019 3.019h3.117V8.981H8.148zM8.172 24c-2.489 0-4.515-2.014-4.515-4.49s2.014-4.49 4.49-4.49h4.588v4.441c0 2.503-2.047 4.539-4.563 4.539zm-.024-7.51a3.023 3.023 0 0 0-3.019 3.019c0 1.665 1.365 3.019 3.044 3.019 1.705 0 3.093-1.376 3.093-3.068v-2.97H8.148zm7.704 0h-.098c-2.476 0-4.49-2.014-4.49-4.49s2.014-4.49 4.49-4.49h.098c2.476 0 4.49 2.014 4.49 4.49s-2.014 4.49-4.49 4.49zm-.098-7.509c-1.665 0-3.019 1.355-3.019 3.019s1.355 3.019 3.019 3.019h.098c1.665 0 3.019-1.355 3.019-3.019s-1.355-3.019-3.019-3.019h-.098z" />
-        </svg>
-      )
-    },
-    {
-      name: 'Tailwind',
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-6 h-6" fill="#06B6D4">
-          <path d="M12.001 4.8c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624C13.666 10.618 15.027 12 18.001 12c3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C16.337 6.182 14.976 4.8 12.001 4.8zm-6 7.2c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624 1.177 1.194 2.538 2.576 5.512 2.576 3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C10.337 13.382 8.976 12 6.001 12z" />
-        </svg>
-      )
-    },
-    {
-      name: 'TypeScript',
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-6 h-6" fill="#3178C6">
-          <path d="M1.125 0C.502 0 0 .502 0 1.125v21.75C0 23.498.502 24 1.125 24h21.75c.623 0 1.125-.502 1.125-1.125V1.125C24 .502 23.498 0 22.875 0zm17.363 9.75c.612 0 1.154.037 1.627.111a6.38 6.38 0 0 1 1.306.34v2.458a3.95 3.95 0 0 0-.643-.361 5.093 5.093 0 0 0-.717-.26 5.453 5.453 0 0 0-1.426-.2c-.3 0-.573.028-.819.086a2.1 2.1 0 0 0-.623.242c-.17.104-.3.229-.393.374a.888.888 0 0 0-.14.49c0 .196.053.373.156.529.104.156.252.304.443.444s.423.276.696.41c.273.135.582.274.926.416.47.197.892.407 1.266.628.374.222.695.473.963.753.268.279.472.598.614.957.142.359.214.776.214 1.253 0 .657-.125 1.21-.373 1.656a3.033 3.033 0 0 1-1.012 1.085 4.38 4.38 0 0 1-1.487.596c-.566.12-1.163.18-1.79.18a9.916 9.916 0 0 1-1.84-.164 5.544 5.544 0 0 1-1.512-.493v-2.63a5.033 5.033 0 0 0 3.237 1.2c.333 0 .624-.03.872-.09.249-.061.456-.144.623-.25a1.14 1.14 0 0 0 .395-.392.984.984 0 0 0 .137-.524.756.756 0 0 0-.18-.49 1.714 1.714 0 0 0-.51-.396 5.27 5.27 0 0 0-.804-.357 26.137 26.137 0 0 0-1.064-.42c-.448-.181-.85-.39-1.207-.628a3.754 3.754 0 0 1-.906-.79 3.119 3.119 0 0 1-.566-1.003c-.13-.39-.196-.831-.196-1.325 0-.62.123-1.157.37-1.612a3.18 3.18 0 0 1 1.004-1.098 4.282 4.282 0 0 1 1.476-.631 7.1 7.1 0 0 1 1.767-.201zm-9.79.046h6.993v1.906H9.65v8.063H7.078V11.703h-3.44V9.796h5.06z" />
-        </svg>
-      )
-    },
-    {
-      name: 'Vue.js',
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-6 h-6" fill="#4FC08D">
-          <path d="M24 1.61h-9.94L12 5.16 9.94 1.61H0l12 20.78L24 1.61zM12 14.08L5.16 2.23h4.43L12 6.41l2.41-4.18h4.43L12 14.08z" />
-        </svg>
-      )
-    },
-    {
-      name: 'Angular',
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-6 h-6" fill="#DD0031">
-          <path d="M9.931 12.645h4.138l-2.07-4.908zM12 0L1.614 3.628l1.585 13.755L12 24l8.801-6.617 1.585-13.755L12 0zm6.416 18.132h-2.484l-1.332-3.326H9.4L8.07 18.132H5.584L12 3.62l6.416 14.512z" />
-        </svg>
-      )
-    },
-  ];
-
-  // Duplicate brands for seamless infinite scroll
-  const allBrands = [...brands, ...brands];
-
-  return (
-    <section className="py-10 overflow-hidden relative">
-      {/* Background with grid pattern */}
-      <div className="absolute inset-0 bg-slate-800" />
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px]" />
-
-      {/* Accent gradient overlays */}
-      <div className="absolute inset-0 bg-gradient-to-r from-orange-600/5 via-transparent to-orange-600/5" />
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-orange-500/40 to-transparent" />
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-orange-500/40 to-transparent" />
-
-      <div className="relative z-10">
-        <p className="text-center text-sm font-bold text-orange-400/80 mb-6 uppercase tracking-widest">
-          ⚡ Công nghệ tương thích
-        </p>
-
-        {/* Infinite Slider Container */}
-        <div className="relative">
-          {/* Fade edges */}
-          <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-slate-800 to-transparent z-10" />
-          <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-slate-800 to-transparent z-10" />
-
-          {/* Sliding Track */}
-          <div className="flex animate-slide-infinite">
-            {allBrands.map((brand, index) => (
-              <div
-                key={`${brand.name}-${index}`}
-                className="flex-shrink-0 mx-4 md:mx-6 group cursor-default"
-              >
-                <div className="flex items-center gap-3 px-6 py-3 bg-slate-900/90 rounded-xl border border-slate-700/80 hover:border-orange-500/60 hover:bg-slate-900 transition-all duration-300 hover:scale-105 shadow-lg shadow-black/20">
-                  {brand.icon}
-                  <span className="text-sm md:text-base font-bold text-slate-200 group-hover:text-white transition-colors">
-                    {brand.name}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
-
-      {/* Animation Styles */}
-      <style jsx global>{`
-        @keyframes slide-infinite {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-        .animate-slide-infinite {
-          animation: slide-infinite 20s linear infinite;
-        }
-        .animate-slide-infinite:hover {
-          animation-play-state: paused;
-        }
-      `}</style>
     </section>
   );
 });
 
-PartnersSection.displayName = 'PartnersSection';
+ShowcaseSection.displayName = 'ShowcaseSection';
 
-// ============================================
-// MAIN HOMEPAGE COMPONENT
-// ============================================
+const ExperienceSection = memo(() => (
+    <section className="bg-white py-10 sm:py-24">
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mb-10 max-w-3xl">
+        <p className="mb-3 inline-flex rounded-full bg-slate-950 px-4 py-2 text-sm font-black text-orange-200">Hệ thống gian hàng thông minh</p>
+        <h2 className="text-2xl font-black leading-tight text-slate-950 sm:text-5xl">Một trang chủ phải dẫn khách đi, không chỉ trưng đồ.</h2>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-2 lg:grid-cols-4">
+        {featureCards.map((feature, index) => (
+          <div
+            key={feature.title}
+            className="group relative min-h-[210px] overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:-translate-y-1 hover:bg-slate-950 hover:text-white hover:shadow-2xl hover:shadow-slate-200 sm:min-h-[260px] sm:rounded-[1.6rem] sm:p-5"
+          >
+            <div className={`absolute -right-12 -top-12 h-36 w-36 rounded-full bg-gradient-to-br ${feature.color} opacity-20 blur-2xl transition group-hover:opacity-35`} />
+            <div className={`relative mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br ${feature.color} text-white shadow-lg sm:mb-8 sm:h-14 sm:w-14 sm:rounded-2xl`}>
+              <feature.icon className="h-5 w-5 sm:h-6 sm:w-6" />
+            </div>
+            <h3 className="relative text-base font-black sm:text-xl">{feature.title}</h3>
+            <p className="relative mt-2 text-xs leading-5 text-slate-600 transition group-hover:text-slate-300 sm:mt-3 sm:text-sm sm:leading-7">{feature.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+));
+
+ExperienceSection.displayName = 'ExperienceSection';
+
+const SocialProofSection = memo(() => (
+  <section className="bg-slate-950 py-10 text-white sm:py-24">
+    <div className="mx-auto grid max-w-7xl gap-6 px-4 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:px-8">
+      <div>
+        <p className="mb-3 inline-flex rounded-full bg-white/10 px-4 py-2 text-xs font-black text-lime-200 sm:text-sm">Tạo niềm tin</p>
+        <h2 className="text-2xl font-black leading-tight sm:text-5xl">Có nhịp, có lực, có lý do để bấm tiếp.</h2>
+      </div>
+      <div className="grid grid-cols-3 gap-2 sm:gap-4">
+        {[
+          { icon: Shield, title: 'License rõ', text: 'Thông tin sử dụng và tải file minh bạch.' },
+          { icon: Download, title: 'Tải nhanh', text: 'Tập trung vào trải nghiệm sau khi mua.' },
+          { icon: Award, title: 'Đáng tin', text: 'Sản phẩm có preview, rating và tác giả.' },
+        ].map((item) => (
+          <div key={item.title} className="rounded-2xl border border-white/10 bg-white/[0.06] p-3 sm:rounded-[1.5rem] sm:p-5">
+            <item.icon className="mb-3 h-5 w-5 text-orange-300 sm:mb-6 sm:h-7 sm:w-7" />
+            <h3 className="text-sm font-black sm:text-lg">{item.title}</h3>
+            <p className="mt-1 line-clamp-3 text-[11px] leading-5 text-slate-400 sm:mt-2 sm:text-sm sm:leading-6">{item.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+));
+
+SocialProofSection.displayName = 'SocialProofSection';
+
+const FinalCTASection = memo(() => (
+  <section className="bg-white pb-24 pt-16 sm:py-24">
+    <div className="mx-auto max-w-6xl px-4 text-center sm:px-6 lg:px-8">
+      <p className="mb-4 inline-flex rounded-full bg-orange-100 px-4 py-2 text-sm font-black text-orange-700">Sẵn sàng nâng cấp trang chủ</p>
+      <h2 className="mx-auto max-w-4xl text-3xl font-black leading-tight text-slate-950 sm:text-6xl">
+        Biến trang chủ thành nơi khách muốn khám phá, không chỉ ghé qua.
+      </h2>
+      <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
+        Nếu sản phẩm là trái tim của website, trang chủ là ánh đèn sân khấu. Bản này đặt search, collection, sản phẩm thật và CTA vào đúng nhịp.
+      </p>
+      <div className="mt-8 grid justify-center gap-3 sm:flex">
+        <Link href="/products" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-slate-950 px-8 font-black text-white transition hover:bg-orange-600">
+          Khám phá marketplace
+          <ArrowRight className="h-5 w-5" />
+        </Link>
+        <Link href="/contact" className="inline-flex min-h-12 items-center justify-center rounded-full border border-slate-200 px-8 font-bold text-slate-800 transition hover:bg-slate-50">
+          Cần tư vấn chọn mẫu
+        </Link>
+      </div>
+    </div>
+  </section>
+));
+
+FinalCTASection.displayName = 'FinalCTASection';
+
+const MobileStickyCTA = memo(() => (
+  <div className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 px-4 py-3 shadow-2xl backdrop-blur md:hidden">
+    <div className="mx-auto grid max-w-md grid-cols-[1fr_auto] items-center gap-3">
+      <div className="min-w-0">
+        <p className="truncate text-sm font-black text-slate-950">Tài nguyên nổi bật</p>
+        <p className="text-xs text-slate-500">Search, xem demo, mua nhanh</p>
+      </div>
+      <Link href="/products" className="inline-flex min-h-11 items-center justify-center rounded-full bg-orange-600 px-4 text-sm font-black text-white shadow-lg shadow-orange-500/20">
+        Mở shop
+      </Link>
+    </div>
+  </div>
+));
+
+MobileStickyCTA.displayName = 'MobileStickyCTA';
+
+const DeferredSection = memo(({ children }: { children: React.ReactNode }) => {
+  const [shouldRender, setShouldRender] = useState(false);
+  const ref = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldRender(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '480px 0px' }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  return <div ref={ref}>{shouldRender ? children : <div className="min-h-24" />}</div>;
+});
+
+DeferredSection.displayName = 'DeferredSection';
+
 const HomePage = () => {
   return (
-    <main className="overflow-hidden">
+    <main className="overflow-hidden bg-white">
       <HeroSection />
-      <StatsSection />
-      <CategoriesSection />
-      <FeaturedProductsSection />
-      <FeaturesSection />
-      <TestimonialsSection />
-      <PartnersSection />
-      <CTASection />
+      <AssetTypeRail />
+      <CategorySection />
+      <DeferredSection>
+        <FeaturedProductsSection />
+      </DeferredSection>
+      <DeferredSection>
+        <ShowcaseSection />
+      </DeferredSection>
+      <DeferredSection>
+        <ExperienceSection />
+      </DeferredSection>
+      <DeferredSection>
+        <SocialProofSection />
+      </DeferredSection>
+      <DeferredSection>
+        <FinalCTASection />
+      </DeferredSection>
+      <MobileStickyCTA />
     </main>
   );
 };
 
 export default memo(HomePage);
-
