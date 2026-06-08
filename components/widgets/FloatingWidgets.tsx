@@ -226,7 +226,7 @@ const FloatingWidgets = () => {
         {/* Chat Window */}
         <div
           className={`pointer-events-auto w-[calc(100vw-32px)] sm:w-[380px] bg-white rounded-2xl shadow-2xl border border-orange-100 overflow-hidden transition-all duration-400 origin-bottom-right transform flex flex-col ${isChatOpen
-            ? 'scale-100 opacity-100 translate-y-0 mb-2 max-h-[70vh]'
+            ? 'scale-100 opacity-100 translate-y-0 mb-2 max-h-[calc(100vh-7rem)]'
             : 'scale-75 opacity-0 translate-y-10 pointer-events-none h-0 mb-0'
             }`}
         >
@@ -265,8 +265,8 @@ const FloatingWidgets = () => {
           </div>
 
           {/* Messages */}
-          <div className="flex-1 bg-gradient-to-b from-orange-50/30 to-white p-4 overflow-y-auto custom-scrollbar flex flex-col gap-3 min-h-[300px]">
-            <div className="text-center text-xs text-slate-400 my-2">Hôm nay</div>
+          <div className="bg-gradient-to-b from-orange-50/30 to-white p-3 overflow-y-auto custom-scrollbar flex flex-col gap-2.5 min-h-[132px] max-h-[34vh] sm:max-h-[310px]">
+            <div className="text-center text-[11px] text-slate-400 my-0.5">Hôm nay</div>
             {chatMessages.map((msg) => (
               <div key={msg.id} className="animate-fade-in-up">
                 <div
@@ -278,7 +278,7 @@ const FloatingWidgets = () => {
                     </div>
                   )}
                   <div
-                    className={`max-w-[80%] p-3 text-sm shadow-sm ${msg.sender === 'user'
+                    className={`max-w-[82%] p-3 text-sm leading-relaxed shadow-sm ${msg.sender === 'user'
                       ? 'bg-gradient-to-r from-orange-600 to-red-600 text-white rounded-2xl rounded-tr-none'
                       : 'bg-white text-slate-700 border border-orange-100 rounded-2xl rounded-tl-none'
                       }`}

@@ -13,6 +13,7 @@ export interface Product {
   reviews_count?: number;
   isNew?: boolean;
   isBestseller?: boolean;
+  isFeatured?: boolean;
   author: string; // Creator/Designer name
   format: 'Theme' | 'Landing' | 'Template' | 'MiniApp' | 'Bundle';
   duration?: string; // Repurposed for "Last Updated" or version info

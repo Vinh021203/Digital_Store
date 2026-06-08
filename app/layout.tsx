@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Be_Vietnam_Pro } from 'next/font/google';
 import { Suspense } from 'react';
 import './globals.css';
 import './animations.css';
@@ -7,6 +8,13 @@ import Providers from './providers';
 import { NavigationProgress } from '@/components/layout';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://martdigitalhub.vercel.app';
+
+const beVietnamPro = Be_Vietnam_Pro({
+    subsets: ['latin', 'vietnamese'],
+    weight: ['400', '500', '600', '700', '800', '900'],
+    display: 'swap',
+    variable: '--font-be-vietnam-pro',
+});
 
 export const metadata: Metadata = {
     title: {
@@ -96,7 +104,7 @@ export default function RootLayout({
                 <link rel="preconnect" href="https://images.unsplash.com" />
                 <link rel="dns-prefetch" href="https://images.unsplash.com" />
             </head>
-            <body className="font-sans antialiased bg-slate-50" suppressHydrationWarning>
+            <body className={`${beVietnamPro.variable} font-sans antialiased bg-slate-50`} suppressHydrationWarning>
                 <NavigationProgress />
                 <Providers>
                     <Suspense fallback={<LoadingFallback />}>

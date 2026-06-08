@@ -10,7 +10,7 @@ const config: Config = {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Inter', 'sans-serif'],
+                sans: ['var(--font-be-vietnam-pro)', '"Be Vietnam Pro"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
                 serif: ['Playfair Display', 'serif'],
             },
             colors: {

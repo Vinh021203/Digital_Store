@@ -111,7 +111,7 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
             loading="lazy"
             placeholder="blur"
             blurDataURL={BLUR_DATA_URL}
-            className={`object-cover transition-transform duration-500 group-hover:scale-105 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+            className={`object-contain transition-transform duration-500 group-hover:scale-[1.02] ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
             onLoad={() => setImageLoaded(true)}
           />
           {product.isNew && (
@@ -172,7 +172,7 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
       {/* Image Container */}
       <Link
         href={`/product/${(product as any).slug || product.id}`}
-        className="block relative aspect-[16/9] overflow-hidden bg-slate-100"
+        className="block relative aspect-[16/9] overflow-hidden bg-gradient-to-br from-slate-50 via-white to-orange-50/40"
       >
         {/* Image with Next.js optimization */}
         <Image
@@ -183,7 +183,7 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
           loading="lazy"
           placeholder="blur"
           blurDataURL={BLUR_DATA_URL}
-          className={`object-cover transition-transform duration-500 group-hover:scale-105 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+          className={`object-contain transition-transform duration-500 group-hover:scale-[1.02] ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
           onLoad={() => setImageLoaded(true)}
         />
 

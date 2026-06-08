@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useMemo, memo } from 'react';
 import Link from 'next/link';
@@ -78,7 +78,7 @@ const MobileBottomNav = () => {
   // Check if on main pages
   const isMainPage = useMemo(() => {
     const allowedPaths = ['/', '/products', '/community', '/profile', '/wishlist', '/blog'];
-    return allowedPaths.includes(pathname);
+    return allowedPaths.includes(pathname) || pathname.startsWith('/product/');
   }, [pathname]);
 
   // Navigation items
@@ -109,7 +109,7 @@ const MobileBottomNav = () => {
             <NavItem
               key={item.to}
               {...item}
-              isActive={pathname === item.to}
+              isActive={pathname === item.to || (item.to === '/products' && pathname.startsWith('/product/'))}
             />
           ))}
         </div>
@@ -119,4 +119,3 @@ const MobileBottomNav = () => {
 };
 
 export default memo(MobileBottomNav);
-

@@ -1,13 +1,13 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useMemo, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
-    Search, Filter, Grid, List, ChevronDown, Star, Download, Eye,
+    Search, Filter, Grid, List, ChevronDown, Star, Download, Eye, Package,
     Heart, ShoppingCart, Home, ChevronRight, Loader2, X, SlidersHorizontal,
-    Check, ArrowUpDown, Tag, Zap, LayoutGrid
+    Check, ArrowUpDown, Tag, Zap, LayoutGrid, CreditCard, Headphones, Send
 } from 'lucide-react';
 import { fetchActiveProducts, type DbProduct } from '@/lib/products';
 import { fetchCategories } from '@/lib/categories';
@@ -65,6 +65,7 @@ const FilterSidebar = ({
     setRating,
     format,
     setFormat,
+    products,
     isOpen,
     onClose
 }: {
@@ -77,227 +78,204 @@ const FilterSidebar = ({
     setRating: (v: number | null) => void;
     format: string;
     setFormat: (v: string) => void;
+    products: any[];
     isOpen: boolean;
     onClose: () => void;
 }) => {
+    const [showAllCategories, setShowAllCategories] = useState(false);
+    const [showAllFormats, setShowAllFormats] = useState(false);
+
+    const categoryCounts = React.useMemo(() => {
+        const counts: Record<string, number> = {};
+        products.forEach((product) => {
+            if (product.category) counts[product.category] = (counts[product.category] || 0) + 1;
+        });
+        return counts;
+    }, [products]);
+
+    const formatCounts = React.useMemo(() => {
+        const counts: Record<string, number> = {};
+        products.forEach((product) => {
+            if (product.format) counts[product.format] = (counts[product.format] || 0) + 1;
+        });
+        return counts;
+    }, [products]);
+
+    const visibleCategories = showAllCategories ? categories : categories.slice(0, 5);
+    const formatOptions = ['Theme', 'Template', 'Plugin', 'UI Kit', 'Icon / Vector', 'Landing', 'MiniApp'];
+    const visibleFormats = showAllFormats ? formatOptions : formatOptions.slice(0, 5);
+    const platformOptions = [
+        { label: 'WordPress', key: 'wordpress', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/wordpress/wordpress-original.svg' },
+        { label: 'Next.js', key: 'next', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg' },
+        { label: 'HTML', key: 'html', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg' },
+        { label: 'Figma', key: 'figma', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg' },
+        { label: 'Laravel', key: 'laravel', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg' },
+    ];
+
+    const CheckboxRow = ({
+        label,
+        count,
+        checked,
+        onClick,
+        children,
+    }: {
+        label: string;
+        count?: number;
+        checked?: boolean;
+        onClick?: () => void;
+        children?: React.ReactNode;
+    }) => (
+        <button
+            type="button"
+            onClick={onClick}
+            className="flex w-full items-center gap-2 rounded-md px-1.5 py-1 text-left text-[12px] font-medium text-slate-600 transition hover:bg-orange-50 hover:text-slate-900"
+        >
+            <span className={`flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-[3px] border ${checked ? 'border-orange-600 bg-orange-600 text-white' : 'border-slate-300 bg-white'}`}>
+                {checked && <Check size={10} strokeWidth={3} />}
+            </span>
+            <span className="min-w-0 flex-1 truncate">{children || label}</span>
+            {typeof count === 'number' && <span className="text-[11px] font-semibold text-slate-400">{count}</span>}
+        </button>
+    );
+
+    const SidebarContent = () => (
+        <div className="rounded-2xl border border-orange-100 bg-white p-4 shadow-sm">
+            <div className="mb-3 flex items-center justify-between">
+                <h2 className="inline-flex items-center gap-2 text-sm font-extrabold text-slate-900">
+                    <SlidersHorizontal size={15} className="text-slate-600" /> Bộ lọc
+                </h2>
+                <button
+                    type="button"
+                    onClick={() => {
+                        setSelectedCategory('');
+                        setFormat('');
+                        setRating(null);
+                        setPriceRange([0, 5000000]);
+                    }}
+                    className="rounded-full bg-orange-50 px-2.5 py-1 text-[11px] font-bold text-orange-600"
+                >
+                    Xóa tất cả
+                </button>
+            </div>
+
+            <div className="space-y-4">
+                <section>
+                    <h3 className="mb-2 text-[12px] font-extrabold text-slate-900">Danh mục</h3>
+                    <div className="space-y-0.5">
+                        {visibleCategories.map((cat) => (
+                            <CheckboxRow
+                                key={cat.id}
+                                label={cat.name}
+                                count={categoryCounts[cat.slug] || 0}
+                                checked={selectedCategory === cat.slug}
+                                onClick={() => setSelectedCategory(selectedCategory === cat.slug ? '' : cat.slug)}
+                            />
+                        ))}
+                        {categories.length > 5 && (
+                            <button
+                                type="button"
+                                onClick={() => setShowAllCategories((value) => !value)}
+                                className="flex w-full items-center justify-between px-1.5 py-1 text-[12px] font-semibold text-orange-600 hover:text-orange-700"
+                            >
+                                <span>{showAllCategories ? 'Thu gọn' : 'Xem thêm'}</span>
+                                <ChevronDown size={13} className={`transition-transform ${showAllCategories ? 'rotate-180' : ''}`} />
+                            </button>
+                        )}
+                    </div>
+                </section>
+
+                <section className="border-t border-slate-100 pt-4">
+                    <h3 className="mb-2 text-[12px] font-extrabold text-slate-900">Loại sản phẩm</h3>
+                    <div className="space-y-0.5">
+                        {visibleFormats.map((item) => (
+                            <CheckboxRow
+                                key={item}
+                                label={item}
+                                count={formatCounts[item] || 0}
+                                checked={format === item}
+                                onClick={() => setFormat(format === item ? '' : item)}
+                            />
+                        ))}
+                        {formatOptions.length > 5 && (
+                            <button
+                                type="button"
+                                onClick={() => setShowAllFormats((value) => !value)}
+                                className="flex w-full items-center justify-between px-1.5 py-1 text-[12px] font-semibold text-orange-600 hover:text-orange-700"
+                            >
+                                <span>{showAllFormats ? 'Thu gọn' : 'Xem thêm'}</span>
+                                <ChevronDown size={13} className={`transition-transform ${showAllFormats ? 'rotate-180' : ''}`} />
+                            </button>
+                        )}
+                    </div>
+                </section>
+
+                <section className="border-t border-slate-100 pt-4">
+                    <h3 className="mb-2 text-[12px] font-extrabold text-slate-900">Nền tảng</h3>
+                    <div className="space-y-0.5">
+                        {platformOptions.map((platform) => (
+                            <CheckboxRow key={platform.key} label={platform.label} count={products.filter((p) => `${p.name} ${p.description || ''} ${p.category || ''}`.toLowerCase().includes(platform.key)).length}>
+                                <span className="inline-flex items-center gap-2">
+                                    <span className="flex h-4 w-4 shrink-0 items-center justify-center">
+                                        <img src={platform.logo} alt={`${platform.label} logo`} className="h-4 w-4 object-contain" loading="lazy" />
+                                    </span>
+                                    {platform.label}
+                                </span>
+                            </CheckboxRow>
+                        ))}
+                    </div>
+                </section>
+
+                <section className="border-t border-slate-100 pt-4">
+                    <h3 className="mb-3 text-[12px] font-extrabold text-slate-900">Khoảng giá</h3>
+                    <input
+                        type="range"
+                        min="0"
+                        max="5000000"
+                        step="100000"
+                        value={priceRange[1]}
+                        onChange={(e) => setPriceRange([0, Number(e.target.value)])}
+                        className="w-full accent-orange-600"
+                    />
+                    <div className="mt-2 grid grid-cols-2 gap-2">
+                        <div className="rounded-lg border border-slate-200 px-3 py-2 text-[12px] font-semibold text-slate-500">0đ</div>
+                        <div className="rounded-lg border border-slate-200 px-3 py-2 text-[12px] font-semibold text-slate-500">{priceRange[1].toLocaleString('vi-VN')}đ</div>
+                    </div>
+                </section>
+
+                <section className="border-t border-slate-100 pt-4">
+                    <h3 className="mb-2 text-[12px] font-extrabold text-slate-900">Đánh giá</h3>
+                    <div className="space-y-0.5">
+                        {[5, 4, 3, 2, 1].map((r) => (
+                            <CheckboxRow key={r} label={`${r} sao`} count={products.filter((p) => (p.rating || 0) >= r).length} checked={rating === r} onClick={() => setRating(rating === r ? null : r)}>
+                                <span className="inline-flex items-center gap-1">
+                                    {[...Array(5)].map((_, i) => (
+                                        <Star key={i} size={12} fill={i < r ? 'currentColor' : 'none'} className={i < r ? 'text-amber-400' : 'text-slate-300'} />
+                                    ))}
+                                </span>
+                            </CheckboxRow>
+                        ))}
+                    </div>
+                </section>
+            </div>
+        </div>
+    );
+
     return (
         <>
             {/* Desktop Sidebar - Always visible, sticky */}
-            <aside className="hidden lg:block sticky top-20 z-40 flex-shrink-0 w-72">
-                <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-                    {/* Categories */}
-                    <FilterSection title="Danh mục" icon={LayoutGrid}>
-                        <div className="space-y-1">
-                            <button
-                                onClick={() => setSelectedCategory('')}
-                                className={`w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center justify-between group ${!selectedCategory ? 'bg-orange-50 text-orange-600' : 'text-slate-600 hover:bg-slate-50'}`}
-                            >
-                                <span>Tất cả sản phẩm</span>
-                                {!selectedCategory && <Check size={14} />}
-                            </button>
-                            {categories.map(cat => (
-                                <button
-                                    key={cat.id}
-                                    onClick={() => setSelectedCategory(cat.slug)}
-                                    className={`w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center justify-between group ${selectedCategory === cat.slug ? 'bg-orange-50 text-orange-600' : 'text-slate-600 hover:bg-slate-50'}`}
-                                >
-                                    <span>{cat.name}</span>
-                                    {selectedCategory === cat.slug && <Check size={14} />}
-                                </button>
-                            ))}
-                        </div>
-                    </FilterSection>
-
-                    {/* Price Range */}
-                    <FilterSection title="Khoảng giá" icon={Tag}>
-                        <div className="space-y-4 pt-2">
-                            <div className="flex items-center justify-between text-xs font-bold text-slate-700">
-                                <span>{priceRange[0].toLocaleString()}đ</span>
-                                <span>{priceRange[1] >= 5000000 ? '5tr+' : priceRange[1].toLocaleString() + 'đ'}</span>
-                            </div>
-                            <input
-                                type="range"
-                                min="0"
-                                max="5000000"
-                                step="100000"
-                                value={priceRange[1]}
-                                onChange={(e) => setPriceRange([0, Number(e.target.value)])}
-                                className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-orange-600"
-                            />
-                            <div className="flex flex-wrap gap-2">
-                                {[0, 200000, 500000, 1000000].map(price => (
-                                    <button
-                                        key={price}
-                                        onClick={() => setPriceRange([0, price > 0 ? price : 5000000])}
-                                        className={`px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors ${priceRange[1] === (price || 5000000) ? 'bg-orange-600 text-white border-orange-600' : 'bg-white text-slate-600 border-slate-200 hover:border-orange-300'}`}
-                                    >
-                                        {price === 0 ? 'Tất cả' : `<${(price / 1000)}k`}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                    </FilterSection>
-
-                    {/* Format */}
-                    <FilterSection title="Định dạng" icon={Zap}>
-                        <div className="space-y-2">
-                            {['All', 'Theme', 'Template', 'Landing', 'MiniApp'].map(f => (
-                                <label key={f} className="flex items-center gap-3 cursor-pointer group p-2 rounded-lg hover:bg-slate-50 transition-colors">
-                                    <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors shadow-sm ${format === f || (format === '' && f === 'All') ? 'bg-orange-600 border-orange-600' : 'bg-white border-slate-300 group-hover:border-orange-400'}`}>
-                                        {(format === f || (format === '' && f === 'All')) && <Check size={12} className="text-white" />}
-                                    </div>
-                                    <input
-                                        type="radio"
-                                        name="format"
-                                        className="hidden"
-                                        checked={format === f || (format === '' && f === 'All')}
-                                        onChange={() => setFormat(f === 'All' ? '' : f)}
-                                    />
-                                    <span className={`text-sm ${format === f || (format === '' && f === 'All') ? 'text-slate-900 font-bold' : 'text-slate-600'}`}>
-                                        {f === 'All' ? 'Tất cả' : f}
-                                    </span>
-                                </label>
-                            ))}
-                        </div>
-                    </FilterSection>
-
-                    {/* Rating */}
-                    <FilterSection title="Đánh giá" icon={Star} defaultOpen={false}>
-                        <div className="space-y-2">
-                            {[5, 4, 3].map(r => (
-                                <button
-                                    key={r}
-                                    onClick={() => setRating(rating === r ? null : r)}
-                                    className={`flex items-center justify-between text-sm w-full p-2.5 rounded-lg transition-colors group ${rating === r ? 'bg-orange-50 text-orange-700 font-bold' : 'text-slate-600 hover:bg-slate-50'}`}
-                                >
-                                    <div className="flex items-center gap-2">
-                                        <div className="flex text-yellow-400">
-                                            {[...Array(5)].map((_, i) => (
-                                                <Star key={i} size={14} fill={i < r ? 'currentColor' : 'none'} className={i >= r ? 'text-slate-300' : ''} />
-                                            ))}
-                                        </div>
-                                        <span>Trở lên</span>
-                                    </div>
-                                    {rating === r && <Check size={14} />}
-                                </button>
-                            ))}
-                        </div>
-                    </FilterSection>
-                </div>
+            <aside className="hidden lg:block sticky top-20 z-40 w-60 shrink-0">
+                <SidebarContent />
             </aside>
 
-            {/* Mobile Sidebar - Fixed overlay */}
-            <aside className={`
-                fixed inset-y-0 left-0 z-50 w-80 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out lg:hidden
-                ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-            `}>
-                <div className="h-full overflow-y-auto p-4 sm:p-5 custom-scrollbar">
-                    <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-lg font-bold text-slate-900">Bộ Lọc</h2>
-                        <button onClick={onClose} className="p-1.5 hover:bg-slate-100 rounded-full">
+            <aside className={`fixed inset-y-0 left-0 z-50 w-80 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out lg:hidden ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+                <div className="h-full overflow-y-auto p-4 custom-scrollbar">
+                    <div className="mb-3 flex items-center justify-between">
+                        <h2 className="text-base font-extrabold text-slate-900">Bộ lọc</h2>
+                        <button onClick={onClose} className="rounded-full p-1.5 hover:bg-slate-100">
                             <X size={18} />
                         </button>
                     </div>
-
-                    <div className="bg-white">
-                        <FilterSection title="Danh mục" icon={LayoutGrid}>
-                            <div className="space-y-1">
-                                <button
-                                    onClick={() => setSelectedCategory('')}
-                                    className={`w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center justify-between group ${!selectedCategory ? 'bg-orange-50 text-orange-600' : 'text-slate-600 hover:bg-slate-50'}`}
-                                >
-                                    <span>Tất cả sản phẩm</span>
-                                    {!selectedCategory && <Check size={14} />}
-                                </button>
-                                {categories.map(cat => (
-                                    <button
-                                        key={cat.id}
-                                        onClick={() => setSelectedCategory(cat.slug)}
-                                        className={`w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center justify-between group ${selectedCategory === cat.slug ? 'bg-orange-50 text-orange-600' : 'text-slate-600 hover:bg-slate-50'}`}
-                                    >
-                                        <span>{cat.name}</span>
-                                        {selectedCategory === cat.slug && <Check size={14} />}
-                                    </button>
-                                ))}
-                            </div>
-                        </FilterSection>
-
-                        {/* Price Range */}
-                        <FilterSection title="Khoảng giá" icon={Tag}>
-                            <div className="space-y-4 pt-2">
-                                <div className="flex items-center justify-between text-xs font-bold text-slate-700">
-                                    <span>{priceRange[0].toLocaleString()}đ</span>
-                                    <span>{priceRange[1] >= 5000000 ? '5tr+' : priceRange[1].toLocaleString() + 'đ'}</span>
-                                </div>
-                                <input
-                                    type="range"
-                                    min="0"
-                                    max="5000000"
-                                    step="100000"
-                                    value={priceRange[1]}
-                                    onChange={(e) => setPriceRange([0, Number(e.target.value)])}
-                                    className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-orange-600"
-                                />
-                                <div className="flex flex-wrap gap-2">
-                                    {[0, 200000, 500000, 1000000].map(price => (
-                                        <button
-                                            key={price}
-                                            onClick={() => setPriceRange([0, price > 0 ? price : 5000000])}
-                                            className={`px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors ${priceRange[1] === (price || 5000000) ? 'bg-orange-600 text-white border-orange-600' : 'bg-white text-slate-600 border-slate-200 hover:border-orange-300'}`}
-                                        >
-                                            {price === 0 ? 'Tất cả' : `<${(price / 1000)}k`}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                        </FilterSection>
-
-                        {/* Format */}
-                        <FilterSection title="Định dạng" icon={Zap}>
-                            <div className="space-y-2">
-                                {['All', 'Theme', 'Template', 'Landing', 'MiniApp'].map(f => (
-                                    <label key={f} className="flex items-center gap-3 cursor-pointer group p-2 rounded-lg hover:bg-slate-50 transition-colors">
-                                        <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors shadow-sm ${format === f || (format === '' && f === 'All') ? 'bg-orange-600 border-orange-600' : 'bg-white border-slate-300 group-hover:border-orange-400'}`}>
-                                            {(format === f || (format === '' && f === 'All')) && <Check size={12} className="text-white" />}
-                                        </div>
-                                        <input
-                                            type="radio"
-                                            name="format"
-                                            className="hidden"
-                                            checked={format === f || (format === '' && f === 'All')}
-                                            onChange={() => setFormat(f === 'All' ? '' : f)}
-                                        />
-                                        <span className={`text-sm ${format === f || (format === '' && f === 'All') ? 'text-slate-900 font-bold' : 'text-slate-600'}`}>
-                                            {f === 'All' ? 'Tất cả' : f}
-                                        </span>
-                                    </label>
-                                ))}
-                            </div>
-                        </FilterSection>
-
-                        {/* Rating */}
-                        <FilterSection title="Đánh giá" icon={Star} defaultOpen={false}>
-                            <div className="space-y-2">
-                                {[5, 4, 3].map(r => (
-                                    <button
-                                        key={r}
-                                        onClick={() => setRating(rating === r ? null : r)}
-                                        className={`flex items-center justify-between text-sm w-full p-2.5 rounded-lg transition-colors group ${rating === r ? 'bg-orange-50 text-orange-700 font-bold' : 'text-slate-600 hover:bg-slate-50'}`}
-                                    >
-                                        <div className="flex items-center gap-2">
-                                            <div className="flex text-yellow-400">
-                                                {[...Array(5)].map((_, i) => (
-                                                    <Star key={i} size={14} fill={i < r ? 'currentColor' : 'none'} className={i >= r ? 'text-slate-300' : ''} />
-                                                ))}
-                                            </div>
-                                            <span>Trở lên</span>
-                                        </div>
-                                        {rating === r && <Check size={14} />}
-                                    </button>
-                                ))}
-                            </div>
-                        </FilterSection>
-                    </div>
+                    <SidebarContent />
                 </div>
             </aside>
         </>
@@ -314,6 +292,7 @@ function ProductsPageContent() {
     const [loading, setLoading] = useState(true);
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
     const [showSidebar, setShowSidebar] = useState(false);
+    const [showMobileSort, setShowMobileSort] = useState(false);
 
     // Quick View state
     const [quickViewProduct, setQuickViewProduct] = useState<any | null>(null);
@@ -423,13 +402,40 @@ function ProductsPageContent() {
         window.scrollTo({ top: 300, behavior: 'smooth' }); // Scroll effectively to top of list
     };
 
+    const heroSlides = [
+        '/product_slider/slider_products_1.png',
+        '/product_slider/slider_products_2.png',
+        '/product_slider/slider_products_3.png',
+        '/product_slider/slider_products_4.png',
+    ];
+
+    const sortOptions = [
+        { value: 'newest', label: 'Mới nhất' },
+        { value: 'popular', label: 'Phổ biến' },
+        { value: 'price-asc', label: 'Giá ↑' },
+        { value: 'price-desc', label: 'Giá ↓' },
+    ];
+    const currentSortLabel = sortOptions.find((option) => option.value === sortBy)?.label || 'Mới nhất';
+
     return (
         <div className="min-h-screen bg-slate-50">
             {/* Professional Hero Section - Mobile Optimized */}
             <div className="bg-slate-900 relative overflow-hidden text-white">
                 <div className="absolute inset-0">
-                    <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070')] bg-cover bg-center opacity-20" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/90 to-transparent" />
+                    {heroSlides.map((slide, index) => (
+                        <Image
+                            key={slide}
+                            src={slide}
+                            alt=""
+                            fill
+                            priority={index === 0}
+                            sizes="100vw"
+                            className={`${heroSlides.length > 1 ? 'product-hero-slide' : 'opacity-100'} object-cover`}
+                            style={heroSlides.length > 1 ? { animationDelay: `${index * 3}s` } : undefined}
+                        />
+                    ))}
+                    <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/88 to-slate-950/25" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/45 via-transparent to-slate-950/25" />
                 </div>
 
                 <div className="relative max-w-7xl mx-auto px-4 py-8 sm:py-12 md:py-16 lg:py-20 z-10">
@@ -467,7 +473,7 @@ function ProductsPageContent() {
                 </div>
             </div>
 
-            <div className="max-w-[1440px] mx-auto px-3 sm:px-4 md:px-8 lg:px-12 py-4 sm:py-6 md:py-10">
+            <div className="max-w-[1440px] mx-auto px-3 sm:px-4 md:px-8 lg:px-12 pt-4 sm:pt-6 md:pt-10 pb-0">
                 {/* Mobile Filter Bar - Compact & Functional */}
                 <div className="lg:hidden sticky top-14 sm:top-16 z-30 bg-slate-50 -mx-3 sm:-mx-4 px-3 sm:px-4 py-2 sm:py-3 mb-3 sm:mb-4">
                     {/* Results Count */}
@@ -487,18 +493,33 @@ function ProductsPageContent() {
                                 <span className="w-4 h-4 bg-orange-500 text-white text-[10px] rounded-full flex items-center justify-center">!</span>
                             )}
                         </button>
-                        <div className="flex-1 relative">
-                            <select
-                                value={sortBy}
-                                onChange={e => setSortBy(e.target.value)}
-                                className="w-full appearance-none px-3 py-2 sm:py-2.5 bg-white border border-slate-200 rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold text-slate-700 outline-none shadow-sm pr-7"
+                        <div className="relative flex-1">
+                            <button
+                                type="button"
+                                onClick={() => setShowMobileSort((value) => !value)}
+                                className="flex w-full items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-sm transition active:scale-[0.98] sm:rounded-xl sm:py-2.5 sm:text-sm"
                             >
-                                <option value="newest">Mới nhất</option>
-                                <option value="popular">Phổ biến</option>
-                                <option value="price-asc">Giá ↑</option>
-                                <option value="price-desc">Giá ↓</option>
-                            </select>
-                            <ChevronDown size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                                <span>{currentSortLabel}</span>
+                                <ChevronDown size={12} className={`text-slate-400 transition-transform ${showMobileSort ? 'rotate-180' : ''}`} />
+                            </button>
+                            {showMobileSort && (
+                                <div className="absolute right-0 top-[calc(100%+6px)] z-50 w-full min-w-[150px] overflow-hidden rounded-xl border border-orange-100 bg-white p-1.5 shadow-xl">
+                                    {sortOptions.map((option) => (
+                                        <button
+                                            key={option.value}
+                                            type="button"
+                                            onClick={() => {
+                                                setSortBy(option.value);
+                                                setShowMobileSort(false);
+                                            }}
+                                            className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-xs font-bold transition ${sortBy === option.value ? 'bg-orange-50 text-orange-600' : 'text-slate-600 hover:bg-slate-50'}`}
+                                        >
+                                            {option.label}
+                                            {sortBy === option.value && <Check size={13} />}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -511,18 +532,19 @@ function ProductsPageContent() {
                         setSelectedCategory={setSelectedCategory}
                         priceRange={priceRange}
                         setPriceRange={setPriceRange}
-                        rating={ratingFilter}
-                        setRating={setRatingFilter}
-                        format={formatFilter}
-                        setFormat={setFormatFilter}
-                        isOpen={showSidebar}
+	                        rating={ratingFilter}
+	                        setRating={setRatingFilter}
+	                        format={formatFilter}
+	                        setFormat={setFormatFilter}
+	                        products={products}
+	                        isOpen={showSidebar}
                         onClose={() => setShowSidebar(false)}
                     />
 
                     {/* Main Content */}
                     <div className="flex-1 min-w-0 w-full">
                         {/* Toolbar */}
-                        <div className="hidden lg:flex items-center justify-between mb-6 bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                        <div className="hidden lg:flex items-center justify-between mb-5 bg-white p-4 rounded-2xl shadow-sm border border-orange-100">
                             <div className="flex items-center gap-4">
                                 <span className="text-slate-500 font-medium text-sm">Hiển thị {filteredProducts.length} kết quả</span>
                                 <div className="h-4 w-px bg-slate-200" />
@@ -658,11 +680,49 @@ function ProductsPageContent() {
                                 )}
                             </>
                         )}
-                    </div>
-                </div>
+	                    </div>
+	                </div>
 
-                {/* Quick View Modal */}
-                <QuickViewModal
+	                <div className="mt-6 space-y-5">
+		                    <div className="grid grid-cols-2 gap-2 rounded-2xl border border-orange-100 bg-gradient-to-r from-orange-50 via-white to-orange-50 p-2.5 shadow-sm md:grid-cols-4 md:gap-3 md:p-4">
+	                        {[
+                            { icon: Package, title: 'Sản phẩm chất lượng', desc: 'Đã được kiểm duyệt kỹ lưỡng' },
+                            { icon: CreditCard, title: 'Thanh toán an toàn', desc: 'Bảo mật tuyệt đối' },
+                            { icon: Download, title: 'Tải về không giới hạn', desc: 'Sử dụng trọn đời' },
+                            { icon: Headphones, title: 'Hỗ trợ tận tâm 24/7', desc: 'Giải đáp mọi thắc mắc' },
+	                        ].map((item) => (
+		                            <div key={item.title} className="flex items-start gap-2 rounded-xl bg-white/45 px-2 py-2 md:items-center md:gap-3 md:bg-transparent">
+		                                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-orange-100 text-orange-600 shadow-sm ring-1 ring-orange-200/70 md:h-11 md:w-11">
+		                                    <item.icon size={16} className="md:h-5 md:w-5" />
+		                                </span>
+		                                <span className="min-w-0">
+		                                    <strong className="block text-[11px] font-extrabold leading-snug text-slate-900 md:text-sm">{item.title}</strong>
+		                                    <span className="mt-0.5 block text-[10px] font-semibold leading-snug text-slate-500 md:text-xs">{item.desc}</span>
+		                                </span>
+		                            </div>
+	                        ))}
+	                    </div>
+
+	                    <div className="relative overflow-hidden rounded-2xl border border-orange-100 bg-gradient-to-r from-orange-50 via-white to-orange-100 p-4 shadow-sm md:flex md:items-center md:justify-between md:p-5">
+	                        <div className="pointer-events-none absolute -left-6 -top-8 h-24 w-24 rotate-12 rounded-[30px] bg-orange-200/50 blur-2xl" />
+	                        <div className="relative flex items-start gap-4">
+	                            <span className="hidden h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-orange-100 text-orange-600 md:flex">
+	                                <Send size={34} />
+	                            </span>
+	                            <div>
+                                <h3 className="text-lg font-extrabold text-orange-700">Cập nhật sản phẩm mới & ưu đãi mỗi tuần!</h3>
+                                <p className="mt-1 text-sm font-medium text-slate-600">Đừng bỏ lỡ các sản phẩm chất lượng và chương trình khuyến mãi hấp dẫn.</p>
+	                            </div>
+	                        </div>
+	                        <div className="relative mt-4 flex overflow-hidden rounded-xl border border-orange-100 bg-white p-1 shadow-sm md:mt-0 md:w-[430px]">
+                            <input className="min-w-0 flex-1 px-4 text-sm font-semibold text-slate-700 outline-none placeholder:text-slate-400" placeholder="Nhập email của bạn" />
+                            <button className="rounded-lg bg-orange-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-orange-700">Đăng ký ngay</button>
+	                        </div>
+	                    </div>
+	                </div>
+
+	                {/* Quick View Modal */}
+	                <QuickViewModal
                     product={quickViewProduct}
                     isOpen={isQuickViewOpen}
                     onClose={() => setIsQuickViewOpen(false)}
@@ -676,6 +736,21 @@ function ProductsPageContent() {
                     onClick={() => setShowSidebar(false)}
                 />
             )}
+
+            <style jsx>{`
+                :global(.product-hero-slide) {
+                    opacity: 0;
+                    animation: productHeroFade 12s ease-in-out infinite;
+                }
+
+                @keyframes productHeroFade {
+                    0% { opacity: 0; transform: scale(1.015); }
+                    8% { opacity: 1; transform: scale(1); }
+                    22% { opacity: 1; transform: scale(1.01); }
+                    30% { opacity: 0; transform: scale(1.02); }
+                    100% { opacity: 0; transform: scale(1.02); }
+                }
+            `}</style>
         </div>
     );
 }

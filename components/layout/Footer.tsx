@@ -1,15 +1,29 @@
-'use client';
+"use client";
 
-import React, { useState, useCallback, memo } from 'react';
+import React, { useState, useCallback, memo } from "react";
 import {
-  Facebook, Instagram, Twitter, Youtube, Mail,
-  Package, Send, Heart, Sparkles, MapPin, Phone
-} from 'lucide-react';
-import { useTranslation } from 'react-i18next';
-import Link from 'next/link';
+  Facebook,
+  Instagram,
+  Twitter,
+  Youtube,
+  Mail,
+  Send,
+  Heart,
+  Sparkles,
+  MapPin,
+  Phone,
+  Clock,
+  Shield,
+  MessageCircle,
+  ChevronRight,
+  ChevronDown,
+} from "lucide-react";
+import { useTranslation } from "react-i18next";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 // ============================================
-// Social Link Component - Memoized
+// Social Link - Memoized
 // ============================================
 interface SocialLinkProps {
   href: string;
@@ -21,22 +35,23 @@ interface SocialLinkProps {
 const SocialLink = memo<SocialLinkProps>(({ href, icon, gradient, label }) => (
   <a
     href={href}
-    className="group relative w-11 h-11 rounded-xl bg-slate-800 flex items-center justify-center overflow-hidden transition-all duration-300 hover:scale-110 active:scale-95"
+    className="group relative w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center overflow-hidden transition-all duration-300 hover:scale-110 active:scale-95"
     aria-label={label}
     target="_blank"
     rel="noopener noreferrer"
   >
-    <span className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-100 transition-opacity`} />
+    <span
+      className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-100 transition-opacity`}
+    />
     <span className="relative z-10 text-slate-400 group-hover:text-white transition-colors">
       {icon}
     </span>
   </a>
 ));
-
-SocialLink.displayName = 'SocialLink';
+SocialLink.displayName = "SocialLink";
 
 // ============================================
-// Footer Link Component - Memoized
+// Footer Link - Memoized
 // ============================================
 interface FooterLinkProps {
   href: string;
@@ -44,83 +59,193 @@ interface FooterLinkProps {
   color?: string;
 }
 
-const FooterLink = memo<FooterLinkProps>(({ href, children, color = 'orange' }) => (
-  <li>
-    <Link
-      href={href}
-      className={`group flex items-start gap-2 text-slate-400 hover:text-${color}-400 transition-all duration-200`}
-      prefetch={true}
-    >
-      <span className={`w-1.5 h-1.5 rounded-full bg-${color}-500 opacity-0 group-hover:opacity-100 transition-opacity mt-1.5 flex-shrink-0`} />
-      <span className="group-hover:translate-x-1 transition-transform duration-200">
-        {children}
-      </span>
-    </Link>
-  </li>
-));
-
-FooterLink.displayName = 'FooterLink';
+const FooterLink = memo<FooterLinkProps>(
+  ({ href, children, color = "orange" }) => (
+    <li>
+      <Link
+        href={href}
+        className={`group flex items-center gap-2 text-slate-400 hover:text-${color}-400 transition-all duration-200 py-0.5`}
+        prefetch={true}
+      >
+        <ChevronRight
+          size={12}
+          className={`text-${color}-600/50 group-hover:text-${color}-400 group-hover:translate-x-0.5 transition-all flex-shrink-0`}
+        />
+        <span className="group-hover:translate-x-0.5 transition-transform duration-200 text-sm">
+          {children}
+        </span>
+      </Link>
+    </li>
+  ),
+);
+FooterLink.displayName = "FooterLink";
 
 // ============================================
-// Special Footer Link (Affiliate) - Memoized
+// Category Link - Logo icon thật từ devicon CDN
+// ============================================
+interface CategoryLinkProps {
+  href: string;
+  logo: string; // URL ảnh logo
+  logoAlt: string;
+  children: React.ReactNode;
+}
+
+const CategoryLink = memo<CategoryLinkProps>(
+  ({ href, logo, logoAlt, children }) => (
+    <li>
+      <Link
+        href={href}
+        className="group flex items-center gap-2.5 text-slate-400 hover:text-orange-400 transition-all duration-200 py-0.5"
+        prefetch={true}
+      >
+        <span className="w-[18px] h-[18px] flex items-center justify-center flex-shrink-0 opacity-70 group-hover:opacity-100 transition-opacity">
+          <img
+            src={logo}
+            alt={logoAlt}
+            width={16}
+            height={16}
+            className="object-contain w-4 h-4"
+            loading="lazy"
+          />
+        </span>
+        <span className="group-hover:translate-x-0.5 transition-transform duration-200 text-sm">
+          {children}
+        </span>
+      </Link>
+    </li>
+  ),
+);
+CategoryLink.displayName = "CategoryLink";
+
+// ============================================
+// Affiliate Link - Memoized
 // ============================================
 const AffiliateLink = memo(() => (
   <li>
     <Link
       href="/affiliate"
-      className="group flex items-start gap-2 text-slate-400 hover:text-amber-400 transition-all duration-200"
+      className="group flex items-center gap-2 text-slate-400 hover:text-amber-400 transition-all duration-200 py-0.5"
       prefetch={true}
     >
-      <Sparkles size={12} className="text-amber-500 animate-pulse mt-1 flex-shrink-0" />
-      <span className="group-hover:translate-x-1 transition-transform duration-200">
+      <Sparkles
+        size={12}
+        className="text-amber-500 animate-pulse flex-shrink-0"
+      />
+      <span className="group-hover:translate-x-0.5 transition-transform duration-200 text-sm">
         Trở thành Đối Tác
       </span>
     </Link>
   </li>
 ));
-
-AffiliateLink.displayName = 'AffiliateLink';
+AffiliateLink.displayName = "AffiliateLink";
 
 // ============================================
-// Newsletter Form - Separated Component
+// Mobile Accordion Section
+// ============================================
+interface AccordionSectionProps {
+  title: string;
+  titleGradient: string;
+  children: React.ReactNode;
+  defaultOpen?: boolean;
+}
+
+const AccordionSection = memo<AccordionSectionProps>(
+  ({ title, titleGradient, children, defaultOpen = false }) => {
+    const [open, setOpen] = useState(defaultOpen);
+
+    return (
+      <div className="border-b border-slate-800/60 lg:border-none">
+        {/* Header — chỉ clickable trên mobile */}
+        <button
+          className="lg:hidden w-full flex items-center justify-between py-3.5 text-left"
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+        >
+          <span
+            className={`text-sm font-bold bg-gradient-to-r ${titleGradient} bg-clip-text text-transparent`}
+          >
+            {title}
+          </span>
+          <ChevronDown
+            size={16}
+            className={`text-slate-500 transition-transform duration-300 flex-shrink-0 ${open ? "rotate-180" : ""}`}
+          />
+        </button>
+
+        {/* Desktop: luôn hiện */}
+        <div className="hidden lg:block">
+          <h4
+            className={`text-base font-bold bg-gradient-to-r ${titleGradient} bg-clip-text text-transparent mb-1.5`}
+          >
+            {title}
+          </h4>
+          <div
+            className="w-8 h-0.5 mb-5 rounded-full"
+            style={{ background: "linear-gradient(90deg, #f97316, #ef4444)" }}
+          />
+          <ul className="space-y-2.5">{children}</ul>
+        </div>
+
+        {/* Mobile: collapse/expand */}
+        <div
+          className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${open ? "max-h-96 pb-4" : "max-h-0"}`}
+        >
+          <ul className="space-y-1">{children}</ul>
+        </div>
+      </div>
+    );
+  },
+);
+AccordionSection.displayName = "AccordionSection";
+
+// ============================================
+// Newsletter Form
 // ============================================
 const NewsletterForm = memo(() => {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [isSubscribed, setIsSubscribed] = useState(false);
 
-  const handleSubscribe = useCallback((e: React.FormEvent) => {
-    e.preventDefault();
-    if (email) {
-      setIsSubscribed(true);
-      setTimeout(() => {
-        setIsSubscribed(false);
-        setEmail('');
-      }, 3000);
-    }
-  }, [email]);
+  const handleSubscribe = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      if (email) {
+        setIsSubscribed(true);
+        setTimeout(() => {
+          setIsSubscribed(false);
+          setEmail("");
+        }, 3000);
+      }
+    },
+    [email],
+  );
 
-  const handleEmailChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-  }, []);
+  const handleEmailChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setEmail(e.target.value);
+    },
+    [],
+  );
 
   return (
     <form onSubmit={handleSubscribe} className="space-y-3">
-      <div className="relative group">
+      <div className="flex flex-col sm:flex-row gap-2">
         <input
           type="email"
           placeholder="Email của bạn..."
           value={email}
           onChange={handleEmailChange}
-          className="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3.5 pr-12 text-sm text-white focus:outline-none focus:border-orange-500 focus:bg-slate-800 placeholder-slate-500 transition-all duration-300"
+          className="flex-1 min-w-0 bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-orange-500 focus:bg-slate-800 placeholder-slate-500 transition-all duration-300"
           required
           maxLength={100}
         />
         <button
           type="submit"
-          className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-gradient-to-r from-orange-600 to-red-600 rounded-lg text-white hover:shadow-lg hover:shadow-orange-600/50 transition-all duration-300 hover:scale-110 active:scale-90"
-          aria-label="Subscribe"
+          className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold text-white hover:opacity-90 active:scale-95 transition-all duration-200 flex-shrink-0"
+          style={{
+            background: "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
+          }}
         >
-          <Send size={16} />
+          Đăng ký ngay <Send size={14} />
         </button>
       </div>
 
@@ -132,177 +257,591 @@ const NewsletterForm = memo(() => {
       )}
 
       <p className="text-xs text-slate-500 flex items-center gap-1.5">
-        <Heart size={10} className="text-rose-500 flex-shrink-0" />
+        <Shield size={10} className="flex-shrink-0" />
         <span>Chúng tôi cam kết bảo mật thông tin của bạn.</span>
       </p>
     </form>
   );
 });
-
-NewsletterForm.displayName = 'NewsletterForm';
+NewsletterForm.displayName = "NewsletterForm";
 
 // ============================================
-// Main Footer Component
+// Payment Badge
+// ============================================
+const PaymentBadge = memo<{ children: React.ReactNode; className?: string }>(
+  ({ children, className = "" }) => (
+    <div
+      className={`flex items-center justify-center px-2 py-2 rounded-lg ${className}`}
+      style={{
+        background: "rgba(255,255,255,0.07)",
+        border: "1px solid rgba(255,255,255,0.1)",
+      }}
+    >
+      {children}
+    </div>
+  ),
+);
+PaymentBadge.displayName = "PaymentBadge";
+
+// ============================================
+// Danh mục data — logo thật từ devicon CDN
+// ============================================
+const CATEGORY_ITEMS = [
+  {
+    href: "/products?category=themes",
+    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg",
+    label: "Themes & UI Kits",
+  },
+  {
+    href: "/products?category=landing",
+    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg",
+    label: "Landing Pages",
+  },
+  {
+    href: "/products?category=templates",
+    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg",
+    label: "Templates",
+  },
+  {
+    href: "/products?category=miniapps",
+    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg",
+    label: "Mini Apps & Tools",
+  },
+  {
+    href: "/products?category=wordpress",
+    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/wordpress/wordpress-original.svg",
+    label: "WordPress",
+  },
+  {
+    href: "/products?category=ecommerce",
+    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/woocommerce/woocommerce-original.svg",
+    label: "E-commerce",
+  },
+  {
+    href: "/products?category=marketing",
+    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/google/google-original.svg",
+    label: "Marketing & SEO",
+  },
+  {
+    href: "/products?category=graphics",
+    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/photoshop/photoshop-original.svg",
+    label: "Graphics & Photos",
+  },
+] as const;
+
+// ============================================
+// Main Footer
 // ============================================
 const Footer = () => {
   const { t } = useTranslation();
+  const pathname = usePathname();
+  const showBrandSlider = pathname === "/";
 
-  // Memoized social links data
-  const socialLinks = React.useMemo(() => [
-    { href: 'https://facebook.com', icon: <Facebook size={18} />, gradient: 'from-blue-600 to-blue-400', label: 'Facebook' },
-    { href: 'https://instagram.com', icon: <Instagram size={18} />, gradient: 'from-pink-600 to-orange-500', label: 'Instagram' },
-    { href: 'https://twitter.com', icon: <Twitter size={18} />, gradient: 'from-sky-500 to-blue-400', label: 'Twitter' },
-    { href: 'https://youtube.com', icon: <Youtube size={18} />, gradient: 'from-red-600 to-red-400', label: 'Youtube' },
-  ], []);
+  const socialLinks = React.useMemo(
+    () => [
+      {
+        href: "https://facebook.com",
+        icon: <Facebook size={17} />,
+        gradient: "from-blue-600 to-blue-400",
+        label: "Facebook",
+      },
+      {
+        href: "https://instagram.com",
+        icon: <Instagram size={17} />,
+        gradient: "from-pink-600 to-orange-500",
+        label: "Instagram",
+      },
+      {
+        href: "https://twitter.com",
+        icon: <Twitter size={17} />,
+        gradient: "from-sky-500 to-blue-400",
+        label: "Twitter",
+      },
+      {
+        href: "https://youtube.com",
+        icon: <Youtube size={17} />,
+        gradient: "from-red-600 to-red-400",
+        label: "Youtube",
+      },
+      {
+        href: "https://t.me",
+        icon: <Send size={17} />,
+        gradient: "from-sky-500 to-cyan-400",
+        label: "Telegram",
+      },
+    ],
+    [],
+  );
+
+  const brands = React.useMemo(
+    () => [
+      {
+        name: "WordPress",
+        color: "#21759b",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/wordpress/wordpress-original.svg",
+      },
+      {
+        name: "React",
+        color: "#61dafb",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg",
+      },
+      {
+        name: "Next.js",
+        color: "#000",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg",
+      },
+      {
+        name: "Vue.js",
+        color: "#42b883",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vuejs/vuejs-original.svg",
+      },
+      {
+        name: "Laravel",
+        color: "#ff2d20",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg",
+      },
+      {
+        name: "Figma",
+        color: "#f24e1e",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg",
+      },
+      {
+        name: "Tailwind",
+        color: "#38bdf8",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg",
+      },
+      {
+        name: "Bootstrap",
+        color: "#7952b3",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bootstrap/bootstrap-original.svg",
+      },
+      {
+        name: "TypeScript",
+        color: "#3178c6",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg",
+      },
+      {
+        name: "Node.js",
+        color: "#339933",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg",
+      },
+    ],
+    [],
+  );
+
+  const marqueeBrands = React.useMemo(() => [...brands, ...brands], [brands]);
 
   return (
-    <footer className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      {/* Decorative Top Border */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-red-600 to-amber-600" />
+    <>
+      {/* ── Brand Slider (home only) ── */}
+      {showBrandSlider && (
+        <div className="relative w-full overflow-hidden bg-gradient-to-b from-white via-[#fffaf5] to-white pt-3 md:pt-5 pb-3 md:pb-4">
+          <div
+            className="absolute inset-0 opacity-[0.035]"
+            style={{
+              backgroundImage:
+                "linear-gradient(rgba(15,23,42,.7) 1px,transparent 1px),linear-gradient(90deg,rgba(15,23,42,.7) 1px,transparent 1px)",
+              backgroundSize: "44px 44px",
+            }}
+          />
+          <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+            <p className="brand-title-glow mx-auto max-w-[300px] md:max-w-none text-center text-[10px] md:text-sm font-bold text-slate-500 uppercase tracking-[0.12em] md:tracking-[0.14em] leading-relaxed mb-2 md:mb-3">
+              Được tin dùng bởi các thương hiệu & công nghệ hàng đầu
+            </p>
+            <div className="brand-shelf relative w-full overflow-hidden rounded-[22px] md:rounded-[28px] border border-white/80 bg-white/95 px-3 md:px-4 py-2.5 md:py-3 shadow-[0_14px_36px_rgba(15,23,42,0.07)] ring-1 ring-slate-100/70 backdrop-blur">
+              <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-orange-300/70 to-transparent" />
+              <div className="pointer-events-none absolute -bottom-12 left-1/2 h-24 w-56 -translate-x-1/2 rounded-full bg-orange-100/50 blur-3xl" />
+              <div className="absolute left-0 top-0 w-14 md:w-28 h-full bg-gradient-to-r from-white to-transparent z-20 pointer-events-none" />
+              <div className="absolute right-0 top-0 w-14 md:w-28 h-full bg-gradient-to-l from-white to-transparent z-20 pointer-events-none" />
+              <div
+                className="relative z-10 flex gap-8 md:gap-16 brand-marquee select-none py-1 md:py-2"
+                style={{ width: "max-content" }}
+              >
+                {marqueeBrands.map((brand, i) => (
+                  <div
+                    key={i}
+                    className="flex flex-col items-center gap-2 md:gap-3 opacity-85 hover:opacity-100 transition-all duration-300 flex-shrink-0"
+                  >
+                    <div
+                      className="brand-logo-card w-12 h-12 md:w-[72px] md:h-[72px] rounded-2xl flex items-center justify-center bg-white shadow-sm border border-slate-100/90"
+                      style={{ color: brand.color }}
+                    >
+                      <img
+                        src={brand.logo}
+                        alt={`${brand.name} logo`}
+                        className="brand-logo-img h-7 w-7 md:h-9 md:w-9 object-contain"
+                        loading="lazy"
+                      />
+                    </div>
+                    <span className="text-[10px] md:text-xs font-extrabold text-slate-500 whitespace-nowrap">
+                      {brand.name}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5 pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-orange-500 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-red-500 rounded-full blur-3xl" />
-      </div>
+      {/* ── FOOTER CHÍNH ── */}
+      <footer className="relative mt-2 md:mt-3 overflow-visible bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+        {/* Wave */}
+        <svg
+          className="absolute left-0 right-0 -top-5 md:-top-8 h-5 md:h-8 w-full pointer-events-none"
+          viewBox="0 0 1440 80"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M0 0 H1440 V38 C1220 38 1040 62 720 62 C400 62 220 38 0 38 Z"
+            fill="#ffffff"
+          />
+        </svg>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
-        {/* Main Footer Content */}
-        <div className="mb-12">
-          {/* Desktop: 4 columns grid, Mobile: Stack layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-10 lg:gap-8">
+        <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-orange-400/60 to-transparent" />
+        <div className="absolute inset-x-0 -top-10 h-24 bg-gradient-to-b from-orange-500/10 via-transparent to-transparent blur-2xl pointer-events-none" />
 
-            {/* Brand Section */}
-            <div className="space-y-6">
+        {/* Background blobs */}
+        <div className="absolute inset-0 opacity-5 pointer-events-none">
+          <div className="absolute top-24 left-10 w-72 h-72 bg-orange-500 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-red-500 rounded-full blur-3xl" />
+        </div>
+
+        {/* Sparkle dots */}
+        <div
+          className="absolute inset-0 overflow-hidden pointer-events-none"
+          aria-hidden="true"
+        >
+          {[
+            { top: "10%", left: "8%", size: 2, opacity: 0.55 },
+            { top: "22%", left: "18%", size: 1.5, opacity: 0.35 },
+            { top: "6%", left: "42%", size: 2, opacity: 0.5 },
+            { top: "35%", left: "58%", size: 1.5, opacity: 0.3 },
+            { top: "15%", left: "74%", size: 2.5, opacity: 0.5 },
+            { top: "45%", left: "85%", size: 1.5, opacity: 0.4 },
+            { top: "60%", left: "92%", size: 2, opacity: 0.45 },
+            { top: "70%", left: "4%", size: 1.5, opacity: 0.3 },
+            { top: "75%", left: "32%", size: 2, opacity: 0.35 },
+            { top: "18%", left: "93%", size: 3, opacity: 0.25 },
+          ].map((dot, i) => (
+            <div
+              key={i}
+              className="absolute rounded-full bg-orange-400"
+              style={{
+                top: dot.top,
+                left: dot.left,
+                width: dot.size,
+                height: dot.size,
+                opacity: dot.opacity,
+                boxShadow: `0 0 ${dot.size * 3}px rgba(251,146,60,0.8)`,
+              }}
+            />
+          ))}
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 md:pt-12 pb-6">
+          {/* ── LAYOUT CHÍNH ── */}
+          <div className="lg:grid lg:grid-cols-4 lg:gap-8 lg:mb-12">
+            {/* ── CỘT 1: Brand + Contact + Social ── */}
+            <div className="mb-6 lg:mb-0 space-y-4 lg:space-y-6">
               <div className="flex items-center gap-3 group">
-                <div className="relative">
+                <div className="relative flex-shrink-0">
                   <div className="absolute inset-0 bg-gradient-to-r from-orange-600 via-red-600 to-amber-600 rounded-2xl blur-lg opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
                   <img
                     src="/favicon.png"
                     alt="DigitalMart Logo"
-                    className="relative w-12 h-12 rounded-2xl shadow-lg transform group-hover:rotate-6 transition-transform duration-500"
+                    className="relative w-10 h-10 lg:w-12 lg:h-12 rounded-2xl shadow-lg transform group-hover:rotate-6 transition-transform duration-500"
                   />
                 </div>
                 <div className="flex flex-col">
-                  <h3 className="font-serif text-2xl font-bold bg-gradient-to-r from-orange-400 via-red-400 to-amber-400 bg-clip-text text-transparent tracking-tight">
+                  <h3 className="font-serif text-xl lg:text-2xl font-bold bg-gradient-to-r from-orange-400 via-red-400 to-amber-400 bg-clip-text text-transparent tracking-tight">
                     DigitalMart
                   </h3>
-                  <span className="text-[10px] font-semibold text-orange-500 -mt-1 tracking-wider">DIGITAL PRODUCTS</span>
+                  <span className="text-[10px] font-semibold text-orange-500 -mt-0.5 tracking-wider">
+                    DIGITAL PRODUCTS
+                  </span>
                 </div>
               </div>
 
-              <p className="text-sm leading-relaxed text-slate-400">
-                Marketplace sản phẩm số hàng đầu. Themes, Templates, Landing Pages chất lượng cao cho mọi dự án của bạn.
+              <p className="hidden lg:block text-sm leading-relaxed text-slate-400">
+                DigitalMart là marketplace cung cấp các sản phẩm số chất lượng
+                cao như themes, templates, plugin, UI kits, và nhiều tài nguyên
+                thiết kế khác.
               </p>
 
-              {/* Contact Info */}
-              <div className="space-y-3 text-sm text-slate-400">
-                <div className="flex items-start gap-3">
-                  <MapPin size={16} className="text-orange-500 mt-0.5 flex-shrink-0" />
-                  <span>Hạ Long, Quảng Ninh, Việt Nam</span>
+              <div className="grid grid-cols-2 lg:grid-cols-1 gap-x-4 gap-y-2 text-sm text-slate-400">
+                <div className="flex items-center gap-2">
+                  <Phone size={13} className="text-orange-500 flex-shrink-0" />
+                  <span className="text-xs lg:text-sm truncate">
+                    0971 386 588
+                  </span>
                 </div>
-                <div className="flex items-center gap-3">
-                  <Phone size={16} className="text-red-500 flex-shrink-0" />
-                  <span>0971 386 588</span>
+                <div className="flex items-center gap-2">
+                  <Clock size={13} className="text-orange-500 flex-shrink-0" />
+                  <span className="text-xs lg:text-sm">T2–T7: 8:00–18:00</span>
                 </div>
-                <div className="flex items-center gap-3">
-                  <Mail size={16} className="text-amber-500 flex-shrink-0" />
-                  <span>veutong961@gmail.com</span>
+                <div className="flex items-center gap-2 col-span-2 lg:col-span-1">
+                  <Mail size={13} className="text-orange-500 flex-shrink-0" />
+                  <a
+                    href="mailto:veutong961@gmail.com"
+                    className="text-xs lg:text-sm truncate hover:text-orange-400 transition-colors"
+                  >
+                    veutong961@gmail.com
+                  </a>
+                </div>
+                <div className="flex items-start gap-2 col-span-2 lg:col-span-1">
+                  <MapPin
+                    size={13}
+                    className="text-orange-500 mt-0.5 flex-shrink-0"
+                  />
+                  <span className="text-xs lg:text-sm">
+                    Hạ Long, Quảng Ninh, Việt Nam
+                  </span>
                 </div>
               </div>
 
-              {/* Social Media */}
-              <div className="flex space-x-3">
-                {socialLinks.map((social) => (
-                  <SocialLink key={social.label} {...social} />
+              <div className="flex gap-2">
+                {socialLinks.map((s) => (
+                  <SocialLink key={s.label} {...s} />
                 ))}
               </div>
             </div>
 
-            {/* Mobile: 2 columns for links, Desktop: separate columns */}
-            <div className="grid grid-cols-2 gap-8 lg:gap-0 lg:col-span-2 lg:grid-cols-2">
-              {/* Quick Links */}
-              <div>
-                <h4 className="text-base font-bold bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent mb-5">
-                  Khám Phá
-                </h4>
-                <ul className="space-y-3 text-sm">
-                  <FooterLink href="/about">Về Chúng Tôi</FooterLink>
-                  <FooterLink href="/products">Sản Phẩm Số</FooterLink>
-                  <FooterLink href="/blog">Blog</FooterLink>
-                  <FooterLink href="/community">Cộng Đồng</FooterLink>
-                  <AffiliateLink />
-                  <FooterLink href="/tracking">Tra Cứu Đơn Hàng</FooterLink>
-                </ul>
-              </div>
+            {/* ── CỘT 2 + 3: Accordion mobile / Desktop bình thường ── */}
+            <div className="lg:contents">
+              {/* Khám Phá */}
+              <AccordionSection
+                title="Khám Phá"
+                titleGradient="from-orange-400 to-red-400"
+              >
+                <FooterLink href="/about">Về Chúng Tôi</FooterLink>
+                <FooterLink href="/products">Sản Phẩm Số</FooterLink>
+                <FooterLink href="/blog">Blog</FooterLink>
+                <FooterLink href="/community">Cộng Đồng</FooterLink>
+                <AffiliateLink />
+                <FooterLink href="/tracking">Tra Cứu Đơn Hàng</FooterLink>
+                <FooterLink href="/policy/terms">
+                  Chính Sách & Điều Khoản
+                </FooterLink>
+                <FooterLink href="/payment-guide">
+                  Hướng Dẫn Thanh Toán
+                </FooterLink>
+              </AccordionSection>
 
-              {/* Categories */}
-              <div>
-                <h4 className="text-base font-bold bg-gradient-to-r from-red-400 to-amber-400 bg-clip-text text-transparent mb-5">
-                  Danh Mục Sản Phẩm
-                </h4>
-                <ul className="space-y-3 text-sm">
-                  <FooterLink href="/products?category=themes" color="orange">Themes & UI Kits</FooterLink>
-                  <FooterLink href="/products?category=landing" color="orange">Landing Pages</FooterLink>
-                  <FooterLink href="/products?category=templates" color="orange">Templates</FooterLink>
-                  <FooterLink href="/products?category=miniapps" color="orange">Mini Apps & Tools</FooterLink>
-                  <FooterLink href="/products?category=wordpress" color="orange">WordPress</FooterLink>
-                  <FooterLink href="/products?category=ecommerce" color="orange">E-commerce</FooterLink>
-                </ul>
-              </div>
+              {/* ── Danh Mục — logo thật ── */}
+              <AccordionSection
+                title="Danh Mục Sản Phẩm"
+                titleGradient="from-red-400 to-amber-400"
+              >
+                {CATEGORY_ITEMS.map((cat) => (
+                  <CategoryLink
+                    key={cat.href}
+                    href={cat.href}
+                    logo={cat.logo}
+                    logoAlt={cat.label}
+                  >
+                    {cat.label}
+                  </CategoryLink>
+                ))}
+              </AccordionSection>
             </div>
 
-            {/* Newsletter - Full width on mobile */}
-            <div>
-              <h4 className="text-base font-bold bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent mb-5">
-                Đăng Ký Nhận Tin
-              </h4>
-              <p className="text-sm text-slate-400 mb-5 leading-relaxed">
-                Nhận thông báo về sản phẩm số mới và ưu đãi đặc biệt qua email.
+            {/* ── CỘT 4: Newsletter + Payment ── */}
+            <div className="mt-4 lg:mt-0 space-y-4">
+              {/* Newsletter Card */}
+              <div
+                className="rounded-2xl p-4 lg:p-5"
+                style={{
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                }}
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <div
+                    className="w-9 h-9 lg:w-10 lg:h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #f97316 0%, #dc2626 100%)",
+                    }}
+                  >
+                    <Mail size={16} className="text-white" />
+                  </div>
+                  <h4 className="text-sm lg:text-base font-bold text-white">
+                    Đăng Ký Nhận Tin
+                  </h4>
+                </div>
+                <p className="text-xs text-slate-400 mb-3 leading-relaxed">
+                  Nhận thông báo về sản phẩm mới, ưu đãi đặc biệt và tài nguyên
+                  miễn phí.
+                </p>
+                <NewsletterForm />
+              </div>
+
+              {/* Payment Card */}
+              <div
+                className="rounded-2xl p-4"
+                style={{
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                }}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-xs lg:text-sm font-bold text-orange-400">
+                    Phương Thức Thanh Toán
+                  </h4>
+                  <div className="flex items-center gap-1 text-[10px] text-slate-500">
+                    <Shield size={9} />
+                    <span>An toàn & Bảo mật</span>
+                  </div>
+                </div>
+                <div className="grid grid-cols-6 lg:grid-cols-3 gap-1.5 lg:gap-2">
+                  <PaymentBadge>
+                    <span className="font-black text-blue-400 text-[10px] lg:text-xs tracking-wide">
+                      VISA
+                    </span>
+                  </PaymentBadge>
+                  <PaymentBadge className="justify-center">
+                    <div className="flex -space-x-1.5">
+                      <div className="w-3.5 h-3.5 lg:w-4 lg:h-4 rounded-full bg-red-500" />
+                      <div className="w-3.5 h-3.5 lg:w-4 lg:h-4 rounded-full bg-amber-400" />
+                    </div>
+                  </PaymentBadge>
+                  <PaymentBadge>
+                    <span className="font-black text-pink-400 text-[9px] lg:text-[11px] leading-none text-center">
+                      mo
+                      <br />
+                      mo
+                    </span>
+                  </PaymentBadge>
+                  <PaymentBadge>
+                    <span className="font-bold text-[9px] lg:text-[10px] whitespace-nowrap">
+                      <span className="text-blue-300">Zalo</span>
+                      <span className="text-green-400">Pay</span>
+                    </span>
+                  </PaymentBadge>
+                  <PaymentBadge>
+                    <span className="font-black text-blue-400 text-[9px] lg:text-[10px]">
+                      PayPal
+                    </span>
+                  </PaymentBadge>
+                  <PaymentBadge className="gap-1">
+                    <Shield size={8} className="text-green-400 flex-shrink-0" />
+                    <span className="font-bold text-green-400 text-[9px] lg:text-[10px]">
+                      SSL
+                    </span>
+                  </PaymentBadge>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ── BOTTOM BAR ── */}
+          <div className="border-t border-slate-800/50 pt-5 mt-2 lg:mt-0">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-slate-500">
+              <p className="flex flex-wrap items-center justify-center sm:justify-start gap-x-2 gap-y-0.5">
+                <span>&copy; {new Date().getFullYear()} DigitalMart Corp.</span>
+                <span className="opacity-40">•</span>
+                <span className="flex items-center gap-1">
+                  Made with{" "}
+                  <Heart
+                    size={10}
+                    className="text-rose-500 animate-pulse mx-0.5"
+                  />{" "}
+                  in Vietnam
+                </span>
+                <span className="hidden sm:inline opacity-40">•</span>
+                <span className="hidden sm:inline">All rights reserved.</span>
               </p>
-              <NewsletterForm />
+              <nav className="flex flex-wrap justify-center gap-x-4 gap-y-1">
+                {[
+                  { href: "/policy/privacy", label: "Bảo mật" },
+                  { href: "/policy/terms", label: "Điều khoản" },
+                  { href: "/policy/refund", label: "Hoàn tiền" },
+                  { href: "/contact", label: "Liên hệ" },
+                  { href: "/sitemap", label: "Sitemap" },
+                ].map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="hover:text-orange-400 transition-colors hover:underline"
+                    prefetch={true}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
             </div>
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="border-t border-slate-800/50 pt-8 mt-8">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-slate-500">
-            <p className="flex flex-col sm:flex-row items-center gap-2 text-center sm:text-left">
-              <span>&copy; {new Date().getFullYear()} DigitalMart Corp.</span>
-              <span className="hidden sm:inline">•</span>
-              <span className="flex items-center gap-1.5">
-                Made with <Heart size={12} className="text-rose-500 animate-pulse" /> in Vietnam
-              </span>
-            </p>
-            <div className="flex flex-wrap justify-center gap-4 sm:gap-8">
-              <Link href="/policy/privacy" className="hover:text-orange-400 transition-colors hover:underline" prefetch={true}>
-                Bảo mật
-              </Link>
-              <Link href="/policy/terms" className="hover:text-orange-400 transition-colors hover:underline" prefetch={true}>
-                Điều khoản
-              </Link>
-              <Link href="/contact" className="hover:text-orange-400 transition-colors hover:underline" prefetch={true}>
-                Liên hệ
-              </Link>
-              <Link href="/sitemap" className="hover:text-orange-400 transition-colors hover:underline" prefetch={true}>
-                Sitemap
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
+        {/* Floating Chat */}
+        <button
+          className="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all duration-200"
+          style={{
+            background: "linear-gradient(135deg, #f97316 0%, #dc2626 100%)",
+          }}
+          aria-label="Liên hệ hỗ trợ"
+        >
+          <MessageCircle size={20} className="text-white" />
+        </button>
 
-      <style jsx global>{`
-        @keyframes fade-in {
-          from { opacity: 0; transform: translateY(-10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in {
-          animation: fade-in 0.3s ease-out;
-        }
-      `}</style>
-    </footer>
+        <style jsx global>{`
+          @keyframes fade-in {
+            from {
+              opacity: 0;
+              transform: translateY(-8px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          .animate-fade-in {
+            animation: fade-in 0.3s ease-out;
+          }
+
+          @keyframes marquee {
+            0% {
+              transform: translateX(0);
+            }
+            100% {
+              transform: translateX(-50%);
+            }
+          }
+          @keyframes brand-title-pulse {
+            0%,
+            100% {
+              opacity: 0.72;
+              text-shadow: 0 0 0 rgba(234, 88, 12, 0);
+            }
+            50% {
+              opacity: 1;
+              text-shadow: 0 0 18px rgba(234, 88, 12, 0.22);
+            }
+          }
+          .brand-title-glow {
+            animation: brand-title-pulse 2.8s ease-in-out infinite;
+          }
+          .brand-marquee {
+            animation: marquee 25s linear infinite;
+          }
+          .brand-marquee:hover {
+            animation-play-state: paused;
+          }
+          .brand-logo-card {
+            box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+            transition:
+              transform 0.2s ease,
+              box-shadow 0.2s ease;
+          }
+          .brand-logo-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 18px 38px rgba(15, 23, 42, 0.12);
+          }
+        `}</style>
+      </footer>
+    </>
   );
 };
 
