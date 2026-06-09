@@ -197,7 +197,7 @@ export function NotificationCenter({ isOpen, onClose, onCountChange }: Notificat
             />
 
             {/* Dropdown */}
-            <div className="absolute right-0 top-full mt-2 w-96 max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-[101] animate-fade-in">
+            <div className="fixed right-4 top-11 lg:right-6 w-96 max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-[101] animate-fade-in">
                 {/* Header */}
                 <div className="p-4 border-b border-slate-100 bg-gradient-to-r from-orange-50 to-amber-50">
                     <div className="flex items-center justify-between mb-3">

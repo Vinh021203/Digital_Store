@@ -777,7 +777,7 @@ const Footer = () => {
 
         {/* Floating Chat */}
         <button
-          className="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all duration-200"
+          className="fixed bottom-6 right-6 z-50 hidden w-12 h-12 rounded-full md:flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all duration-200"
           style={{
             background: "linear-gradient(135deg, #f97316 0%, #dc2626 100%)",
           }}

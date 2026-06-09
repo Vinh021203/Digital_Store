@@ -39,7 +39,7 @@ interface SupabaseAuthContextType {
   signInWithGithub: () => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: Error | null }>;
-  updateProfile: (updates: Partial<UserProfile>) => Promise<{ error: Error | null }>;
+  updateProfile: (updates: Partial<Omit<UserProfile, 'id' | 'email' | 'role' | 'created_at'>>) => Promise<{ error: Error | null }>;
   refreshProfile: () => Promise<void>;
   registerAffiliate: () => Promise<{ error: Error | null }>;
 }
@@ -227,7 +227,7 @@ export function SupabaseAuthProvider({ children }: SupabaseAuthProviderProps) {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'github',
         options: {
-          redirectTo: `${window.location.origin}/api/auth/callback`,
+          redirectTo: `${window.location.origin}/auth/callback`,
         },
       });
       return { error };
@@ -261,7 +261,7 @@ export function SupabaseAuthProvider({ children }: SupabaseAuthProviderProps) {
   };
 
   const updateProfile = async (
-    updates: Partial<UserProfile>,
+    updates: Partial<Omit<UserProfile, 'id' | 'email' | 'role' | 'created_at'>>,
   ): Promise<{ error: Error | null }> => {
     if (!supabase) return { error: new Error('Supabase not configured') };
     if (!user) return { error: new Error('Not authenticated') };

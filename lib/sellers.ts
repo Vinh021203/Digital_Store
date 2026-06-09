@@ -187,21 +187,6 @@ export async function createSeller(payload: SellerPayload): Promise<DbSeller | n
         throw new Error(error.message);
     }
 
-    // Only update role to seller if user is NOT an admin
-    // Admins keep their admin role even when becoming sellers
-    const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', payload.user_id)
-        .single();
-
-    if (profile && profile.role !== 'admin') {
-        await supabase
-            .from('profiles')
-            .update({ role: 'seller' })
-            .eq('id', payload.user_id);
-    }
-
     return data;
 }
 

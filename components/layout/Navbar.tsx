@@ -471,116 +471,6 @@ const DesktopNavItem = memo<DesktopNavItemProps>(
 DesktopNavItem.displayName = "DesktopNavItem";
 
 // ============================================
-// Mobile Bottom Tab Bar
-// ============================================
-interface BottomTabProps {
-  totalItems: number;
-  wishlistCount: number;
-  isActive: (path: string) => boolean;
-  onSearchOpen: () => void;
-  onMenuOpen: () => void;
-  user: any;
-}
-const MobileBottomBar = memo<BottomTabProps>(
-  ({ totalItems, isActive, onSearchOpen, onMenuOpen, user }) => (
-    <nav
-      className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-slate-200/80 shadow-[0_-4px_24px_rgba(15,23,42,0.08)]"
-      style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
-    >
-      <div className="flex items-stretch h-16">
-        {[
-          { href: "/", icon: Home, label: "Trang Chủ", color: "orange" },
-          { href: "/products", icon: Package, label: "Sản Phẩm", color: "red" },
-        ].map((tab) => (
-          <Link
-            key={tab.href}
-            href={tab.href}
-            className={`flex-1 flex flex-col items-center justify-center gap-0.5 transition-all duration-200 active:scale-90 ${
-              isActive(tab.href) ? `text-${tab.color}-600` : "text-slate-400"
-            }`}
-          >
-            <div className="relative">
-              <tab.icon
-                size={22}
-                strokeWidth={isActive(tab.href) ? 2.5 : 1.8}
-              />
-              {isActive(tab.href) && (
-                <span
-                  className={`absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-${tab.color}-600`}
-                />
-              )}
-            </div>
-            <span
-              className={`text-[10px] ${isActive(tab.href) ? "font-bold" : "font-medium"}`}
-            >
-              {tab.label}
-            </span>
-          </Link>
-        ))}
-
-        {/* Center Search FAB */}
-        <div className="flex-1 flex items-center justify-center -mt-5">
-          <button
-            onClick={onSearchOpen}
-            className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 text-white flex items-center justify-center shadow-xl shadow-orange-400/40 active:scale-90 transition-all duration-200"
-            aria-label="Tìm kiếm"
-          >
-            <Search size={22} />
-          </button>
-        </div>
-
-        {/* Cart */}
-        <Link
-          href="/cart"
-          className={`flex-1 flex flex-col items-center justify-center gap-0.5 transition-all active:scale-90 ${
-            isActive("/cart") ? "text-orange-600" : "text-slate-400"
-          }`}
-        >
-          <div className="relative">
-            <ShoppingCart
-              size={22}
-              strokeWidth={isActive("/cart") ? 2.5 : 1.8}
-            />
-            {totalItems > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-[16px] px-0.5 text-[9px] font-bold text-white bg-gradient-to-r from-orange-600 to-red-600 rounded-full flex items-center justify-center">
-                {totalItems > 9 ? "9+" : totalItems}
-              </span>
-            )}
-          </div>
-          <span className="text-[10px] font-medium">Giỏ hàng</span>
-        </Link>
-
-        {/* Menu / Avatar */}
-        <button
-          onClick={onMenuOpen}
-          className="flex-1 flex flex-col items-center justify-center gap-0.5 text-slate-400 active:scale-90 transition-all"
-          aria-label="Menu"
-        >
-          {user ? (
-            <>
-              <img
-                src={user.avatar}
-                alt={user.name}
-                className="w-7 h-7 rounded-full object-cover ring-2 ring-orange-200"
-              />
-              <span className="text-[10px] font-medium max-w-[56px] truncate">
-                {user.name.split(" ").pop()}
-              </span>
-            </>
-          ) : (
-            <>
-              <Menu size={22} strokeWidth={1.8} />
-              <span className="text-[10px] font-medium">Menu</span>
-            </>
-          )}
-        </button>
-      </div>
-    </nav>
-  ),
-);
-MobileBottomBar.displayName = "MobileBottomBar";
-
-// ============================================
 // Mobile Slide-In Panel
 // ============================================
 interface MobileMenuProps {
@@ -868,7 +758,7 @@ const MobileMenu = memo<MobileMenuProps>(
                   bg: "bg-slate-50",
                 },
                 {
-                  href: "/settings",
+                  href: "/profile/settings",
                   icon: Settings,
                   label: "Cài đặt",
                   color: "text-slate-600",
@@ -1061,7 +951,7 @@ const UserDropdown = memo<UserDropdownProps>(
                 icon: Download,
                 label: "Downloads",
               },
-              { href: "/settings", icon: Settings, label: "Cài đặt" },
+              { href: "/profile/settings", icon: Settings, label: "Cài đặt" },
             ].map((item) => (
               <Link
                 key={item.href}
@@ -1489,16 +1379,6 @@ const Navbar = () => {
         totalItems={totalItems}
         wishlistCount={wishlist.length}
         t={t}
-      />
-
-      {/* Mobile bottom tab bar */}
-      <MobileBottomBar
-        totalItems={totalItems}
-        wishlistCount={wishlist.length}
-        isActive={isActive}
-        onSearchOpen={openSearch}
-        onMenuOpen={toggleMenu}
-        user={user}
       />
 
       <SearchModal isOpen={isSearchOpen} onClose={closeSearch} />

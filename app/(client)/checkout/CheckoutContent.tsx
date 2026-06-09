@@ -158,7 +158,7 @@ function CheckoutPageContent() {
     const handlePayment = async () => {
         if (!user) {
             addToast('Vui lòng đăng nhập để thanh toán', 'error');
-            router.push('/auth/login?redirect=/checkout');
+            router.push('/login?redirect=/checkout');
             return;
         }
         if (safeCart.length === 0) {

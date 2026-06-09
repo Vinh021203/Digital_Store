@@ -75,12 +75,6 @@ const MobileBottomNav = () => {
   const { wishlist } = useCart();
   const { user } = useAuth();
 
-  // Check if on main pages
-  const isMainPage = useMemo(() => {
-    const allowedPaths = ['/', '/products', '/community', '/profile', '/wishlist', '/blog'];
-    return allowedPaths.includes(pathname) || pathname.startsWith('/product/');
-  }, [pathname]);
-
   // Navigation items
   const navItems = useMemo(() => [
     { to: '/', icon: Home, label: 'Trang chủ' },
@@ -90,7 +84,12 @@ const MobileBottomNav = () => {
     { to: '/profile', icon: User, label: 'Cá nhân' },
   ], [wishlist.length]);
 
-  if (!isMainPage) return null;
+  const isItemActive = (to: string) => {
+    if (to === '/') return pathname === '/';
+    if (to === '/products') return pathname === '/products' || pathname.startsWith('/product/');
+    if (to === '/profile') return pathname === '/profile' || pathname.startsWith('/profile/');
+    return pathname === to;
+  };
 
   return (
     <>
@@ -109,7 +108,7 @@ const MobileBottomNav = () => {
             <NavItem
               key={item.to}
               {...item}
-              isActive={pathname === item.to || (item.to === '/products' && pathname.startsWith('/product/'))}
+              isActive={isItemActive(item.to)}
             />
           ))}
         </div>

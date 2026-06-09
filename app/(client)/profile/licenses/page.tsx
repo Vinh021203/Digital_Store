@@ -130,7 +130,7 @@ export default function LicensesPage() {
                     </div>
                     <h2 className="text-xl font-bold text-slate-900 mb-2">Vui lòng đăng nhập</h2>
                     <p className="text-slate-500 mb-4">Bạn cần đăng nhập để xem licenses</p>
-                    <Link href="/auth/login" className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-6 py-3 rounded-xl font-bold hover:shadow-lg hover:shadow-orange-500/30 transition-all">
+                    <Link href="/login" className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-6 py-3 rounded-xl font-bold hover:shadow-lg hover:shadow-orange-500/30 transition-all">
                         Đăng nhập
                     </Link>
                 </div>

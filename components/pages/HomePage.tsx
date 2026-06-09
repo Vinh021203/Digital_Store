@@ -293,10 +293,12 @@ const DpMarketProductCard = memo(
     product,
     index,
     variant = "default",
+    stableMedia = false,
   }: {
     product: Product;
     index: number;
     variant?: "default" | "mobileHorizontal";
+    stableMedia?: boolean;
   }) => {
     const { addToCart, addToWishlist, removeFromWishlist, isInWishlist } =
       useCart();
@@ -364,9 +366,9 @@ const DpMarketProductCard = memo(
               alt={product.name}
               fill
               sizes="(max-width: 768px) 50vw, 25vw"
-              className={`object-cover w-full h-full transition-transform duration-500 group-hover:scale-105 ${imgLoaded ? "opacity-100" : "opacity-0"}`}
+              className={`object-cover w-full h-full transition-transform duration-500 group-hover:scale-105 ${stableMedia || imgLoaded ? "opacity-100" : "opacity-0"}`}
               onLoad={() => setImgLoaded(true)}
-              loading="lazy"
+              loading={stableMedia ? "eager" : "lazy"}
             />
           </Link>
           <button
@@ -384,7 +386,7 @@ const DpMarketProductCard = memo(
             {product.format}
           </span>
           {hasDiscount && (
-            <span className="absolute bottom-3 left-3 px-2 py-0.5 text-[9px] font-black text-white bg-rose-600 rounded shadow-sm select-none animate-pulse">
+            <span className="absolute bottom-3 left-3 px-2 py-0.5 text-[9px] font-black text-white bg-rose-600 rounded shadow-sm select-none">
               -{discountVal}% OFF
             </span>
           )}
@@ -535,6 +537,11 @@ const HomePage = () => {
   const textRefFeaturedAuthor = useRef<HTMLDivElement>(null);
   const textRefPerformance = useRef<HTMLDivElement>(null);
   const authorSliderRef = useRef<HTMLDivElement>(null);
+  const bestsellerCarouselRef = useRef<HTMLDivElement>(null);
+  const bestsellerDragStartX = useRef(0);
+  const bestsellerDragStartScroll = useRef(0);
+  const bestsellerDragging = useRef(false);
+  const bestsellerPointerInside = useRef(false);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -662,6 +669,80 @@ const HomePage = () => {
     blogPosts.length >= 4
       ? blogPosts.slice(0, 4)
       : [...blogPosts, ...mockBlogs].slice(0, 4);
+
+  useEffect(() => {
+    const carousel = bestsellerCarouselRef.current;
+    if (!carousel || displayBestSellers.length === 0) return;
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const desktopViewport = window.matchMedia("(min-width: 768px)");
+    if (reduceMotion.matches || !desktopViewport.matches) return;
+
+    const scrollOneCard = () => {
+      if (!bestsellerDragging.current && !bestsellerPointerInside.current) {
+        const firstCard = carousel.querySelector<HTMLElement>(".bestseller-marquee-card");
+        const track = firstCard?.parentElement;
+        const gap = track ? parseFloat(window.getComputedStyle(track).columnGap || "0") : 0;
+        const step = (firstCard?.offsetWidth || 290) + gap;
+        const loopWidth = carousel.scrollWidth / 2;
+
+        carousel.scrollBy({ left: step, behavior: "smooth" });
+
+        window.setTimeout(() => {
+          if (loopWidth > 0 && carousel.scrollLeft >= loopWidth - 4) {
+            carousel.scrollLeft -= loopWidth;
+          }
+        }, 850);
+      }
+    };
+
+    const intervalId = window.setInterval(scrollOneCard, 4200);
+    return () => window.clearInterval(intervalId);
+  }, [displayBestSellers.length]);
+
+  useEffect(() => {
+    const carousel = bestsellerCarouselRef.current;
+    if (!carousel) return;
+
+    const syncLoopPosition = () => {
+      const loopWidth = carousel.scrollWidth / 2;
+      if (loopWidth <= 0) return;
+
+      if (carousel.scrollLeft >= loopWidth) {
+        carousel.scrollLeft -= loopWidth;
+      } else if (carousel.scrollLeft < 0) {
+        carousel.scrollLeft += loopWidth;
+      }
+    };
+
+    carousel.addEventListener("scroll", syncLoopPosition, { passive: true });
+    return () => carousel.removeEventListener("scroll", syncLoopPosition);
+  }, [displayBestSellers.length]);
+
+  const handleBestsellerMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
+    const carousel = bestsellerCarouselRef.current;
+    if (!carousel) return;
+
+    bestsellerDragging.current = true;
+    bestsellerDragStartX.current = event.clientX;
+    bestsellerDragStartScroll.current = carousel.scrollLeft;
+    carousel.classList.add("is-dragging");
+  };
+
+  const handleBestsellerMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+    const carousel = bestsellerCarouselRef.current;
+    if (!carousel || !bestsellerDragging.current) return;
+
+    event.preventDefault();
+    const distance = event.clientX - bestsellerDragStartX.current;
+    carousel.scrollLeft = bestsellerDragStartScroll.current - distance;
+  };
+
+  const stopBestsellerDrag = () => {
+    const carousel = bestsellerCarouselRef.current;
+    bestsellerDragging.current = false;
+    carousel?.classList.remove("is-dragging");
+  };
 
   // Find a seller or show mock top author
   const topAuthorName = allProducts[0]?.author || "CodeCrafter Studio";
@@ -1538,28 +1619,51 @@ const HomePage = () => {
           ) : (
             <div className="relative rounded-3xl border border-orange-100/80 bg-white/70 p-3 shadow-lg shadow-orange-100/40 backdrop-blur">
               <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-orange-300/70 to-transparent" />
-              <div className="flex gap-3 md:gap-5 overflow-x-auto no-scrollbar snap-x scroll-smooth pb-1">
-                {displayBestSellers.map((product, idx) => (
-                  <div
-                    key={product.id}
-                    className="relative min-w-[62vw] w-[62vw] sm:min-w-[270px] sm:w-[270px] max-w-[310px] flex-shrink-0 snap-start pt-4 text-slate-800"
-                  >
-                    <span
-                      className={`absolute left-4 top-0 z-20 rounded-full px-3.5 py-1.5 text-[10px] font-extrabold uppercase tracking-wider text-white shadow-lg ring-2 ring-white ${
-                        idx === 0
-                          ? "bg-gradient-to-r from-orange-600 to-red-500 shadow-orange-300/40"
-                          : idx === 1
-                            ? "bg-gradient-to-r from-slate-800 to-slate-950 shadow-slate-900/20"
-                            : idx === 2
-                              ? "bg-gradient-to-r from-amber-500 to-orange-500 shadow-orange-300/30"
-                              : "bg-slate-950 shadow-slate-900/20"
-                      }`}
+              <div
+                ref={bestsellerCarouselRef}
+                className="bestseller-drag-scroll relative overflow-x-auto no-scrollbar pb-1"
+                onMouseDown={handleBestsellerMouseDown}
+                onMouseMove={handleBestsellerMouseMove}
+                onMouseUp={stopBestsellerDrag}
+                onMouseLeave={() => {
+                  bestsellerPointerInside.current = false;
+                  stopBestsellerDrag();
+                }}
+                onMouseEnter={() => {
+                  bestsellerPointerInside.current = true;
+                }}
+              >
+                <div className="flex w-max snap-x md:snap-none scroll-smooth">
+                  {[0, 1].map((loopIndex) => (
+                    <div
+                      key={loopIndex}
+                      aria-hidden={loopIndex === 1}
+                      className={`flex gap-3 md:gap-5 md:pr-5 ${loopIndex === 1 ? "hidden md:flex" : ""}`}
                     >
-                      #{idx + 1}
-                    </span>
-                    <DpMarketProductCard product={product} index={idx} />
-                  </div>
-                ))}
+                      {displayBestSellers.map((product, idx) => (
+                        <div
+                          key={`${product.id}-${loopIndex}`}
+                          className="bestseller-marquee-card relative min-w-[62vw] w-[62vw] sm:min-w-[270px] sm:w-[270px] max-w-[310px] flex-shrink-0 snap-start pt-4 text-slate-800"
+                        >
+                          <span
+                            className={`absolute left-4 top-0 z-20 rounded-full px-3.5 py-1.5 text-[10px] font-extrabold uppercase tracking-wider text-white shadow-lg ring-2 ring-white ${
+                              idx === 0
+                                ? "bg-gradient-to-r from-orange-600 to-red-500 shadow-orange-300/40"
+                                : idx === 1
+                                  ? "bg-gradient-to-r from-slate-800 to-slate-950 shadow-slate-900/20"
+                                  : idx === 2
+                                    ? "bg-gradient-to-r from-amber-500 to-orange-500 shadow-orange-300/30"
+                                    : "bg-slate-950 shadow-slate-900/20"
+                            }`}
+                          >
+                            #{idx + 1}
+                          </span>
+                          <DpMarketProductCard product={product} index={idx} stableMedia />
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           )}
@@ -2125,7 +2229,7 @@ const HomePage = () => {
               </div>
 
               <Link
-                href="/auth/register"
+                href="/register"
                 className="self-start inline-flex items-center gap-2 px-6 py-3 rounded-full text-white font-semibold text-sm transition-all duration-300 shadow-lg hover:shadow-orange-300 hover:scale-105 select-none"
                 style={{
                   background: "linear-gradient(90deg, #ea580c, #ea580c)",
@@ -2302,7 +2406,7 @@ const HomePage = () => {
                 </p>
               </div>
               <Link
-                href="/auth/register"
+                href="/register"
                 className="self-start inline-flex items-center justify-center px-6 py-3 md:px-8 md:py-3.5 rounded-full border-2 border-[#0b0f19] text-[#0b0f19] hover:bg-[#0b0f19] hover:text-white font-semibold text-sm transition-all duration-300 select-none bg-transparent"
               >
                 Trở thành tác giả
@@ -2329,7 +2433,7 @@ const HomePage = () => {
                 </p>
               </div>
               <Link
-                href="/auth/register"
+                href="/register"
                 className="self-start inline-flex items-center justify-center px-6 py-3 md:px-8 md:py-3.5 rounded-full border-2 border-[#0b0f19] text-[#0b0f19] hover:bg-[#0b0f19] hover:text-white font-semibold text-sm transition-all duration-300 select-none bg-transparent"
               >
                 Trở thành cộng tác viên
@@ -2430,6 +2534,23 @@ const HomePage = () => {
         }
         .animate-float {
           animation: float 3s ease-in-out infinite;
+        }
+
+        .bestseller-drag-scroll {
+          cursor: grab;
+          scroll-behavior: auto;
+          overscroll-behavior-x: contain;
+          -webkit-overflow-scrolling: touch;
+        }
+        .bestseller-drag-scroll.is-dragging {
+          cursor: grabbing;
+          user-select: none;
+          scroll-snap-type: none;
+        }
+        .bestseller-marquee-card {
+          contain: layout paint;
+          transform: translateZ(0);
+          backface-visibility: hidden;
         }
 
         /* Slim custom scrollbar for best sellers dark section */

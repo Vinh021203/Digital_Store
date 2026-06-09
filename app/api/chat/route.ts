@@ -5,7 +5,7 @@ import { chatWithGemini } from '@/lib/gemini';
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const { message } = body;
+        const { message, history } = body;
 
         if (!message || typeof message !== 'string') {
             return NextResponse.json(
@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const response = await chatWithGemini(message);
+        const response = await chatWithGemini(message, Array.isArray(history) ? history : []);
 
         return NextResponse.json(response);
     } catch (error) {

@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback, memo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import {
   MessageCircle,
   Phone,
@@ -95,6 +96,7 @@ const ProductCard = memo(({ product }: { product: ProductRecommendation }) => (
 ProductCard.displayName = 'ProductCard';
 
 const FloatingWidgets = () => {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -110,6 +112,7 @@ const FloatingWidgets = () => {
   const [currentQuickReplies, setCurrentQuickReplies] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const showOnMobile = pathname?.startsWith('/product/');
 
   const checkScroll = useCallback(() => {
     setShowScrollTop(window.pageYOffset > 400);
@@ -222,20 +225,20 @@ const FloatingWidgets = () => {
       </div>
 
       {/* Widget CSKH bên phải */}
-      <div className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-50 flex flex-col items-end gap-3 font-sans pointer-events-none">
+      <div className={`fixed bottom-20 md:bottom-6 right-4 md:right-6 z-50 flex-col items-end gap-3 font-sans pointer-events-none ${showOnMobile ? 'flex' : 'hidden md:flex'}`}>
         {/* Chat Window */}
         <div
-          className={`pointer-events-auto w-[calc(100vw-32px)] sm:w-[380px] bg-white rounded-2xl shadow-2xl border border-orange-100 overflow-hidden transition-all duration-400 origin-bottom-right transform flex flex-col ${isChatOpen
-            ? 'scale-100 opacity-100 translate-y-0 mb-2 max-h-[calc(100vh-7rem)]'
+          className={`pointer-events-auto w-[calc(100vw-32px)] sm:w-[350px] bg-white rounded-2xl shadow-2xl border border-orange-100 overflow-hidden transition-all duration-400 origin-bottom-right transform flex flex-col ${isChatOpen
+            ? 'scale-100 opacity-100 translate-y-0 mb-2 h-[min(390px,calc(100vh-14rem))] min-h-[min(330px,calc(100vh-14rem))] sm:h-[min(430px,calc(100vh-12rem))]'
             : 'scale-75 opacity-0 translate-y-10 pointer-events-none h-0 mb-0'
             }`}
         >
           {/* Header */}
-          <div className="bg-gradient-to-r from-orange-600 via-red-600 to-amber-600 p-4 flex justify-between items-center text-white shadow-md flex-shrink-0">
-            <div className="flex items-center gap-3">
+          <div className="bg-gradient-to-r from-orange-600 via-red-600 to-amber-600 px-3.5 py-3 flex justify-between items-center text-white shadow-md flex-shrink-0">
+            <div className="flex items-center gap-2.5">
               <div className="relative">
-                <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30">
-                  <Bot size={20} strokeWidth={2.5} />
+                <div className="w-9 h-9 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30">
+                  <Bot size={18} strokeWidth={2.5} />
                 </div>
                 <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-orange-600 rounded-full animate-pulse" />
               </div>
@@ -265,7 +268,7 @@ const FloatingWidgets = () => {
           </div>
 
           {/* Messages */}
-          <div className="bg-gradient-to-b from-orange-50/30 to-white p-3 overflow-y-auto custom-scrollbar flex flex-col gap-2.5 min-h-[132px] max-h-[34vh] sm:max-h-[310px]">
+          <div className="bg-gradient-to-b from-orange-50/30 to-white p-2.5 overflow-y-auto custom-scrollbar flex flex-col gap-2 min-h-0 flex-1">
             <div className="text-center text-[11px] text-slate-400 my-0.5">Hôm nay</div>
             {chatMessages.map((msg) => (
               <div key={msg.id} className="animate-fade-in-up">
@@ -278,7 +281,7 @@ const FloatingWidgets = () => {
                     </div>
                   )}
                   <div
-                    className={`max-w-[82%] p-3 text-sm leading-relaxed shadow-sm ${msg.sender === 'user'
+                    className={`max-w-[82%] p-2.5 text-[13px] leading-relaxed shadow-sm ${msg.sender === 'user'
                       ? 'bg-gradient-to-r from-orange-600 to-red-600 text-white rounded-2xl rounded-tr-none'
                       : 'bg-white text-slate-700 border border-orange-100 rounded-2xl rounded-tl-none'
                       }`}
@@ -304,7 +307,7 @@ const FloatingWidgets = () => {
                 <div className="w-6 h-6 bg-orange-100 rounded-full flex items-center justify-center text-orange-600">
                   <Bot size={14} />
                 </div>
-                <div className="bg-white border border-orange-100 px-4 py-3 rounded-2xl rounded-tl-none flex items-center gap-2">
+                <div className="bg-white border border-orange-100 px-3 py-2.5 rounded-2xl rounded-tl-none flex items-center gap-2">
                   <Loader2 size={14} className="animate-spin text-orange-500" />
                   <span className="text-xs text-slate-500">Đang suy nghĩ...</span>
                 </div>
@@ -316,8 +319,8 @@ const FloatingWidgets = () => {
 
           {/* Quick Suggestions */}
           {!isTyping && (
-            <div className="px-3 py-2 bg-slate-50 border-t border-slate-100 flex-shrink-0">
-              <p className="text-[10px] text-slate-400 mb-1.5">Gợi ý nhanh:</p>
+            <div className="px-3 py-1.5 bg-slate-50 border-t border-slate-100 flex-shrink-0">
+              <p className="text-[10px] text-slate-400 mb-1">Gợi ý nhanh:</p>
               <div className="flex flex-wrap gap-1.5">
                 {(currentQuickReplies.length > 0 ? currentQuickReplies : quickSuggestions).map((text, idx) => (
                   <button
@@ -333,7 +336,7 @@ const FloatingWidgets = () => {
           )}
 
           {/* Input */}
-          <div className="p-3 bg-white border-t border-orange-100 flex-shrink-0">
+          <div className="p-2.5 bg-white border-t border-orange-100 flex-shrink-0">
             <form className="flex gap-2 items-center" onSubmit={handleSendMessage}>
               <button
                 type="button"
@@ -348,7 +351,7 @@ const FloatingWidgets = () => {
                 value={inputMsg}
                 onChange={(e) => setInputMsg(e.target.value)}
                 placeholder="Hỏi về sản phẩm, thanh toán..."
-                className="flex-1 bg-orange-50/50 border-none rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-orange-500 outline-none transition-all placeholder:text-slate-400"
+                className="flex-1 bg-orange-50/50 border-none rounded-xl px-3.5 py-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none transition-all placeholder:text-slate-400"
                 maxLength={500}
                 disabled={isTyping}
               />

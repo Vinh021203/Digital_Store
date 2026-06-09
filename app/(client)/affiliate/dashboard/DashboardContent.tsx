@@ -93,7 +93,7 @@ export default function AffiliateDashboardPage() {
 
     useEffect(() => {
         if (!user) {
-            router.push('/auth/login?redirect=/affiliate/dashboard');
+            router.push('/login?redirect=/affiliate/dashboard');
             return;
         }
         if (profile && !profile.is_affiliate) {

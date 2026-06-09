@@ -1,6 +1,5 @@
-// lib/gemini.ts - Smart Rule-based Chatbot
+// lib/gemini.ts - Gemini chatbot with Supabase product context
 import { fetchActiveProducts } from './products';
-import type { Product } from '@/types';
 
 export interface ChatResponse {
     message: string;
@@ -15,261 +14,352 @@ export interface ChatResponse {
     quickReplies?: string[];
 }
 
-// Intent patterns for better matching
-const INTENTS = {
-    greeting: ['chào', 'hello', 'hi', 'xin chào', 'hey', 'alo'],
-    thanks: ['cảm ơn', 'thank', 'thanks', 'tks'],
-    payment: ['thanh toán', 'payment', 'trả tiền', 'mua', 'giá', 'price', 'momo', 'chuyển khoản', 'bank'],
-    download: ['download', 'tải', 'tải xuống', 'lấy file', 'nhận file'],
-    refund: ['hoàn tiền', 'refund', 'trả lại', 'đổi trả'],
-    license: ['license', 'bản quyền', 'giấy phép', 'key'],
-    support: ['hỗ trợ', 'support', 'liên hệ', 'contact', 'giúp', 'help'],
-    productSearch: ['theme', 'template', 'landing', 'tìm', 'sản phẩm', 'product', 'mẫu', 'giao diện'],
-    landing: ['landing', 'landing page', 'trang đích'],
-    dashboard: ['dashboard', 'admin', 'quản trị', 'backend'],
-    ecommerce: ['shop', 'bán hàng', 'ecommerce', 'store', 'cửa hàng'],
-    wordpress: ['wordpress', 'wp'],
-    react: ['react', 'nextjs', 'next.js', 'vue'],
-    portfolio: ['portfolio', 'cv', 'resume', 'giới thiệu'],
-};
+export interface ChatHistoryMessage {
+    sender: 'user' | 'bot';
+    text: string;
+}
 
-// Response templates with personality
-const RESPONSE_TEMPLATES = {
-    greeting: [
-        'Xin chào bạn! 👋 Mình là trợ lý của DigitalMart. Bạn đang tìm kiếm themes, templates nào? Mình sẽ giúp bạn tìm sản phẩm phù hợp nhất!',
-        'Chào bạn! Rất vui được hỗ trợ bạn hôm nay. Bạn cần tìm gì: Landing Page, Dashboard, hay Theme WordPress?',
-    ],
-    thanks: [
-        'Không có gì đâu! 😊 Rất vui được hỗ trợ bạn. Nếu cần thêm gì cứ hỏi mình nhé!',
-        'Cảm ơn bạn đã tin tưởng DigitalMart! Chúc bạn có sản phẩm ưng ý! 🎉',
-    ],
-    payment: `💳 **Phương thức thanh toán:**
+interface ChatProduct {
+    id: number;
+    name: string;
+    slug: string;
+    price: number;
+    image: string;
+    rating: number;
+    format?: string;
+    category?: string;
+    description?: string;
+}
 
-• **Chuyển khoản ngân hàng** - Nhanh nhất, có QR code
-• **MoMo / ZaloPay** - Tiện lợi, xác nhận tự động
-• **Thẻ quốc tế** - Visa, Mastercard
+interface ProductSearchResult {
+    products: ChatProduct[];
+    hasHardFilters: boolean;
+    hasExactMatches: boolean;
+    maxPrice: number | null;
+    keywords: string[];
+}
 
-✅ Sau thanh toán, bạn nhận link download ngay qua email (trong 1-5 phút)!
+const GEMINI_MODELS = (process.env.GEMINI_MODEL || 'gemini-2.5-flash,gemini-2.5-flash-lite')
+    .split(',')
+    .map((model) => model.trim())
+    .filter(Boolean);
 
-Bạn muốn thanh toán sản phẩm nào?`,
-    download: `📥 **Hướng dẫn Download:**
-
-1. Đăng nhập tài khoản
-2. Vào **Menu → Downloads** hoặc **Profile → My Downloads**
-3. Click nút Download bên cạnh sản phẩm
-
-💡 **Mẹo:** Kiểm tra email - Link download cũng được gửi tự động sau thanh toán!
-
-Bạn gặp vấn đề gì với việc download không?`,
-    refund: `💰 **Chính sách hoàn tiền:**
-
-• Hoàn tiền trong **7 ngày** nếu sản phẩm không đúng mô tả
-• Chưa download file → Hoàn 100%
-• Đã download → Xem xét từng trường hợp
-
-📧 Gửi yêu cầu đến: **veutong961@gmail.com**
-Kèm theo: Mã đơn hàng + Lý do
-
-Mình có thể hỗ trợ bạn gửi yêu cầu hoàn tiền không?`,
-    license: `📄 **Thông tin License:**
-
-• **Regular License** - 1 website thương mại
-• **Extended License** - Không giới hạn dự án
-
-✅ Tất cả license đều bao gồm:
-• Lifetime updates miễn phí
-• Hỗ trợ kỹ thuật 6 tháng
-• Source code đầy đủ
-
-Bạn muốn biết thêm về loại license nào?`,
-    support: `🆘 **Kênh hỗ trợ:**
-
-📧 Email: **veutong961@gmail.com** (phản hồi trong 24h)
-📞 Hotline: **0971 386 588** (8h-22h hàng ngày)
-💬 Chat này - Mình sẵn sàng hỗ trợ!
-
-Bạn cần hỗ trợ vấn đề gì?`,
-    productNotFound: 'Hmm, mình chưa tìm thấy sản phẩm phù hợp. Bạn có thể mô tả chi tiết hơn không? Ví dụ: "Landing page cho startup công nghệ" hoặc "Theme shop bán quần áo".',
-    default: `Cảm ơn bạn đã liên hệ! 😊
-
-Mình có thể giúp bạn:
-• 🔍 Tìm themes, templates, landing pages
-• 💳 Hướng dẫn thanh toán
-• 📥 Hỗ trợ download
-• 📄 Giải đáp về license
-
-Bạn muốn tìm hiểu về vấn đề nào?`,
-};
-
-// Quick reply suggestions
 const QUICK_REPLIES = {
     greeting: ['Tìm Landing Page', 'Xem Theme phổ biến', 'Hỏi về thanh toán'],
     product: ['Xem thêm sản phẩm', 'Hỏi về license', 'Cách thanh toán'],
     support: ['Hỗ trợ download', 'Chính sách hoàn tiền', 'Liên hệ hotline'],
 };
 
-// Check which intent matches
-function matchIntent(message: string): string | null {
+const FALLBACK_MESSAGES = {
+    default: `Mình có thể giúp bạn tìm themes, templates, landing pages, hướng dẫn thanh toán, download và license. Bạn đang cần sản phẩm kiểu nào?`,
+    payment: `DigitalMart hỗ trợ thanh toán qua chuyển khoản ngân hàng/QR và các cổng thanh toán đang bật trên website. Sau khi thanh toán thành công, bạn có thể tải sản phẩm trong Profile > Downloads.`,
+    download: `Sau khi mua hàng, bạn vào Profile > Downloads để tải file. Nếu chưa thấy file, hãy kiểm tra trạng thái đơn hàng hoặc liên hệ hỗ trợ kèm mã đơn hàng.`,
+    refund: `Chính sách hoàn tiền thường được xét theo từng đơn hàng, đặc biệt nếu sản phẩm chưa được tải xuống hoặc không đúng mô tả. Bạn nên gửi mã đơn hàng và lý do để được hỗ trợ nhanh hơn.`,
+    license: `Regular License thường phù hợp cho một website/dự án. Extended License phù hợp khi cần dùng rộng hơn. Nếu bạn cho mình biết nhu cầu triển khai, mình sẽ gợi ý loại license hợp lý.`,
+    support: `Bạn có thể liên hệ hỗ trợ qua email hoặc chat này. Hãy gửi rõ mã đơn hàng, email mua hàng và vấn đề đang gặp để được xử lý nhanh hơn.`,
+};
+
+function matchIntent(message: string) {
     const lower = message.toLowerCase();
-    for (const [intent, keywords] of Object.entries(INTENTS)) {
-        if (keywords.some(kw => lower.includes(kw))) {
-            return intent;
-        }
-    }
-    return null;
+    if (/(thanh toán|payment|trả tiền|momo|bank|chuyển khoản|qr)/i.test(lower)) return 'payment';
+    if (/(download|tải|file|nhận file)/i.test(lower)) return 'download';
+    if (/(hoàn tiền|refund|đổi trả)/i.test(lower)) return 'refund';
+    if (/(license|bản quyền|giấy phép|key)/i.test(lower)) return 'license';
+    if (/(hỗ trợ|support|liên hệ|contact|help)/i.test(lower)) return 'support';
+    if (/(theme|template|landing|dashboard|admin|shop|store|wordpress|react|next|portfolio|sản phẩm|giao diện|mẫu)/i.test(lower)) return 'product';
+    if (/(chào|hello|hi|xin chào|hey|alo)/i.test(lower)) return 'greeting';
+    return 'default';
 }
 
-// Get random response from array
-function getRandom<T>(arr: T[]): T {
-    return arr[Math.floor(Math.random() * arr.length)];
+function formatPrice(price: number) {
+    return new Intl.NumberFormat('vi-VN').format(price) + 'đ';
 }
 
-export async function chatWithGemini(userMessage: string): Promise<ChatResponse> {
-    const intent = matchIntent(userMessage);
-    const lowerMsg = userMessage.toLowerCase();
+function normalizeText(value: string) {
+    return value
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/đ/g, 'd');
+}
 
-    // Greeting
-    if (intent === 'greeting') {
-        return {
-            message: getRandom(RESPONSE_TEMPLATES.greeting),
-            quickReplies: QUICK_REPLIES.greeting,
-        };
-    }
+function parseBudget(message: string) {
+    const normalized = normalizeText(message).replace(/\s+/g, ' ');
+    const budgetMatch = normalized.match(/(?:duoi|toi da|max|<=|nho hon|khong qua)\s*(\d+(?:[.,]\d+)?)\s*(k|nghin|ngan|trieu|m|000)?/);
+    if (!budgetMatch) return null;
 
-    // Thanks
-    if (intent === 'thanks') {
-        return {
-            message: getRandom(RESPONSE_TEMPLATES.thanks),
-        };
-    }
+    const amount = Number(budgetMatch[1].replace(',', '.'));
+    const unit = budgetMatch[2] || '';
 
-    // Payment
-    if (intent === 'payment') {
-        return {
-            message: RESPONSE_TEMPLATES.payment,
-            quickReplies: ['Xem sản phẩm', 'Hỗ trợ thanh toán'],
-        };
-    }
+    if (!Number.isFinite(amount)) return null;
+    if (unit === 'trieu' || unit === 'm') return Math.round(amount * 1_000_000);
+    if (unit === 'k' || unit === 'nghin' || unit === 'ngan') return Math.round(amount * 1_000);
+    return amount < 10_000 ? Math.round(amount * 1_000) : Math.round(amount);
+}
 
-    // Download
-    if (intent === 'download') {
-        return {
-            message: RESPONSE_TEMPLATES.download,
-            quickReplies: ['Không thấy file', 'Liên hệ hỗ trợ'],
-        };
-    }
+function parseProductFilters(message: string) {
+    const normalized = normalizeText(message);
+    const keywords: string[] = [];
 
-    // Refund
-    if (intent === 'refund') {
-        return {
-            message: RESPONSE_TEMPLATES.refund,
-        };
-    }
+    if (normalized.includes('landing') || normalized.includes('trang dich')) keywords.push('landing');
+    if (normalized.includes('dashboard') || normalized.includes('admin') || normalized.includes('quan tri')) keywords.push('dashboard', 'admin');
+    if (normalized.includes('shop') || normalized.includes('store') || normalized.includes('ecommerce') || normalized.includes('ban hang')) keywords.push('shop', 'store', 'ecommerce');
+    if (normalized.includes('wordpress') || normalized.includes('wp')) keywords.push('wordpress', 'theme');
+    if (normalized.includes('react') || normalized.includes('next')) keywords.push('react', 'next');
+    if (normalized.includes('portfolio') || normalized.includes('cv')) keywords.push('portfolio', 'cv');
+    if (normalized.includes('figma')) keywords.push('figma');
 
-    // License
-    if (intent === 'license') {
-        return {
-            message: RESPONSE_TEMPLATES.license,
-        };
-    }
-
-    // Support
-    if (intent === 'support') {
-        return {
-            message: RESPONSE_TEMPLATES.support,
-            quickReplies: QUICK_REPLIES.support,
-        };
-    }
-
-    // Product search intents
-    if (intent === 'productSearch' || intent === 'landing' || intent === 'dashboard' ||
-        intent === 'ecommerce' || intent === 'wordpress' || intent === 'react' || intent === 'portfolio') {
-        try {
-            const products = await fetchActiveProducts({ limit: 30 });
-            let filtered = [...products];
-            let categoryName = 'phù hợp';
-
-            // Smart filtering based on intent
-            if (intent === 'landing' || lowerMsg.includes('landing')) {
-                filtered = products.filter(p =>
-                    p.format === 'Landing' ||
-                    p.name.toLowerCase().includes('landing') ||
-                    p.category?.toLowerCase().includes('landing')
-                );
-                categoryName = 'Landing Page';
-            } else if (intent === 'dashboard' || lowerMsg.includes('admin')) {
-                filtered = products.filter(p =>
-                    p.name.toLowerCase().includes('dashboard') ||
-                    p.name.toLowerCase().includes('admin') ||
-                    p.category?.toLowerCase().includes('admin')
-                );
-                categoryName = 'Dashboard/Admin';
-            } else if (intent === 'ecommerce') {
-                filtered = products.filter(p =>
-                    p.category?.toLowerCase().includes('ecommerce') ||
-                    p.name.toLowerCase().includes('shop') ||
-                    p.name.toLowerCase().includes('store')
-                );
-                categoryName = 'E-commerce';
-            } else if (intent === 'wordpress') {
-                filtered = products.filter(p =>
-                    p.name.toLowerCase().includes('wordpress') ||
-                    p.format === 'Theme'
-                );
-                categoryName = 'WordPress';
-            } else if (intent === 'react') {
-                filtered = products.filter(p =>
-                    p.name.toLowerCase().includes('react') ||
-                    p.name.toLowerCase().includes('next')
-                );
-                categoryName = 'React/Next.js';
-            } else if (intent === 'portfolio') {
-                filtered = products.filter(p =>
-                    p.name.toLowerCase().includes('portfolio') ||
-                    p.name.toLowerCase().includes('cv')
-                );
-                categoryName = 'Portfolio';
-            }
-
-            // Fallback to top rated if no match
-            if (filtered.length === 0) {
-                filtered = products.slice(0, 10);
-                categoryName = 'phổ biến';
-            }
-
-            // Get top 3 by rating
-            const topProducts = filtered
-                .sort((a, b) => (b.rating || 0) - (a.rating || 0))
-                .slice(0, 3)
-                .map(p => ({
-                    id: p.id,
-                    name: p.name,
-                    slug: p.slug || String(p.id),
-                    price: p.price,
-                    image: p.image || '',
-                    rating: p.rating || 5,
-                }));
-
-            if (topProducts.length > 0) {
-                return {
-                    message: `🎯 Đây là **${topProducts.length} ${categoryName}** được đánh giá cao nhất:`,
-                    products: topProducts,
-                    quickReplies: QUICK_REPLIES.product,
-                };
-            }
-        } catch (error) {
-            console.error('Error fetching products:', error);
-        }
-
-        return {
-            message: RESPONSE_TEMPLATES.productNotFound,
-            quickReplies: ['Landing Page', 'Dashboard', 'WordPress Theme'],
-        };
-    }
-
-    // Default response
     return {
-        message: RESPONSE_TEMPLATES.default,
-        quickReplies: QUICK_REPLIES.greeting,
+        maxPrice: parseBudget(message),
+        keywords,
     };
+}
+
+function productHaystack(product: any) {
+    return normalizeText([
+        product.name,
+        product.description,
+        product.format,
+        product.category,
+        product.author,
+        ...(product.tags || []),
+    ].join(' '));
+}
+
+function matchesFilters(product: any, filters: ReturnType<typeof parseProductFilters>) {
+    if (filters.maxPrice !== null && Number(product.price || 0) > filters.maxPrice) {
+        return false;
+    }
+
+    if (filters.keywords.length === 0) return true;
+
+    const haystack = productHaystack(product);
+    return filters.keywords.some((keyword) => haystack.includes(keyword));
+}
+
+function scoreProduct(product: any, message: string, filters: ReturnType<typeof parseProductFilters>) {
+    const haystack = productHaystack(product);
+    const words = message
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .split(/[^a-z0-9]+/)
+        .filter((word) => word.length >= 3);
+
+    let score = Number(product.rating || 0);
+    words.forEach((word) => {
+        if (haystack.includes(word)) score += 3;
+    });
+    filters.keywords.forEach((keyword) => {
+        if (haystack.includes(keyword)) score += 8;
+    });
+    if (filters.maxPrice !== null && Number(product.price || 0) <= filters.maxPrice) score += 6;
+    if (product.is_featured) score += 2;
+    if (product.is_bestseller) score += 2;
+    return score;
+}
+
+async function getRelevantProducts(message: string) {
+    try {
+        const filters = parseProductFilters(message);
+        const products = await fetchActiveProducts({ limit: 40 });
+        const filteredProducts = products.filter((product) => matchesFilters(product, filters));
+        const hasHardFilters = filters.maxPrice !== null || filters.keywords.length > 0;
+        const sourceProducts = filteredProducts.length > 0 || hasHardFilters ? filteredProducts : products;
+
+        const mappedProducts = sourceProducts
+            .map((product) => ({ product, score: scoreProduct(product, message, filters) }))
+            .sort((a, b) => b.score - a.score)
+            .slice(0, 4)
+            .map(({ product }) => ({
+                id: product.id,
+                name: product.name,
+                slug: product.slug || String(product.id),
+                price: product.price,
+                image: product.image || '',
+                rating: product.rating || 5,
+                format: product.format,
+                category: product.category,
+                description: product.description,
+            }));
+
+        return {
+            products: mappedProducts,
+            hasHardFilters,
+            hasExactMatches: mappedProducts.length > 0,
+            maxPrice: filters.maxPrice,
+            keywords: filters.keywords,
+        };
+    } catch (error) {
+        console.error('Error fetching chatbot products:', error);
+        return {
+            products: [],
+            hasHardFilters: false,
+            hasExactMatches: false,
+            maxPrice: null,
+            keywords: [],
+        };
+    }
+}
+
+function buildPrompt(userMessage: string, history: ChatHistoryMessage[], searchResult: ProductSearchResult) {
+    const historyText = history
+        .slice(-6)
+        .map((item) => `${item.sender === 'user' ? 'Khách' : 'Trợ lý'}: ${item.text}`)
+        .join('\n');
+
+    const productText = searchResult.products.length
+        ? searchResult.products
+            .map((product, index) => (
+                `${index + 1}. ${product.name} | ${product.format || 'Template'} | ${formatPrice(product.price)} | rating ${product.rating} | /product/${product.slug}`
+            ))
+            .join('\n')
+        : 'Không có sản phẩm nào khớp đúng điều kiện lọc của khách.';
+
+    const filterText = [
+        searchResult.maxPrice !== null ? `Giá tối đa: ${formatPrice(searchResult.maxPrice)}` : null,
+        searchResult.keywords.length > 0 ? `Từ khóa/loại sản phẩm: ${searchResult.keywords.join(', ')}` : null,
+    ].filter(Boolean).join('\n') || 'Không có bộ lọc rõ ràng.';
+
+    return `
+Bạn là trợ lý AI của DigitalMart, một website bán sản phẩm số như theme, template, landing page, dashboard và UI kit.
+
+Yêu cầu:
+- Trả lời bằng tiếng Việt, thân thiện, ngắn gọn, tự nhiên.
+- Chỉ tư vấn dựa trên thông tin website và danh sách sản phẩm bên dưới.
+- Nếu khách hỏi mua sản phẩm, hãy gợi ý 1-3 sản phẩm phù hợp và nói lý do ngắn.
+- Nếu danh sách sản phẩm bên dưới rỗng, phải nói rõ hiện chưa có sản phẩm khớp điều kiện. Không gợi ý sản phẩm ngoài điều kiện.
+- Không bịa chính sách. Nếu không chắc, hướng dẫn khách liên hệ hỗ trợ hoặc vào trang tài khoản.
+- Không nhắc rằng bạn là Gemini hay mô hình AI.
+- Không dùng markdown phức tạp, chỉ dùng đoạn văn ngắn hoặc bullet đơn giản.
+
+Lịch sử gần nhất:
+${historyText || 'Chưa có.'}
+
+Bộ lọc hiểu được từ câu hỏi:
+${filterText}
+
+Sản phẩm liên quan từ Supabase:
+${productText}
+
+Câu hỏi của khách:
+${userMessage}
+`.trim();
+}
+
+async function askGemini(prompt: string) {
+    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GEMINI_API_KEY;
+    if (!apiKey) return null;
+
+    let lastError: unknown = null;
+
+    for (const model of GEMINI_MODELS) {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-goog-api-key': apiKey,
+            },
+            body: JSON.stringify({
+                contents: [
+                    {
+                        role: 'user',
+                        parts: [{ text: prompt }],
+                    },
+                ],
+                generationConfig: {
+                    temperature: 0.45,
+                    topP: 0.9,
+                    maxOutputTokens: 420,
+                },
+            }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            lastError = new Error(data?.error?.message || `Gemini API error on ${model}`);
+            if ([429, 500, 502, 503, 504].includes(response.status)) {
+                console.warn(`Gemini model ${model} unavailable, trying fallback if available.`);
+                continue;
+            }
+
+            console.error('Gemini API error:', data);
+            throw lastError;
+        }
+
+        return data?.candidates?.[0]?.content?.parts
+            ?.map((part: { text?: string }) => part.text || '')
+            .join('')
+            .trim() || null;
+    }
+
+    throw lastError instanceof Error ? lastError : new Error('Gemini API unavailable');
+}
+
+function filterSummary(searchResult: ProductSearchResult) {
+    const parts = [];
+    if (searchResult.keywords.length > 0) parts.push(searchResult.keywords[0]);
+    if (searchResult.maxPrice !== null) parts.push(`dưới ${formatPrice(searchResult.maxPrice)}`);
+    return parts.length > 0 ? parts.join(' ') : 'điều kiện bạn đưa ra';
+}
+
+function toProductCards(products: ChatProduct[]) {
+    return products.slice(0, 3).map((product) => ({
+        id: product.id,
+        name: product.name,
+        slug: product.slug,
+        price: product.price,
+        image: product.image,
+        rating: product.rating,
+    }));
+}
+
+function fallbackResponse(intent: string, searchResult: ProductSearchResult): ChatResponse {
+    if (intent === 'product' && searchResult.products.length > 0) {
+        return {
+            message: `Mình tìm thấy vài sản phẩm khá hợp với nhu cầu của bạn. Bạn xem nhanh các lựa chọn này nhé:`,
+            products: toProductCards(searchResult.products),
+            quickReplies: QUICK_REPLIES.product,
+        };
+    }
+
+    if (intent === 'product' && searchResult.hasHardFilters && !searchResult.hasExactMatches) {
+        return {
+            message: `Hiện mình chưa thấy sản phẩm nào khớp đúng ${filterSummary(searchResult)} trong kho DigitalMart. Bạn có thể nới ngân sách hoặc đổi loại sản phẩm để mình tìm tiếp nhé.`,
+            quickReplies: ['Nới ngân sách', 'Tìm loại khác', 'Xem sản phẩm phổ biến'],
+        };
+    }
+
+    return {
+        message: FALLBACK_MESSAGES[intent as keyof typeof FALLBACK_MESSAGES] || FALLBACK_MESSAGES.default,
+        products: toProductCards(searchResult.products),
+        quickReplies: intent === 'support' ? QUICK_REPLIES.support : QUICK_REPLIES.greeting,
+    };
+}
+
+export async function chatWithGemini(
+    userMessage: string,
+    history: ChatHistoryMessage[] = []
+): Promise<ChatResponse> {
+    const intent = matchIntent(userMessage);
+    const searchResult = await getRelevantProducts(userMessage);
+    const productCards = toProductCards(searchResult.products);
+
+    try {
+        const prompt = buildPrompt(userMessage, history, searchResult);
+        const message = await askGemini(prompt);
+
+        if (message) {
+            return {
+                message,
+                products: intent === 'product' ? productCards : undefined,
+                quickReplies: intent === 'product' ? QUICK_REPLIES.product : QUICK_REPLIES.greeting,
+            };
+        }
+    } catch (error) {
+        console.error('Gemini chatbot fallback:', error);
+    }
+
+    return fallbackResponse(intent, searchResult);
 }

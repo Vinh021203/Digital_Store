@@ -942,6 +942,7 @@ const ModernProductDetailLayout = ({
     setQuickBuyCollapsed,
 }: any) => {
     const [showFullDescription, setShowFullDescription] = useState(false);
+    const [mobileQuickBuyOpen, setMobileQuickBuyOpen] = useState(false);
     const categoryLabel = typeof product.category === 'string'
         ? product.category
         : product.category?.name || 'SaaS Templates';
@@ -1043,7 +1044,7 @@ const ModernProductDetailLayout = ({
             </div>
 
             <main className="relative z-10 mx-auto max-w-7xl px-4 py-5 md:px-8 md:py-7">
-                <nav className="mb-7 flex items-center gap-2 overflow-x-auto whitespace-nowrap text-sm text-slate-500">
+                <nav className="mb-7 flex items-center gap-2 overflow-x-auto whitespace-nowrap text-sm text-slate-500 no-scrollbar">
                     <Link href="/" className="flex items-center gap-1.5 hover:text-orange-600"><HomeIcon size={15} /> Trang chủ</Link>
                     <ChevronRight size={15} className="text-slate-300" />
                     <Link href="/products" className="hover:text-orange-600">Templates</Link>
@@ -1364,21 +1365,64 @@ const ModernProductDetailLayout = ({
                     </div>
                 )}
 
-		                <div className="fixed bottom-[calc(env(safe-area-inset-bottom)+4.25rem)] left-3 z-30 md:hidden">
-		                    <div className="relative w-[190px] overflow-hidden rounded-2xl border border-orange-200/80 bg-white/95 p-2 shadow-[0_14px_36px_rgba(15,23,42,0.18)] backdrop-blur-xl">
-		                        <div className="pointer-events-none absolute -right-8 -top-8 h-20 w-20 rounded-full bg-orange-200/45 blur-2xl" />
-		                        <p className="relative text-[9px] font-extrabold uppercase tracking-[0.14em] text-orange-600">Mua nhanh</p>
-		                        <div className="relative mt-1 flex items-center gap-2">
-		                            <div className="min-w-0 flex-1">
-		                                <p className="truncate text-base font-extrabold leading-none text-slate-950">{formatPrice(product.price)}</p>
-		                                {discountPercent > 0 && <p className="mt-1 text-[10px] font-bold text-rose-600">-{discountPercent}%</p>}
-		                            </div>
-		                            <button onClick={handleAddToCart} className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-600 text-white shadow-lg shadow-orange-200 transition active:scale-[0.96]" aria-label="Thêm vào giỏ hàng">
-		                                <ShoppingCart size={17} />
-		                            </button>
-		                        </div>
-		                    </div>
-		                </div>
+                <div className="fixed right-0 top-1/2 z-30 -translate-y-1/2 md:hidden">
+                    {mobileQuickBuyOpen ? (
+                        <div className="mr-3 w-[min(82vw,280px)] overflow-hidden rounded-2xl border border-orange-100 bg-white/95 text-slate-950 shadow-[0_18px_48px_rgba(15,23,42,0.22)] backdrop-blur-xl">
+                            <div className="border-b border-orange-50 bg-gradient-to-r from-white to-orange-50/80 p-3">
+                                <div className="flex items-start gap-3">
+                                    <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-950 text-white shadow-lg shadow-slate-200">
+                                        <ShoppingBag size={19} strokeWidth={2.4} />
+                                        <span className="absolute -right-1 -top-1 h-3 w-3 rounded-full border-2 border-white bg-orange-500" />
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                        <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-orange-600">Mua nhanh</p>
+                                        <p className="truncate text-sm font-bold leading-5 text-slate-950">{product.name}</p>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => setMobileQuickBuyOpen(false)}
+                                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-400 transition active:scale-95 hover:bg-orange-50 hover:text-orange-600"
+                                        aria-label="Thu gọn mua nhanh"
+                                    >
+                                        <ChevronRight size={18} />
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="p-3">
+                                <div className="flex items-end justify-between gap-3">
+                                    <div className="min-w-0">
+                                        <p className="text-xs font-semibold text-slate-500">Giá hiện tại</p>
+                                        <p className="truncate text-2xl font-extrabold leading-none text-orange-600">{formatPrice(product.price)}</p>
+                                    </div>
+                                    {discountPercent > 0 && (
+                                        <span className="shrink-0 rounded-full bg-rose-50 px-2.5 py-1 text-xs font-bold text-rose-600">-{discountPercent}%</span>
+                                    )}
+                                </div>
+                                <div className="mt-3 grid grid-cols-[1fr_auto] gap-2">
+                                    <button onClick={handleAddToCart} className="flex min-w-0 items-center justify-center gap-2 rounded-xl bg-orange-600 px-3 py-3 text-sm font-bold text-white shadow-lg shadow-orange-100 transition active:scale-[0.98]">
+                                        <ShoppingCart size={18} /> Thêm vào giỏ
+                                    </button>
+                                    {demoUrl && (
+                                        <button onClick={() => setShowDemoModal(true)} className="flex h-11 w-11 items-center justify-center rounded-xl border border-orange-100 bg-white text-orange-700 transition active:scale-[0.98]" aria-label="Xem demo">
+                                            <Play size={18} />
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <button
+                            type="button"
+                            onClick={() => setMobileQuickBuyOpen(true)}
+                            className="group flex h-16 w-12 flex-col items-center justify-center gap-1 rounded-l-2xl border border-r-0 border-orange-100 bg-slate-950 text-white shadow-[0_12px_32px_rgba(15,23,42,0.24)] transition active:scale-95"
+                            aria-label="Mở mua nhanh"
+                            aria-expanded={mobileQuickBuyOpen}
+                        >
+                            <ShoppingCart size={19} strokeWidth={2.4} />
+                            <ChevronRight size={15} className="rotate-180 text-orange-300 transition group-active:-translate-x-0.5" />
+                        </button>
+                    )}
+                </div>
 
                 <div className="fixed bottom-24 left-6 z-30 hidden xl:block">
                     {quickBuyCollapsed ? (

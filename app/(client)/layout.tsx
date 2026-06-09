@@ -34,8 +34,10 @@ interface ClientLayoutProps {
 const ClientLayout = ({ children }: ClientLayoutProps) => {
   const pathname = usePathname();
 
-  // Hide navbar/footer on community and affiliate dashboard pages
+  // Hide navbar/footer on fullscreen client pages, but keep the shared mobile
+  // bottom nav available across the client area unless a page owns its own nav.
   const isFullscreenPage = pathname === '/community' || pathname === '/affiliate' || pathname === '/profile/affiliate' || pathname === '/affiliate/dashboard';
+  const hasPageOwnedMobileNav = pathname === '/affiliate/dashboard';
 
   return (
     <MaintenanceGuard>
@@ -51,7 +53,7 @@ const ClientLayout = ({ children }: ClientLayoutProps) => {
         {!isFullscreenPage && <Footer />}
       </div>
 
-      {!isFullscreenPage && <MobileBottomNav />}
+      {!hasPageOwnedMobileNav && <MobileBottomNav />}
       <FloatingWidgets />
       {!isFullscreenPage && <NewsletterPopup />}
       {!isFullscreenPage && <SocialProofNotifications />}
