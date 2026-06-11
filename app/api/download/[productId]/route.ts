@@ -3,6 +3,29 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient, createAdminClient } from '@/lib/supabase/server';
+import { checkRateLimit, getClientIp, getRetryAfterSeconds } from '@/lib/rateLimit';
+
+function parseProductId(productId: string) {
+    const productIdNum = Number.parseInt(productId, 10);
+    return Number.isInteger(productIdNum) && productIdNum > 0 ? productIdNum : null;
+}
+
+function isValidVersion(version: string | null) {
+    return !version || /^[a-zA-Z0-9._-]{1,40}$/.test(version);
+}
+
+function isExpired(expiresAt?: string | null) {
+    return Boolean(expiresAt && new Date(expiresAt).getTime() < Date.now());
+}
+
+function isAllowedDownloadUrl(fileUrl: string) {
+    try {
+        const url = new URL(fileUrl);
+        return url.protocol === 'https:' && url.hostname === 'res.cloudinary.com';
+    } catch {
+        return false;
+    }
+}
 
 export async function GET(
     request: NextRequest,
@@ -10,9 +33,9 @@ export async function GET(
 ) {
     try {
         const { productId } = await params;
-        const productIdNum = parseInt(productId, 10);
+        const productIdNum = parseProductId(productId);
 
-        if (isNaN(productIdNum)) {
+        if (!productIdNum) {
             return NextResponse.json(
                 { error: 'Invalid product ID' },
                 { status: 400 }
@@ -22,6 +45,13 @@ export async function GET(
         // Get version from query params (optional, defaults to current)
         const { searchParams } = new URL(request.url);
         const requestedVersion = searchParams.get('version');
+
+        if (!isValidVersion(requestedVersion)) {
+            return NextResponse.json(
+                { error: 'Invalid version' },
+                { status: 400 }
+            );
+        }
 
         // Auth check - use user's client
         const supabase = await createClient();
@@ -34,6 +64,23 @@ export async function GET(
             );
         }
 
+        const rateLimit = checkRateLimit(`download:${user.id}:${productIdNum}`, {
+            windowMs: 60 * 60 * 1000,
+            max: 20,
+        });
+
+        if (!rateLimit.allowed) {
+            return NextResponse.json(
+                { error: 'Too many download attempts. Please try again later.' },
+                {
+                    status: 429,
+                    headers: {
+                        'Retry-After': String(getRetryAfterSeconds(rateLimit.resetAt)),
+                    },
+                }
+            );
+        }
+
         // Use admin client for database operations (bypasses RLS)
         const adminClient = createAdminClient();
 
@@ -41,7 +88,7 @@ export async function GET(
         // Use order + limit to get latest license if user has multiple
         const { data: licenses, error: licenseError } = await adminClient
             .from('licenses')
-            .select('id, status, type, downloads_this_month, downloads_limit')
+            .select('id, status, type, downloads_this_month, downloads_limit, expires_at')
             .eq('user_id', user.id)
             .eq('product_id', productIdNum)
             .eq('status', 'active')
@@ -53,12 +100,12 @@ export async function GET(
         if (licenseError) {
             console.error('License check error:', licenseError);
             return NextResponse.json(
-                { error: 'Error checking license: ' + licenseError.message },
+                { error: 'Unable to verify license.' },
                 { status: 500 }
             );
         }
 
-        if (!license) {
+        if (!license || isExpired(license.expires_at)) {
             return NextResponse.json(
                 { error: 'No valid license found. Please purchase this product first.' },
                 { status: 403 }
@@ -116,7 +163,7 @@ export async function GET(
             'unknown';
 
         // Log the download
-        await adminClient.from('downloads').insert({
+        const { error: logError } = await adminClient.from('downloads').insert({
             user_id: user.id,
             product_id: productIdNum,
             license_id: license.id,
@@ -124,11 +171,19 @@ export async function GET(
             ip_address: ip,
         });
 
+        if (logError) {
+            console.error('Download log error:', logError);
+        }
+
         // Increment download count on license
-        await adminClient
+        const { error: updateError } = await adminClient
             .from('licenses')
             .update({ downloads_this_month: downloadsThisMonth + 1 })
             .eq('id', license.id);
+
+        if (updateError) {
+            console.error('Download count update error:', updateError);
+        }
 
         // Get product info for the response
         const { data: product } = await adminClient
@@ -140,9 +195,9 @@ export async function GET(
         // Return file URL
         const fileUrl = finalFile?.file_url;
 
-        if (!fileUrl) {
+        if (!fileUrl || !isAllowedDownloadUrl(fileUrl)) {
             return NextResponse.json(
-                { error: 'File URL not found' },
+                { error: 'Download file is not available.' },
                 { status: 404 }
             );
         }
@@ -164,9 +219,8 @@ export async function GET(
 
     } catch (error: unknown) {
         console.error('Download API error:', error);
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         return NextResponse.json(
-            { success: false, error: errorMessage },
+            { success: false, error: 'Download failed' },
             { status: 500 }
         );
     }
@@ -179,7 +233,14 @@ export async function POST(
 ) {
     try {
         const { productId } = await params;
-        const productIdNum = parseInt(productId, 10);
+        const productIdNum = parseProductId(productId);
+
+        if (!productIdNum) {
+            return NextResponse.json(
+                { error: 'Invalid product ID' },
+                { status: 400 }
+            );
+        }
 
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();
@@ -191,18 +252,35 @@ export async function POST(
             );
         }
 
+        const rateLimit = checkRateLimit(`download-versions:${user.id}:${productIdNum}`, {
+            windowMs: 60 * 60 * 1000,
+            max: 60,
+        });
+
+        if (!rateLimit.allowed) {
+            return NextResponse.json(
+                { error: 'Too many requests. Please try again later.' },
+                {
+                    status: 429,
+                    headers: {
+                        'Retry-After': String(getRetryAfterSeconds(rateLimit.resetAt)),
+                    },
+                }
+            );
+        }
+
         const adminClient = createAdminClient();
 
         // Check license
         const { data: license } = await adminClient
             .from('licenses')
-            .select('id')
+            .select('id, expires_at')
             .eq('user_id', user.id)
             .eq('product_id', productIdNum)
             .eq('status', 'active')
             .maybeSingle();
 
-        if (!license) {
+        if (!license || isExpired(license.expires_at)) {
             return NextResponse.json(
                 { error: 'No valid license' },
                 { status: 403 }

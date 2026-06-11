@@ -1,204 +1,400 @@
-<div align="center">
+# Digital Store / DigitalMart
 
-# 🛒 DigitalMart
+Digital Store là website marketplace bán sản phẩm số như template, theme, UI kit, landing page, dashboard, mini app và bundle. Dự án được xây bằng Next.js, Supabase và Tailwind CSS, có đầy đủ luồng client, admin, seller, affiliate, thanh toán, download/license và chatbot AI.
 
-### Modern Digital Products Marketplace
+## Tính năng chính
 
-[![Next.js](https://img.shields.io/badge/Next.js-16.0-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
-[![Supabase](https://img.shields.io/badge/Supabase-Database-green?style=for-the-badge&logo=supabase)](https://supabase.com/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-06B6D4?style=for-the-badge&logo=tailwindcss)](https://tailwindcss.com/)
+### Client
 
-**A full-featured digital marketplace for selling templates, themes, UI kits, and digital assets.**
+- Trang chủ marketplace với hero, danh mục, sản phẩm nổi bật, sản phẩm bán chạy, blog và CTA.
+- Danh sách sản phẩm, tìm kiếm, lọc, so sánh và wishlist.
+- Trang chi tiết sản phẩm với gallery, mô tả, FAQ, review, sản phẩm liên quan và mua nhanh.
+- Giỏ hàng, checkout, trang thành công đơn hàng.
+- Profile người dùng: tổng quan, đơn hàng, download, license, community, support, cài đặt.
+- Mobile bottom navigation toàn site client.
+- Widget chat AI nổi, scroll-to-top, recently viewed và các widget marketing.
+- Trang AI Recommendation dùng Gemini + Supabase để tư vấn sản phẩm theo nhu cầu.
 
-[Demo](#) • [Documentation](#) • [Report Bug](#) • [Request Feature](#)
+### Auth
 
-</div>
+- Đăng nhập, đăng ký, quên mật khẩu, reset password.
+- OAuth Google/GitHub qua Supabase Auth.
+- Verify email.
+- Profile đồng bộ với Supabase.
 
----
+### Admin
 
-## ✨ Features
+- Dashboard quản trị.
+- Quản lý sản phẩm, danh mục, license, đơn hàng, khách hàng.
+- Quản lý seller marketplace: duyệt seller, duyệt sản phẩm, giao dịch.
+- Quản lý marketing: coupon, blog, affiliate.
+- Quản lý notification, community, activity logs, settings, finance.
 
-### 🛍️ Marketplace
-- **Product Catalog** - Browse templates, themes, landing pages, mini apps, and bundles
-- **Advanced Filtering** - Search by category, price, tags, and more
-- **Product Reviews** - Customer ratings and verified purchase reviews
-- **Wishlist & Compare** - Save favorites and compare products
+### Seller
 
-### 💳 E-Commerce
-- **Secure Checkout** - Multiple payment methods (SePay, MoMo, Bank Transfer)
-- **License System** - Regular, Extended, and Unlimited license types
-- **Download Management** - Secure downloads with monthly limits
-- **Coupon System** - Discount codes with usage tracking
+- Đăng ký người bán qua `/seller/register`.
+- API đăng ký seller chạy server-side bằng service role.
+- Seller marketplace trong profile.
+- Tạo sản phẩm seller ở trạng thái chờ duyệt.
+- Trang public seller shop theo slug.
 
-### 👤 User Features
-- **Authentication** - Email/password with OTP verification
-- **User Dashboard** - Order history, downloads, licenses, and profile
-- **Affiliate Program** - Earn commissions by referring customers
-- **Support Tickets** - Built-in customer support system
+### Affiliate
 
-### 🎛️ Admin Panel
-- **Dashboard Analytics** - Sales, revenue, and user statistics
-- **Product Management** - CRUD operations with version control
-- **Order Management** - Kanban and list views
-- **User Management** - Roles, permissions, and activity logs
-- **Marketing Tools** - Blog, coupons, and notifications
+- Trang giới thiệu chương trình affiliate.
+- Dashboard affiliate.
+- Quản lý referral, campaign, withdrawal và công cụ chia sẻ.
 
-### 🔒 Security
-- **Row Level Security** - Supabase RLS policies
-- **XSS Protection** - HTML sanitization with DOMPurify
-- **Webhook Verification** - Secure payment callbacks
-- **Rate Limiting Ready** - API protection infrastructure
+### Thanh toán, license và download
 
----
+- Checkout hỗ trợ SePay/VietQR.
+- Webhook thanh toán.
+- Tạo license sau khi thanh toán.
+- Download sản phẩm đã mua.
+- Theo dõi lượt download và license trong profile.
 
-## 🚀 Quick Start
+### AI
 
-### Prerequisites
+- Chatbot AI dùng Gemini API.
+- Chatbot lấy context sản phẩm thật từ Supabase.
+- Lọc sản phẩm theo nhu cầu, loại sản phẩm và ngân sách.
+- Fallback thông minh khi Gemini quá tải.
+- Trang AI Recommendation dùng Gemini để viết phân tích/lộ trình sản phẩm.
 
-- **Node.js** 18.x or higher
-- **npm** or **pnpm**
-- **Supabase** account (free tier works)
-- **Resend** account (for emails)
+## Công nghệ sử dụng
 
-### Installation
+| Nhóm | Công nghệ |
+| --- | --- |
+| Framework | Next.js 16, React 19 |
+| Ngôn ngữ | TypeScript |
+| UI | Tailwind CSS, Lucide React |
+| Database | Supabase PostgreSQL |
+| Auth | Supabase Auth |
+| Realtime | Supabase Realtime |
+| Upload | Cloudinary |
+| Email | Resend |
+| AI | Google Gemini API |
+| Payment | SePay / VietQR |
+| Animation | Framer Motion, Canvas Confetti |
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/digital-mart.git
-   cd digital-mart
-   ```
+## Cấu trúc thư mục
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Configure environment variables**
-   
-   Create `.env.local` file:
-   ```env
-   # Supabase
-   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
-   SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-   
-   # Email (Resend)
-   RESEND_API_KEY=your_resend_api_key
-   RESEND_FROM_EMAIL=onboarding@resend.dev
-   
-   # Site
-   NEXT_PUBLIC_SITE_URL=http://localhost:3000
-   
-   # Payment (SePay)
-   SEPAY_WEBHOOK_SECRET=your_webhook_secret
-   ```
-
-4. **Run the development server**
-   ```bash
-   npm run dev
-   ```
-
-5. **Open [http://localhost:3000](http://localhost:3000)**
-
----
-
-## 📁 Project Structure
-
-```
-digital-mart/
-├── app/                    # Next.js App Router
-│   ├── (auth)/            # Authentication pages
-│   ├── (client)/          # Public pages
-│   ├── admin/             # Admin dashboard
-│   └── api/               # API routes
-├── components/            # Reusable components
-│   ├── admin/            # Admin components
-│   ├── layout/           # Layout components
-│   ├── product/          # Product components
-│   └── ui/               # UI primitives
-├── lib/                   # Utilities & services
-│   ├── supabase/         # Supabase clients
-│   └── *.ts              # Data fetching functions
-├── context/              # React contexts
-├── types.ts              # TypeScript definitions
-└── public/               # Static assets
+```txt
+app/
+  (auth)/                 Trang đăng nhập, đăng ký, reset password
+  (client)/               Toàn bộ giao diện client
+  admin/                  Giao diện quản trị
+  api/                    API routes, webhook, upload, AI, seller register
+components/
+  admin/                  Component admin
+  affiliate/              Component affiliate
+  blog/                   Component blog
+  community/              Component community
+  layout/                 Navbar, Footer, Mobile nav
+  marketing/              Widget marketing
+  pages/                  Trang chủ
+  product/                Product card, review, quick view
+  seller/                 Seller product/version tools
+  ui/                     UI base, toast, modal, notification
+  widgets/                Floating widgets, chatbot
+context/
+  AuthContext.tsx
+  SupabaseAuthContext.tsx
+  CartContext.tsx
+  ThemeContext.tsx
+  ToastContext.tsx
+lib/
+  supabase/               Supabase client/server/middleware
+  products.ts             Product queries
+  sellers.ts              Seller queries
+  orders.ts               Orders
+  licenses.ts             Licenses
+  notifications.ts        Notification
+  gemini.ts               Gemini chatbot helper
+  sepay.ts                Payment helper
+public/
+  assets/images
 ```
 
----
+## Yêu cầu môi trường
 
-## 🗄️ Database Schema
+- Node.js 20 trở lên.
+- npm.
+- Supabase project.
+- Cloudinary account nếu dùng upload ảnh/file.
+- Resend account nếu gửi email.
+- Gemini API key nếu dùng AI.
+- SePay/VietQR nếu dùng thanh toán thật.
 
-The app uses **Supabase** (PostgreSQL) with the following main tables:
+## Cài đặt
 
-| Table | Description |
-|-------|-------------|
-| `profiles` | User profiles with roles |
-| `products` | Product catalog |
-| `product_files` | Version management |
-| `orders` | Purchase orders |
-| `order_items` | Order line items |
-| `licenses` | License keys & limits |
-| `downloads` | Download logs |
-| `reviews` | Product reviews |
-| `coupons` | Discount codes |
-| `tickets` | Support tickets |
+```bash
+npm install
+```
 
----
-
-## 🔧 Tech Stack
-
-| Category | Technology |
-|----------|------------|
-| **Framework** | Next.js 16 (App Router) |
-| **Language** | TypeScript |
-| **Styling** | Tailwind CSS |
-| **Database** | Supabase (PostgreSQL) |
-| **Auth** | Supabase Auth |
-| **Email** | Resend |
-| **Payments** | SePay / MoMo / Bank Transfer |
-| **File Storage** | Cloudinary |
-| **Deployment** | Vercel |
-
----
-
-## 📦 Deployment
-
-### Vercel (Recommended)
-
-1. Push to GitHub
-2. Import project on [Vercel](https://vercel.com)
-3. Add environment variables
-4. Deploy!
-
-### Environment Variables for Production
+Tạo file `.env.local` ở thư mục gốc:
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
-RESEND_API_KEY=
-RESEND_FROM_EMAIL=your@verified-domain.com
-NEXT_PUBLIC_SITE_URL=https://your-domain.com
-SEPAY_WEBHOOK_SECRET=
+# App
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+
+# SePay / VietQR
+SEPAY_BANK_CODE=your_bank_code
+SEPAY_BANK_NAME=your_bank_name
+SEPAY_ACCOUNT_NUMBER=your_account_number
+SEPAY_ACCOUNT_NAME=your_account_name
+SEPAY_API_KEY=your_sepay_api_key
+SEPAY_WEBHOOK_SECRET=your_webhook_secret
+
+# Public SePay config nếu cần hiển thị QR phía client
+NEXT_PUBLIC_SEPAY_BANK_CODE=your_bank_code
+NEXT_PUBLIC_SEPAY_BANK_NAME=your_bank_name
+NEXT_PUBLIC_SEPAY_ACCOUNT_NUMBER=your_account_number
+NEXT_PUBLIC_SEPAY_ACCOUNT_NAME=your_account_name
+
+# Resend
+RESEND_API_KEY=your_resend_api_key
+RESEND_FROM_EMAIL=your_verified_sender
+
+# Gemini
+GEMINI_API_KEY=your_gemini_api_key
+GEMINI_MODEL=gemini-2.5-flash,gemini-2.5-flash-lite
 ```
 
----
+Không commit `.env.local` lên GitHub.
 
-## 📄 License
+## Chạy dự án
 
-This project is proprietary software. All rights reserved.
+Chạy dev server:
 
----
+```bash
+npm run dev
+```
 
-## 🤝 Contributing
+Build production:
 
-Contributions are welcome! Please read our contributing guidelines before submitting a PR.
+```bash
+npm run build
+```
 
----
+Start production build:
 
-<div align="center">
+```bash
+npm run start
+```
 
-**Built with ❤️ using Next.js & Supabase**
+TypeScript check:
 
-</div>
+```bash
+npx tsc --noEmit
+```
+
+## Supabase
+
+Database chính dùng các nhóm bảng:
+
+- `profiles`
+- `products`
+- `categories`
+- `orders`
+- `order_items`
+- `licenses`
+- `downloads`
+- `reviews`
+- `tickets`
+- `notifications`
+- `sellers`
+- `seller_payouts`
+- `transactions`
+- `affiliate_referrals`
+- `affiliate_withdrawals`
+- `blog_posts`
+- `community_posts`
+- `carts`
+- `wishlists`
+- `payments`
+- `site_settings`
+
+RLS cần bật cho các bảng public. Một số chính sách cần đặc biệt chú ý:
+
+- User chỉ được đọc/sửa dữ liệu của chính mình.
+- Admin mới được quản lý sản phẩm, đơn hàng, seller, coupon, notification toàn hệ thống.
+- Seller chỉ được quản lý seller profile/sản phẩm thuộc seller của mình.
+- Service role chỉ dùng trong API server, tuyệt đối không đưa ra client.
+
+## Bảo mật đã lưu ý
+
+- Đã khóa việc user tự đổi `profiles.role` bằng trigger Supabase.
+- API đăng ký seller dùng server-side service role.
+- Gemini API key chỉ dùng server-side.
+- Upload API cần kiểm tra role/type/size trước khi public thật.
+- Webhook thanh toán cần xác thực `SEPAY_WEBHOOK_SECRET`.
+- Không render HTML thô nếu chưa sanitize.
+- Không commit secret key.
+
+## Các route quan trọng
+
+### Client
+
+- `/`
+- `/products`
+- `/product/[id]`
+- `/cart`
+- `/checkout`
+- `/wishlist`
+- `/compare`
+- `/ai-recommendation`
+- `/community`
+- `/blog`
+- `/about`
+- `/contact`
+- `/faq`
+- `/seller/[slug]`
+- `/seller/register`
+
+### Auth
+
+- `/login`
+- `/register`
+- `/forgot-password`
+- `/reset-password`
+- `/verify-email`
+
+### Profile
+
+- `/profile`
+- `/profile/orders`
+- `/profile/downloads`
+- `/profile/licenses`
+- `/profile/settings`
+- `/profile/support`
+- `/profile/community`
+- `/profile/marketplace`
+- `/profile/marketplace/new`
+- `/profile/affiliate`
+
+### Admin
+
+- `/admin`
+- `/admin/products`
+- `/admin/products/categories`
+- `/admin/orders`
+- `/admin/customers`
+- `/admin/marketplace/sellers`
+- `/admin/marketplace/pending`
+- `/admin/marketplace/transactions`
+- `/admin/marketing`
+- `/admin/notifications`
+- `/admin/settings`
+- `/admin/reports`
+
+## AI chatbot
+
+Chatbot dùng route:
+
+```txt
+POST /api/chat
+```
+
+Luồng xử lý:
+
+1. Client gửi message và history.
+2. Server lấy sản phẩm liên quan từ Supabase.
+3. Server gửi prompt + context sản phẩm sang Gemini.
+4. Nếu Gemini quá tải, fallback vẫn trả lời dựa trên dữ liệu Supabase.
+5. Không gợi ý sản phẩm ngoài điều kiện nếu bộ lọc rõ ràng.
+
+## AI Recommendation
+
+Trang:
+
+```txt
+/ai-recommendation
+```
+
+API:
+
+```txt
+POST /api/ai-recommendation
+```
+
+Luồng xử lý:
+
+1. Người dùng trả lời các câu hỏi về mục tiêu, nền tảng, phong cách, ngân sách.
+2. Server lọc sản phẩm thật từ Supabase.
+3. Gemini viết phần tư vấn/lộ trình.
+4. Nếu không có sản phẩm khớp, hệ thống nói rõ là chưa có, không bịa sản phẩm.
+
+## Thanh toán
+
+Webhook SePay:
+
+```txt
+POST /api/webhooks/sepay
+```
+
+Sau thanh toán thành công, hệ thống có thể:
+
+- Cập nhật trạng thái đơn hàng.
+- Tạo license.
+- Cho phép download.
+- Gửi email nếu cấu hình Resend.
+
+## Upload
+
+Upload route:
+
+```txt
+POST /api/upload/[type]
+```
+
+Các type nhạy cảm nên yêu cầu admin/seller đúng quyền.
+
+## Deployment
+
+Khuyến nghị deploy trên Vercel.
+
+Checklist trước khi deploy:
+
+- Đặt đầy đủ environment variables.
+- Không deploy `.env.local`.
+- Chạy `npm run build`.
+- Kiểm tra Supabase RLS.
+- Kiểm tra webhook URL production.
+- Cập nhật `NEXT_PUBLIC_SITE_URL`.
+- Kiểm tra OAuth redirect URL trong Supabase.
+- Kiểm tra CORS/domain cho Cloudinary/ảnh remote nếu cần.
+
+## Những việc nên rà tiếp
+
+- Siết lại RLS cho các policy còn rộng.
+- Thêm rate limit cho chatbot, login, contact, comment, upload.
+- Rà `npm run lint` vì Next.js mới có thể cần cấu hình lint khác.
+- Viết test cho checkout, license, download, seller register.
+- Tạo seed/demo data sạch cho public repo.
+- Xóa hoặc thay asset không có bản quyền rõ ràng.
+- Thêm license thương mại cho theme/source code nếu bán.
+
+## License
+
+Dự án này là marketplace/theme DigitalMart. Nếu dùng để bán theme/source code, nên bổ sung file `LICENSE` và điều khoản rõ ràng cho:
+
+- Regular License
+- Extended License
+- Developer/Agency License
+- Chính sách không resale/re-upload/chia sẻ source trái phép
+
+## Tác giả
+
+DigitalMart / Digital Store.
+
+Built with Next.js, Supabase, Tailwind CSS và Gemini API.

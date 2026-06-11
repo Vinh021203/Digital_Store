@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import HomePage from '@/components/pages/HomePage';
+import { getHomepageData } from '@/lib/homepageData';
 
 export const metadata: Metadata = {
   title: {
@@ -41,7 +42,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Page() {
+export default async function Page() {
+  const homepageData = await getHomepageData();
+
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
@@ -61,7 +64,11 @@ export default function Page() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
-      <HomePage />
+      <HomePage
+        initialProducts={homepageData.products}
+        initialCategories={homepageData.categories}
+        initialBlogPosts={homepageData.blogPosts}
+      />
     </>
   );
 }

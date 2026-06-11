@@ -247,7 +247,7 @@ ${userMessage}
 `.trim();
 }
 
-async function askGemini(prompt: string) {
+export async function generateGeminiText(prompt: string, maxOutputTokens = 420) {
     const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GEMINI_API_KEY;
     if (!apiKey) return null;
 
@@ -270,7 +270,7 @@ async function askGemini(prompt: string) {
                 generationConfig: {
                     temperature: 0.45,
                     topP: 0.9,
-                    maxOutputTokens: 420,
+                    maxOutputTokens,
                 },
             }),
         });
@@ -348,7 +348,7 @@ export async function chatWithGemini(
 
     try {
         const prompt = buildPrompt(userMessage, history, searchResult);
-        const message = await askGemini(prompt);
+        const message = await generateGeminiText(prompt);
 
         if (message) {
             return {

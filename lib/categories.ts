@@ -48,9 +48,6 @@ function generateSlug(name: string): string {
 export async function fetchCategories(): Promise<DbCategory[]> {
     const supabase = createClient();
 
-    console.log('[Categories] Fetching categories...');
-    console.log('[Categories] Supabase client:', supabase ? 'OK' : 'NULL');
-
     if (!supabase) {
         console.error('[Categories] Supabase client not initialized');
         return [];
@@ -72,8 +69,6 @@ export async function fetchCategories(): Promise<DbCategory[]> {
     `)
         .order('sort_order', { ascending: true })
         .order('name', { ascending: true });
-
-    console.log('[Categories] Query result:', { data: data?.length || 0, error: error?.message || 'none' });
 
     if (error) {
         console.error('[Categories] Error fetching categories:', error);
@@ -100,7 +95,6 @@ export async function fetchCategories(): Promise<DbCategory[]> {
         product_count: countMap[cat.id] || 0,
     }));
 
-    console.log('[Categories] Final result:', result.length, 'categories');
     return result;
 }
 

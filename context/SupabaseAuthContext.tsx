@@ -120,8 +120,6 @@ export function SupabaseAuthProvider({ children }: SupabaseAuthProviderProps) {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(
       (event: AuthChangeEvent, newSession: Session | null) => {
-        console.log('Auth event:', event);
-
         setSession(newSession);
         setUser(newSession?.user ?? null);
 
@@ -155,7 +153,6 @@ export function SupabaseAuthProvider({ children }: SupabaseAuthProviderProps) {
         },
       });
       if (error) return { error };
-      console.log('SignUp successful, user:', data.user?.id);
 
       // Log user registration
       if (data.user) {

@@ -86,18 +86,14 @@ export async function updateSession(request: NextRequest) {
             .eq('id', user.id)
             .single();
 
-        // If profile query fails, log error but don't block access immediately
-        // This prevents RLS issues from blocking admins
         if (profileError) {
             console.warn('Profile query error in middleware:', profileError.message);
-            // If we can't check role, let the page load and handle client-side
-            // This is more forgiving than blocking access
-            return supabaseResponse;
+            return NextResponse.redirect(new URL('/', request.url));
         }
 
         if (profile?.role !== 'admin') {
             // Redirect non-admin users to homepage
-            console.warn('Non-admin user attempted to access admin route:', user.email);
+            console.warn('Non-admin user attempted to access admin route');
             return NextResponse.redirect(new URL('/', request.url));
         }
     }

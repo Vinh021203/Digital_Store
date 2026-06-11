@@ -27,20 +27,26 @@ export default function SafeHTML({ html, className = '', fallback = '<p>Không c
                     'p', 'br', 'strong', 'b', 'em', 'i', 'u', 's', 'strike',
                     'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
                     'ul', 'ol', 'li',
-                    'a', 'img', 'video', 'iframe',
+                    'a', 'img', 'video',
                     'blockquote', 'code', 'pre',
                     'table', 'thead', 'tbody', 'tr', 'th', 'td',
                     'div', 'span', 'hr',
                 ],
                 ALLOWED_ATTR: [
                     'href', 'target', 'rel', 'src', 'alt', 'title', 'width', 'height',
-                    'class', 'style', 'id', 'allowfullscreen', 'frameborder',
+                    'class',
                 ],
                 ALLOW_DATA_ATTR: false,
-                ADD_TAGS: ['iframe'], // For embedded videos
-                ADD_ATTR: ['target'], // Allow target="_blank" for links
+                ADD_ATTR: ['target', 'rel'],
             });
-            setSanitizedHtml(clean);
+
+            const template = document.createElement('template');
+            template.innerHTML = clean;
+            template.content.querySelectorAll('a[target="_blank"]').forEach((link) => {
+                link.setAttribute('rel', 'noopener noreferrer');
+            });
+
+            setSanitizedHtml(template.innerHTML);
         }
     }, [html, fallback]);
 

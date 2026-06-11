@@ -30,12 +30,6 @@ export async function POST(request: NextRequest) {
         const signature = request.headers.get('x-sepay-signature') || '';
         const rawBody = JSON.stringify(body);
 
-        // Log for debugging
-        console.log('SePay Webhook received:', {
-            signature: signature ? signature.substring(0, 20) + '...' : 'none',
-            body: body,
-        });
-
         // ========================================
         // SECURITY: Verify webhook signature (optional)
         // Only verify if both secret and signature are present
@@ -51,15 +45,11 @@ export async function POST(request: NextRequest) {
                     { status: 401 }
                 );
             }
-            console.log('Webhook signature verified successfully');
-        } else {
-            console.log('Webhook signature verification skipped');
         }
 
         // Parse webhook payload
         const payload = parseWebhookPayload(body);
         if (!payload) {
-            console.log('Failed to parse payload:', body);
             return NextResponse.json(
                 { success: false, error: 'Invalid payload' },
                 { status: 400 }
@@ -76,10 +66,8 @@ export async function POST(request: NextRequest) {
 
         // Extract order ID from payment content
         const orderId = extractOrderIdFromContent(payload.content);
-        console.log('Extracted order ID:', orderId, 'from content:', payload.content);
 
         if (!orderId) {
-            console.log('No order ID found in content:', payload.content);
             return NextResponse.json({
                 success: true,
                 message: 'No order ID in content'
@@ -162,7 +150,9 @@ export async function POST(request: NextRequest) {
                 });
             } catch (couponErr: unknown) {
                 const errCode = (couponErr as { code?: string })?.code;
-                console.log('Coupon usage recording:', errCode === '23505' ? 'already exists' : couponErr);
+                if (errCode !== '23505') {
+                    console.error('Coupon usage recording error:', couponErr);
+                }
             }
 
             // Also increment used_count on coupons table
@@ -179,9 +169,6 @@ export async function POST(request: NextRequest) {
                     .eq('id', order.coupon_id);
             }
         }
-
-        console.log('Order payment confirmed:', orderId);
-
         return NextResponse.json({
             success: true,
             message: 'Payment confirmed',

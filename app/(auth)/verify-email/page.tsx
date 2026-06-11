@@ -48,9 +48,7 @@ export default function VerifyEmailPage() {
           addToast('Email đã được xác nhận!', 'success');
           router.push('/');
         }
-      } catch {
-        console.log('Checking user status...');
-      }
+      } catch { }
     };
 
     checkUser();

@@ -1,7 +1,7 @@
 ﻿'use client';
 
-import React, { useState, useEffect, useMemo, Suspense } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import React, { useState, useEffect, useMemo, Suspense, useRef } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -9,13 +9,24 @@ import {
     Heart, ShoppingCart, Home, ChevronRight, Loader2, X, SlidersHorizontal,
     Check, ArrowUpDown, Tag, Zap, LayoutGrid, CreditCard, Headphones, Send
 } from 'lucide-react';
-import { fetchActiveProducts, type DbProduct } from '@/lib/products';
-import { fetchCategories } from '@/lib/categories';
+import type { DbCategory } from '@/lib/categories';
 import { ProductCard } from '@/components/product';
 import { ProductGridSkeleton } from '@/components/ui/Skeleton';
 import { useCart } from '@/context/CartContext';
 import QuickViewModal from '@/components/product/QuickViewModal';
 import { useCallback } from 'react';
+import type { Product } from '@/types';
+
+function useDebouncedValue<T>(value: T, delay = 300) {
+    const [debouncedValue, setDebouncedValue] = useState(value);
+
+    useEffect(() => {
+        const timer = window.setTimeout(() => setDebouncedValue(value), delay);
+        return () => window.clearTimeout(timer);
+    }, [value, delay]);
+
+    return debouncedValue;
+}
 
 // Filter Section Accordion Component
 const FilterSection = ({
@@ -282,14 +293,20 @@ const FilterSidebar = ({
     );
 };
 
-function ProductsPageContent() {
+interface ProductsPageContentProps {
+    initialProducts: Product[];
+    initialCategories: DbCategory[];
+}
+
+function ProductsPageContent({ initialProducts, initialCategories }: ProductsPageContentProps) {
     const searchParams = useSearchParams();
     const router = useRouter();
     const { addToCart } = useCart();
+    const didMountFiltersRef = useRef(false);
 
-    const [products, setProducts] = useState<any[]>([]);
-    const [categories, setCategories] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [products] = useState<Product[]>(initialProducts);
+    const [categories] = useState<DbCategory[]>(initialCategories);
+    const loading = false;
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
     const [showSidebar, setShowSidebar] = useState(false);
     const [showMobileSort, setShowMobileSort] = useState(false);
@@ -304,54 +321,68 @@ function ProductsPageContent() {
     }, []);
 
     // Filter states
-    const [searchTerm, setSearchTerm] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState('');
+    const [searchTerm, setSearchTerm] = useState(() => searchParams.get('search') || '');
+    const debouncedSearchTerm = useDebouncedValue(searchTerm, 300);
+    const [selectedCategory, setSelectedCategory] = useState(() => searchParams.get('category') || '');
     const [sortBy, setSortBy] = useState('newest');
     const [priceRange, setPriceRange] = useState<[number, number]>([0, 5000000]);
     const [ratingFilter, setRatingFilter] = useState<number | null>(null);
     const [formatFilter, setFormatFilter] = useState('');
-    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(() => {
+        const page = Number(searchParams.get('page') || 1);
+        return Number.isFinite(page) && page > 0 ? Math.floor(page) : 1;
+    });
     const ITEMS_PER_PAGE = 12;
+
+    const updatePageParam = useCallback((page: number, mode: 'push' | 'replace' = 'push') => {
+        const params = new URLSearchParams(window.location.search);
+
+        if (page <= 1) {
+            params.delete('page');
+        } else {
+            params.set('page', String(page));
+        }
+
+        const query = params.toString();
+        const href = query ? `/products?${query}` : '/products';
+
+        if (mode === 'replace') {
+            router.replace(href, { scroll: false });
+        } else {
+            router.push(href, { scroll: false });
+        }
+    }, [router]);
 
     // Reset page when filters change
     useEffect(() => {
+        if (!didMountFiltersRef.current) {
+            didMountFiltersRef.current = true;
+            return;
+        }
+
         setCurrentPage(1);
-    }, [searchTerm, selectedCategory, priceRange, ratingFilter, formatFilter, sortBy]);
+        updatePageParam(1, 'replace');
+    }, [debouncedSearchTerm, selectedCategory, priceRange, ratingFilter, formatFilter, sortBy, updatePageParam]);
 
-    // Load data
     useEffect(() => {
-        const loadData = async () => {
-            setLoading(true);
-            try {
-                const [productsData, categoriesData] = await Promise.all([
-                    fetchActiveProducts(),
-                    fetchCategories()
-                ]);
-                setProducts(productsData);
-                setCategories(categoriesData);
-
-                // Get URL params
-                const cat = searchParams.get('category');
-                const search = searchParams.get('search');
-                if (cat) setSelectedCategory(cat);
-                if (search) setSearchTerm(search);
-            } catch (error) {
-                console.error('Error loading products:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        loadData();
+        setSelectedCategory(searchParams.get('category') || '');
+        setSearchTerm(searchParams.get('search') || '');
+        const page = Number(searchParams.get('page') || 1);
+        setCurrentPage(Number.isFinite(page) && page > 0 ? Math.floor(page) : 1);
     }, [searchParams]);
 
     // Filter and sort products
     const filteredProducts = useMemo(() => {
         let result = [...products];
 
-        if (searchTerm) {
+        const normalizedSearch = debouncedSearchTerm.trim().toLowerCase();
+
+        if (normalizedSearch) {
             result = result.filter(p =>
-                p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                p.description?.toLowerCase().includes(searchTerm.toLowerCase())
+                p.name.toLowerCase().includes(normalizedSearch) ||
+                p.description?.toLowerCase().includes(normalizedSearch) ||
+                p.author?.toLowerCase().includes(normalizedSearch) ||
+                p.tags?.some((tag) => tag.toLowerCase().includes(normalizedSearch))
             );
         }
 
@@ -378,35 +409,45 @@ function ProductsPageContent() {
                 result.sort((a, b) => b.price - a.price);
                 break;
             case 'popular':
-                result.sort((a, b) => b.downloads_count - a.downloads_count);
+                result.sort((a, b) => (b.downloads_count || 0) - (a.downloads_count || 0));
                 break;
             case 'rating':
                 result.sort((a, b) => b.rating - a.rating);
                 break;
             default: // newest
-                result.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+                result.sort((a, b) => new Date(b.publishDate || 0).getTime() - new Date(a.publishDate || 0).getTime());
         }
 
         return result;
-    }, [products, searchTerm, selectedCategory, sortBy, priceRange, ratingFilter, formatFilter]);
+    }, [products, debouncedSearchTerm, selectedCategory, sortBy, priceRange, ratingFilter, formatFilter]);
 
     // Pagination logic
     const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
+    const safeCurrentPage = Math.min(Math.max(currentPage, 1), Math.max(totalPages, 1));
     const paginatedProducts = filteredProducts.slice(
-        (currentPage - 1) * ITEMS_PER_PAGE,
-        currentPage * ITEMS_PER_PAGE
+        (safeCurrentPage - 1) * ITEMS_PER_PAGE,
+        safeCurrentPage * ITEMS_PER_PAGE
     );
 
+    useEffect(() => {
+        if (totalPages > 0 && currentPage > totalPages) {
+            setCurrentPage(totalPages);
+            updatePageParam(totalPages, 'replace');
+        }
+    }, [currentPage, totalPages, updatePageParam]);
+
     const handlePageChange = (page: number) => {
-        setCurrentPage(page);
+        const nextPage = Math.min(Math.max(page, 1), Math.max(totalPages, 1));
+        setCurrentPage(nextPage);
+        updatePageParam(nextPage);
         window.scrollTo({ top: 300, behavior: 'smooth' }); // Scroll effectively to top of list
     };
 
     const heroSlides = [
-        '/product_slider/slider_products_1.png',
-        '/product_slider/slider_products_2.png',
-        '/product_slider/slider_products_3.png',
-        '/product_slider/slider_products_4.png',
+        '/product_slider/slider_products_1.webp',
+        '/product_slider/slider_products_2.webp',
+        '/product_slider/slider_products_3.webp',
+        '/product_slider/slider_products_4.webp',
     ];
 
     const sortOptions = [
@@ -634,8 +675,8 @@ function ProductsPageContent() {
                                 {totalPages > 1 && (
                                     <div className="flex justify-center mt-6 sm:mt-8 md:mt-12 gap-1 sm:gap-2">
                                         <button
-                                            onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-                                            disabled={currentPage === 1}
+                                            onClick={() => handlePageChange(Math.max(1, safeCurrentPage - 1))}
+                                            disabled={safeCurrentPage === 1}
                                             className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl border border-slate-200 hover:bg-white hover:shadow-sm disabled:opacity-50 disabled:cursor-not-allowed text-slate-600 transition-all bg-slate-50"
                                         >
                                             <ChevronRight className="rotate-180 w-4 h-4 sm:w-5 sm:h-5" />
@@ -644,15 +685,15 @@ function ProductsPageContent() {
                                         {[...Array(totalPages)].map((_, i) => {
                                             const page = i + 1;
                                             // On mobile, show fewer pages
-                                            const isMobileVisible = page === 1 || page === totalPages || page === currentPage;
-                                            const isDesktopVisible = page >= currentPage - 1 && page <= currentPage + 1;
+                                            const isMobileVisible = page === 1 || page === totalPages || page === safeCurrentPage;
+                                            const isDesktopVisible = page >= safeCurrentPage - 1 && page <= safeCurrentPage + 1;
 
                                             if (isMobileVisible || isDesktopVisible) {
                                                 return (
                                                     <button
                                                         key={page}
                                                         onClick={() => handlePageChange(page)}
-                                                        className={`w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm transition-all ${currentPage === page
+                                                        className={`w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm transition-all ${safeCurrentPage === page
                                                             ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/30'
                                                             : 'bg-white text-slate-600 border border-slate-200 hover:border-orange-300 hover:text-orange-600'
                                                             }`}
@@ -661,8 +702,8 @@ function ProductsPageContent() {
                                                     </button>
                                                 );
                                             } else if (
-                                                (page === currentPage - 2 && page > 1) ||
-                                                (page === currentPage + 2 && page < totalPages)
+                                                (page === safeCurrentPage - 2 && page > 1) ||
+                                                (page === safeCurrentPage + 2 && page < totalPages)
                                             ) {
                                                 return <span key={page} className="hidden sm:flex w-8 h-8 sm:w-10 sm:h-10 items-center justify-center text-slate-400 text-sm">...</span>;
                                             }
@@ -670,8 +711,8 @@ function ProductsPageContent() {
                                         })}
 
                                         <button
-                                            onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
-                                            disabled={currentPage === totalPages}
+                                            onClick={() => handlePageChange(Math.min(totalPages, safeCurrentPage + 1))}
+                                            disabled={safeCurrentPage === totalPages}
                                             className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl border border-slate-200 hover:bg-white hover:shadow-sm disabled:opacity-50 disabled:cursor-not-allowed text-slate-600 transition-all bg-slate-50"
                                         >
                                             <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -755,10 +796,18 @@ function ProductsPageContent() {
     );
 }
 
-export default function ProductsPage() {
+interface ProductsPageProps {
+    initialProducts?: Product[];
+    initialCategories?: DbCategory[];
+}
+
+export default function ProductsPage({
+    initialProducts = [],
+    initialCategories = [],
+}: ProductsPageProps) {
     return (
         <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-orange-600" /></div>}>
-            <ProductsPageContent />
+            <ProductsPageContent initialProducts={initialProducts} initialCategories={initialCategories} />
         </Suspense>
     );
 }

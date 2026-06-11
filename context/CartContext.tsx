@@ -78,7 +78,6 @@ export const CartProvider = ({ children }: { children?: ReactNode }) => {
 
     if (userId) {
       // User logged in - load from database
-      console.log('[Cart] Loading cart for user:', userId);
       setIsLoading(true);
       try {
         const supabase = createClient();
@@ -103,8 +102,6 @@ export const CartProvider = ({ children }: { children?: ReactNode }) => {
           console.error('[Cart] Error loading from DB:', error);
           throw error;
         }
-        console.log('[Cart] Loaded from DB:', data?.length || 0, 'items');
-
         // Convert DB data to CartItem format
         const cartItems: CartItem[] = (data || []).map((item: any) => ({
           id: item.product?.id || item.product_id,
@@ -127,7 +124,6 @@ export const CartProvider = ({ children }: { children?: ReactNode }) => {
 
         // Merge with localStorage cart (for items added before login)
         const localCart = localStorage.getItem('homelife_cart');
-        console.log('[Cart] localStorage cart:', localCart ? JSON.parse(localCart).length : 0, 'items');
         if (localCart) {
           const localItems = JSON.parse(localCart) as CartItem[];
 
@@ -136,7 +132,6 @@ export const CartProvider = ({ children }: { children?: ReactNode }) => {
             const exists = cartItems.some(dbItem => dbItem.id === localItem.id);
             if (!exists) {
               // Add to database
-              console.log('[Cart] Syncing item to DB:', localItem.id, localItem.name);
               const { error: insertError } = await supabase.from('carts').insert({
                 user_id: userId,
                 product_id: localItem.id,
@@ -144,8 +139,6 @@ export const CartProvider = ({ children }: { children?: ReactNode }) => {
               });
               if (insertError) {
                 console.error('[Cart] Error inserting to DB:', insertError);
-              } else {
-                console.log('[Cart] Successfully synced item:', localItem.name);
               }
               cartItems.push(localItem);
             }
@@ -153,15 +146,12 @@ export const CartProvider = ({ children }: { children?: ReactNode }) => {
 
           // Clear localStorage after merge
           localStorage.removeItem('homelife_cart');
-          console.log('[Cart] Cleared localStorage after merge');
         }
 
         setCart(cartItems);
 
         // ====== LOAD WISHLIST FROM DB ======
-        console.log('[Wishlist] Loading from DB...');
         const wishlistData = await fetchWishlist(userId);
-        console.log('[Wishlist] Loaded from DB:', wishlistData.length, 'items');
 
         const wishlistItems: Product[] = wishlistData.map((item: DbWishlistItem) => ({
           id: item.product?.id || item.product_id,
@@ -182,18 +172,15 @@ export const CartProvider = ({ children }: { children?: ReactNode }) => {
         const localWishlist = localStorage.getItem('homelife_wishlist');
         if (localWishlist) {
           const localItems = JSON.parse(localWishlist) as Product[];
-          console.log('[Wishlist] localStorage:', localItems.length, 'items');
 
           for (const localItem of localItems) {
             const exists = wishlistItems.some(dbItem => dbItem.id === localItem.id);
             if (!exists) {
-              console.log('[Wishlist] Syncing item to DB:', localItem.id, localItem.name);
               await addToWishlistDB(userId, localItem.id);
               wishlistItems.push(localItem);
             }
           }
           localStorage.removeItem('homelife_wishlist');
-          console.log('[Wishlist] Cleared localStorage after merge');
         }
 
         setWishlist(wishlistItems);
@@ -364,7 +351,6 @@ export const CartProvider = ({ children }: { children?: ReactNode }) => {
     if (userId) {
       try {
         await addToWishlistDB(userId, product.id);
-        console.log('[Wishlist] Added to DB:', product.name);
       } catch (error) {
         console.error('[Wishlist] Error adding to DB:', error);
         // Rollback on error
@@ -383,7 +369,6 @@ export const CartProvider = ({ children }: { children?: ReactNode }) => {
     if (userId) {
       try {
         await removeProductFromWishlist(userId, productId);
-        console.log('[Wishlist] Removed from DB:', productId);
       } catch (error) {
         console.error('[Wishlist] Error removing from DB:', error);
         // Rollback on error

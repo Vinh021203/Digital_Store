@@ -1,6 +1,25 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
+export const SUPPORTED_LANGUAGES = ['vi', 'en'] as const;
+export type SupportedLanguage = typeof SUPPORTED_LANGUAGES[number];
+
+const LANGUAGE_STORAGE_KEY = 'digital-store-language';
+
+function isSupportedLanguage(value: string | null | undefined): value is SupportedLanguage {
+  return value === 'vi' || value === 'en';
+}
+
+function getInitialLanguage(): SupportedLanguage {
+  if (typeof window === 'undefined') return 'vi';
+
+  const storedLanguage = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
+  if (isSupportedLanguage(storedLanguage)) return storedLanguage;
+
+  const browserLanguage = window.navigator.language?.split('-')[0];
+  return isSupportedLanguage(browserLanguage) ? browserLanguage : 'vi';
+}
+
 // Define resources for DigitalMart - Digital Products Marketplace
 const resources = {
   vi: {
@@ -251,11 +270,28 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: "vi", // default language
+    lng: getInitialLanguage(),
     fallbackLng: "vi",
+    supportedLngs: SUPPORTED_LANGUAGES,
+    cleanCode: true,
+    returnEmptyString: false,
     interpolation: {
       escapeValue: false
+    },
+    react: {
+      useSuspense: false
     }
   });
+
+i18n.on('languageChanged', (language) => {
+  if (typeof window !== 'undefined' && isSupportedLanguage(language)) {
+    window.localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
+    document.documentElement.lang = language;
+  }
+});
+
+if (typeof document !== 'undefined') {
+  document.documentElement.lang = i18n.language;
+}
 
 export default i18n;

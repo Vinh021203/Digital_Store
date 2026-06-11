@@ -6,20 +6,26 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/server';
 import { sendLicenseDeliveryEmail } from '@/lib/email';
 
-// Webhook secret for validation (set in Supabase trigger)
-const WEBHOOK_SECRET = process.env.INTERNAL_WEBHOOK_SECRET || 'digitalmart-internal-webhook';
-
 export async function POST(request: NextRequest) {
     try {
-        // Validate webhook secret (optional for internal webhooks)
+        const webhookSecret = process.env.INTERNAL_WEBHOOK_SECRET;
+
+        if (!webhookSecret) {
+            console.error('INTERNAL_WEBHOOK_SECRET is not configured');
+            return NextResponse.json(
+                { error: 'Webhook is not configured' },
+                { status: 500 }
+            );
+        }
+
         const authHeader = request.headers.get('x-webhook-secret');
-        if (authHeader && authHeader !== WEBHOOK_SECRET) {
-            console.error('Invalid webhook secret');
+
+        if (!authHeader || authHeader !== webhookSecret) {
+            console.warn('Unauthorized license webhook request');
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
         const body = await request.json();
-        console.log('License created webhook received:', body);
 
         const { license_id, license_key, user_id, product_id, type } = body;
 
@@ -76,12 +82,9 @@ export async function POST(request: NextRequest) {
             downloadUrl: `${siteUrl}/profile/downloads`,
         });
 
-        console.log('License email sent successfully to:', profile.email);
-
         return NextResponse.json({
             success: true,
             message: 'License email sent',
-            to: profile.email,
         });
 
     } catch (error: unknown) {

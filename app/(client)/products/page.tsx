@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import ProductsPage from './ProductsContent';
+import { getProductsPageData } from '@/lib/productsPageData';
 
 export const metadata: Metadata = {
     title: 'Sản phẩm',
@@ -15,6 +16,13 @@ export const metadata: Metadata = {
     }
 };
 
-export default function Page() {
-    return <ProductsPage />;
+export default async function Page() {
+    const productsPageData = await getProductsPageData();
+
+    return (
+        <ProductsPage
+            initialProducts={productsPageData.products}
+            initialCategories={productsPageData.categories}
+        />
+    );
 }

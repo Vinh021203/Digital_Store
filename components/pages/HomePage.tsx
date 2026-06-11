@@ -41,9 +41,8 @@ import {
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
-import { fetchCategories, type DbCategory } from "@/lib/categories";
-import { fetchActiveProducts } from "@/lib/products";
-import { fetchPublishedPosts, type DbBlogPost } from "@/lib/blog";
+import type { DbCategory } from "@/lib/categories";
+import type { DbBlogPost } from "@/lib/blog";
 import type { Product } from "@/types";
 
 // ============================================
@@ -57,11 +56,11 @@ const fallbackImages = [
 ];
 
 const heroSliderImages = [
-  "/hero_slider/slide_hero_1.png",
-  "/hero_slider/slide_hero_2.png",
-  "/hero_slider/slide_hero_3.png",
-  "/hero_slider/slide_hero_4.png",
-  "/hero_slider/slide_hero_5.png",
+  "/hero_slider/slide_hero_1.webp",
+  "/hero_slider/slide_hero_2.webp",
+  "/hero_slider/slide_hero_3.webp",
+  "/hero_slider/slide_hero_4.webp",
+  "/hero_slider/slide_hero_5.webp",
 ];
 
 const mockProducts: Product[] = [
@@ -198,6 +197,7 @@ const mockProducts: Product[] = [
 const mockBlogs = [
   {
     id: 1,
+    slug: "xu-huong-thiet-ke-website-dot-pha-cho-nam-2026",
     title: "Xu Hướng Thiết Kế Website Đột Phá Cho Năm 2026",
     excerpt:
       "Khám phá các xu hướng thiết kế web mới nhất bao gồm glassmorphism, micro-interactions và phối màu gradient hiện đại.",
@@ -207,6 +207,7 @@ const mockBlogs = [
     tags: ["UI/UX", "Web Design"],
     views_count: 320,
     published_at: "2026-05-15T08:30:00Z",
+    created_at: "2026-05-15T08:30:00Z",
     author: {
       name: "Vinh Nguyễn",
       avatar: "/dpmarket-assets/images/thumbs/blog-details-user.png",
@@ -214,6 +215,7 @@ const mockBlogs = [
   },
   {
     id: 2,
+    slug: "xay-dung-saas-landing-page-chuyen-doi-cao",
     title:
       "Làm Thế Nào Để Xây Dựng Một SaaS Landing Page Đạt Tỉ Lệ Chuyển Đổi Cao",
     excerpt:
@@ -224,6 +226,7 @@ const mockBlogs = [
     tags: ["SaaS", "Marketing"],
     views_count: 245,
     published_at: "2026-05-20T10:15:00Z",
+    created_at: "2026-05-20T10:15:00Z",
     author: {
       name: "Thảo Vy",
       avatar: "/dpmarket-assets/images/thumbs/blog-details-user.png",
@@ -231,6 +234,7 @@ const mockBlogs = [
   },
   {
     id: 3,
+    slug: "react-19-va-nextjs-16-tinh-nang-moi",
     title:
       "React 19 Và Next.js 16: Những Tính Năng Mới Bạn Cần Biết Ngay Hôm Nay",
     excerpt:
@@ -241,6 +245,7 @@ const mockBlogs = [
     tags: ["NextJS", "ReactJS"],
     views_count: 512,
     published_at: "2026-05-28T14:45:00Z",
+    created_at: "2026-05-28T14:45:00Z",
     author: {
       name: "Minh Tuấn",
       avatar: "/dpmarket-assets/images/thumbs/blog-details-user.png",
@@ -248,6 +253,7 @@ const mockBlogs = [
   },
   {
     id: 4,
+    slug: "toi-uu-seo-cho-website-nextjs-hieu-qua",
     title: "Tối Ưu SEO Cho Website Next.js Hiệu Quả Nhất",
     excerpt:
       "Hướng dẫn tối ưu hóa hiệu năng, cấu hình file sitemap, robots.txt và các thẻ meta tag chuẩn SEO cho dự án Next.js App Router.",
@@ -257,6 +263,7 @@ const mockBlogs = [
     tags: ["SEO", "NextJS"],
     views_count: 189,
     published_at: "2026-05-30T09:00:00Z",
+    created_at: "2026-05-30T09:00:00Z",
     author: {
       name: "Hoàng Long",
       avatar: "/dpmarket-assets/images/thumbs/blog-details-user.png",
@@ -518,11 +525,21 @@ DpMarketProductCard.displayName = "DpMarketProductCard";
 // ============================================
 // Main HomePage Component
 // ============================================
-const HomePage = () => {
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<any[]>([]);
-  const [blogPosts, setBlogPosts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+interface HomePageProps {
+  initialProducts?: Product[];
+  initialCategories?: DbCategory[];
+  initialBlogPosts?: DbBlogPost[];
+}
+
+const HomePage = ({
+  initialProducts = [],
+  initialCategories = [],
+  initialBlogPosts = [],
+}: HomePageProps) => {
+  const [allProducts] = useState<Product[]>(initialProducts);
+  const [categories] = useState<DbCategory[]>(initialCategories);
+  const [blogPosts] = useState<DbBlogPost[]>(initialBlogPosts);
+  const loading = false;
 
   // States for interactive tabs
   const [arrivalTab, setArrivalTab] = useState<
@@ -551,6 +568,59 @@ const HomePage = () => {
     return () => window.clearInterval(timer);
   }, []);
 
+  useEffect(() => {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (reduceMotion.matches) return;
+
+    const root = document.querySelector<HTMLElement>('[data-home-animate="true"]');
+    if (!root) return;
+
+    const sections = Array.from(root.querySelectorAll<HTMLElement>("section"))
+      .filter((section) => !section.classList.contains("hidden") && !section.closest(".hidden"));
+
+    root.classList.add("home-reveal-ready");
+
+    const revealVariants = [
+      { x: "0px", y: "24px", scale: "0.985", rotate: "0deg", duration: "720ms" },
+      { x: "-18px", y: "12px", scale: "1", rotate: "0deg", duration: "760ms" },
+      { x: "18px", y: "12px", scale: "1", rotate: "0deg", duration: "760ms" },
+      { x: "0px", y: "10px", scale: "0.975", rotate: "0deg", duration: "820ms" },
+      { x: "0px", y: "18px", scale: "1", rotate: "-0.35deg", duration: "780ms" },
+    ];
+
+    sections.forEach((section, index) => {
+      const variant = revealVariants[index % revealVariants.length];
+      section.classList.add("home-reveal");
+      section.style.setProperty("--reveal-delay", `${Math.min(index * 35, 160)}ms`);
+      section.style.setProperty("--reveal-x", variant.x);
+      section.style.setProperty("--reveal-y", variant.y);
+      section.style.setProperty("--reveal-scale", variant.scale);
+      section.style.setProperty("--reveal-rotate", variant.rotate);
+      section.style.setProperty("--reveal-duration", variant.duration);
+    });
+
+    sections[0]?.classList.add("is-visible");
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        });
+      },
+      {
+        threshold: 0.12,
+        rootMargin: "0px 0px -8% 0px",
+      },
+    );
+
+    sections.slice(1).forEach((section) => observer.observe(section));
+
+    return () => observer.disconnect();
+  }, []);
+
   const scrollAuthorLeft = () => {
     if (authorSliderRef.current) {
       authorSliderRef.current.scrollBy({ left: -320, behavior: "smooth" });
@@ -562,31 +632,6 @@ const HomePage = () => {
       authorSliderRef.current.scrollBy({ left: 320, behavior: "smooth" });
     }
   };
-
-  // Initial DB load in 1 single pass
-  useEffect(() => {
-    const initData = async () => {
-      try {
-        setLoading(true);
-        // 1. Fetch Products
-        const prods = await fetchActiveProducts({ limit: 40 });
-        setAllProducts(prods);
-
-        // 2. Fetch Categories
-        const cats = await fetchCategories();
-        setCategories(cats.slice(0, 6));
-
-        // 3. Fetch Blogs
-        const posts = await fetchPublishedPosts({ limit: 4 });
-        setBlogPosts(posts);
-      } catch (err) {
-        console.error("Failed to load homepage data:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    initData();
-  }, []);
 
   // Effect to rotate author text circle
   useEffect(() => {
@@ -757,7 +802,7 @@ const HomePage = () => {
         : [...allProducts, ...mockProducts].slice(0, 5);
 
   return (
-    <main className="overflow-hidden bg-[#fafbfe] text-slate-800 font-sans">
+    <main data-home-animate="true" className="overflow-hidden bg-[#fafbfe] text-slate-800 font-sans">
       {/* ============================================================
          1. HERO SECTION (BannerOne)
          ============================================================ */}
@@ -1359,8 +1404,8 @@ const HomePage = () => {
       <section className="relative px-5 py-3 sm:px-6 md:py-5 lg:px-0">
         <div className="mx-auto flex max-w-7xl gap-3 overflow-x-auto pb-1 no-scrollbar snap-x scroll-px-5 sm:scroll-px-6 lg:grid lg:grid-cols-2 lg:gap-4 lg:overflow-visible lg:px-8">
           {[
-            { href: "/products?category=themes", image: "/hero_section/banner_1.png" },
-            { href: "/products?category=ui-kits", image: "/hero_section/banner_2.png" },
+            { href: "/products?category=themes", image: "/hero_section/banner_1.webp" },
+            { href: "/products?category=ui-kits", image: "/hero_section/banner_2.webp" },
           ].map((banner) => (
             <Link
               key={banner.image}
@@ -2474,7 +2519,7 @@ const HomePage = () => {
                 <div className="absolute h-52 w-52 rounded-full bg-white/45 blur-2xl" />
                 <div className="relative h-[230px] w-[230px] lg:h-[260px] lg:w-[260px]">
                   <Image
-                    src="/dpmarket-assets/images/thumbs/support-developer.png"
+                    src="/dpmarket-assets/images/thumbs/support-developer.webp"
                     alt="Chuyên viên hỗ trợ website"
                     fill
                     sizes="260px"

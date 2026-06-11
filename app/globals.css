@@ -237,6 +237,32 @@ h6 {
   animation: shimmer 2s infinite;
 }
 
+.home-reveal-ready .home-reveal {
+  opacity: 0;
+  transform:
+    translate3d(var(--reveal-x, 0), var(--reveal-y, 22px), 0)
+    scale(var(--reveal-scale, 1))
+    rotate(var(--reveal-rotate, 0deg));
+  transition:
+    opacity var(--reveal-duration, 0.72s) cubic-bezier(0.16, 1, 0.3, 1),
+    transform var(--reveal-duration, 0.72s) cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.home-reveal-ready .home-reveal.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-reveal-ready .home-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 
 /* ============================================
    SMOOTH SCROLL với SNAP (cho carousel)

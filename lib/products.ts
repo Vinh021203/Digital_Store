@@ -350,10 +350,6 @@ export async function updateProduct(
   if (payload.features !== undefined) updates.features = payload.features;
   if (payload.tech_stack !== undefined) updates.tech_stack = payload.tech_stack;
 
-  console.log('[updateProduct] ID:', id);
-  console.log('[updateProduct] Payload:', payload);
-  console.log('[updateProduct] Updates to send:', updates);
-
   const { data, error } = await supabase
     .from('products')
     .update(updates)
@@ -363,8 +359,6 @@ export async function updateProduct(
       category:category_id (id, name, slug)
     `)
     .single();
-
-  console.log('[updateProduct] Result:', { data: data?.id, error: error?.message });
 
   if (error) {
     console.error('Error updating product:', error);
@@ -550,7 +544,10 @@ export interface AIRecommendationFilters {
   budget?: string;
 }
 
-export async function fetchAIProducts(criteria: AIRecommendationFilters): Promise<Product[]> {
+export async function fetchAIProducts(
+  criteria: AIRecommendationFilters,
+  options?: { fallback?: boolean }
+): Promise<Product[]> {
   const supabase = createClient();
   if (!supabase) return [];
 
@@ -630,12 +627,14 @@ export async function fetchAIProducts(criteria: AIRecommendationFilters): Promis
 
   if (error) {
     console.error('Error fetching AI products:', error);
+    if (options?.fallback === false) return [];
     // Fallback to fetchActiveProducts if specific query fails to ensure user sees something
     return fetchActiveProducts({ limit: 4 });
   }
 
   // If no results specifically matching, fallback to some popular/featured products
   if (!data || data.length === 0) {
+    if (options?.fallback === false) return [];
     return fetchActiveProducts({ is_featured: true, limit: 3 });
   }
 

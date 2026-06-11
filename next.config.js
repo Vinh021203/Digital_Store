@@ -47,12 +47,8 @@ const nextConfig = {
     formats: ['image/avif', 'image/webp'],
   },
 
-  // Environment variables
-  env: {
-    GEMINI_API_KEY: process.env.GEMINI_API_KEY,
-  },
-
   // Performance optimizations
+  poweredByHeader: false,
   compiler: {
     // Remove console.log in production
     removeConsole: process.env.NODE_ENV === 'production',

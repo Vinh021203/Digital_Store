@@ -12,7 +12,6 @@ import { useCart } from '@/context/CartContext';
 import { useToast } from '@/context/ToastContext';
 import confetti from 'canvas-confetti';
 import type { Product } from '@/types';
-import { fetchAIProducts } from '@/lib/products';
 
 // ========== TYPES ==========
 interface AIAnswers {
@@ -335,6 +334,8 @@ export default function AIRecommendationPage() {
     const [answers, setAnswers] = useState<AIAnswers>({});
     const [results, setResults] = useState<Product[]>([]);
     const [reasoning, setReasoning] = useState('');
+    const [poweredByAi, setPoweredByAi] = useState(false);
+    const [hasMatches, setHasMatches] = useState(true);
     const [analysisLog, setAnalysisLog] = useState<string[]>([]);
     // Use a ref to track if we already started analysis to prevent double fetching
     const analysisStarted = React.useRef(false);
@@ -396,16 +397,30 @@ export default function AIRecommendationPage() {
             }
         }, 600);
 
-        // 2. Fetch data from Backend in parallel
+        // 2. Fetch AI recommendations from backend in parallel
         try {
-            const fetchedProducts = await fetchAIProducts(answers);
-            const aiReasoning = generateReasoning(answers);
+            const response = await fetch('/api/ai-recommendation', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(answers),
+            });
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Không thể tạo gợi ý AI');
+            }
 
             // Store them in state, but wait for animation to clear interval to switch step
-            setResults(fetchedProducts);
-            setReasoning(aiReasoning);
+            setResults(data.products || []);
+            setReasoning(data.reasoning || generateReasoning(answers));
+            setPoweredByAi(Boolean(data.poweredByAi));
+            setHasMatches(Boolean(data.hasMatches));
         } catch (error) {
             console.error("Failed to fetch AI products", error);
+            setResults([]);
+            setReasoning(generateReasoning(answers));
+            setPoweredByAi(false);
+            setHasMatches(false);
         }
     };
 
@@ -425,6 +440,8 @@ export default function AIRecommendationPage() {
         setResults([]);
         setAnalysisLog([]);
         setReasoning('');
+        setPoweredByAi(false);
+        setHasMatches(true);
         analysisStarted.current = false;
     }, []);
 
@@ -439,6 +456,10 @@ export default function AIRecommendationPage() {
     );
 
     const handleBuyBundle = useCallback(() => {
+        if (results.length === 0) {
+            addToast('Chưa có sản phẩm phù hợp để thêm vào giỏ hàng', 'warning');
+            return;
+        }
         results.forEach(p => addToCart(p));
         addToast('Đã thêm trọn bộ lộ trình vào giỏ hàng!', 'success');
         router.push('/cart');
@@ -671,8 +692,11 @@ export default function AIRecommendationPage() {
                                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-500 to-purple-600 rounded-t-2xl" />
 
                                 <div className="flex justify-between items-center mb-6">
-                                    <span className="bg-orange-600 text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
-                                        <Sparkles size={10} /> AI Insight
+                                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 ${poweredByAi
+                                        ? 'bg-emerald-600 text-white'
+                                        : 'bg-amber-500 text-white'
+                                        }`}>
+                                        <Sparkles size={10} /> {poweredByAi ? 'Gemini AI' : 'Smart Fallback'}
                                     </span>
                                     <div className="flex gap-2">
                                         <button
@@ -719,6 +743,7 @@ export default function AIRecommendationPage() {
                                 </div>
 
                                 {/* Bundle Card */}
+                                {results.length > 0 && (
                                 <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 text-white shadow-xl relative overflow-hidden group cursor-pointer hover:scale-[1.02] transition-transform">
                                     <div className="relative z-10">
                                         <div className="flex justify-between items-start mb-4">
@@ -754,6 +779,7 @@ export default function AIRecommendationPage() {
                                     </div>
                                     <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-orange-600 rounded-full blur-2xl opacity-50" />
                                 </div>
+                                )}
                             </div>
                         </aside>
 
@@ -761,13 +787,30 @@ export default function AIRecommendationPage() {
                         <div className="lg:col-span-2">
                             <h3 className="text-xl md:text-2xl font-black text-slate-900 mb-6 flex items-center gap-2">
                                 <Sparkles className="text-amber-500" size={24} fill="currentColor" />
-                                Đề Xuất Hàng Đầu
+                                {hasMatches ? 'Đề Xuất Hàng Đầu' : 'Chưa Có Sản Phẩm Khớp'}
                             </h3>
-                            <div className="space-y-6">
-                                {results.map((product, idx) => (
-                                    <AIProductCard key={product.id} product={product} index={idx} />
-                                ))}
-                            </div>
+                            {results.length > 0 ? (
+                                <div className="space-y-6">
+                                    {results.map((product, idx) => (
+                                        <AIProductCard key={product.id} product={product} index={idx} />
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="bg-white rounded-2xl border border-slate-100 p-8 md:p-10 text-center shadow-sm">
+                                    <Target size={44} className="mx-auto text-slate-300 mb-4" />
+                                    <h4 className="text-xl font-black text-slate-900 mb-2">Chưa tìm thấy sản phẩm đúng tiêu chí</h4>
+                                    <p className="text-slate-500 max-w-lg mx-auto mb-6">
+                                        Bạn có thể quay lại và nới ngân sách, chọn nền tảng linh hoạt hơn hoặc đổi phong cách thiết kế để AI tìm thêm lựa chọn.
+                                    </p>
+                                    <button
+                                        onClick={resetQuiz}
+                                        className="inline-flex items-center gap-2 rounded-xl bg-orange-600 px-5 py-3 text-sm font-black text-white hover:bg-orange-700 transition-colors"
+                                    >
+                                        <RefreshCw size={16} />
+                                        Chọn lại tiêu chí
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

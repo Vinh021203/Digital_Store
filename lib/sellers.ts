@@ -229,18 +229,17 @@ export async function updateSellerStatus(
     id: number,
     status: DbSeller['status']
 ): Promise<boolean> {
-    const supabase = createClient();
-    if (!supabase) return false;
+    const response = await fetch(`/api/admin/sellers/${id}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+    });
+    const data = await response.json().catch(() => null);
 
-    const { error } = await supabase
-        .from('sellers')
-        .update({ status })
-        .eq('id', id);
-
-    if (error) {
-        console.error('Error updating seller status:', error);
-        throw new Error(error.message);
+    if (!response.ok) {
+        throw new Error(data?.error || 'Error updating seller status');
     }
+
     return true;
 }
 

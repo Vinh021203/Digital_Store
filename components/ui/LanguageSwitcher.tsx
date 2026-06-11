@@ -1,14 +1,25 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Globe } from 'lucide-react';
 
 const LanguageSwitcher = () => {
   const { i18n } = useTranslation();
+  const [language, setLanguage] = useState(i18n.resolvedLanguage || i18n.language || 'vi');
+
+  useEffect(() => {
+    const handleLanguageChanged = (lng: string) => setLanguage(lng);
+    i18n.on('languageChanged', handleLanguageChanged);
+    setLanguage(i18n.resolvedLanguage || i18n.language || 'vi');
+
+    return () => {
+      i18n.off('languageChanged', handleLanguageChanged);
+    };
+  }, [i18n]);
 
   const toggleLanguage = () => {
-    const newLang = i18n.language === 'vi' ? 'en' : 'vi';
+    const newLang = language === 'vi' ? 'en' : 'vi';
     i18n.changeLanguage(newLang);
   };
 
@@ -16,13 +27,13 @@ const LanguageSwitcher = () => {
     <button
       onClick={toggleLanguage}
       className="flex items-center gap-1.5 text-slate-500 hover:text-orange-600 p-1.5 transition-colors rounded-lg hover:bg-orange-50"
-      title={i18n.language === 'vi' ? 'Switch to English' : 'Chuyển sang Tiếng Việt'}
+      title={language === 'vi' ? 'Switch to English' : 'Chuyển sang Tiếng Việt'}
+      aria-label={language === 'vi' ? 'Switch to English' : 'Chuyển sang Tiếng Việt'}
     >
       <Globe size={18} />
-      <span className="text-xs font-bold uppercase">{i18n.language === 'vi' ? 'VN' : 'EN'}</span>
+      <span className="text-xs font-bold uppercase">{language === 'vi' ? 'VN' : 'EN'}</span>
     </button>
   );
 };
 
 export default LanguageSwitcher;
-

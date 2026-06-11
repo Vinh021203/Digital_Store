@@ -102,23 +102,6 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: insertError.message }, { status: 500 });
         }
 
-        const { data: profile } = await adminClient
-            .from('profiles')
-            .select('role')
-            .eq('id', user.id)
-            .single();
-
-        if (profile?.role !== 'admin') {
-            const { error: roleError } = await adminClient
-                .from('profiles')
-                .update({ role: 'seller' })
-                .eq('id', user.id);
-
-            if (roleError) {
-                return NextResponse.json({ error: roleError.message }, { status: 500 });
-            }
-        }
-
         return NextResponse.json({ seller });
     } catch (error) {
         console.error('Seller register error:', error);

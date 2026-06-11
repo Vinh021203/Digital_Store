@@ -305,7 +305,6 @@ export async function recordCouponUsage(
     if (error) {
         // Unique constraint violation = already used, which is fine
         if (error.code === '23505') {
-            console.log('Coupon already recorded for this user');
             return true;
         }
         console.error('Error recording coupon usage:', error);

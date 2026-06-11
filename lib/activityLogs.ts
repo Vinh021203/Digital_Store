@@ -17,7 +17,6 @@ export async function createActivityLogWithIP(payload: CreateLogPayload): Promis
             return false;
         }
 
-        console.log('[ActivityLogs] Logged with IP:', payload.action, payload.entity_name);
         return true;
     } catch (error) {
         console.error('[ActivityLogs] Error calling API:', error);
@@ -153,7 +152,6 @@ export async function createActivityLog(payload: CreateLogPayload): Promise<DbAc
         return null;
     }
 
-    console.log('[ActivityLogs] Created:', payload.action, payload.entity_name);
     return data;
 }
 
