@@ -23,10 +23,10 @@ import type { Product } from '@/types';
 
 // FAQ data
 const FAQ_DATA = [
-    { q: 'Sáº£n pháº©m cÃ³ Ä‘Æ°á»£c cáº­p nháº­t miá»…n phÃ­ khÃ´ng?', a: 'CÃ³, báº¡n sáº½ nháº­n Ä‘Æ°á»£c táº¥t cáº£ cÃ¡c báº£n cáº­p nháº­t miá»…n phÃ­ trong tÆ°Æ¡ng lai.' },
-    { q: 'TÃ´i cÃ³ thá»ƒ sá»­ dá»¥ng cho dá»± Ã¡n thÆ°Æ¡ng máº¡i khÃ´ng?', a: 'CÃ³, license Regular cho phÃ©p sá»­ dá»¥ng cho 1 dá»± Ã¡n thÆ°Æ¡ng máº¡i. License Extended cho khÃ´ng giá»›i háº¡n dá»± Ã¡n.' },
-    { q: 'CÃ³ há»— trá»£ ká»¹ thuáº­t khÃ´ng?', a: 'CÃ³, chÃºng tÃ´i cung cáº¥p há»— trá»£ qua email trong 6 thÃ¡ng ká»ƒ tá»« ngÃ y mua.' },
-    { q: 'LÃ m tháº¿ nÃ o Ä‘á»ƒ táº£i sáº£n pháº©m?', a: 'Sau khi thanh toÃ¡n, báº¡n sáº½ nháº­n Ä‘Æ°á»£c link download qua email vÃ  cÃ³ thá»ƒ táº£i tá»« trang Profile > Downloads.' },
+    { q: 'Sản phẩm có được cập nhật miễn phí không?', a: 'Có, bạn sẽ nhận được tất cả các bản cập nhật miễn phí trong tương lai.' },
+    { q: 'Tôi có thể sử dụng cho dự án thương mại không?', a: 'Có, license Regular cho phép sử dụng cho 1 dự án thương mại. License Extended cho không giới hạn dự án.' },
+    { q: 'Có hỗ trợ kỹ thuật không?', a: 'Có, chúng tôi cung cấp hỗ trợ qua email trong 6 tháng kể từ ngày mua.' },
+    { q: 'Làm thế nào để tải sản phẩm?', a: 'Sau khi thanh toán, bạn sẽ nhận được link download qua email và có thể tải từ trang Profile > Downloads.' },
 ];
 
 // Demo Preview Modal Component
@@ -410,7 +410,7 @@ export default function ProductDetailPage() {
                                         {/* Zoom Icon Overlay */}
                                         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20 backdrop-blur-[2px]">
                                             <div className="bg-white/95 text-slate-900 px-6 py-3 rounded-2xl font-bold flex items-center gap-2 shadow-2xl">
-                                                <Eye size={20} className="text-orange-600" /> Xem áº£nh lá»›n
+                                                <Eye size={20} className="text-orange-600" /> Xem ảnh lớn
                                             </div>
                                         </div>
                                     </div>
@@ -452,11 +452,11 @@ export default function ProductDetailPage() {
                         {/* Tech Specs / Highlights */}
                         <div className="bg-white/95 p-5 rounded-2xl border border-slate-200 shadow-sm">
                             <h3 className="font-extrabold text-slate-950 mb-4 flex items-center gap-2 text-lg">
-                                <Award className="text-orange-600" size={20} /> Äiá»ƒm ná»•i báº­t
+                                <Award className="text-orange-600" size={20} /> Điểm nổi bật
                             </h3>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                                 {[
-                                    { icon: ShieldCheck, label: 'Báº£o máº­t', val: 'Cao cáº¥p' },
+                                    { icon: ShieldCheck, label: 'Bảo mật', val: 'Cao cấp' },
                                     { icon: FileCode, label: 'Code', val: 'Clean' },
                                     { icon: Layers, label: 'Design', val: 'Modern' },
                                     { icon: Smartphone, label: 'Respon.', val: '100%' },
@@ -497,11 +497,11 @@ export default function ProductDetailPage() {
                                             ))}
                                         </div>
                                         <span className="font-bold text-slate-900 ml-2">{product.rating || 4.8}</span>
-                                        <span className="text-slate-400 text-sm ml-1">({product.reviews || 120} Ä‘Ã¡nh giÃ¡)</span>
+                                        <span className="text-slate-400 text-sm ml-1">({product.reviews || 120} đánh giá)</span>
                                     </div>
                                     <div className="flex items-center gap-1.5 text-slate-500 text-sm font-medium">
                                         <Download size={16} />
-                                        <span>{(product.students || product.downloads_count || 1200).toLocaleString()} Ä‘Ã£ bÃ¡n</span>
+                                        <span>{(product.students || product.downloads_count || 1200).toLocaleString()} đã bán</span>
                                     </div>
                                 </div>
                             </div>
@@ -514,22 +514,22 @@ export default function ProductDetailPage() {
 
                                 <div className="flex items-end gap-3 mb-2">
                                     <span className="text-3xl md:text-[36px] font-bold text-orange-600 tracking-tight">
-                                        {product.price.toLocaleString('vi-VN')}â‚«
+                                        {product.price.toLocaleString('vi-VN')}đ
                                     </span>
                                     {(product.originalPrice || product.original_price) && (
                                         <span className="text-lg text-slate-400 line-through font-medium mb-1">
-                                            {(product.originalPrice || product.original_price).toLocaleString('vi-VN')}â‚«
+                                            {(product.originalPrice || product.original_price).toLocaleString('vi-VN')}đ
                                         </span>
                                     )}
                                 </div>
-                                <p className="text-sm text-slate-500 mb-6">GiÃ¡ Ä‘Ã£ bao gá»“m VAT vÃ  trá»n bá»™ quyá»n lá»£i.</p>
+                                <p className="text-sm text-slate-500 mb-6">Giá đã bao gồm VAT và trọn bộ quyền lợi.</p>
 
                                 <div className="space-y-3">
                                     <button
                                         onClick={handleAddToCart}
                                         className="w-full bg-slate-900 text-white py-4 rounded-xl font-bold text-lg hover:bg-orange-600 transition-all shadow-lg shadow-slate-200 flex items-center justify-center gap-2 group"
                                     >
-                                        <ShoppingCart size={20} className="group-hover:animate-bounce" /> ThÃªm vÃ o giá» hÃ ng
+                                        <ShoppingCart size={20} className="group-hover:animate-bounce" /> Thêm vào giỏ hàng
                                     </button>
 
                                     <div className="grid grid-cols-2 gap-3">
@@ -560,7 +560,7 @@ export default function ProductDetailPage() {
                                                 : 'border-slate-200 hover:border-rose-300 hover:bg-rose-50 hover:text-rose-500 text-slate-500'}`}
                                         >
                                             <Heart size={20} fill={isWishlisted ? 'currentColor' : 'none'} />
-                                            <span className="text-sm">YÃªu thÃ­ch</span>
+                                            <span className="text-sm">Yêu thích</span>
                                         </button>
                                         <button
                                             onClick={handleToggleCompare}
@@ -569,7 +569,7 @@ export default function ProductDetailPage() {
                                                 : 'border-slate-200 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-500 text-slate-500'}`}
                                         >
                                             <ArrowRightLeftIcon size={20} />
-                                            <span className="text-sm">So sÃ¡nh</span>
+                                            <span className="text-sm">So sánh</span>
                                         </button>
                                     </div>
                                 </div>
@@ -578,14 +578,14 @@ export default function ProductDetailPage() {
                             {/* Benefits List */}
                             <div className="mt-4 rounded-2xl border border-slate-200 bg-white/95 p-5 shadow-sm">
                                 <h4 className="mb-4 flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-slate-400">
-                                    Quyá»n lá»£i Æ°u Ä‘Ã£i
+                                    Quyền lợi ưu đãi
                                 </h4>
                                 <ul className="space-y-2.5">
                                     {[
-                                        { text: 'Cam káº¿t code sáº¡ch, tá»‘i Æ°u 100%', icon: Check },
-                                        { text: 'Files nguá»“n Ä‘áº§y Ä‘á»§ (Figma, React, TS...)', icon: Layers },
-                                        { text: 'Há»— trá»£ ká»¹ thuáº­t 6 thÃ¡ng miá»…n phÃ­', icon: MessageCircle },
-                                        { text: 'HoÃ n tiá»n trong 30 ngÃ y náº¿u lá»—i', icon: RotateCcw },
+                                        { text: 'Cam kết code sạch, tối ưu 100%', icon: Check },
+                                        { text: 'Files nguồn đầy đủ (Figma, React, TS...)', icon: Layers },
+                                        { text: 'Hỗ trợ kỹ thuật 6 tháng miễn phí', icon: MessageCircle },
+                                        { text: 'Hoàn tiền trong 30 ngày nếu lỗi', icon: RotateCcw },
                                     ].map((item, i) => (
                                         <li key={i} className="flex items-start gap-3 rounded-xl bg-slate-50/80 px-3 py-2.5 text-sm text-slate-600">
                                             <div className="mt-0.5 p-1 rounded-full bg-green-100 text-green-600">
@@ -611,7 +611,7 @@ export default function ProductDetailPage() {
                                         onClick={() => setActiveTab(tab)}
                                         className={`px-8 py-5 font-bold text-sm uppercase tracking-wide whitespace-nowrap transition-colors border-b-2 ${activeTab === tab ? 'border-orange-600 text-orange-600 bg-orange-50/10' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
                                     >
-                                        {tab === 'overview' ? 'Tá»•ng quan' : tab === 'details' ? 'Chi tiáº¿t ká»¹ thuáº­t' : tab === 'reviews' ? 'ÄÃ¡nh giÃ¡ (120)' : 'Há»i Ä‘Ã¡p'}
+                                        {tab === 'overview' ? 'Tổng quan' : tab === 'details' ? 'Chi tiết kỹ thuật' : tab === 'reviews' ? 'Đánh giá (120)' : 'Hỏi đáp'}
                                     </button>
                                 ))}
                             </div>
@@ -631,7 +631,7 @@ export default function ProductDetailPage() {
                                                 <div className="bg-slate-50 p-6 rounded-2xl">
                                                     <h4 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
                                                         <Zap size={18} className="text-orange-600" />
-                                                        TÃ­nh nÄƒng chÃ­nh
+                                                        Tính năng chính
                                                     </h4>
                                                     <ul className="space-y-2">
                                                         {(product as any).features.map((feature: string, i: number) => (
@@ -716,15 +716,15 @@ export default function ProductDetailPage() {
                                         <div>
                                             <h3 className="font-bold text-slate-900 text-lg mb-4 flex items-center gap-2">
                                                 <Monitor size={20} className="text-orange-600" />
-                                                ThÃ´ng sá»‘ ká»¹ thuáº­t
+                                                Thông số kỹ thuật
                                             </h3>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 bg-slate-50 p-6 rounded-2xl">
                                                 {[
-                                                    { l: 'PhiÃªn báº£n', v: (product as any).version || '1.0.0' },
-                                                    { l: 'NgÃ y cáº­p nháº­t', v: product.updatedAt ? new Date(product.updatedAt).toLocaleDateString('vi-VN') : new Date().toLocaleDateString('vi-VN') },
+                                                    { l: 'Phiên bản', v: (product as any).version || '1.0.0' },
+                                                    { l: 'Ngày cập nhật', v: product.updatedAt ? new Date(product.updatedAt).toLocaleDateString('vi-VN') : new Date().toLocaleDateString('vi-VN') },
                                                     { l: 'File Format', v: (product as any).fileFormat || 'React, Next.js' },
                                                     { l: 'Compatibility', v: (product as any).compatibility || 'React 18+, Node 16+' },
-                                                    { l: 'Há»— trá»£', v: '6 thÃ¡ng miá»…n phÃ­' },
+                                                    { l: 'Hỗ trợ', v: '6 tháng miễn phí' },
                                                 ].map((item, i) => (
                                                     <div key={i} className="flex justify-between py-3 border-b border-slate-200 last:border-0">
                                                         <span className="text-slate-500 text-sm font-medium">{item.l}</span>
@@ -746,7 +746,7 @@ export default function ProductDetailPage() {
                                                             Xem Demo Live
                                                         </a>
                                                     ) : (
-                                                        <span className="text-slate-400 text-sm">KhÃ´ng cÃ³</span>
+                                                        <span className="text-slate-400 text-sm">Không có</span>
                                                     )}
                                                 </div>
                                             </div>
@@ -757,7 +757,7 @@ export default function ProductDetailPage() {
                                             <div>
                                                 <h3 className="font-bold text-slate-900 text-lg mb-4 flex items-center gap-2">
                                                     <Zap size={20} className="text-orange-600" />
-                                                    TÃ­nh nÄƒng
+                                                    Tính năng
                                                 </h3>
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                                     {(product as any).features.map((feature: string, i: number) => (
@@ -800,21 +800,21 @@ export default function ProductDetailPage() {
                             <div className="absolute top-0 right-0 -m-8 opacity-10">
                                 <Star size={140} fill="currentColor" />
                             </div>
-                            <h3 className="text-xl font-bold mb-3 relative z-10">Báº¡n cáº§n há»— trá»£?</h3>
-                            <p className="text-white/80 mb-4 relative z-10 text-sm leading-relaxed">Äá»™i ngÅ© ká»¹ thuáº­t sáºµn sÃ ng há»— trá»£ 24/7.</p>
+                            <h3 className="text-xl font-bold mb-3 relative z-10">Bạn cần hỗ trợ?</h3>
+                            <p className="text-white/80 mb-4 relative z-10 text-sm leading-relaxed">Đội ngũ kỹ thuật sẵn sàng hỗ trợ 24/7.</p>
                             <button className="w-full bg-white text-orange-600 py-2.5 rounded-xl font-bold hover:bg-orange-50 transition-colors shadow-lg relative z-10 text-sm">
-                                LiÃªn há»‡ ngay
+                                Liên hệ ngay
                             </button>
                         </div>
 
                         {/* Trust Badges in Sidebar */}
                         <div className="bg-white rounded-2xl p-5 border border-slate-100">
-                            <h4 className="font-bold text-slate-900 text-sm mb-4 uppercase tracking-wide">Cam káº¿t cá»§a chÃºng tÃ´i</h4>
+                            <h4 className="font-bold text-slate-900 text-sm mb-4 uppercase tracking-wide">Cam kết của chúng tôi</h4>
                             <div className="grid grid-cols-2 gap-4">
                                 {[
-                                    { icon: ShieldCheck, title: 'Báº£o máº­t', desc: 'SSL 256-bit' },
-                                    { icon: RotateCcw, title: 'HoÃ n tiá»n', desc: '30 ngÃ y' },
-                                    { icon: Download, title: 'Táº£i ngay', desc: 'Sau thanh toÃ¡n' },
+                                    { icon: ShieldCheck, title: 'Bảo mật', desc: 'SSL 256-bit' },
+                                    { icon: RotateCcw, title: 'Hoàn tiền', desc: '30 ngày' },
+                                    { icon: Download, title: 'Tải ngay', desc: 'Sau thanh toán' },
                                     { icon: MessageCircle, title: 'Há»— trá»£', desc: '24/7' },
                                 ].map((item, i) => (
                                     <div key={i} className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl">
@@ -848,12 +848,12 @@ export default function ProductDetailPage() {
                             <span className="inline-flex items-center gap-2 px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full text-xs font-bold uppercase mb-3">
                                 <Zap size={12} /> Resources
                             </span>
-                            <h3 className="text-xl font-bold text-white mb-2">KhÃ¡m PhÃ¡ Blog</h3>
+                            <h3 className="text-xl font-bold text-white mb-2">Khám phá Blog</h3>
                             <p className="text-slate-400 mb-4 text-sm leading-relaxed">
-                                HÆ°á»›ng dáº«n, tips & tricks, vÃ  cáº­p nháº­t má»›i nháº¥t vá» web development.
+                                Hướng dẫn, tips & tricks, và cập nhật mới nhất về web development.
                             </p>
                             <div className="flex items-center gap-2 text-orange-400 font-bold group-hover:gap-4 transition-all text-sm">
-                                Äá»c ngay <ArrowRight size={16} />
+                                Đọc ngay <ArrowRight size={16} />
                             </div>
                         </div>
                     </Link>
@@ -867,9 +867,9 @@ export default function ProductDetailPage() {
                             <span className="inline-flex items-center gap-2 px-3 py-1 bg-white/20 text-white rounded-full text-xs font-bold uppercase mb-3">
                                 <MessageCircle size={12} /> Support
                             </span>
-                            <h3 className="text-xl font-bold text-white mb-2">Tham Gia Cá»™ng Äá»“ng</h3>
+                            <h3 className="text-xl font-bold text-white mb-2">Tham gia cộng đồng</h3>
                             <p className="text-white/80 mb-4 text-sm leading-relaxed">
-                                Káº¿t ná»‘i vá»›i developers, chia sáº» kinh nghiá»‡m vÃ  nháº­n há»— trá»£ 24/7.
+                                Kết nối với developers, chia sẻ kinh nghiệm và nhận hỗ trợ 24/7.
                             </p>
                             <div className="flex items-center gap-2 text-white font-bold group-hover:gap-4 transition-all text-sm">
                                 Tham gia ngay <ArrowRight size={16} />
@@ -885,22 +885,22 @@ export default function ProductDetailPage() {
 
                     <div className="relative z-10 max-w-2xl mx-auto text-center">
                         <span className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500/10 border border-orange-500/20 text-orange-400 rounded-full text-sm font-bold mb-4">
-                            <Star size={14} className="fill-current" /> Äá»«ng bá» lá»¡
+                            <Star size={14} className="fill-current" /> Đừng bỏ lỡ
                         </span>
                         <h3 className="text-xl md:text-2xl font-bold text-white mb-3">
-                            Nháº­n ThÃ´ng BÃ¡o Sáº£n Pháº©m Má»›i
+                            Nhận thông báo sản phẩm mới
                         </h3>
                         <p className="text-slate-400 mb-6 text-sm">
-                            ÄÄƒng kÃ½ Ä‘á»ƒ nháº­n thÃ´ng tin vá» sáº£n pháº©m má»›i vÃ  khuyáº¿n mÃ£i Ä‘á»™c quyá»n!
+                            Đăng ký để nhận thông tin về sản phẩm mới và khuyến mãi độc quyền!
                         </p>
                         <div className="flex gap-3 max-w-md mx-auto">
                             <input
                                 type="email"
-                                placeholder="Email cá»§a báº¡n..."
+                                placeholder="Email của bạn..."
                                 className="flex-1 px-4 py-3 bg-white/10 border border-white/10 rounded-xl text-white placeholder:text-slate-400 focus:outline-none focus:border-orange-500 text-sm"
                             />
                             <button className="px-6 py-3 bg-orange-600 text-white font-bold rounded-xl hover:bg-orange-700 transition-colors shadow-lg shadow-orange-500/30 text-sm">
-                                ÄÄƒng kÃ½
+                                Đăng ký
                             </button>
                         </div>
                     </div>
