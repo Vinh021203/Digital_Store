@@ -1,4 +1,4 @@
-// lib/email.ts
+﻿// lib/email.ts
 // Email service using Resend for sending transactional emails
 
 import { Resend } from 'resend';
@@ -8,6 +8,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Default from email (use verified domain in production)
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://www.martdigitalhub.dev').replace(/\/$/, '');
 
 // ============================================
 // Types
@@ -88,7 +89,7 @@ export async function sendOrderConfirmationEmail(data: OrderEmailData) {
                 ${item.licenseKey ? `<br><code style="background: #f5f5f5; padding: 4px 8px; border-radius: 4px; font-size: 12px;">${item.licenseKey}</code>` : ''}
             </td>
             <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right;">
-                ${item.price.toLocaleString('vi-VN')}đ
+                ${item.price.toLocaleString('vi-VN')}Ä‘
             </td>
         </tr>
     `).join('');
@@ -104,25 +105,25 @@ export async function sendOrderConfirmationEmail(data: OrderEmailData) {
         <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
             <!-- Header -->
             <div style="background: linear-gradient(135deg, #f97316, #ea580c); padding: 32px; text-align: center;">
-                <h1 style="color: white; margin: 0; font-size: 24px;">🎉 Cảm ơn bạn đã mua hàng!</h1>
+                <h1 style="color: white; margin: 0; font-size: 24px;">ðŸŽ‰ Cáº£m Æ¡n báº¡n Ä‘Ã£ mua hÃ ng!</h1>
             </div>
             
             <!-- Content -->
             <div style="padding: 32px;">
                 <p style="font-size: 16px; color: #333;">
-                    Xin chào <strong>${data.customerName}</strong>,
+                    Xin chÃ o <strong>${data.customerName}</strong>,
                 </p>
                 <p style="color: #666;">
-                    Đơn hàng <strong>#${data.orderId}</strong> của bạn đã được xác nhận. 
-                    Dưới đây là chi tiết đơn hàng và license key của bạn:
+                    ÄÆ¡n hÃ ng <strong>#${data.orderId}</strong> cá»§a báº¡n Ä‘Ã£ Ä‘Æ°á»£c xÃ¡c nháº­n. 
+                    DÆ°á»›i Ä‘Ã¢y lÃ  chi tiáº¿t Ä‘Æ¡n hÃ ng vÃ  license key cá»§a báº¡n:
                 </p>
                 
                 <!-- Order Items -->
                 <table style="width: 100%; border-collapse: collapse; margin: 24px 0;">
                     <thead>
                         <tr style="background: #f8f8f8;">
-                            <th style="padding: 12px; text-align: left; font-weight: 600;">Sản phẩm</th>
-                            <th style="padding: 12px; text-align: right; font-weight: 600;">Giá</th>
+                            <th style="padding: 12px; text-align: left; font-weight: 600;">Sáº£n pháº©m</th>
+                            <th style="padding: 12px; text-align: right; font-weight: 600;">GiÃ¡</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -131,30 +132,30 @@ export async function sendOrderConfirmationEmail(data: OrderEmailData) {
                     <tfoot>
                         ${data.discount ? `
                         <tr>
-                            <td style="padding: 12px; text-align: right;">Giảm giá:</td>
-                            <td style="padding: 12px; text-align: right; color: #22c55e;">-${data.discount.toLocaleString('vi-VN')}đ</td>
+                            <td style="padding: 12px; text-align: right;">Giáº£m giÃ¡:</td>
+                            <td style="padding: 12px; text-align: right; color: #22c55e;">-${data.discount.toLocaleString('vi-VN')}Ä‘</td>
                         </tr>
                         ` : ''}
                         <tr style="background: #f8f8f8;">
-                            <td style="padding: 12px; text-align: right;"><strong>Tổng cộng:</strong></td>
-                            <td style="padding: 12px; text-align: right; font-size: 18px; color: #f97316;"><strong>${data.total.toLocaleString('vi-VN')}đ</strong></td>
+                            <td style="padding: 12px; text-align: right;"><strong>Tá»•ng cá»™ng:</strong></td>
+                            <td style="padding: 12px; text-align: right; font-size: 18px; color: #f97316;"><strong>${data.total.toLocaleString('vi-VN')}Ä‘</strong></td>
                         </tr>
                     </tfoot>
                 </table>
                 
                 <!-- CTA Button -->
                 <div style="text-align: center; margin: 32px 0;">
-                    <a href="https://digitalmart.store/profile/downloads" 
+                    <a href="${SITE_URL}/profile/downloads" 
                        style="display: inline-block; background: linear-gradient(135deg, #f97316, #ea580c); color: white; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: bold; font-size: 16px;">
-                        📥 Tải xuống ngay
+                        ðŸ“¥ Táº£i xuá»‘ng ngay
                     </a>
                 </div>
                 
                 <!-- License Info -->
                 <div style="background: #fffbeb; border: 1px solid #fcd34d; border-radius: 8px; padding: 16px; margin: 24px 0;">
                     <p style="margin: 0; font-size: 14px; color: #92400e;">
-                        <strong>💡 Lưu ý:</strong> Hãy lưu lại license key để sử dụng khi cần hỗ trợ. 
-                        Bạn có thể xem lại license key trong mục <a href="https://digitalmart.store/profile/licenses" style="color: #f97316;">Licenses</a>.
+                        <strong>ðŸ’¡ LÆ°u Ã½:</strong> HÃ£y lÆ°u láº¡i license key Ä‘á»ƒ sá»­ dá»¥ng khi cáº§n há»— trá»£. 
+                        Báº¡n cÃ³ thá»ƒ xem láº¡i license key trong má»¥c <a href="${SITE_URL}/profile/licenses" style="color: #f97316;">Licenses</a>.
                     </p>
                 </div>
             </div>
@@ -162,10 +163,10 @@ export async function sendOrderConfirmationEmail(data: OrderEmailData) {
             <!-- Footer -->
             <div style="background: #f8f8f8; padding: 24px; text-align: center; border-top: 1px solid #eee;">
                 <p style="margin: 0; color: #666; font-size: 14px;">
-                    Cần hỗ trợ? <a href="https://digitalmart.store/profile/support" style="color: #f97316;">Liên hệ chúng tôi</a>
+                    Cáº§n há»— trá»£? <a href="${SITE_URL}/profile/support" style="color: #f97316;">LiÃªn há»‡ chÃºng tÃ´i</a>
                 </p>
                 <p style="margin: 8px 0 0; color: #999; font-size: 12px;">
-                    © 2024 DigitalMart. All rights reserved.
+                    Â© 2024 DigitalMart. All rights reserved.
                 </p>
             </div>
         </div>
@@ -175,7 +176,7 @@ export async function sendOrderConfirmationEmail(data: OrderEmailData) {
 
     return sendEmail({
         to: data.customerEmail,
-        subject: `✅ Đơn hàng #${data.orderId} đã được xác nhận`,
+        subject: `âœ… ÄÆ¡n hÃ ng #${data.orderId} Ä‘Ã£ Ä‘Æ°á»£c xÃ¡c nháº­n`,
         html,
     });
 }
@@ -193,15 +194,15 @@ export async function sendLicenseDeliveryEmail(data: LicenseEmailData) {
     <body style="font-family: 'Segoe UI', Arial, sans-serif; background: #f4f4f5; margin: 0; padding: 20px;">
         <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
             <div style="background: linear-gradient(135deg, #10b981, #059669); padding: 32px; text-align: center;">
-                <h1 style="color: white; margin: 0; font-size: 24px;">🔑 License Key của bạn</h1>
+                <h1 style="color: white; margin: 0; font-size: 24px;">ðŸ”‘ License Key cá»§a báº¡n</h1>
             </div>
             
             <div style="padding: 32px;">
                 <p style="font-size: 16px; color: #333;">
-                    Xin chào <strong>${data.customerName}</strong>,
+                    Xin chÃ o <strong>${data.customerName}</strong>,
                 </p>
                 <p style="color: #666;">
-                    Đây là license key cho sản phẩm <strong>${data.productName}</strong>:
+                    ÄÃ¢y lÃ  license key cho sáº£n pháº©m <strong>${data.productName}</strong>:
                 </p>
                 
                 <!-- License Key Box -->
@@ -209,21 +210,21 @@ export async function sendLicenseDeliveryEmail(data: LicenseEmailData) {
                     <p style="margin: 0 0 8px; color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">License Key</p>
                     <code style="font-size: 24px; font-weight: bold; color: #166534; letter-spacing: 2px;">${data.licenseKey}</code>
                     <p style="margin: 12px 0 0; color: #666; font-size: 13px;">
-                        Loại: <strong>${data.licenseType}</strong>
+                        Loáº¡i: <strong>${data.licenseType}</strong>
                     </p>
                 </div>
                 
                 <div style="text-align: center; margin: 32px 0;">
                     <a href="${data.downloadUrl}" 
                        style="display: inline-block; background: linear-gradient(135deg, #10b981, #059669); color: white; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: bold;">
-                        📥 Tải xuống sản phẩm
+                        ðŸ“¥ Táº£i xuá»‘ng sáº£n pháº©m
                     </a>
                 </div>
             </div>
             
             <div style="background: #f8f8f8; padding: 24px; text-align: center; border-top: 1px solid #eee;">
                 <p style="margin: 0; color: #999; font-size: 12px;">
-                    © 2024 DigitalMart. All rights reserved.
+                    Â© 2024 DigitalMart. All rights reserved.
                 </p>
             </div>
         </div>
@@ -233,7 +234,7 @@ export async function sendLicenseDeliveryEmail(data: LicenseEmailData) {
 
     return sendEmail({
         to: data.customerEmail,
-        subject: `🔑 License Key: ${data.productName}`,
+        subject: `ðŸ”‘ License Key: ${data.productName}`,
         html,
     });
 }
@@ -251,20 +252,20 @@ export async function sendNewVersionEmail(data: NewVersionEmailData) {
     <body style="font-family: 'Segoe UI', Arial, sans-serif; background: #f4f4f5; margin: 0; padding: 20px;">
         <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
             <div style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); padding: 32px; text-align: center;">
-                <h1 style="color: white; margin: 0; font-size: 24px;">🚀 Phiên bản mới có sẵn!</h1>
+                <h1 style="color: white; margin: 0; font-size: 24px;">ðŸš€ PhiÃªn báº£n má»›i cÃ³ sáºµn!</h1>
             </div>
             
             <div style="padding: 32px;">
                 <p style="font-size: 16px; color: #333;">
-                    Xin chào <strong>${data.customerName}</strong>,
+                    Xin chÃ o <strong>${data.customerName}</strong>,
                 </p>
                 <p style="color: #666;">
-                    Sản phẩm <strong>${data.productName}</strong> vừa được cập nhật lên phiên bản <strong>v${data.newVersion}</strong>!
+                    Sáº£n pháº©m <strong>${data.productName}</strong> vá»«a Ä‘Æ°á»£c cáº­p nháº­t lÃªn phiÃªn báº£n <strong>v${data.newVersion}</strong>!
                 </p>
                 
                 ${data.changelog ? `
                 <div style="background: #f5f3ff; border-left: 4px solid #8b5cf6; padding: 16px; margin: 24px 0; border-radius: 0 8px 8px 0;">
-                    <p style="margin: 0 0 8px; font-weight: bold; color: #5b21b6;">📋 Những gì mới:</p>
+                    <p style="margin: 0 0 8px; font-weight: bold; color: #5b21b6;">ðŸ“‹ Nhá»¯ng gÃ¬ má»›i:</p>
                     <p style="margin: 0; color: #666; white-space: pre-line;">${data.changelog}</p>
                 </div>
                 ` : ''}
@@ -272,14 +273,14 @@ export async function sendNewVersionEmail(data: NewVersionEmailData) {
                 <div style="text-align: center; margin: 32px 0;">
                     <a href="${data.downloadUrl}" 
                        style="display: inline-block; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: bold;">
-                        📥 Tải phiên bản mới
+                        ðŸ“¥ Táº£i phiÃªn báº£n má»›i
                     </a>
                 </div>
             </div>
             
             <div style="background: #f8f8f8; padding: 24px; text-align: center; border-top: 1px solid #eee;">
                 <p style="margin: 0; color: #999; font-size: 12px;">
-                    © 2024 DigitalMart. All rights reserved.
+                    Â© 2024 DigitalMart. All rights reserved.
                 </p>
             </div>
         </div>
@@ -289,7 +290,8 @@ export async function sendNewVersionEmail(data: NewVersionEmailData) {
 
     return sendEmail({
         to: data.customerEmail,
-        subject: `🚀 Cập nhật mới: ${data.productName} v${data.newVersion}`,
+        subject: `ðŸš€ Cáº­p nháº­t má»›i: ${data.productName} v${data.newVersion}`,
         html,
     });
 }
+

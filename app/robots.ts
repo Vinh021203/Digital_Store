@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 
 // Use environment variable or fallback to production URL
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://martdigitalhub.vercel.app';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.martdigitalhub.dev';
 
 export default function robots(): MetadataRoute.Robots {
     return {

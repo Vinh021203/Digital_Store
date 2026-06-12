@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 import { createClient } from '@supabase/supabase-js';
 
-const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://martdigitalhub.vercel.app').replace(/\/$/, '');
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://www.martdigitalhub.dev').replace(/\/$/, '');
 
 export const revalidate = 3600;
 

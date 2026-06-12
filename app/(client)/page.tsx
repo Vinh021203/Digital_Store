@@ -49,11 +49,11 @@ export default async function Page() {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'DigitalMart',
-    url: process.env.NEXT_PUBLIC_SITE_URL || 'https://martdigitalhub.vercel.app',
+    url: process.env.NEXT_PUBLIC_SITE_URL || 'https://www.martdigitalhub.dev',
     description: metadata.description,
     potentialAction: {
       '@type': 'SearchAction',
-      target: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://martdigitalhub.vercel.app'}/products?search={search_term_string}`,
+      target: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.martdigitalhub.dev'}/products?search={search_term_string}`,
       'query-input': 'required name=search_term_string',
     },
   };

@@ -7,7 +7,7 @@ import './nprogress.css';
 import Providers from './providers';
 import { NavigationProgress } from '@/components/layout';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://martdigitalhub.vercel.app';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.martdigitalhub.dev';
 
 const beVietnamPro = Be_Vietnam_Pro({
     subsets: ['latin', 'vietnamese'],
