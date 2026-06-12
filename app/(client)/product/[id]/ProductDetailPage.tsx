@@ -16,6 +16,7 @@ import {
 import { getProductBySlug, getProductById, fetchActiveProducts } from '@/lib/products';
 import ReviewsSection from '@/components/product/ReviewsSection';
 import RelatedProducts from '@/components/product/RelatedProducts';
+import SafeHTML from '@/components/ui/SafeHTML';
 import { useCart } from '@/context/CartContext';
 import { useSupabaseAuth } from '@/context/SupabaseAuthContext';
 import { useToast } from '@/context/ToastContext';
@@ -28,6 +29,18 @@ const FAQ_DATA = [
     { q: 'Có hỗ trợ kỹ thuật không?', a: 'Có, chúng tôi cung cấp hỗ trợ qua email trong 6 tháng kể từ ngày mua.' },
     { q: 'Làm thế nào để tải sản phẩm?', a: 'Sau khi thanh toán, bạn sẽ nhận được link download qua email và có thể tải từ trang Profile > Downloads.' },
 ];
+
+const stripHtml = (value?: string | null) =>
+    String(value || '')
+        .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+        .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+        .replace(/<[^>]*>/g, ' ')
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/\s+/g, ' ')
+        .trim();
 
 // Demo Preview Modal Component
 const DemoPreviewModal = ({ isOpen, onClose, demoUrl, productName }: {
@@ -616,13 +629,14 @@ export default function ProductDetailPage() {
                                 ))}
                             </div>
 
-                            <div className="p-8">
-                                {activeTab === 'overview' && (
-                                    <div className="prose max-w-none prose-slate prose-headings:font-bold prose-a:text-orange-600">
-                                        {/* Render description with preserved line breaks */}
-                                        <div className="text-slate-600 leading-relaxed text-lg whitespace-pre-line">
-                                            {product.description}
-                                        </div>
+	                            <div className="p-8">
+	                                {activeTab === 'overview' && (
+	                                    <div className="prose max-w-none prose-slate prose-headings:font-bold prose-a:text-orange-600">
+	                                        <SafeHTML
+	                                            html={product.description || ''}
+	                                            className="product-rich-content text-slate-600"
+	                                            fallback="<p>Sản phẩm được thiết kế để giúp bạn triển khai website nhanh hơn, đẹp hơn và dễ tùy biến theo từng nhu cầu thực tế.</p>"
+	                                        />
 
                                         {/* Features and Tech Stack Section */}
                                         <div className="my-8 grid grid-cols-1 md:grid-cols-2 gap-4 not-prose">
@@ -815,7 +829,7 @@ export default function ProductDetailPage() {
                                     { icon: ShieldCheck, title: 'Bảo mật', desc: 'SSL 256-bit' },
                                     { icon: RotateCcw, title: 'Hoàn tiền', desc: '30 ngày' },
                                     { icon: Download, title: 'Tải ngay', desc: 'Sau thanh toán' },
-                                    { icon: MessageCircle, title: 'Há»— trá»£', desc: '24/7' },
+                                    { icon: MessageCircle, title: 'Hỗ trợ', desc: '24/7' },
                                 ].map((item, i) => (
                                     <div key={i} className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl">
                                         <div className="w-9 h-9 bg-orange-100 rounded-lg flex items-center justify-center text-orange-600 flex-shrink-0">
@@ -973,9 +987,10 @@ const ModernProductDetailLayout = ({
         { value: 'Form', label: 'Ready' },
         { value: 'Motion', label: 'Effects' },
     ];
+    const plainDescription = stripHtml(product.description);
     const shortDescription = product.short_description || product.shortDescription || (
-        product.description
-            ? `${String(product.description).replace(/\s+/g, ' ').slice(0, 190)}${String(product.description).length > 190 ? '...' : ''}`
+        plainDescription
+            ? `${plainDescription.slice(0, 190)}${plainDescription.length > 190 ? '...' : ''}`
             : 'Bộ giao diện sản phẩm số hiện đại, dễ tùy biến, giúp bạn triển khai website nhanh chóng và chuyên nghiệp.'
     );
     const tabs = [
@@ -1181,11 +1196,15 @@ const ModernProductDetailLayout = ({
                 <section id="description" className="mt-8 scroll-mt-24">
                     <h2 className="mb-5 text-xl font-bold text-slate-950">1. Mô tả sản phẩm</h2>
                     <div className="mb-6 rounded-2xl border border-orange-100 bg-white/95 p-4 shadow-sm md:p-6">
-                        <div className={`relative max-w-none whitespace-pre-line text-sm font-medium leading-7 text-slate-600 md:text-base md:leading-8 ${showFullDescription ? '' : 'max-h-[340px] overflow-hidden md:max-h-none'}`}>
-                            {product.description || 'Sản phẩm được thiết kế để giúp bạn triển khai website nhanh hơn, đẹp hơn và dễ tùy biến theo từng nhu cầu thực tế.'}
-                            {!showFullDescription && (
-                                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white via-white/90 to-transparent md:hidden" />
-                            )}
+	                        <div className={`relative max-w-none text-sm font-medium leading-7 text-slate-600 md:text-base md:leading-8 ${showFullDescription ? '' : 'max-h-[340px] overflow-hidden md:max-h-none'}`}>
+	                            <SafeHTML
+	                                html={product.description || ''}
+	                                className="product-rich-content"
+	                                fallback="<p>Sản phẩm được thiết kế để giúp bạn triển khai website nhanh hơn, đẹp hơn và dễ tùy biến theo từng nhu cầu thực tế.</p>"
+	                            />
+	                            {!showFullDescription && (
+	                                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white via-white/90 to-transparent md:hidden" />
+	                            )}
                         </div>
                         <button
                             type="button"
@@ -1493,6 +1512,129 @@ const ModernProductDetailLayout = ({
                     @keyframes reviewsMarquee {
                         from { transform: translateX(0); }
                         to { transform: translateX(-50%); }
+                    }
+                `}</style>
+                <style jsx global>{`
+                    .product-rich-content {
+                        color: #475569;
+                        font-weight: 500;
+                        line-height: 1.8;
+                    }
+                    .product-rich-content h1,
+                    .product-rich-content h2,
+                    .product-rich-content h3,
+                    .product-rich-content h4 {
+                        margin: 1.45rem 0 0.85rem;
+                        color: #0f172a;
+                        font-weight: 900;
+                        letter-spacing: 0;
+                        line-height: 1.22;
+                    }
+                    .product-rich-content h1 {
+                        font-size: clamp(1.75rem, 3vw, 2.35rem);
+                    }
+                    .product-rich-content h2 {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.85rem;
+                        font-size: clamp(1.35rem, 2.5vw, 1.85rem);
+                    }
+                    .product-rich-content h2::before {
+                        content: "";
+                        display: inline-block;
+                        width: 6px;
+                        height: 1.35em;
+                        flex: 0 0 auto;
+                        border-radius: 999px;
+                        background: linear-gradient(180deg, #fb923c, #ea580c);
+                    }
+                    .product-rich-content h3 {
+                        font-size: 1.22rem;
+                    }
+                    .product-rich-content p {
+                        margin: 0 0 0.9rem;
+                    }
+                    .product-rich-content ul,
+                    .product-rich-content ol {
+                        margin: 0.9rem 0 1.25rem;
+                        padding-left: 1.5rem;
+                    }
+                    .product-rich-content ul { list-style: disc; }
+                    .product-rich-content ol { list-style: decimal; }
+                    .product-rich-content li {
+                        margin: 0.52rem 0;
+                        padding-left: 0.15rem;
+                    }
+                    .product-rich-content h2 + ul,
+                    .product-rich-content h2 + ol,
+                    .product-rich-content h3 + ul,
+                    .product-rich-content h3 + ol {
+                        border-radius: 1rem;
+                        background: #f8fafc;
+                        padding: 1rem 1.25rem 1rem 2.55rem;
+                    }
+                    .product-rich-content div {
+                        max-width: 100%;
+                    }
+                    .product-rich-content blockquote {
+                        margin: 1.25rem 0;
+                        border-left: 4px solid #f97316;
+                        border-radius: 0 1rem 1rem 0;
+                        background: #fff7ed;
+                        padding: 1rem 1.1rem;
+                        color: #475569;
+                    }
+                    .product-rich-content a {
+                        color: #ea580c;
+                        font-weight: 700;
+                        text-decoration: underline;
+                        text-underline-offset: 3px;
+                    }
+                    .product-rich-content img {
+                        margin: 1.25rem 0;
+                        max-width: 100%;
+                        height: auto;
+                        border-radius: 1rem;
+                        border: 1px solid #fed7aa;
+                        box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+                    }
+                    .product-rich-content table {
+                        margin: 1rem 0;
+                        width: 100%;
+                        border-collapse: collapse;
+                        overflow: hidden;
+                        border-radius: 0.9rem;
+                        font-size: 0.92rem;
+                    }
+                    .product-rich-content th,
+                    .product-rich-content td {
+                        border: 1px solid #e2e8f0;
+                        padding: 0.75rem;
+                        text-align: left;
+                    }
+                    .product-rich-content th {
+                        background: #f8fafc;
+                        color: #0f172a;
+                        font-weight: 800;
+                    }
+                    .product-rich-content code {
+                        border-radius: 0.4rem;
+                        background: #f1f5f9;
+                        padding: 0.15rem 0.35rem;
+                        color: #c2410c;
+                        font-size: 0.9em;
+                    }
+                    .product-rich-content pre {
+                        overflow-x: auto;
+                        border-radius: 1rem;
+                        background: #0f172a;
+                        padding: 1rem;
+                        color: #e2e8f0;
+                    }
+                    .product-rich-content hr {
+                        margin: 1.4rem 0;
+                        border: 0;
+                        border-top: 1px solid #e2e8f0;
                     }
                 `}</style>
             </main>

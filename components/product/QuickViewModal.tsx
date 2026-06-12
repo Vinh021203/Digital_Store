@@ -15,6 +15,16 @@ import { useToast } from '@/context/ToastContext';
 // Blur placeholder
 const BLUR_DATA_URL = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMCwsLCgwMDhEODQ4RDgwMEhQSFhITExMOFRcZGxkWGhQWFhL/2wBDAQMEBAUEBQkFBQkWDwwPFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhL/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAYH/8QAJRAAAQMDAwMFAAAAAAAAAAAAAQIDBAAFEQYSIQcTMRQiQVFh/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAXEQEBAQEAAAAAAAAAAAAAAAABAgAD/9oADAMBERACEEQ8T//UAJwKkKV0NQAG0ADE8CuKH//Z';
 
+const stripHtml = (value?: string | null) =>
+  String(value || '')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/\s+/g, ' ')
+    .trim();
+
 interface QuickViewModalProps {
   product: Product | null;
   isOpen: boolean;
@@ -237,10 +247,10 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, isOpen, onClos
               </div>
             </div>
 
-            {/* Description */}
-            <p className="text-sm text-slate-600 leading-relaxed mb-4 line-clamp-3">
-              {product.description || 'Premium digital product with modern design, clean code, and full documentation. Perfect for your next project.'}
-            </p>
+	            {/* Description */}
+	            <p className="text-sm text-slate-600 leading-relaxed mb-4 line-clamp-3">
+	              {stripHtml(product.description) || 'Premium digital product with modern design, clean code, and full documentation. Perfect for your next project.'}
+	            </p>
 
             {/* Features Grid */}
             <div className="grid grid-cols-2 gap-2 mb-4">

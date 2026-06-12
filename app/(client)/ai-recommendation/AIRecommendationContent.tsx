@@ -13,6 +13,16 @@ import { useToast } from '@/context/ToastContext';
 import confetti from 'canvas-confetti';
 import type { Product } from '@/types';
 
+const stripHtml = (value?: string | null) =>
+    String(value || '')
+        .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+        .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+        .replace(/<[^>]*>/g, ' ')
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&amp;/g, '&')
+        .replace(/\s+/g, ' ')
+        .trim();
+
 // ========== TYPES ==========
 interface AIAnswers {
     goal?: string;
@@ -280,9 +290,9 @@ const AIProductCard = memo(({
                     {product.name}
                 </h4>
 
-                <p className="text-slate-600 text-sm line-clamp-2 mb-4 leading-relaxed">
-                    {product.description}
-                </p>
+	                <p className="text-slate-600 text-sm line-clamp-2 mb-4 leading-relaxed">
+	                    {stripHtml(product.description)}
+	                </p>
 
                 <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-100">
                     <div className="flex flex-col">
