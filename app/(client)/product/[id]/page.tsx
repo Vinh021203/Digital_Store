@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const plainDescription = product.description?.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
     const description =
       plainDescription ||
-      `Mua ${product.name} chất lượng cao với giá ${product.price.toLocaleString('vi-VN')}₫. ${product.category?.name || 'Sản phẩm số'} chuyên nghiệp từ ${product.author || 'DigitalMart'}.`;
+      `Mua ${product.name} chất lượng cao với giá ${product.price.toLocaleString('vi-VN')}đ. ${product.category?.name || 'Sản phẩm số'} chuyên nghiệp từ ${product.author || 'DigitalMart'}.`;
     const productPath = `/product/${product.slug || product.id}`;
 
     const keywords = [

@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { getPostBySlug } from '@/lib/blog';
-import { notFound } from 'next/navigation';
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -8,28 +7,28 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
-    // Await params in Next.js 15+
     const { id } = await params;
-
-    // Get blog post by slug
     const post = await getPostBySlug(id);
 
     if (!post) {
       return {
         title: 'Bài viết không tìm thấy',
+        robots: {
+          index: false,
+          follow: false,
+        },
       };
     }
 
     const title = `${post.title} | Blog DigitalMart`;
-    const description = post.excerpt || post.content?.substring(0, 160).replace(/<[^>]*>/g, '') || 'Đọc bài viết trên DigitalMart Blog';
-
-    // Create keywords from tags and category
+    const plainContent = post.content?.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+    const description = post.excerpt || plainContent?.substring(0, 160) || 'Đọc bài viết trên DigitalMart Blog';
     const keywords = [
-      ...post.tags,
+      ...(post.tags || []),
       post.category,
       'blog',
-      'tutorial',
-      'tips',
+      'template website',
+      'sản phẩm số',
     ].filter(Boolean);
 
     return {
@@ -73,5 +72,4 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-// Export the page component
 export { default } from './BlogDetailPage';

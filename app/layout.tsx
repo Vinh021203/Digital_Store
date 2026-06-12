@@ -18,11 +18,11 @@ const beVietnamPro = Be_Vietnam_Pro({
 
 export const metadata: Metadata = {
     title: {
-        default: 'DigitalMart - Marketplace Template, Theme vÃ  Sáº£n Pháº©m Sá»‘',
+        default: 'DigitalMart - Kho template website, theme và sản phẩm số',
         template: '%s | DigitalMart',
     },
-    description: 'Marketplace sáº£n pháº©m sá»‘ cháº¥t lÆ°á»£ng cao. Mua template, theme, landing page, UI kit, dashboard vÃ  source code Ä‘á»ƒ triá»ƒn khai dá»± Ã¡n chuyÃªn nghiá»‡p nhanh hÆ¡n.',
-    keywords: ['themes', 'templates', 'landing pages', 'ui kits', 'dashboard template', 'figma', 'wordpress', 'react', 'nextjs', 'digital products', 'sáº£n pháº©m sá»‘'],
+    description: 'Marketplace sản phẩm số chất lượng cao. Mua template website, theme, landing page, UI kit, dashboard và source code để triển khai dự án chuyên nghiệp nhanh hơn.',
+    keywords: ['template website', 'theme website', 'landing page', 'ui kit', 'dashboard template', 'figma', 'wordpress', 'react', 'nextjs', 'source code', 'sản phẩm số'],
     authors: [{ name: 'DigitalMart Team' }],
     creator: 'DigitalMart',
     publisher: 'DigitalMart',
@@ -40,21 +40,21 @@ export const metadata: Metadata = {
         locale: 'vi_VN',
         url: siteUrl,
         siteName: 'DigitalMart',
-        title: 'DigitalMart - Marketplace Template, Theme vÃ  Sáº£n Pháº©m Sá»‘',
-        description: 'Mua template, theme, landing page, UI kit vÃ  dashboard cháº¥t lÆ°á»£ng cao. Xem demo trÆ°á»›c khi mua, táº£i file nhanh.',
+        title: 'DigitalMart - Kho template website, theme và sản phẩm số',
+        description: 'Mua template website, theme, landing page, UI kit và dashboard chất lượng cao. Xem demo trước khi mua, tải file nhanh.',
         images: [
             {
                 url: '/thumbnail.png',
                 width: 1200,
                 height: 630,
-                alt: 'DigitalMart - Marketplace template, theme vÃ  UI kit',
+                alt: 'DigitalMart - Marketplace template, theme và UI kit',
             },
         ],
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'DigitalMart - Marketplace Template, Theme vÃ  Sáº£n Pháº©m Sá»‘',
-        description: 'Mua template, theme, landing page, UI kit vÃ  dashboard cháº¥t lÆ°á»£ng cao.',
+        title: 'DigitalMart - Kho template website, theme và sản phẩm số',
+        description: 'Mua template website, theme, landing page, UI kit và dashboard chất lượng cao.',
         images: ['/thumbnail.webp'],
     },
     robots: {

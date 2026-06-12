@@ -4,7 +4,7 @@ import { getProductsPageData } from '@/lib/productsPageData';
 
 export const metadata: Metadata = {
     title: 'Sản phẩm',
-    description: 'Khám phá kho sản phẩm số chất lượng cao - Templates, UI Kits, Source Code và nhiều hơn nữa',
+    description: 'Khám phá kho sản phẩm số chất lượng cao: template website, UI kit, source code, dashboard và nhiều tài nguyên số khác.',
     alternates: {
         canonical: '/products',
     },
@@ -12,8 +12,8 @@ export const metadata: Metadata = {
         type: 'website',
         url: '/products',
         title: 'Sản phẩm | DigitalMart',
-        description: 'Khám phá kho sản phẩm số chất lượng cao - Templates, UI Kits, Source Code và nhiều hơn nữa',
-    }
+        description: 'Khám phá kho sản phẩm số chất lượng cao: template website, UI kit, source code, dashboard và nhiều tài nguyên số khác.',
+    },
 };
 
 export default async function Page() {

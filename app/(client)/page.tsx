@@ -4,40 +4,40 @@ import { getHomepageData } from '@/lib/homepageData';
 
 export const metadata: Metadata = {
   title: {
-    absolute: 'DigitalMart - Marketplace Template, Theme vÃ  Sáº£n Pháº©m Sá»‘',
+    absolute: 'DigitalMart - Kho template website, theme và sản phẩm số',
   },
-  description: 'Mua template, theme, landing page, dashboard vÃ  UI kit cháº¥t lÆ°á»£ng cao. Xem demo trÆ°á»›c khi mua, táº£i file nhanh vÃ  triá»ƒn khai dá»± Ã¡n bÃ¡n hÃ ng chuyÃªn nghiá»‡p.',
+  description: 'Mua template website, theme, landing page, dashboard và UI kit chất lượng cao. Xem demo trước khi mua, tải file nhanh và triển khai dự án chuyên nghiệp.',
   alternates: {
     canonical: '/',
   },
   keywords: [
-    'template bÃ¡n hÃ ng',
+    'template bán hàng',
     'theme website',
     'landing page',
     'UI kit',
     'dashboard template',
     'digital products',
-    'sáº£n pháº©m sá»‘',
+    'sản phẩm số',
     'DigitalMart',
   ],
   openGraph: {
     type: 'website',
     url: '/',
-    title: 'DigitalMart - Marketplace Template, Theme vÃ  Sáº£n Pháº©m Sá»‘',
-    description: 'Kho template vÃ  sáº£n pháº©m sá»‘ giÃºp báº¡n dá»±ng website, landing page vÃ  giao diá»‡n bÃ¡n hÃ ng chuyÃªn nghiá»‡p nhanh hÆ¡n.',
+    title: 'DigitalMart - Kho template website, theme và sản phẩm số',
+    description: 'Kho template và sản phẩm số giúp bạn dựng website, landing page và giao diện bán hàng chuyên nghiệp nhanh hơn.',
     images: [
       {
         url: '/thumbnail.png',
         width: 1200,
         height: 630,
-        alt: 'DigitalMart - Marketplace template, theme vÃ  UI kit',
+        alt: 'DigitalMart - Marketplace template, theme và UI kit',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'DigitalMart - Marketplace Template, Theme vÃ  Sáº£n Pháº©m Sá»‘',
-    description: 'Mua template, theme, landing page vÃ  UI kit cháº¥t lÆ°á»£ng cao. Xem demo trÆ°á»›c khi mua vÃ  táº£i file nhanh.',
+    title: 'DigitalMart - Kho template website, theme và sản phẩm số',
+    description: 'Mua template website, theme, landing page và UI kit chất lượng cao. Xem demo trước khi mua và tải file nhanh.',
     images: ['/thumbnail.webp'],
   },
 };
