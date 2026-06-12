@@ -242,7 +242,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                 </div>
 
                 {/* Menu Items */}
-                <nav className="flex-1 overflow-y-auto custom-scrollbar py-6 px-4 space-y-8">
+                <nav className="flex-1 overflow-y-auto no-scrollbar py-6 px-4 space-y-8">
                     {MENU_GROUPS.map((group, groupIdx) => (
                         <div key={groupIdx}>
                             {!sidebarCollapsed && (
@@ -250,25 +250,29 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                                     {group.title}
                                 </h3>
                             )}
-                            <ul className="space-y-1">
-                                {group.items.map(item => {
-                                    const isActive = pathname === item.href;
-                                    return (
-                                        <li key={item.id} className="group/item">
-                                            <Link
-                                                href={item.href}
-                                                onClick={() => setSidebarOpen(false)}
-                                                className={`relative w-full flex items-center ${sidebarCollapsed ? 'justify-center' : 'justify-between'} px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 group ${isActive
-                                                    ? 'bg-orange-600 text-white shadow-md shadow-orange-900/50'
-                                                    : 'text-slate-400 hover:bg-slate-800/50 hover:text-orange-300'
-                                                    }`}
-                                                title={sidebarCollapsed ? item.label : ''}
-                                            >
-                                                {/* Left side */}
-                                                <div className={`flex items-center flex-1 min-w-0 ${sidebarCollapsed ? '' : 'gap-3'}`}>
-                                                    <span className={`transition-colors flex-shrink-0 ${isActive ? 'text-white' : 'text-slate-500 group-hover:text-orange-400'}`}>
-                                                        {item.icon}
-                                                    </span>
+	                            <ul className={sidebarCollapsed ? 'space-y-2' : 'space-y-1'}>
+	                                {group.items.map(item => {
+	                                    const isActive = pathname === item.href;
+	                                    return (
+	                                        <li key={item.id} className={`group/item ${sidebarCollapsed ? 'flex justify-center' : ''}`}>
+	                                            <Link
+	                                                href={item.href}
+	                                                onClick={() => setSidebarOpen(false)}
+	                                                className={`relative flex items-center text-sm font-medium transition-all duration-200 group ${sidebarCollapsed
+	                                                    ? `h-12 w-12 justify-center rounded-2xl p-0 ${isActive
+	                                                        ? 'bg-orange-600 text-white shadow-lg shadow-orange-950/40 ring-1 ring-orange-300/25'
+	                                                        : 'text-slate-500 hover:bg-slate-800/70 hover:text-slate-200'}`
+	                                                    : `w-full justify-between rounded-xl px-4 py-3 ${isActive
+	                                                        ? 'bg-orange-600 text-white shadow-md shadow-orange-900/50'
+	                                                        : 'text-slate-400 hover:bg-slate-800/50 hover:text-orange-300'}`
+	                                                    }`}
+	                                                title={sidebarCollapsed ? item.label : ''}
+	                                            >
+	                                                {/* Left side */}
+	                                                <div className={`flex items-center min-w-0 ${sidebarCollapsed ? 'justify-center' : 'flex-1 gap-3'}`}>
+	                                                    <span className={`flex-shrink-0 transition-all duration-200 ${sidebarCollapsed ? '[&>svg]:h-5 [&>svg]:w-5' : ''} ${isActive ? 'text-white' : sidebarCollapsed ? 'text-slate-500 group-hover:text-slate-200' : 'text-slate-500 group-hover:text-orange-400'}`}>
+	                                                        {item.icon}
+	                                                    </span>
                                                     {!sidebarCollapsed && <span className="truncate">{item.label}</span>}
                                                 </div>
 
