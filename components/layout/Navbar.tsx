@@ -37,6 +37,8 @@ import {
   Settings,
   Download,
   HelpCircle,
+  Info,
+  Compass,
   Zap,
   TrendingUp,
   Globe,
@@ -220,6 +222,7 @@ const TopBar = memo<TopBarProps>(
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-9 text-xs">
+          {/* Left Side: Contacts & Stats */}
           <div className="flex items-center gap-4 text-slate-400">
             <a
               href="mailto:veutong961@gmail.com"
@@ -242,15 +245,43 @@ const TopBar = memo<TopBarProps>(
               1,200+ sản phẩm số
             </span>
           </div>
-          <div className="flex items-center gap-2.5">
-            <LanguageSwitcher />
+
+          {/* Right Side: Quick Links, Language & Notification */}
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 text-slate-400 font-medium">
+              <Link
+                href="/about"
+                className="flex items-center gap-1 hover:text-white transition-colors"
+              >
+                <Info size={13} className="text-slate-500 group-hover:text-orange-400" />
+                Giới thiệu
+              </Link>
+              <span className="w-px h-3 bg-slate-700" />
+              <Link
+                href="/faq"
+                className="flex items-center gap-1 hover:text-white transition-colors"
+              >
+                <HelpCircle size={13} className="text-slate-500 group-hover:text-orange-400" />
+                Hỏi đáp
+              </Link>
+              <span className="w-px h-3 bg-slate-700" />
+              <Link
+                href="/tracking"
+                className="flex items-center gap-1 hover:text-white transition-colors"
+              >
+                <Compass size={13} className="text-slate-500 group-hover:text-orange-400" />
+                Tra cứu
+              </Link>
+            </div>
+
             <span className="w-px h-4 bg-slate-700" />
-            <ThemeToggle />
+            <LanguageSwitcher />
+
             <span className="w-px h-4 bg-slate-700" />
             <div className="relative">
               <button
                 onClick={() => setIsNotificationOpen(!isNotificationOpen)}
-                className="relative p-1.5 text-slate-400 hover:text-orange-400 transition-colors rounded-lg hover:bg-slate-800"
+                className="relative p-1.5 text-slate-400 hover:text-orange-400 hover:bg-slate-800 transition-colors rounded-lg"
                 aria-label="Thông báo"
               >
                 <Bell size={15} />
@@ -1282,7 +1313,6 @@ const Navbar = () => {
               {/* Mobile utilities */}
               <div className="flex lg:hidden items-center gap-0.5 mr-0.5">
                 <LanguageSwitcher />
-                <ThemeToggle />
               </div>
 
               {/* Search */}

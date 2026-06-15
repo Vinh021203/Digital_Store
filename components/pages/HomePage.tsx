@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { memo, useEffect, useState, useRef } from "react";
 import Link from "next/link";
@@ -335,7 +335,7 @@ const DpMarketProductCard = memo(
       }
     };
 
-    const formattedPrice = product.price.toLocaleString("vi-VN") + "?";
+    const formattedPrice = product.price.toLocaleString("vi-VN") + "₫";
     const formattedOriginalPrice = product.originalPrice
       ? product.originalPrice.toLocaleString("vi-VN") + "₫"
       : "";
