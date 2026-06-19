@@ -32,7 +32,7 @@ export default function LiveChatWidget() {
     const [messages, setMessages] = useState<Message[]>([
         {
             id: 1,
-            text: 'Xin chào! Tôi là trợ lý ảo của DigitalMart. Tôi có thể giúp gì cho bạn?',
+            text: 'Xin chào! Tôi là trợ lý ảo của Shop Web rẻ. Tôi có thể giúp gì cho bạn?',
             isBot: true,
             time: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
         }
@@ -122,7 +122,7 @@ export default function LiveChatWidget() {
                             </div>
                             {!isMinimized && (
                                 <div>
-                                    <h3 className="font-bold">Hỗ Trợ DigitalMart</h3>
+                                    <h3 className="font-bold">Hỗ Trợ Shop Web rẻ</h3>
                                     <p className="text-xs text-orange-100">Thường phản hồi trong vài phút</p>
                                 </div>
                             )}

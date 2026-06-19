@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 import { createClient } from '@supabase/supabase-js';
 
-const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://www.martdigitalhub.dev').replace(/\/$/, '');
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://www.shopwebre.vn').replace(/\/$/, '');
 
 export const revalidate = 3600;
 
@@ -34,6 +34,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         { url: `${SITE_URL}/about`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
         { url: `${SITE_URL}/contact`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
         { url: `${SITE_URL}/faq`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
+        { url: `${SITE_URL}/policy/privacy`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.3 },
+        { url: `${SITE_URL}/policy/terms`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.3 },
+        { url: `${SITE_URL}/policy/refund`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.3 },
+        { url: `${SITE_URL}/policy/license`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.3 },
     ];
 
     const supabase = createSitemapClient();

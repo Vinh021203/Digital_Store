@@ -87,7 +87,7 @@ export default function ResetPasswordPage() {
               Tạo mật khẩu mới
             </h1>
             <p className="text-slate-500">
-              Nhập mật khẩu mới cho tài khoản DigitalMart của bạn để tiếp tục sử dụng an toàn.
+              Nhập mật khẩu mới cho tài khoản Shop Web rẻ của bạn để tiếp tục sử dụng an toàn.
             </p>
           </div>
 
@@ -199,7 +199,7 @@ export default function ResetPasswordPage() {
           <blockquote className="space-y-4">
             <p className="text-2xl font-bold text-white leading-relaxed">
               "Việc đặt lại mật khẩu chỉ mất vài giây, nhưng giúp bảo vệ toàn bộ tài sản số của bạn
-              trên DigitalMart."
+              trên Shop Web rẻ."
             </p>
             <footer className="flex items-center gap-4">
               <img

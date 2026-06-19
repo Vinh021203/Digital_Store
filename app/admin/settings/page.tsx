@@ -329,7 +329,7 @@ const SettingsManager = () => {
                     value={generalForm.site_name}
                     onChange={(e) => setGeneralForm(prev => ({ ...prev, site_name: e.target.value }))}
                     className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
-                    placeholder="VD: DigitalMart"
+                    placeholder="VD: Shop Web rẻ"
                   />
                 </div>
                 <div>
@@ -341,7 +341,7 @@ const SettingsManager = () => {
                     value={generalForm.site_tagline}
                     onChange={(e) => setGeneralForm(prev => ({ ...prev, site_tagline: e.target.value }))}
                     className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
-                    placeholder="VD: Nền tảng mua bán sản phẩm số"
+                    placeholder="VD: Nền tảng mua bán giao diện website"
                   />
                 </div>
                 <div>

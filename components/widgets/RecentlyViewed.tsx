@@ -8,7 +8,7 @@ import { useCart } from '@/context/CartContext';
 import { useToast } from '@/context/ToastContext';
 import type { Product } from '@/types';
 
-const STORAGE_KEY = 'digitalmart_recently_viewed';
+const STORAGE_KEY = 'shopwebre_recently_viewed';
 const MAX_ITEMS = 10;
 
 // Hook to manage recently viewed products

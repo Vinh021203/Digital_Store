@@ -92,7 +92,7 @@ const mockProducts: Product[] = [
     rating: 4.8,
     reviews: 24,
     author: "DevStudio",
-    format: "Theme",
+    format: "Template",
     isNew: true,
     isBestseller: true,
   },
@@ -146,17 +146,17 @@ const mockProducts: Product[] = [
   },
   {
     id: 106,
-    name: "Creative Portfolio WordPress Theme",
+    name: "Creative Portfolio Vue.js Template",
     price: 680000,
     originalPrice: 850000,
     description:
-      "WordPress Theme chuyên nghiệp dành cho Designer, Photographer và Agency sáng tạo.",
-    category: "wordpress",
+      "Vue.js template chuyên nghiệp dành cho Designer, Photographer và Agency sáng tạo.",
+    category: "vue",
     image: fallbackImages[1],
     rating: 4.6,
     reviews: 19,
-    author: "WPQueen",
-    format: "Theme",
+    author: "VueStudio",
+    format: "Template",
     isNew: false,
     isBestseller: false,
   },
@@ -210,7 +210,7 @@ const mockBlogs = [
     created_at: "2026-05-15T08:30:00Z",
     author: {
       name: "Vinh Nguyễn",
-      avatar: "/dpmarket-assets/images/thumbs/blog-details-user.png",
+      avatar: "/favicon.png",
     },
   },
   {
@@ -229,7 +229,7 @@ const mockBlogs = [
     created_at: "2026-05-20T10:15:00Z",
     author: {
       name: "Thảo Vy",
-      avatar: "/dpmarket-assets/images/thumbs/blog-details-user.png",
+      avatar: "/favicon.png",
     },
   },
   {
@@ -248,7 +248,7 @@ const mockBlogs = [
     created_at: "2026-05-28T14:45:00Z",
     author: {
       name: "Minh Tuấn",
-      avatar: "/dpmarket-assets/images/thumbs/blog-details-user.png",
+      avatar: "/favicon.png",
     },
   },
   {
@@ -266,7 +266,7 @@ const mockBlogs = [
     created_at: "2026-05-30T09:00:00Z",
     author: {
       name: "Hoàng Long",
-      avatar: "/dpmarket-assets/images/thumbs/blog-details-user.png",
+      avatar: "/favicon.png",
     },
   },
 ];
@@ -278,7 +278,7 @@ const categoryIconMap: Record<string, React.ElementType> = {
   "landing-pages": MousePointer2,
   templates: FileStack,
   "website-templates": Monitor,
-  wordpress: Packages,
+  figma: Gem,
   ecommerce: ShoppingBag,
   "admin-dashboards": Gauge,
   "figma-templates": Gem,
@@ -438,7 +438,7 @@ const DpMarketProductCard = memo(
                   : "text-[10px] sm:text-xs max-w-[96px] sm:max-w-[140px]"
               }`}
             >
-              {product.author || "DigitalMart"}
+              {product.author || "Shop Web rẻ"}
             </span>
             <div
               className={`flex flex-shrink-0 ${
@@ -838,18 +838,18 @@ const HomePage = ({
             <div className="w-full min-w-0 lg:max-w-[620px]">
               <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-orange-200 bg-white/80 px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-orange-600 shadow-sm">
                 <Sparkles size={13} className="text-[#ea580c]" />
-                <span>Thế Giới Sản Phẩm Số Đỉnh Cao</span>
+                <span>Kho giao diện website dành cho người Việt</span>
               </div>
 
               <h1 className="max-w-full text-[2.1rem] sm:text-5xl md:text-6xl lg:text-[4.15rem] font-extrabold text-slate-950 tracking-normal leading-[1.08] md:leading-[1.06] mb-4 md:mb-5 break-words">
-                Hơn <span className="text-[#ea580c]">2 triệu+</span> tài nguyên
-                số tuyển chọn
+                Mua <span className="text-[#ea580c]">giao diện website</span> đẹp,
+                dễ dùng và giá hợp lý
               </h1>
 
               <p className="max-w-xl text-sm sm:text-lg text-slate-600 font-normal leading-relaxed mb-5 md:mb-7">
-                Khám phá kho giao diện web, mẫu thiết kế UI/UX, landing page,
-                plugin và dashboard chất lượng cao. Được thiết kế bởi các chuyên
-                gia công nghệ hàng đầu giúp thúc đẩy sản phẩm của bạn.
+                Khám phá template website, landing page, UI kit và dashboard
+                chất lượng cao. Xem demo trước khi mua, tải file nhanh và dễ dàng
+                tùy chỉnh cho dự án của bạn.
               </p>
 
               {/* Search Bar */}
@@ -880,18 +880,15 @@ const HomePage = ({
                 </span>
                 {[
                   {
-                    name: "WordPress",
-                    search: "WordPress",
-                    color:
-                      "hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200",
+                    name: "Figma",
+                    search: "Figma",
+                    color: "hover:bg-purple-50 hover:text-purple-600 hover:border-purple-200",
                     icon: (
-                      <svg
-                        className="w-[18px] h-[18px] text-[#21759b]"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                      >
-                        <path d="M12 0C5.383 0 0 5.383 0 12s5.383 12 12 12 12-5.383 12-12S18.617 0 12 0ZM1.211 12c0-1.563.336-3.047.938-4.383l5.148 14.105C3.695 19.969 1.211 16.273 1.211 12Zm10.789 10.789c-1.055 0-2.07-.156-3.031-.438l3.242-9.422 3.32 9.102c.023.055.047.109.078.156-1.125.391-2.336.602-3.609.602Zm1.484-15.844c.648-.031 1.234-.102 1.234-.102.578-.07.508-.922-.07-.891 0 0-1.75.133-2.875.133-1.055 0-2.836-.133-2.836-.133-.578-.031-.648.852-.07.891 0 0 .547.07 1.125.102l1.672 4.586-2.352 7.047-3.93-11.633c.648-.031 1.234-.102 1.234-.102.578-.07.508-.922-.07-.891 0 0-1.75.133-2.875.133-.203 0-.438-.008-.695-.016C5.906 2.539 8.703 1.211 12 1.211c2.453 0 4.711.836 6.516 2.234-.047 0-.094-.008-.148-.008-1.055 0-1.805.922-1.805 1.914 0 .891.516 1.641 1.055 2.531.414.719.898 1.641.898 2.977 0 .922-.352 1.992-.82 3.477l-1.07 3.578-3.891-11.57c.258-.016.508-.031.75-.047Zm4.086 14.395 3.297-9.531c.617-1.539.82-2.766.82-3.859 0-.406-.023-.781-.07-1.109.742 1.531 1.172 3.273 1.172 5.16 0 4.008-2.188 7.508-5.219 9.34Z" />
-                      </svg>
+                      <img
+                        src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg"
+                        alt=""
+                        className="h-[18px] w-[18px]"
+                      />
                     ),
                   },
                   {
@@ -1105,23 +1102,16 @@ const HomePage = ({
           <div className="flex md:grid md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4 overflow-x-auto no-scrollbar pb-2 md:pb-0 snap-x">
             {[
               {
-                name: "WordPress",
-                slug: "wordpress",
-                qty: "15,296",
-                gradient: "from-[#21759b]/15 to-sky-50",
+                name: "Figma",
+                slug: "figma",
+                qty: "8,420",
+                gradient: "from-[#f24e1e]/15 to-orange-50",
                 icon: (
-                  <svg
-                    className="w-7 h-7 md:w-8 md:h-8"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle cx="12" cy="12" r="11" fill="#21759b" />
-                    <path
-                      d="M2.2 12c0 4.3 2.5 8.1 6.2 9.9L3.1 8.1C2.5 9.3 2.2 10.6 2.2 12zm16.7-1.1c0-1.3-.5-2.3-0.9-3-.6-.9-1.1-1.7-1.1-2.6 0-1 .8-2 1.9-2h.1c-2-1.8-4.6-2.9-7.4-2.9C8 1.3 4.8 3 2.9 5.8h.6c1.1 0 2.8-.1 2.8-.1.6 0 .6.8.1.9 0 0-.6.1-1.2.1L8.5 17l2.2-6.6-1.6-4.4c-.6 0-1.1-.1-1.1-.1-.6 0-.5-.9.1-.9 0 0 1.7.1 2.8.1 1.1 0 2.8-.1 2.8-.1.6 0 .6.8.1.9 0 0-.6.1-1.2.1l2.9 8.7.8-2.7c.4-.9.6-1.6.6-2.2zm-6.6 1.4l-2.4 7c.7.2 1.5.3 2.2.3.9 0 1.8-.2 2.6-.4l-.1-.1-2.3-6.8zm5.8-8.1c0 .1.1.2.1.3.4 1 .6 2.1.6 3.6 0 1.8-.6 3.8-1.5 6.3l-1.4 4.7c1.4-.8 2.6-1.9 3.5-3.3 1.2-1.7 1.8-3.7 1.8-5.8 0-2-.5-3.9-1.5-5.5.1-.1.2-.2.3-.3z"
-                      fill="white"
-                    />
-                  </svg>
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg"
+                    alt=""
+                    className="h-7 w-7 md:h-8 md:w-8"
+                  />
                 ),
               },
               {
@@ -1347,7 +1337,7 @@ const HomePage = ({
             <div className="flex gap-1.5 p-1.5 bg-white/90 rounded-2xl border border-slate-200 shadow-sm shadow-slate-200/70 backdrop-blur">
               {[
                 { id: "all", label: "Tất cả" },
-                { id: "Theme", label: "WordPress Theme" },
+                { id: "Theme", label: "React / Next.js Themes" },
                 { id: "Landing", label: "Landing Pages" },
                 { id: "Template", label: "HTML/Web Templates" },
                 { id: "MiniApp", label: "Mini Apps" },
@@ -1395,7 +1385,7 @@ const HomePage = ({
               href="/products"
               className="inline-flex items-center justify-center gap-2 px-6 py-3 md:px-8 md:py-3.5 rounded-full bg-[#ea580c] hover:bg-[#c2410c] text-white font-bold text-xs md:text-sm shadow-lg shadow-orange-600/15 hover:shadow-xl hover:shadow-orange-600/25 transition-all duration-200 select-none"
             >
-              Mở rộng kho Marketplace <ArrowRight size={14} />
+              Khám phá thêm giao diện <ArrowRight size={14} />
             </Link>
           </div>
         </div>
@@ -1404,8 +1394,16 @@ const HomePage = ({
       <section className="relative px-5 py-3 sm:px-6 md:py-5 lg:px-0">
         <div className="mx-auto flex max-w-7xl gap-3 overflow-x-auto pb-1 no-scrollbar snap-x scroll-px-5 sm:scroll-px-6 lg:grid lg:grid-cols-2 lg:gap-4 lg:overflow-visible lg:px-8">
           {[
-            { href: "/products?category=themes", image: "/hero_section/banner_1.webp" },
-            { href: "/products?category=ui-kits", image: "/hero_section/banner_2.webp" },
+            {
+              href: "/products?category=themes",
+              image: "/hero_section/banner_1.webp",
+              alt: "Kho template và theme website chất lượng cao tại Shop Web rẻ",
+            },
+            {
+              href: "/products?category=ui-kits",
+              image: "/hero_section/banner_2.webp",
+              alt: "Bộ sưu tập giao diện, UI kit và landing page tại Shop Web rẻ",
+            },
           ].map((banner) => (
             <Link
               key={banner.image}
@@ -1414,7 +1412,7 @@ const HomePage = ({
             >
               <img
                 src={banner.image}
-                alt=""
+                alt={banner.alt}
                 className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
             </Link>
@@ -1512,7 +1510,7 @@ const HomePage = ({
                   </h2>
                   <p className="text-sm md:text-base text-slate-600 font-normal leading-relaxed mb-5 md:mb-6">
                     Mỗi tuần, các chuyên gia nội dung của chúng tôi lựa chọn
-                    những sản phẩm số nổi bật nhất về cả thiết kế lẫn mã nguồn
+                    những giao diện website nổi bật nhất về cả thiết kế lẫn mã nguồn
                     để giới thiệu. Đảm bảo giao diện hiện đại, dễ tùy biến và
                     tương thích tốt.
                   </p>
@@ -2237,7 +2235,7 @@ const HomePage = ({
 
               <div className="mb-6 rounded-2xl border border-slate-200/80 bg-white p-3">
                 <div className="mb-2 flex items-center justify-between text-xs font-semibold text-slate-600">
-                  <span>Marketplace uptime</span>
+                  <span>Hệ thống ổn định</span>
                   <span className="text-[#ea580c]">99.9%</span>
                 </div>
                 <div className="h-2 overflow-hidden rounded-full bg-slate-100">
@@ -2321,7 +2319,7 @@ const HomePage = ({
                 Đọc các bài viết và tin tức công nghệ mới nhất
               </h2>
               <p className="mt-3 max-w-xl text-sm md:text-base text-slate-500 leading-relaxed">
-                Cập nhật xu hướng lập trình, UI/UX và kinh doanh sản phẩm số với
+                Cập nhật xu hướng lập trình, UI/UX và kinh doanh giao diện website với
                 các bài viết được chọn lọc.
               </p>
             </div>
@@ -2399,7 +2397,7 @@ const HomePage = ({
 
                       <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-3 md:pt-4">
                         <span className="hidden md:inline text-[11px] font-bold uppercase tracking-wide text-slate-400">
-                          Digital Store
+                          Shop Web rẻ
                         </span>
                         <Link
                           href={`/blog/${blog.slug || blog.id}`}
@@ -2472,7 +2470,7 @@ const HomePage = ({
                   Kiếm tới 30% hoa hồng Tiếp thị liên kết
                 </h3>
                 <p className="text-sm md:text-base text-slate-800 font-medium leading-relaxed mb-6 md:mb-8 max-w-xl">
-                  Giới thiệu khách hàng mua bất kỳ sản phẩm nào trên DigitalMart
+                  Giới thiệu khách hàng mua bất kỳ sản phẩm nào trên Shop Web rẻ
                   bằng liên kết tiếp thị của bạn và nhận hoa hồng lên tới 30%
                   giá trị đơn hàng.
                 </p>
@@ -2517,12 +2515,12 @@ const HomePage = ({
             <div className="relative z-10 w-full grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-center">
               <div className="hidden md:flex md:col-span-4 lg:col-span-5 relative min-h-[210px] items-center justify-center">
                 <div className="absolute h-52 w-52 rounded-full bg-white/45 blur-2xl" />
-                <div className="relative h-[230px] w-[230px] lg:h-[260px] lg:w-[260px]">
+                <div className="relative h-[250px] w-[260px] lg:h-[290px] lg:w-[300px]">
                   <Image
-                    src="/dpmarket-assets/images/thumbs/support-developer.webp"
-                    alt="Chuyên viên hỗ trợ website"
+                    src="/support-agent.webp"
+                    alt="Nhân viên chăm sóc khách hàng Shop Web rẻ"
                     fill
-                    sizes="260px"
+                    sizes="(min-width: 1024px) 300px, 260px"
                     className="object-contain drop-shadow-[0_24px_32px_rgba(15,23,42,0.16)]"
                   />
                 </div>
@@ -2547,10 +2545,10 @@ const HomePage = ({
                   chúng tôi bất cứ lúc nào.
                 </p>
                 <Link
-                  href="mailto:support@digitalmart.vn"
+                  href="mailto:support@shopwebre.vn"
                   className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-[#0b0f19] text-white hover:bg-transparent border-2 border-[#0b0f19] hover:text-[#0b0f19] font-semibold text-sm transition-all duration-300 shadow-md shadow-slate-950/15"
                 >
-                  support@digitalmart.vn
+                  support@shopwebre.vn
                 </Link>
               </div>
             </div>

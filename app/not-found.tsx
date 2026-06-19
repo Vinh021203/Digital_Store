@@ -94,7 +94,7 @@ export default function NotFound() {
 
                 {/* Fun message */}
                 <p className="mt-16 text-slate-500 text-xs">
-                    Mã lỗi: 404 | Sản phẩm số • Templates • Courses
+                    Mã lỗi: 404 | Giao diện website • Templates • Courses
                 </p>
             </div>
         </div>

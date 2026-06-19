@@ -3,11 +3,23 @@ import AboutPage from './AboutContent';
 
 export const metadata: Metadata = {
     title: 'Về chúng tôi',
-    description: 'DigitalMart - Nền tảng marketplace digital products uy tín hàng đầu Việt Nam',
+    description: 'Shop Web rẻ - Kho giao diện website uy tín hàng đầu Việt Nam',
+    alternates: {
+        canonical: '/about',
+    },
     openGraph: {
-        title: 'Về chúng tôi | DigitalMart',
-        description: 'DigitalMart - Nền tảng marketplace digital products uy tín hàng đầu Việt Nam',
-    }
+        type: 'website',
+        url: '/about',
+        title: 'Về chúng tôi | Shop Web rẻ',
+        description: 'Shop Web rẻ - Kho giao diện website uy tín hàng đầu Việt Nam',
+        images: ['/thumbnail.webp'],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Về chúng tôi | Shop Web rẻ',
+        description: 'Kho giao diện website, template và landing page dành cho thị trường Việt Nam.',
+        images: ['/thumbnail.webp'],
+    },
 };
 
 export default function Page() {

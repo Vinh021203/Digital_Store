@@ -170,8 +170,8 @@ export default function ProfileLayout({
     if (navigator.share) {
       navigator
         .share({
-          title: `${user.name} - DigitalMart Profile`,
-          text: `Xem hồ sơ học tập của ${user.name} trên DigitalMart`,
+          title: `${user.name} - Shop Web rẻ Profile`,
+          text: `Xem hồ sơ học tập của ${user.name} trên Shop Web rẻ`,
           url: window.location.href,
         })
         .catch(() => { });

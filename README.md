@@ -1,6 +1,6 @@
-# Digital Store / DigitalMart
+# Shop Web rẻ / Shop Web rẻ
 
-Digital Store là website marketplace bán sản phẩm số như template, theme, UI kit, landing page, dashboard, mini app và bundle. Dự án được xây bằng Next.js, Supabase và Tailwind CSS, có đầy đủ luồng client, admin, seller, affiliate, thanh toán, download/license và chatbot AI.
+Shop Web rẻ là website marketplace bán giao diện website như template, theme, UI kit, landing page, dashboard, mini app và bundle. Dự án được xây bằng Next.js, Supabase và Tailwind CSS, có đầy đủ luồng client, admin, seller, affiliate, thanh toán, download/license và chatbot AI.
 
 ## Tính năng chính
 
@@ -386,7 +386,7 @@ Checklist trước khi deploy:
 
 ## License
 
-Dự án này là marketplace/theme DigitalMart. Nếu dùng để bán theme/source code, nên bổ sung file `LICENSE` và điều khoản rõ ràng cho:
+Dự án này là marketplace/theme Shop Web rẻ. Nếu dùng để bán theme/source code, nên bổ sung file `LICENSE` và điều khoản rõ ràng cho:
 
 - Regular License
 - Extended License
@@ -395,6 +395,6 @@ Dự án này là marketplace/theme DigitalMart. Nếu dùng để bán theme/so
 
 ## Tác giả
 
-DigitalMart / Digital Store.
+Shop Web rẻ / Shop Web rẻ.
 
 Built with Next.js, Supabase, Tailwind CSS và Gemini API.

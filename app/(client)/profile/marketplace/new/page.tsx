@@ -254,6 +254,8 @@ export default function NewProductPage() {
                 is_featured: false,
                 status: 'pending',
                 demo_url: product.demoUrl || null,
+                file_format: product.fileFormat || null,
+                compatibility: product.compatibility || null,
                 tags: product.tags,
                 features: product.features,
                 tech_stack: product.techStack,
@@ -391,7 +393,7 @@ export default function NewProductPage() {
                 <div>
                     <p className="font-bold text-blue-900">Lưu ý khi thêm sản phẩm</p>
                     <p className="text-sm text-blue-700 mt-1">
-                        Sản phẩm của bạn sẽ được đội ngũ DigitalMart xét duyệt trong vòng 24-48h. Đảm bảo điền đầy đủ thông tin và upload file sản phẩm chất lượng.
+                        Sản phẩm của bạn sẽ được đội ngũ Shop Web rẻ xét duyệt trong vòng 24-48h. Đảm bảo điền đầy đủ thông tin và upload file sản phẩm chất lượng.
                     </p>
                 </div>
             </div>

@@ -20,15 +20,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       };
     }
 
-    const title = `${post.title} | Blog DigitalMart`;
+    const title = `${post.title} | Blog Shop Web rẻ`;
     const plainContent = post.content?.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
-    const description = post.excerpt || plainContent?.substring(0, 160) || 'Đọc bài viết trên DigitalMart Blog';
+    const description = post.excerpt || plainContent?.substring(0, 160) || 'Đọc bài viết trên Shop Web rẻ Blog';
     const keywords = [
       ...(post.tags || []),
       post.category,
       'blog',
       'template website',
-      'sản phẩm số',
+      'giao diện website',
     ].filter(Boolean);
 
     return {

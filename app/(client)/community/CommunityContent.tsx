@@ -166,7 +166,7 @@ export default function CommunityPage() {
                             </div>
                             <h1 className="text-4xl md:text-5xl font-black mb-4 leading-tight">
                                 Cộng Đồng
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-orange-300"> DigitalMart</span>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-orange-300"> Shop Web rẻ</span>
                             </h1>
                             <p className="text-lg text-purple-100">
                                 Nơi chia sẻ kiến thức, kết nối và học hỏi cùng cộng đồng developer & designer
@@ -307,7 +307,7 @@ export default function CommunityPage() {
                                 <div className="flex gap-4 items-center">
                                     <div className="relative w-12 h-12">
                                         <Image
-                                            src={profile?.avatar || '/default-user.jpg'}
+                                            src={profile?.avatar || '/favicon.png'}
                                             alt={profile?.name || user.email || 'User'}
                                             fill
                                             className="rounded-full border-2 border-purple-200 object-cover group-hover:border-purple-400 transition-colors"
@@ -539,7 +539,7 @@ const PostCard = memo(({ post, delay, isLiked, onLike }: {
                     <div className="flex items-center gap-3">
                         <div className="relative w-11 h-11">
                             <Image
-                                src={post.author?.avatar || '/default-user.jpg'}
+                                src={post.author?.avatar || '/favicon.png'}
                                 alt={post.author?.name || 'User'}
                                 fill
                                 className="rounded-full ring-2 ring-purple-100 object-cover"
@@ -631,7 +631,7 @@ const PostCard = memo(({ post, delay, isLiked, onLike }: {
                                         <div className="flex gap-3">
                                             <div className="relative w-8 h-8 flex-shrink-0">
                                                 <Image
-                                                    src={comment.author?.avatar || '/default-user.jpg'}
+                                                    src={comment.author?.avatar || '/favicon.png'}
                                                     alt={comment.author?.name || 'User'}
                                                     fill
                                                     className="rounded-full object-cover border border-slate-100"
@@ -664,7 +664,7 @@ const PostCard = memo(({ post, delay, isLiked, onLike }: {
                                                     <form onSubmit={(e) => handleReplySubmit(e, comment.id)} className="mt-3 flex gap-2 animate-slide-down">
                                                         <div className="relative w-6 h-6 flex-shrink-0 mt-1">
                                                             <Image
-                                                                src={profile?.avatar || '/default-user.jpg'}
+                                                                src={profile?.avatar || '/favicon.png'}
                                                                 alt="Me"
                                                                 fill
                                                                 className="rounded-full object-cover"
@@ -707,7 +707,7 @@ const PostCard = memo(({ post, delay, isLiked, onLike }: {
                                                     <div key={reply.id} className="flex gap-3">
                                                         <div className="relative w-6 h-6 flex-shrink-0">
                                                             <Image
-                                                                src={reply.author?.avatar || '/default-user.jpg'}
+                                                                src={reply.author?.avatar || '/favicon.png'}
                                                                 alt={reply.author?.name || 'User'}
                                                                 fill
                                                                 className="rounded-full object-cover border border-slate-100"

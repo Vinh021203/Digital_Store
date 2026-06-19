@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
     title: 'Giỏ hàng',
-    description: 'Xem giỏ hàng và thanh toán các sản phẩm số đã chọn. An toàn, nhanh chóng với nhiều phương thức thanh toán.',
+    description: 'Xem giỏ hàng và thanh toán các giao diện website đã chọn. An toàn, nhanh chóng với nhiều phương thức thanh toán.',
     openGraph: {
-        title: 'Giỏ hàng | DigitalMart',
+        title: 'Giỏ hàng | Shop Web rẻ',
         description: 'Hoàn tất đơn hàng của bạn',
     },
     robots: {

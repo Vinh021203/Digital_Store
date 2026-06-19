@@ -42,7 +42,7 @@ const MENU_GROUPS: { title: string; items: MenuItem[] }[] = [
         items: [
             { id: 'orders', label: 'Đơn hàng', icon: <ShoppingBag size={20} />, badge: '12', badgeColor: 'red', href: '/admin/orders' },
             { id: 'orders-kanban', label: 'Kanban Board', icon: <LayoutGrid size={20} />, isNew: true, href: '/admin/orders/kanban' },
-            { id: 'products', label: 'Sản phẩm số', icon: <Package size={20} />, href: '/admin/products' },
+            { id: 'products', label: 'Giao diện website', icon: <Package size={20} />, href: '/admin/products' },
             { id: 'licenses', label: 'Licenses', icon: <Shield size={20} />, badge: 'New', badgeColor: 'amber', href: '/admin/products/licenses' },
         ]
     },
@@ -214,27 +214,21 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                     } ${sidebarCollapsed ? 'w-[80px]' : 'w-[280px]'}`}
             >
                 {/* Logo Area */}
-                <div className="h-20 flex items-center justify-between px-6 border-b border-slate-800/60 bg-[#0f172a]">
+                <div className="relative h-20 flex items-center justify-center px-4 border-b border-slate-800/60 bg-[#0f172a]">
                     {!sidebarCollapsed && (
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 flex items-center justify-center">
-                                <img
-                                    src="/favicon.png"
-                                    alt="DigitalMart Logo"
-                                    className="w-10 h-10 object-contain"
-                                />
-                            </div>
-                            <div>
-                                <span className="font-extrabold text-xl tracking-tight text-white block leading-none">DigitalMart</span>
-                                <span className="text-[10px] font-bold text-orange-400 uppercase tracking-[0.2em]">Enterprise</span>
-                            </div>
+                        <div className="relative flex h-12 w-[205px] items-center justify-center">
+                            <img
+                                src="/logo_webgiare_footer.webp"
+                                alt="Shop Web rẻ"
+                                className="max-h-full w-full object-contain object-center"
+                            />
                         </div>
                     )}
 
                     {/* Collapse Toggle - Desktop Only */}
                     <button
                         onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                        className="hidden lg:flex w-7 h-7 items-center justify-center rounded-lg bg-slate-800/50 hover:bg-slate-700 text-slate-400 hover:text-white transition-all"
+                        className={`${sidebarCollapsed ? '' : 'absolute right-4'} hidden lg:flex w-7 h-7 items-center justify-center rounded-lg bg-slate-800/50 hover:bg-slate-700 text-slate-400 hover:text-white transition-all`}
                         title={sidebarCollapsed ? "Mở rộng" : "Thu gọn"}
                     >
                         {sidebarCollapsed ? <ChevronRight size={16} /> : <ChevronRight size={16} className="rotate-180" />}

@@ -48,7 +48,7 @@ interface Question {
 const QUESTIONS: Question[] = [
     {
         id: 'goal',
-        question: 'Bạn cần sản phẩm số cho mục đích gì?',
+        question: 'Bạn cần giao diện website cho mục đích gì?',
         options: [
             { id: 'business', label: 'Website doanh nghiệp / Landing Page', icon: Briefcase, color: 'bg-blue-100 text-blue-600' },
             { id: 'ecommerce', label: 'Cửa hàng online / E-commerce', icon: ShoppingCart, color: 'bg-green-100 text-green-600' },
@@ -61,7 +61,9 @@ const QUESTIONS: Question[] = [
         question: 'Bạn sử dụng công nghệ/nền tảng nào?',
         options: [
             { id: 'react', label: 'React / Next.js', icon: Zap, color: 'bg-cyan-100 text-cyan-600' },
-            { id: 'wordpress', label: 'WordPress', icon: Layers, color: 'bg-blue-100 text-blue-600' },
+            { id: 'figma', label: 'Figma / UI Kit', icon: Layers, color: 'bg-purple-100 text-purple-600' },
+            { id: 'vue', label: 'Vue.js', icon: Layers, color: 'bg-emerald-100 text-emerald-600' },
+            { id: 'backend', label: 'Laravel / Django / .NET', icon: Monitor, color: 'bg-indigo-100 text-indigo-600' },
             { id: 'html', label: 'HTML/CSS Thuần', icon: Award, color: 'bg-orange-100 text-orange-600' },
             { id: 'any', label: 'Khác / Không quan trọng', icon: Target, color: 'bg-pink-100 text-pink-600' },
         ],
@@ -107,7 +109,9 @@ const generateReasoning = (answers: AIAnswers): string => {
 
     const techMap: Record<string, string> = {
         react: 'React / Next.js',
-        wordpress: 'WordPress',
+        figma: 'Figma / UI Kit',
+        vue: 'Vue.js',
+        backend: 'Laravel / Django / .NET',
         html: 'HTML/CSS thuần',
         any: 'linh hoạt'
     };
@@ -123,7 +127,7 @@ const generateReasoning = (answers: AIAnswers): string => {
     const tech = techMap[answers.tech || ''] || 'công nghệ phổ biến';
     const style = styleMap[answers.style || ''] || 'phong cách đa dạng';
 
-    let intro = `Dựa trên phân tích, bạn đang tìm kiếm sản phẩm số cho **${goal}** với nền tảng **${tech}**. `;
+    let intro = `Dựa trên phân tích, bạn đang tìm kiếm giao diện website cho **${goal}** với nền tảng **${tech}**. `;
     intro += `Phong cách thiết kế **${style}** được ưu tiên để phù hợp với thị hiếu của bạn. `;
 
     let advice = '';
@@ -539,7 +543,7 @@ export default function AIRecommendationPage() {
 
                             {/* Title with gradient */}
                             <h1 className="text-2xl md:text-4xl font-black text-center mb-3 bg-gradient-to-r from-white via-orange-100 to-red-100 bg-clip-text text-transparent leading-tight">
-                                DigitalMart AI
+                                Shop Web rẻ AI
                             </h1>
 
                             {/* Badge */}

@@ -227,7 +227,7 @@ export default function VerifyEmailPage() {
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-6 h-6 bg-orange-600 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">2</span>
-                <span>Tìm email từ <strong>DigitalMart</strong> (kiểm tra cả Spam)</span>
+                <span>Tìm email từ <strong>Shop Web rẻ</strong> (kiểm tra cả Spam)</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-6 h-6 bg-orange-600 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">3</span>

@@ -30,8 +30,10 @@ export interface Product {
   demoUrl?: string;
   downloadLink?: string;
   fileFormat?: string; // e.g., "HTML, CSS, JS" or "Figma, Sketch"
-  compatibility?: string; // e.g., "WordPress 6.0+", "Excel 2016+"
+  compatibility?: string; // e.g., "React 18+, Next.js 15+, Node.js 20+"
   version?: string;
+  features?: string[];
+  techStack?: string[];
 }
 
 export interface CartItem extends Product {

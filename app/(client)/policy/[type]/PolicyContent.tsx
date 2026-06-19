@@ -51,7 +51,7 @@ const POLICY_CONTENT: Record<string, {
     terms: {
         title: 'Điều khoản Sử dụng',
         icon: Scale,
-        description: 'Quy định và điều kiện sử dụng dịch vụ của DigitalMart',
+        description: 'Quy định và điều kiện sử dụng dịch vụ của Shop Web rẻ',
         badge: 'ĐIỀU KHOẢN',
         badgeColor: 'blue',
         heroImage: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1920&q=80',
@@ -59,7 +59,7 @@ const POLICY_CONTENT: Record<string, {
             {
                 title: 'Điều khoản chung',
                 icon: FileText,
-                content: 'Bằng việc truy cập và sử dụng DigitalMart, bạn đồng ý tuân thủ các điều khoản và điều kiện được nêu trong tài liệu này. Nếu bạn không đồng ý với bất kỳ phần nào, vui lòng không sử dụng dịch vụ của chúng tôi.'
+                content: 'Bằng việc truy cập và sử dụng Shop Web rẻ, bạn đồng ý tuân thủ các điều khoản và điều kiện được nêu trong tài liệu này. Nếu bạn không đồng ý với bất kỳ phần nào, vui lòng không sử dụng dịch vụ của chúng tôi.'
             },
             {
                 title: 'Tài khoản người dùng',
@@ -69,19 +69,19 @@ const POLICY_CONTENT: Record<string, {
             {
                 title: 'Sử dụng sản phẩm',
                 icon: Download,
-                content: 'Sản phẩm mua tại DigitalMart chỉ được sử dụng theo license đã chọn. Nghiêm cấm phân phối lại, chia sẻ hoặc bán lại sản phẩm dưới mọi hình thức. Vi phạm sẽ bị chấm dứt tài khoản và xử lý theo pháp luật.'
+                content: 'Sản phẩm mua tại Shop Web rẻ chỉ được sử dụng theo license đã chọn. Nghiêm cấm phân phối lại, chia sẻ hoặc bán lại sản phẩm dưới mọi hình thức. Vi phạm sẽ bị chấm dứt tài khoản và xử lý theo pháp luật.'
             },
             {
                 title: 'Quyền sở hữu trí tuệ',
                 icon: Shield,
-                content: 'Tất cả nội dung trên DigitalMart bao gồm nhưng không giới hạn: logo, thiết kế, văn bản, hình ảnh và mã nguồn đều được bảo vệ bởi luật bản quyền và các quyền sở hữu trí tuệ hiện hành.'
+                content: 'Tất cả nội dung trên Shop Web rẻ bao gồm nhưng không giới hạn: logo, thiết kế, văn bản, hình ảnh và mã nguồn đều được bảo vệ bởi luật bản quyền và các quyền sở hữu trí tuệ hiện hành.'
             }
         ]
     },
     refund: {
         title: 'Chính sách Hoàn tiền',
         icon: RefreshCcw,
-        description: 'Quy định về hoàn tiền và đổi trả sản phẩm số',
+        description: 'Quy định về hoàn tiền và đổi trả giao diện website',
         badge: 'HOÀN TIỀN',
         badgeColor: 'amber',
         heroImage: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1920&q=80',

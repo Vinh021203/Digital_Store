@@ -213,7 +213,7 @@ function OrderSuccessContent() {
                                 <div key={item.id} className="flex gap-4 p-3 bg-slate-50 rounded-2xl hover:bg-slate-100 transition-colors group">
                                     <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden relative flex-shrink-0 border border-slate-200">
                                         <Image
-                                            src={item.product?.image || item.product_image || '/placeholder.png'}
+                                            src={item.product?.image || item.product_image || '/hero_section/banner_1.webp'}
                                             alt={item.product?.name || item.product_name || 'Product'}
                                             fill
                                             className="object-cover group-hover:scale-105 transition-transform"

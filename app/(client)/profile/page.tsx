@@ -205,7 +205,7 @@ export default function ProfilePage() {
                     <div>
                         <div className="flex items-center gap-2 mb-3">
                             <span className="bg-gradient-to-r from-orange-500 to-amber-500 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-lg shadow-orange-500/20">
-                                <Sparkles size={12} /> DigitalMart Member
+                                <Sparkles size={12} /> Shop Web rẻ Member
                             </span>
                         </div>
                         <h1 className="text-2xl md:text-3xl font-black mb-2 flex items-center gap-3">
@@ -213,7 +213,7 @@ export default function ProfilePage() {
                             <Hand size={28} className="text-amber-400 animate-pulse" />
                         </h1>
                         <p className="text-slate-400 text-sm md:text-base mb-4">
-                            Chào mừng bạn trở lại với DigitalMart
+                            Chào mừng bạn trở lại với Shop Web rẻ
                         </p>
                         <div className="flex flex-wrap items-center gap-2 text-sm">
                             <span className="inline-flex items-center gap-1.5 bg-white/10 border border-white/10 px-3 py-1.5 rounded-full">

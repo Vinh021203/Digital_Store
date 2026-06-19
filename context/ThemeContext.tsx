@@ -21,7 +21,7 @@ const ThemeContext = createContext<ThemeContextType>({
 
 export const useTheme = () => useContext(ThemeContext);
 
-const STORAGE_KEY = 'digitalmart_theme';
+const STORAGE_KEY = 'shopwebre_theme';
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const [theme] = useState<Theme>('light');

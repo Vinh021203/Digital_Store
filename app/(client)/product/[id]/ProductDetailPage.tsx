@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { createPortal } from 'react-dom';
@@ -374,7 +374,7 @@ export default function ProductDetailPage() {
             <div className="bg-white border-b border-slate-100 sticky top-0 z-40 backdrop-blur-md bg-white/80 supports-[backdrop-filter]:bg-white/60">
                 <div className="max-w-7xl mx-auto px-4 md:px-8 py-3">
                     <div className="flex items-center gap-2 text-sm text-slate-500 overflow-x-auto whitespace-nowrap no-scrollbar">
-                        <Link href="/" className="hover:text-orange-600 transition-colors flex items-center gap-1"><HomeIcon size={14} /> Trang chá»§</Link>
+                        <Link href="/" className="hover:text-orange-600 transition-colors flex items-center gap-1"><HomeIcon size={14} /> Trang chủ</Link>
                         <ChevronRight size={14} className="text-slate-300 flex-shrink-0" />
                         <Link href="/products" className="hover:text-orange-600 transition-colors">Digital Prod...</Link>
                         <ChevronRight size={14} className="text-slate-300 flex-shrink-0" />
@@ -560,7 +560,7 @@ export default function ProductDetailPage() {
                                                     rel="noopener noreferrer"
                                                     className="px-4 py-3 rounded-xl border border-orange-200 bg-orange-50 font-bold text-orange-600 hover:bg-orange-100 hover:border-orange-300 transition-colors flex items-center justify-center gap-2"
                                                 >
-                                                    <ExternalLink size={18} /> Má»Ÿ Tab má»›i
+                                                    <ExternalLink size={18} /> Mở tab mới
                                                 </a>
                                             </>
                                         )}
@@ -962,6 +962,12 @@ const ModernProductDetailLayout = ({
         : product.category?.name || 'SaaS Templates';
     const originalPrice = product.originalPrice || product.original_price;
     const demoUrl = product.demo_url || product.demoUrl;
+    const fileFormat = product.file_format || product.fileFormat || '';
+    const compatibility = product.compatibility || '';
+    const techStack = product.tech_stack || product.techStack || [];
+    const currentProductFile = product.product_files?.find((file: any) => file.is_current)
+        || product.product_files?.[0];
+    const currentVersion = currentProductFile?.version || product.version || '';
     const galleryImages = [product.image, ...(product.images || [])]
         .map((item: any) => typeof item === 'string' ? item : item?.url || item?.src || item?.image)
         .filter(Boolean);
@@ -991,7 +997,7 @@ const ModernProductDetailLayout = ({
     const shortDescription = product.short_description || product.shortDescription || (
         plainDescription
             ? `${plainDescription.slice(0, 190)}${plainDescription.length > 190 ? '...' : ''}`
-            : 'Bộ giao diện sản phẩm số hiện đại, dễ tùy biến, giúp bạn triển khai website nhanh chóng và chuyên nghiệp.'
+            : 'Bộ giao diện website hiện đại, dễ tùy biến, giúp bạn triển khai website nhanh chóng và chuyên nghiệp.'
     );
     const tabs = [
         ['description', 'Mô tả sản phẩm'],
@@ -1003,7 +1009,7 @@ const ModernProductDetailLayout = ({
         ['reviews', 'Đánh giá'],
     ];
     const overviewCards = [
-        { icon: Monitor, title: 'Hiện đại & chuyên nghiệp', stat: 'UI chuẩn bán hàng', tag: 'Layout ready', text: 'Bố cục rõ ràng, hình ảnh lớn và nhịp nội dung phù hợp để giới thiệu sản phẩm số.' },
+        { icon: Monitor, title: 'Hiện đại & chuyên nghiệp', stat: 'UI chuẩn bán hàng', tag: 'Layout ready', text: 'Bố cục rõ ràng, hình ảnh lớn và nhịp nội dung phù hợp để giới thiệu giao diện website.' },
         { icon: Zap, title: 'Tối ưu hiệu suất', stat: 'Tải nhanh hơn', tag: 'Clean structure', text: 'Cấu trúc gọn, dễ mở rộng, giúp rút ngắn thời gian triển khai và bàn giao dự án.' },
         { icon: Layers, title: 'Dễ dàng tùy biến', stat: 'Component linh hoạt', tag: 'Design system', text: 'Các khối giao diện được tách lớp hợp lý, thuận tiện chỉnh màu, nội dung và branding.' },
         { icon: Smartphone, title: 'Responsive-ready', stat: 'Mobile first', tag: 'Đủ breakpoint', text: 'Tương thích tốt trên desktop, laptop, tablet và mobile với bố cục dễ kiểm soát.' },
@@ -1023,7 +1029,7 @@ const ModernProductDetailLayout = ({
         { name: 'Trần Thảo Vy', role: 'Marketing Lead', text: 'Cấu trúc file rõ ràng, dễ chỉnh sửa và có đủ thành phần để dựng landing page nhanh.' },
         { name: 'Lê Hoàng Nam', role: 'Founder', text: 'Demo sát thực tế, responsive ổn và phù hợp để triển khai MVP trong thời gian ngắn.' },
         { name: 'Phạm Gia Bảo', role: 'Frontend Developer', text: 'Component sạch, bố cục dễ đọc, phần gallery và tài liệu giúp bàn giao thuận tiện hơn.' },
-        { name: 'Đỗ Minh Anh', role: 'UI Designer', text: 'Thiết kế có hệ thống, màu sắc dễ thay đổi và dùng tốt cho nhiều nhóm sản phẩm số.' },
+        { name: 'Đỗ Minh Anh', role: 'UI Designer', text: 'Thiết kế có hệ thống, màu sắc dễ thay đổi và dùng tốt cho nhiều nhóm giao diện website.' },
         { name: 'Hoàng Khánh Linh', role: 'Agency Owner', text: 'Khách duyệt nhanh hơn vì preview rõ ràng, các section đủ để trình bày sản phẩm chuyên nghiệp.' },
     ];
 
@@ -1180,10 +1186,45 @@ const ModernProductDetailLayout = ({
                                 </div>
                             ))}
                         </div>
-                    </div>
-                </section>
+	                    </div>
+	                </section>
 
-                <div className="mt-8 overflow-x-auto rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
+                {(fileFormat || compatibility || currentVersion || techStack.length > 0) && (
+                    <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
+                        <div className="flex items-center gap-2">
+                            <FileCode size={20} className="text-orange-600" />
+                            <h2 className="text-lg font-bold text-slate-950">Thông tin kỹ thuật</h2>
+                        </div>
+                        <dl className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                            {fileFormat && (
+                                <div className="rounded-xl bg-slate-50 p-3">
+                                    <dt className="text-xs font-bold uppercase tracking-wide text-slate-500">Định dạng file</dt>
+                                    <dd className="mt-1 text-sm font-semibold text-slate-900">{fileFormat}</dd>
+                                </div>
+                            )}
+                            {compatibility && (
+                                <div className="rounded-xl bg-slate-50 p-3">
+                                    <dt className="text-xs font-bold uppercase tracking-wide text-slate-500">Tương thích</dt>
+                                    <dd className="mt-1 text-sm font-semibold text-slate-900">{compatibility}</dd>
+                                </div>
+                            )}
+                            {currentVersion && (
+                                <div className="rounded-xl bg-slate-50 p-3">
+                                    <dt className="text-xs font-bold uppercase tracking-wide text-slate-500">Phiên bản</dt>
+                                    <dd className="mt-1 text-sm font-semibold text-slate-900">v{currentVersion}</dd>
+                                </div>
+                            )}
+                            {techStack.length > 0 && (
+                                <div className="rounded-xl bg-slate-50 p-3">
+                                    <dt className="text-xs font-bold uppercase tracking-wide text-slate-500">Công nghệ</dt>
+                                    <dd className="mt-1 text-sm font-semibold text-slate-900">{techStack.join(', ')}</dd>
+                                </div>
+                            )}
+                        </dl>
+                    </section>
+                )}
+
+	                <div className="mt-8 overflow-x-auto rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
                     <div className="flex min-w-max gap-2">
                         {tabs.map(([id, label]) => (
                             <button key={id} onClick={() => goToTab(id)} className={`rounded-lg px-5 py-3 text-sm font-semibold transition ${activeTab === id ? 'bg-orange-50 text-orange-700' : 'text-slate-600 hover:bg-slate-50'}`}>
@@ -1214,16 +1255,24 @@ const ModernProductDetailLayout = ({
                             {showFullDescription ? 'Thu gọn' : 'Xem thêm'}
                             <ChevronDown size={14} className={`transition-transform ${showFullDescription ? 'rotate-180' : ''}`} />
                         </button>
-                        {(product.tags?.length || product.techStack?.length) && (
-	                            <div className="mt-5 hidden flex-wrap gap-2 border-t border-slate-100 pt-5 md:flex">
-                                {[...(product.tags || []), ...(product.techStack || [])].slice(0, 12).map((tag: string, index: number) => (
-                                    <span key={`${tag}-${index}`} className="rounded-full bg-orange-50 px-3 py-1.5 text-xs font-bold text-orange-700">#{tag}</span>
-                                ))}
-                            </div>
-                        )}
+                        {(product.tags?.length || techStack.length) && (
+		                            <div className="mt-5 hidden flex-wrap gap-2 border-t border-slate-100 pt-5 md:flex">
+	                                {[...(product.tags || []), ...techStack].slice(0, 12).map((tag: string, index: number) => (
+	                                    <span key={`${tag}-${index}`} className="rounded-full bg-orange-50 px-3 py-1.5 text-xs font-bold text-orange-700">#{tag}</span>
+	                                ))}
+		                            </div>
+	                        )}
                     </div>
                     <h3 id="features" className="mb-5 scroll-mt-24 text-xl font-bold text-slate-950">Tổng quan sản phẩm</h3>
-                    <div className="grid grid-cols-2 gap-3 md:gap-5 xl:grid-cols-4">
+                    <div className="mb-5 grid gap-2 sm:grid-cols-2">
+                        {featureList.map((feature: string, index: number) => (
+                            <div key={`${feature}-${index}`} className="flex items-start gap-2 rounded-xl border border-orange-100 bg-orange-50/60 px-3 py-2.5 text-sm font-semibold text-slate-700">
+                                <Check size={16} className="mt-0.5 shrink-0 text-orange-600" />
+                                <span>{feature}</span>
+                            </div>
+                        ))}
+                    </div>
+	                    <div className="grid grid-cols-2 gap-3 md:gap-5 xl:grid-cols-4">
                         {overviewCards.map((item, index) => (
                             <div
                                 key={index}

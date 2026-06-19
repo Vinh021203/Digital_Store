@@ -243,8 +243,8 @@ export async function createWelcomeNotification(userId: string, userName?: strin
         {
             user_id: userId,
             type: 'welcome',
-            title: '🎉 Chào mừng bạn đến với Digital Store!',
-            message: `Xin chào${userName ? ` ${userName}` : ''}! Cảm ơn bạn đã đăng ký. Khám phá hàng ngàn sản phẩm số chất lượng cao ngay bây giờ!`,
+            title: '🎉 Chào mừng bạn đến với Shop Web rẻ!',
+            message: `Xin chào${userName ? ` ${userName}` : ''}! Cảm ơn bạn đã đăng ký. Khám phá hàng ngàn giao diện website chất lượng cao ngay bây giờ!`,
             link: '/products',
         },
         {

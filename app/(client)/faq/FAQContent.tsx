@@ -81,7 +81,7 @@ const FAQ_DATA = [
     {
         category: 'support',
         question: 'Làm sao để liên hệ hỗ trợ?',
-        answer: 'Bạn có thể liên hệ qua nhiều kênh: Email support@digitalmart.vn, Hotline 0971 386 588, hoặc chat trực tiếp trên website. Đội ngũ hỗ trợ sẵn sàng 24/7.',
+        answer: 'Bạn có thể liên hệ qua nhiều kênh: Email support@shopwebre.vn, Hotline 0971 386 588, hoặc chat trực tiếp trên website. Đội ngũ hỗ trợ sẵn sàng 24/7.',
         featured: true
     },
     {
@@ -352,7 +352,7 @@ export default function FAQContent() {
                             <div className="flex flex-wrap gap-4 mt-6 text-sm">
                                 <div className="flex items-center gap-2">
                                     <Mail size={16} />
-                                    <span>support@digitalmart.vn</span>
+                                    <span>support@shopwebre.vn</span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <Phone size={16} />

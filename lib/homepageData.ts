@@ -116,10 +116,14 @@ async function fetchHomepageData(): Promise<HomepageData> {
     });
   }
 
-  const categories = (categoriesResult.data || []).map((category: any) => ({
-    ...category,
-    product_count: countMap[category.id] || 0,
-  }));
+  const categories = (categoriesResult.data || [])
+    .filter((category: any) => !/wordpress|woocommerce/i.test(
+      `${category.name} ${category.slug} ${category.description || ''}`,
+    ))
+    .map((category: any) => ({
+      ...category,
+      product_count: countMap[category.id] || 0,
+    }));
 
   return {
     products: (productsResult.data || []).map(mapProduct),
@@ -130,7 +134,7 @@ async function fetchHomepageData(): Promise<HomepageData> {
 
 export const getHomepageData = unstable_cache(
   fetchHomepageData,
-  ['homepage-public-data'],
+  ['homepage-public-data-v2'],
   {
     revalidate: 180,
     tags: ['homepage', 'products', 'categories', 'blog'],

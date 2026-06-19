@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect, useMemo, Suspense, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -116,11 +116,14 @@ const FilterSidebar = ({
     const formatOptions = ['Theme', 'Template', 'Plugin', 'UI Kit', 'Icon / Vector', 'Landing', 'MiniApp'];
     const visibleFormats = showAllFormats ? formatOptions : formatOptions.slice(0, 5);
     const platformOptions = [
-        { label: 'WordPress', key: 'wordpress', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/wordpress/wordpress-original.svg' },
+        { label: 'React', key: 'react', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg' },
         { label: 'Next.js', key: 'next', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg' },
         { label: 'HTML', key: 'html', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg' },
         { label: 'Figma', key: 'figma', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg' },
+        { label: 'Vue.js', key: 'vue', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vuejs/vuejs-original.svg' },
         { label: 'Laravel', key: 'laravel', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg' },
+        { label: 'Django', key: 'django', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/django/django-plain.svg' },
+        { label: '.NET', key: '.net', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/dot-net/dot-net-original.svg' },
     ];
 
     const CheckboxRow = ({
@@ -274,7 +277,7 @@ const FilterSidebar = ({
     return (
         <>
             {/* Desktop Sidebar - Always visible, sticky */}
-            <aside className="hidden lg:block sticky top-20 z-40 w-60 shrink-0">
+            <aside className="hidden lg:block sticky top-20 z-20 w-60 shrink-0">
                 <SidebarContent />
             </aside>
 
@@ -483,7 +486,7 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
                     <div className="max-w-3xl">
                         {/* Badge - Smaller on mobile */}
                         <div className="inline-flex items-center gap-1.5 bg-orange-500/10 border border-orange-500/20 text-orange-400 px-2.5 py-1 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-3 sm:mb-4">
-                            <Star size={10} className="sm:w-3 sm:h-3" fill="currentColor" /> Premium Marketplace
+                            <Star size={10} className="sm:w-3 sm:h-3" fill="currentColor" /> Kho giao diện cao cấp
                         </div>
 
                         {/* Title - Responsive sizes */}

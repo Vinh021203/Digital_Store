@@ -71,7 +71,7 @@ async function fetchProductsPageData(): Promise<ProductsPageData> {
       .order('created_at', { ascending: false }),
     supabase
       .from('categories')
-      .select('id, name, slug, icon, description, parent_id, sort_order, is_active, created_at')
+      .select('id, name, slug, icon, parent_id, sort_order, is_active, created_at')
       .eq('is_active', true)
       .order('sort_order', { ascending: true })
       .order('name', { ascending: true }),
@@ -104,16 +104,19 @@ async function fetchProductsPageData(): Promise<ProductsPageData> {
 
   return {
     products: (productsResult.data || []).map(mapProduct),
-    categories: (categoriesResult.data || []).map((category: any) => ({
-      ...category,
-      product_count: countMap[category.id] || 0,
-    })),
+    categories: (categoriesResult.data || [])
+      .filter((category: any) => !/wordpress|woocommerce/i.test(`${category.name} ${category.slug}`))
+      .map((category: any) => ({
+        ...category,
+        description: null,
+        product_count: countMap[category.id] || 0,
+      })),
   };
 }
 
 export const getProductsPageData = unstable_cache(
   fetchProductsPageData,
-  ['products-page-public-data'],
+  ['products-page-public-data-v2'],
   {
     revalidate: 180,
     tags: ['products-page', 'products', 'categories'],

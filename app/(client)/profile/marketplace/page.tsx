@@ -154,7 +154,7 @@ export default function MarketplacePage() {
                 {/* Benefits */}
                 <div className="text-center py-8">
                     <p className="text-slate-500 max-w-md mx-auto mb-8">
-                        Bắt đầu bán sản phẩm digital của bạn trên DigitalMart và kiếm thu nhập thụ động
+                        Bắt đầu bán sản phẩm digital của bạn trên Shop Web rẻ và kiếm thu nhập thụ động
                     </p>
 
                     <div className="grid md:grid-cols-3 gap-4 max-w-2xl mx-auto mb-8">

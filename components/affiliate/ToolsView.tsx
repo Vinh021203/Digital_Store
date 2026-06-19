@@ -62,7 +62,7 @@ export const ToolsView = ({ user }: ToolsViewProps) => {
                     <form onSubmit={handleGenerate} className="flex flex-col sm:flex-row gap-3 mb-4">
                         <input
                             type="url"
-                            placeholder="Ví dụ: https://digitalmart.vn/product/khoa-hoc-marketing"
+                            placeholder="Ví dụ: https://shopwebre.vn/product/khoa-hoc-marketing"
                             className="flex-1 border-2 border-slate-200 rounded-xl px-4 py-3 focus:border-orange-500 outline-none transition-colors"
                             value={genLink}
                             onChange={(e) => setGenLink(e.target.value)}

@@ -182,7 +182,7 @@ export const CampaignsView = ({ user }: CampaignsViewProps) => {
                                 {/* Image */}
                                 <div className="relative h-40 overflow-hidden bg-slate-100">
                                     <Image
-                                        src={product.image || '/placeholder-product.jpg'}
+                                        src={product.image || '/hero_section/banner_1.webp'}
                                         alt={product.name}
                                         width={300}
                                         height={200}

@@ -67,8 +67,8 @@ export default function AffiliateDashboardPage() {
 
 
     const affiliateLink = typeof window !== 'undefined'
-        ? `${window.location.origin}?ref=${stats.affiliateCode || 'DIGITALMART'}`
-        : `https://digitalmart.vn?ref=${stats.affiliateCode || 'DIGITALMART'}`;
+        ? `${window.location.origin}?ref=${stats.affiliateCode || 'SHOPWEBRE'}`
+        : `https://shopwebre.vn?ref=${stats.affiliateCode || 'SHOPWEBRE'}`;
 
     const loadData = useCallback(async () => {
         if (!user?.id) return;
@@ -245,7 +245,7 @@ export default function AffiliateDashboardPage() {
                                     <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/20">
                                         <Gift size={20} className="text-white" />
                                     </div>
-                                    <span className="font-black text-white">DigitalMart</span>
+                                    <span className="font-black text-white">Shop Web rẻ</span>
                                 </div>
                                 <button
                                     onClick={() => setMobileMenuOpen(false)}

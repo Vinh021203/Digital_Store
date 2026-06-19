@@ -4,7 +4,7 @@ import { initReactI18next } from 'react-i18next';
 export const SUPPORTED_LANGUAGES = ['vi', 'en'] as const;
 export type SupportedLanguage = typeof SUPPORTED_LANGUAGES[number];
 
-const LANGUAGE_STORAGE_KEY = 'digital-store-language';
+const LANGUAGE_STORAGE_KEY = 'shop-web-re-language';
 
 function isSupportedLanguage(value: string | null | undefined): value is SupportedLanguage {
   return value === 'vi' || value === 'en';
@@ -20,7 +20,7 @@ function getInitialLanguage(): SupportedLanguage {
   return isSupportedLanguage(browserLanguage) ? browserLanguage : 'vi';
 }
 
-// Define resources for DigitalMart - Digital Products Marketplace
+// Translation resources for Shop Web rẻ.
 const resources = {
   vi: {
     translation: {
@@ -41,9 +41,9 @@ const resources = {
         affiliate: "Affiliate"
       },
       hero: {
-        collection: "Digital Products 2024",
-        title: "Sản Phẩm Số Chất Lượng",
-        subtitle: "Themes, Templates, Landing Pages và Mini Apps chuyên nghiệp cho dự án của bạn.",
+        collection: "Bộ Sưu Tập Mới",
+        title: "Giao Diện Website Chất Lượng",
+        subtitle: "Template website, landing page, UI kit và dashboard chuyên nghiệp cho dự án của bạn.",
         cta: "Khám Phá Ngay",
         kitchen_title: "UI/UX Templates",
         kitchen_cta: "Xem ngay",
@@ -67,26 +67,26 @@ const resources = {
         seconds: "Giây"
       },
       sections: {
-        categories: "Danh Mục Sản Phẩm",
-        new_arrivals: "Sản Phẩm Mới",
-        new_arrivals_desc: "Themes và templates mới nhất",
+        categories: "Danh Mục Giao Diện",
+        new_arrivals: "Giao Diện Mới",
+        new_arrivals_desc: "Template và giao diện website mới nhất",
         view_more: "Xem thêm",
         promo: "Ưu đãi đặc biệt",
         promo_title: "Gói PRO\nTruy Cập Không Giới Hạn",
         promo_cta: "Nâng Cấp Ngay",
         blog_title: "Blog Chia Sẻ",
         newsletter: "Nhận Ưu Đãi Độc Quyền",
-        newsletter_desc: "Đăng ký email để nhận thông báo về sản phẩm mới và mã giảm giá 20%.",
+        newsletter_desc: "Đăng ký email để nhận thông báo về giao diện mới và mã giảm giá 20%.",
         newsletter_placeholder: "Email của bạn",
         subscribe: "Đăng Ký"
       },
       footer: {
-        desc: "Marketplace sản phẩm số chất lượng cao. Themes, Templates, Landing Pages và Mini Apps.",
+        desc: "Shop Web rẻ cung cấp template website, landing page, UI kit và dashboard chất lượng cao.",
         quick_links: "Liên Kết",
         policy: "Chính Sách",
         categories: "Danh Mục",
         contact: "Liên Hệ",
-        rights: "DigitalMart. All rights reserved."
+        rights: "Shop Web rẻ. All rights reserved."
       },
       product: {
         price: "Giá",
@@ -97,7 +97,7 @@ const resources = {
         desc: "Mô Tả",
         specs: "Thông Tin",
         reviews: "Đánh Giá",
-        related: "Sản Phẩm Liên Quan"
+        related: "Giao Diện Liên Quan"
       },
       common: {
         search_placeholder: "Tìm themes, templates...",
@@ -162,9 +162,9 @@ const resources = {
         affiliate: "Affiliate"
       },
       hero: {
-        collection: "Digital Products 2024",
-        title: "Premium Digital Products",
-        subtitle: "Professional Themes, Templates, Landing Pages and Mini Apps for your projects.",
+        collection: "New Collection",
+        title: "Professional Website Templates",
+        subtitle: "Website templates, landing pages, UI kits and dashboards for your projects.",
         cta: "Explore Now",
         kitchen_title: "UI/UX Templates",
         kitchen_cta: "View now",
@@ -202,12 +202,12 @@ const resources = {
         subscribe: "Subscribe"
       },
       footer: {
-        desc: "Premium digital products marketplace. Themes, Templates, Landing Pages and Mini Apps.",
+        desc: "Shop Web rẻ provides quality website templates, landing pages, UI kits and dashboards.",
         quick_links: "Quick Links",
         policy: "Policies",
         categories: "Categories",
         contact: "Contact",
-        rights: "DigitalMart. All rights reserved."
+        rights: "Shop Web rẻ. All rights reserved."
       },
       product: {
         price: "Price",

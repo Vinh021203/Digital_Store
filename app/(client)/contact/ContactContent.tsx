@@ -11,7 +11,7 @@ import {
 import { useToast } from '@/context/ToastContext';
 
 const CONTACT_INFO = [
-    { icon: Mail, label: 'Email hỗ trợ', value: 'veutong961@gmail.com', href: 'mailto:support@digitalmart.vn', color: 'blue' },
+    { icon: Mail, label: 'Email hỗ trợ', value: 'veutong961@gmail.com', href: 'mailto:support@shopwebre.vn', color: 'blue' },
     { icon: Phone, label: 'Hotline', value: '0971 386 588', href: 'tel:0971386588', color: 'emerald' },
     { icon: MapPin, label: 'Địa chỉ', value: 'Hạ Long, Quảng Ninh', href: '#', color: 'rose' },
     { icon: Clock, label: 'Giờ làm việc', value: '8:00 - 22:00 hàng ngày', href: '#', color: 'amber' },
@@ -103,11 +103,11 @@ export default function ContactContent() {
                             {/* Quick Contact */}
                             <div className="flex flex-wrap justify-center lg:justify-start gap-4 mb-8">
                                 <a
-                                    href="mailto:support@digitalmart.vn"
+                                    href="mailto:support@shopwebre.vn"
                                     className="flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white px-5 py-3 rounded-xl hover:bg-white/20 transition-all"
                                 >
                                     <Mail size={18} className="text-emerald-400" />
-                                    <span className="font-semibold">support@digitalmart.vn</span>
+                                    <span className="font-semibold">support@shopwebre.vn</span>
                                 </a>
                                 <a
                                     href="tel:0971386588"

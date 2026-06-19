@@ -21,11 +21,14 @@ export interface DbProduct {
   rating: number;
   reviews_count: number;
   downloads_count: number;
+  commission_rate: number;
   is_new: boolean;
   is_featured: boolean;
   is_bestseller: boolean;
   status: 'active' | 'pending' | 'rejected' | 'draft';
   demo_url: string | null;
+  file_format: string | null;
+  compatibility: string | null;
   tags: string[];
   features: string[];
   tech_stack: string[];
@@ -35,6 +38,12 @@ export interface DbProduct {
   // Joined data
   category?: { id: number; name: string; slug: string } | null;
   seller?: { id: number; store_name: string } | null;
+  product_files?: Array<{
+    id: number;
+    version: string;
+    file_size: number;
+    is_current: boolean;
+  }>;
 }
 
 export interface ProductPayload {
@@ -54,6 +63,8 @@ export interface ProductPayload {
   is_bestseller?: boolean;
   status?: 'active' | 'pending' | 'rejected' | 'draft';
   demo_url?: string | null;
+  file_format?: string | null;
+  compatibility?: string | null;
   tags?: string[];
   features?: string[];
   tech_stack?: string[];
@@ -153,7 +164,8 @@ export async function fetchActiveProducts(filters?: ProductFilters): Promise<Pro
     .select(`
       id, name, slug, description, price, original_price,
       image, images, format, rating, reviews_count, downloads_count,
-      is_new, is_featured, is_bestseller, author, demo_url, tags,
+      is_new, is_featured, is_bestseller, author, demo_url, file_format,
+      compatibility, tags, features, tech_stack,
       category:category_id (id, name, slug)
     `)
     .eq('status', 'active')
@@ -203,7 +215,11 @@ export async function fetchActiveProducts(filters?: ProductFilters): Promise<Pro
     students: p.downloads_count || 0,
     downloads_count: p.downloads_count || 0,
     demoUrl: p.demo_url ?? undefined,
+    fileFormat: p.file_format ?? undefined,
+    compatibility: p.compatibility ?? undefined,
     tags: p.tags || [],
+    features: p.features || [],
+    techStack: p.tech_stack || [],
   }));
 }
 
@@ -219,7 +235,8 @@ export async function getProductById(id: number): Promise<DbProduct | null> {
     .select(`
       *,
       category:category_id (id, name, slug),
-      seller:seller_id (id, store_name)
+      seller:seller_id (id, store_name),
+      product_files (id, version, file_size, is_current)
     `)
     .eq('id', id)
     .single();
@@ -244,7 +261,8 @@ export async function getProductBySlug(slug: string): Promise<DbProduct | null> 
     .select(`
       *,
       category:category_id (id, name, slug),
-      seller:seller_id (id, store_name)
+      seller:seller_id (id, store_name),
+      product_files (id, version, file_size, is_current)
     `)
     .eq('slug', slug)
     .eq('status', 'active')
@@ -289,15 +307,18 @@ export async function createProduct(payload: ProductPayload): Promise<DbProduct 
       format: payload.format || 'Template',
       category_id: payload.category_id || null,
       seller_id: payload.seller_id || null,
-      author: payload.author || 'DigitalMart',
+      author: payload.author || 'Shop Web rẻ',
       is_new: payload.is_new ?? true,
       is_featured: payload.is_featured ?? false,
       is_bestseller: payload.is_bestseller ?? false,
       status: payload.status || 'draft',
       demo_url: payload.demo_url || null,
+      file_format: payload.file_format || null,
+      compatibility: payload.compatibility || null,
       tags: payload.tags || [],
       features: payload.features || [],
       tech_stack: payload.tech_stack || [],
+      commission_rate: payload.commission_rate ?? 10,
     })
     .select(`
       *,
@@ -346,9 +367,12 @@ export async function updateProduct(
   if (payload.is_bestseller !== undefined) updates.is_bestseller = payload.is_bestseller;
   if (payload.status !== undefined) updates.status = payload.status;
   if (payload.demo_url !== undefined) updates.demo_url = payload.demo_url;
+  if (payload.file_format !== undefined) updates.file_format = payload.file_format;
+  if (payload.compatibility !== undefined) updates.compatibility = payload.compatibility;
   if (payload.tags !== undefined) updates.tags = payload.tags;
   if (payload.features !== undefined) updates.features = payload.features;
   if (payload.tech_stack !== undefined) updates.tech_stack = payload.tech_stack;
+  if (payload.commission_rate !== undefined) updates.commission_rate = payload.commission_rate;
 
   const { data, error } = await supabase
     .from('products')
@@ -581,20 +605,16 @@ export async function fetchAIProducts(
 
   // 2. Tech Filter (Tech stack check)
   if (criteria.tech) {
-    const techMap: Record<string, string> = {
-      react: 'ReactJS', // Assuming 'ReactJS' is used in tech_stack
-      wordpress: 'WordPress',
-      html: 'HTML5',
-      // 'any' doesn't need a filter
+    const techMap: Record<string, string[]> = {
+      react: ['React', 'ReactJS', 'Next.js', 'NextJS'],
+      figma: ['Figma', 'UI Kit'],
+      html: ['HTML', 'HTML5', 'CSS', 'JavaScript'],
+      vue: ['Vue', 'Vue.js', 'VueJS'],
+      backend: ['Laravel', 'Django', '.NET', 'ASP.NET'],
     };
 
-    // Note: This matches if the string 'react' is in the tech_stack array column roughly
-    // Supabase array contains: .cs.{ "ReactJS" } or using ilike on the text representation
-    // For simplicity with text-array, we might need a specific containedBy or overlap if it's JSONB/Array
-    // If tech_stack is text[], we can use .contains('tech_stack', ['ReactJS'])
-
     if (criteria.tech !== 'any' && techMap[criteria.tech]) {
-      query = query.contains('tech_stack', [techMap[criteria.tech]]);
+      query = query.overlaps('tech_stack', techMap[criteria.tech]);
     }
   }
 

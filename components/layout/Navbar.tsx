@@ -242,7 +242,7 @@ const TopBar = memo<TopBarProps>(
             <span className="w-px h-3 bg-slate-700" />
             <span className="flex items-center gap-1.5 text-slate-500">
               <TrendingUp size={13} className="text-green-400" />
-              1,200+ sản phẩm số
+              1,200+ giao diện website
             </span>
           </div>
 
@@ -309,7 +309,7 @@ TopBar.displayName = "TopBar";
 // ============================================
 const MegaMenuPanel = memo<{ data: MegaMenuData; onClose?: () => void }>(
   ({ data, onClose }) => (
-    <div className="mega-menu absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[580px] bg-white rounded-2xl shadow-2xl shadow-slate-200/60 border border-slate-100/80 overflow-hidden z-50 pointer-events-auto">
+    <div className="mega-menu absolute top-full left-1/2 z-[110] mt-2 w-[580px] -translate-x-1/2 overflow-hidden rounded-2xl border border-slate-100/80 bg-white shadow-2xl shadow-slate-200/60 pointer-events-auto">
       <div className="p-5 grid grid-cols-2 gap-1">
         {/* Featured column */}
         {data.featured && (
@@ -1112,16 +1112,16 @@ const Navbar = () => {
       ],
       categories: [
         {
-          label: "WordPress",
-          href: "/products?category=wordpress",
-          logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/wordpress/wordpress-original.svg",
-          color: "#21759b",
+          label: "Figma & UI Kits",
+          href: "/products?search=Figma",
+          logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg",
+          color: "#f24e1e",
         },
         {
-          label: "E-commerce",
-          href: "/products?category=ecommerce",
-          logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/woocommerce/woocommerce-original.svg",
-          color: "#7f54b3",
+          label: "Vue.js",
+          href: "/products?search=Vue",
+          logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vuejs/vuejs-original.svg",
+          color: "#42b883",
         },
         {
           label: "Marketing & SEO",
@@ -1248,7 +1248,7 @@ const Navbar = () => {
 
       {/* ── Main nav ── */}
       <nav
-        className={`sticky top-0 z-40 transition-all duration-300 ${
+        className={`sticky top-0 z-[100] isolate transition-all duration-300 ${
           scrolled
             ? "bg-white/95 backdrop-blur-xl shadow-lg shadow-slate-200/50 border-b border-slate-200/80"
             : "bg-white/92 backdrop-blur-xl shadow-sm border-b border-slate-200/60"
@@ -1263,26 +1263,15 @@ const Navbar = () => {
             {/* ── Logo — luôn hiển thị tên trên mobile ── */}
             <Link
               href="/"
-              className="flex-shrink-0 flex items-center gap-2 group"
+              className="group relative h-10 w-[150px] flex-shrink-0 sm:h-11 sm:w-[180px] lg:h-12 lg:w-[205px]"
               prefetch={true}
+              aria-label="Shop Web rẻ - Trang chủ"
             >
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-red-600 rounded-xl blur-md opacity-40 group-hover:opacity-70 transition-opacity duration-300" />
-                <img
-                  src="/favicon.png"
-                  alt="DigitalMart"
-                  className="relative w-9 h-9 lg:w-10 lg:h-10 rounded-xl shadow-md transform group-hover:scale-105 group-hover:rotate-3 transition-all duration-300"
-                />
-              </div>
-              {/* Hiển thị tên cả trên mobile — chỉ ẩn tagline nhỏ */}
-              <div className="flex flex-col">
-                <span className="font-serif font-bold text-[15px] lg:text-xl bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent leading-tight">
-                  DigitalMart
-                </span>
-                <span className="hidden sm:block text-[8px] lg:text-[9px] font-bold text-slate-400 tracking-[0.15em] -mt-0.5">
-                  DIGITAL PRODUCTS
-                </span>
-              </div>
+              <img
+                src="/logo_webgiare_display.webp"
+                alt="Shop Web rẻ"
+                className="h-full w-full object-contain object-left transition-transform duration-300 group-hover:scale-[1.02]"
+              />
             </Link>
 
             {/* ── Desktop center menu ── */}

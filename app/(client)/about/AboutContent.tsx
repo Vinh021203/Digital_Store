@@ -21,21 +21,21 @@ const STATS = [
 ];
 
 const VALUES = [
-    { icon: Target, title: 'Sứ mệnh', description: 'Mang đến sản phẩm số chất lượng cao, giá cả hợp lý cho mọi người' },
-    { icon: Heart, title: 'Tầm nhìn', description: 'Trở thành nền tảng MarketPlace số 1 Việt Nam' },
+    { icon: Target, title: 'Sứ mệnh', description: 'Giúp người Việt tiếp cận giao diện website đẹp, dễ dùng và có chi phí hợp lý' },
+    { icon: Heart, title: 'Tầm nhìn', description: 'Trở thành địa chỉ tìm mua giao diện website đáng tin cậy tại Việt Nam' },
     { icon: Award, title: 'Giá trị cốt lõi', description: 'Chất lượng - Uy tín - Hỗ trợ' },
 ];
 
 const TEAM = [
-    { name: 'Vinh Lương', role: 'Founder & CEO', image: '/team/ceo.jpg' },
-    { name: 'Nguyễn Văn A', role: 'CTO', image: '/team/cto.jpg' },
-    { name: 'Trần Thị B', role: 'Design Lead', image: '/team/design.jpg' },
+    { name: 'Vinh Lương', role: 'Founder & CEO', image: '/favicon.png' },
+    { name: 'Đội ngũ kỹ thuật', role: 'Phát triển sản phẩm', image: '/favicon.png' },
+    { name: 'Đội ngũ thiết kế', role: 'Thiết kế giao diện', image: '/favicon.png' },
 ];
 
 const TIMELINE = [
-    { year: '2023', title: 'Thành lập', description: 'DigitalMart ra đời với sứ mệnh mang đến sản phẩm số chất lượng' },
-    { year: '2024', title: 'Mở rộng', description: '10.000 sản phẩm, 50.000 khách hàng tin dùng' },
-    { year: '2025', title: 'Tương lai', description: 'Hướng tới trở thành MarketPlace số 1 Đông Nam Á' },
+    { year: '2026', title: 'Khởi đầu', description: 'Shop Web rẻ được xây dựng để kết nối người mua với các mẫu website chất lượng' },
+    { year: '2026', title: 'Hoàn thiện', description: 'Xây dựng kho template, landing page, UI kit và quy trình mua hàng thuận tiện' },
+    { year: '2027', title: 'Phát triển', description: 'Mở rộng danh mục giao diện và cộng đồng người bán tại Việt Nam' },
 ];
 
 export default function AboutPage() {
@@ -62,14 +62,14 @@ export default function AboutPage() {
                     >
                         <div className="inline-flex items-center gap-2 bg-orange-500/20 border border-orange-500/30 rounded-full px-4 py-2 mb-6">
                             <Sparkles size={16} className="text-orange-400" />
-                            <span className="text-sm font-bold text-orange-300">Digital Products Marketplace #1 VN</span>
+                            <span className="text-sm font-bold text-orange-300">Kho giao diện website dành cho người Việt</span>
                         </div>
                         <h1 className="text-4xl md:text-6xl font-black mb-6 leading-tight">
                             Xây Dựng Tương Lai
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-400"> Cùng Bạn</span>
                         </h1>
                         <p className="text-xl text-slate-300 max-w-2xl mx-auto">
-                            DigitalMart - Nền tảng marketplace digital products uy tín hàng đầu Việt Nam với 50,000+ học viên tin dùng
+                            Shop Web rẻ - Kho giao diện website, template và landing page dành cho thị trường Việt Nam
                         </p>
                     </motion.div>
                 </div>

@@ -84,7 +84,7 @@ export function PageLoader() {
                         ease: "easeInOut",
                     }}
                 >
-                    DigitalMart
+                    Shop Web rẻ
                 </motion.h2>
             </div>
         </div>

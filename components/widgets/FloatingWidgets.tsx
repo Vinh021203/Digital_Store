@@ -105,7 +105,7 @@ const FloatingWidgets = () => {
     {
       id: 1,
       sender: 'bot',
-      text: 'Chào bạn! Mình là trợ lý AI của DigitalMart. Mình có thể giúp bạn tìm themes, templates, hoặc giải đáp thắc mắc. Bạn cần tìm gì hôm nay?',
+      text: 'Chào bạn! Mình là trợ lý AI của Shop Web rẻ. Mình có thể giúp bạn tìm themes, templates, hoặc giải đáp thắc mắc. Bạn cần tìm gì hôm nay?',
     },
   ]);
   const [inputMsg, setInputMsg] = useState('');
@@ -196,7 +196,7 @@ const FloatingWidgets = () => {
   // Quick suggestions
   const quickSuggestions = [
     'Landing page cho startup',
-    'Theme WordPress bán hàng',
+    'Template Next.js bán hàng',
     'Template React đẹp',
   ];
 
@@ -243,7 +243,7 @@ const FloatingWidgets = () => {
                 <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-orange-600 rounded-full animate-pulse" />
               </div>
               <div>
-                <h3 className="font-bold text-sm">Trợ Lý DigitalMart</h3>
+                <h3 className="font-bold text-sm">Trợ Lý Shop Web rẻ</h3>
                 <p className="text-[10px] text-orange-100 flex items-center gap-1 opacity-90">
                   Sẵn sàng hỗ trợ 24/7
                 </p>

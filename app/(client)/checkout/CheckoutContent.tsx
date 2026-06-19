@@ -401,7 +401,7 @@ function CheckoutPageContent() {
 
                                         <div className="bg-blue-50 rounded-xl p-4 flex gap-3 text-blue-800 text-sm border border-blue-100">
                                             <ShieldCheck size={20} className="flex-shrink-0 mt-0.5" />
-                                            <p>Thông tin của bạn được bảo mật tuyệt đối. Sản phẩm số sẽ được gửi qua email sau khi thanh toán thành công.</p>
+                                            <p>Thông tin của bạn được bảo mật tuyệt đối. Giao diện website sẽ được gửi qua email sau khi thanh toán thành công.</p>
                                         </div>
                                     </div>
 

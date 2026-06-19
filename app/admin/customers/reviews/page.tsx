@@ -201,7 +201,7 @@ const ReviewsManager = () => {
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 rounded-lg overflow-hidden border border-slate-200">
                         <Image
-                          src={review.product.image || '/placeholder.png'}
+                          src={review.product.image || '/hero_section/banner_1.webp'}
                           alt={review.product.name}
                           width={48}
                           height={48}

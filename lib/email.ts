@@ -5,7 +5,7 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
-const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://www.martdigitalhub.dev').replace(/\/$/, '');
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://www.shopwebre.vn').replace(/\/$/, '');
 
 export interface EmailOptions {
     to: string | string[];
@@ -49,7 +49,7 @@ export interface NewVersionEmailData {
 export async function sendEmail(options: EmailOptions) {
     try {
         const { data, error } = await resend.emails.send({
-            from: `DigitalMart <${FROM_EMAIL}>`,
+            from: `Shop Web rẻ <${FROM_EMAIL}>`,
             to: options.to,
             subject: options.subject,
             html: options.html,
@@ -148,7 +148,7 @@ export async function sendOrderConfirmationEmail(data: OrderEmailData) {
                     Cần hỗ trợ? <a href="${SITE_URL}/profile/support" style="color: #f97316;">Liên hệ chúng tôi</a>
                 </p>
                 <p style="margin: 8px 0 0; color: #999; font-size: 12px;">
-                    © 2026 DigitalMart. All rights reserved.
+                    © 2026 Shop Web rẻ. All rights reserved.
                 </p>
             </div>
         </div>
@@ -202,7 +202,7 @@ export async function sendLicenseDeliveryEmail(data: LicenseEmailData) {
 
             <div style="background: #f8f8f8; padding: 24px; text-align: center; border-top: 1px solid #eee;">
                 <p style="margin: 0; color: #999; font-size: 12px;">
-                    © 2026 DigitalMart. All rights reserved.
+                    © 2026 Shop Web rẻ. All rights reserved.
                 </p>
             </div>
         </div>
@@ -255,7 +255,7 @@ export async function sendNewVersionEmail(data: NewVersionEmailData) {
 
             <div style="background: #f8f8f8; padding: 24px; text-align: center; border-top: 1px solid #eee;">
                 <p style="margin: 0; color: #999; font-size: 12px;">
-                    © 2026 DigitalMart. All rights reserved.
+                    © 2026 Shop Web rẻ. All rights reserved.
                 </p>
             </div>
         </div>

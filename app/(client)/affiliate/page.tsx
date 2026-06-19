@@ -3,11 +3,23 @@ import AffiliatePage from './AffiliateContent';
 
 export const metadata: Metadata = {
     title: 'Chương trình Affiliate',
-    description: 'Kiếm tiền cùng DigitalMart - Hoa hồng lên đến 20% cho mỗi đơn hàng thành công',
+    description: 'Kiếm tiền cùng Shop Web rẻ - Hoa hồng lên đến 20% cho mỗi đơn hàng thành công',
+    alternates: {
+        canonical: '/affiliate',
+    },
     openGraph: {
-        title: 'Chương trình Affiliate | DigitalMart',
-        description: 'Kiếm tiền cùng DigitalMart - Hoa hồng lên đến 20% cho mỗi đơn hàng thành công',
-    }
+        type: 'website',
+        url: '/affiliate',
+        title: 'Chương trình Affiliate | Shop Web rẻ',
+        description: 'Kiếm tiền cùng Shop Web rẻ - Hoa hồng lên đến 20% cho mỗi đơn hàng thành công',
+        images: ['/thumbnail.webp'],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Chương trình Affiliate | Shop Web rẻ',
+        description: 'Giới thiệu khách hàng và nhận hoa hồng từ đơn hàng thành công.',
+        images: ['/thumbnail.webp'],
+    },
 };
 
 export default function Page() {

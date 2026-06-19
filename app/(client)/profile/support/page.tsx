@@ -364,7 +364,7 @@ export default function SupportPage() {
             {/* Quick Contact */}
             <div className="grid md:grid-cols-3 gap-4">
                 <a
-                    href="mailto:support@digitalmart.vn"
+                    href="mailto:support@shopwebre.vn"
                     className="bg-white rounded-2xl border border-slate-100 p-5 flex items-center gap-4 hover:border-teal-200 hover:shadow-lg transition-all group"
                 >
                     <div className="w-12 h-12 bg-gradient-to-br from-teal-100 to-cyan-100 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
@@ -372,7 +372,7 @@ export default function SupportPage() {
                     </div>
                     <div>
                         <p className="font-bold text-slate-900 group-hover:text-teal-600 transition-colors">Email</p>
-                        <p className="text-sm text-slate-500">support@digitalmart.vn</p>
+                        <p className="text-sm text-slate-500">support@shopwebre.vn</p>
                     </div>
                 </a>
                 <a

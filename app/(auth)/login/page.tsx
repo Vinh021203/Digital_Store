@@ -143,25 +143,15 @@ export default function LoginPage() {
           {/* Logo — chỉ 1 ảnh, không có pseudo-element chồng */}
           <Link
             href="/"
-            className="flex items-center gap-2.5 group"
+            className="group relative h-11 w-[180px]"
             prefetch={true}
+            aria-label="Shop Web rẻ - Trang chủ"
           >
-            <Image
-              src="/favicon.png"
-              alt="DigitalMart logo"
-              width={36}
-              height={36}
-              className="rounded-xl shadow-sm"
-              priority
+            <img
+              src="/logo_webgiare_display.webp"
+              alt="Shop Web rẻ logo"
+              className="h-full w-full object-contain object-left transition-transform duration-300 group-hover:scale-[1.02]"
             />
-            <div className="flex flex-col leading-none">
-              <span className="font-black text-[15px] text-slate-900 tracking-tight">
-                Digital<span className="text-orange-500">Mart</span>
-              </span>
-              <span className="text-[8.5px] font-bold text-slate-400 tracking-[0.15em] mt-[2px]">
-                DIGITAL PRODUCTS
-              </span>
-            </div>
           </Link>
 
           {/* Back home */}
@@ -190,7 +180,7 @@ export default function LoginPage() {
                 Đăng Nhập
               </h1>
               <p className="text-sm text-slate-500">
-                Truy cập thư viện sản phẩm số của bạn
+                Truy cập thư viện giao diện website của bạn
               </p>
             </div>
 

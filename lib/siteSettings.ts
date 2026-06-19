@@ -51,9 +51,9 @@ export interface SiteSettings {
 
 // Default settings when not in database
 const defaultSettings: SiteSettings = {
-    site_name: 'DigitalMart',
-    site_tagline: 'Nền tảng mua bán sản phẩm số hàng đầu',
-    site_description: 'Nền tảng mua bán sản phẩm số: Template, Plugin, Ebook, Course chất lượng cao',
+    site_name: 'Shop Web rẻ',
+    site_tagline: 'Kho giao diện website đẹp, dễ dùng, giá hợp lý',
+    site_description: 'Mua giao diện website, template, landing page, UI kit, dashboard và source code chất lượng cao tại Shop Web rẻ.',
     contact_email: 'veutong961@gmail.com',
     contact_phone: '0971 386 588',
     contact_address: 'Hạ Long, Quảng Ninh, Việt Nam',

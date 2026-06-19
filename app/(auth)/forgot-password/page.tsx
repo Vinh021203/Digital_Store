@@ -180,7 +180,7 @@ const ForgotPasswordPage = () => {
       <div className="hidden lg:block lg:w-1/2 relative bg-slate-900">
         <img
           src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1600&q=80"
-          alt="Digital Products"
+          alt="Shop Web rẻ"
           className="absolute inset-0 w-full h-full object-cover opacity-50"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-orange-900/90 via-slate-900/70 to-slate-900/40 flex flex-col justify-end p-16">
@@ -201,7 +201,7 @@ const ForgotPasswordPage = () => {
 
           <blockquote className="space-y-4">
             <p className="text-2xl font-bold text-white leading-relaxed">
-              "Bảo mật tài khoản luôn là ưu tiên hàng đầu. DigitalMart giúp việc khôi phục mật khẩu trở nên
+              "Bảo mật tài khoản luôn là ưu tiên hàng đầu. Shop Web rẻ giúp việc khôi phục mật khẩu trở nên
               đơn giản và an toàn."
             </p>
             <footer className="flex items-center gap-4">

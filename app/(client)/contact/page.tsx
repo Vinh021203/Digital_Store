@@ -3,11 +3,23 @@ import ContactContent from './ContactContent';
 
 export const metadata: Metadata = {
     title: 'Liên hệ',
-    description: 'Liên hệ với DigitalMart - Đội ngũ hỗ trợ 24/7 sẵn sàng giải đáp mọi thắc mắc của bạn',
+    description: 'Liên hệ với Shop Web rẻ - Đội ngũ hỗ trợ 24/7 sẵn sàng giải đáp mọi thắc mắc của bạn',
+    alternates: {
+        canonical: '/contact',
+    },
     openGraph: {
-        title: 'Liên hệ | DigitalMart',
-        description: 'Liên hệ với DigitalMart - Đội ngũ hỗ trợ 24/7 sẵn sàng giải đáp mọi thắc mắc của bạn',
-    }
+        type: 'website',
+        url: '/contact',
+        title: 'Liên hệ | Shop Web rẻ',
+        description: 'Liên hệ với Shop Web rẻ - Đội ngũ hỗ trợ 24/7 sẵn sàng giải đáp mọi thắc mắc của bạn',
+        images: ['/thumbnail.webp'],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Liên hệ | Shop Web rẻ',
+        description: 'Liên hệ đội ngũ hỗ trợ Shop Web rẻ.',
+        images: ['/thumbnail.webp'],
+    },
 };
 
 export default function ContactPage() {

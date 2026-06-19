@@ -2,18 +2,23 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
     title: 'Cộng đồng - Kết nối & Chia sẻ',
-    description: 'Cộng đồng developer & designer Việt Nam. Chia sẻ kiến thức, kết nối và học hỏi cùng nhau về thiết kế web, lập trình và digital products.',
+    description: 'Cộng đồng developer & designer Việt Nam. Chia sẻ kiến thức, kết nối và học hỏi cùng nhau về thiết kế web, lập trình và giao diện website.',
     keywords: ['community', 'developer community', 'designer community', 'forum', 'thảo luận', 'chia sẻ kiến thức', 'cộng đồng lập trình'],
+    alternates: {
+        canonical: '/community',
+    },
     openGraph: {
-        title: 'Cộng đồng Developer & Designer | DigitalMart',
+        title: 'Cộng đồng Developer & Designer | Shop Web rẻ',
         description: 'Nơi kết nối và chia sẻ kiến thức của cộng đồng developer & designer',
-        images: ['/og-community.jpg'],
+        url: '/community',
+        images: ['/thumbnail.webp'],
         type: 'website',
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'Cộng đồng Developer & Designer | DigitalMart',
+        title: 'Cộng đồng Developer & Designer | Shop Web rẻ',
         description: 'Nơi kết nối và chia sẻ kiến thức',
+        images: ['/thumbnail.webp'],
     },
 };
 

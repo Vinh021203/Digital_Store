@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next';
+import type { Metadata } from 'next';
 import { Be_Vietnam_Pro } from 'next/font/google';
 import { Suspense } from 'react';
 import './globals.css';
@@ -7,7 +7,36 @@ import './nprogress.css';
 import Providers from './providers';
 import { NavigationProgress } from '@/components/layout';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.martdigitalhub.dev';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.shopwebre.vn';
+const organizationSchema = [
+    {
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: 'Shop Web rẻ',
+        url: siteUrl,
+        logo: `${siteUrl}/logo_webgiare_display.webp`,
+        email: 'mailto:veutong961@gmail.com',
+        telephone: '+84971386588',
+        address: {
+            '@type': 'PostalAddress',
+            addressLocality: 'Hạ Long',
+            addressRegion: 'Quảng Ninh',
+            addressCountry: 'VN',
+        },
+    },
+    {
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: 'Shop Web rẻ',
+        url: siteUrl,
+        inLanguage: 'vi-VN',
+        potentialAction: {
+            '@type': 'SearchAction',
+            target: `${siteUrl}/products?search={search_term_string}`,
+            'query-input': 'required name=search_term_string',
+        },
+    },
+];
 
 const beVietnamPro = Be_Vietnam_Pro({
     subsets: ['latin', 'vietnamese'],
@@ -18,14 +47,27 @@ const beVietnamPro = Be_Vietnam_Pro({
 
 export const metadata: Metadata = {
     title: {
-        default: 'DigitalMart - Kho template website, theme và sản phẩm số',
-        template: '%s | DigitalMart',
+        default: 'Shop Web rẻ - Giao diện website, template và landing page',
+        template: '%s | Shop Web rẻ',
     },
-    description: 'Marketplace sản phẩm số chất lượng cao. Mua template website, theme, landing page, UI kit, dashboard và source code để triển khai dự án chuyên nghiệp nhanh hơn.',
-    keywords: ['template website', 'theme website', 'landing page', 'ui kit', 'dashboard template', 'figma', 'wordpress', 'react', 'nextjs', 'source code', 'sản phẩm số'],
-    authors: [{ name: 'DigitalMart Team' }],
-    creator: 'DigitalMart',
-    publisher: 'DigitalMart',
+    description: 'Mua giao diện website, template, landing page, UI kit và dashboard chất lượng cao. Xem demo trước khi mua, tải file nhanh, hỗ trợ tận tâm.',
+    keywords: [
+        'shop web rẻ',
+        'mua giao diện website',
+        'giao diện website',
+        'giao diện website bán hàng',
+        'template website',
+        'theme website',
+        'landing page',
+        'landing page bán hàng',
+        'ui kit',
+        'dashboard template',
+        'source code website',
+        'mẫu website đẹp',
+    ],
+    authors: [{ name: 'Đội ngũ Shop Web rẻ' }],
+    creator: 'Shop Web rẻ',
+    publisher: 'Shop Web rẻ',
     formatDetection: {
         email: false,
         address: false,
@@ -39,22 +81,22 @@ export const metadata: Metadata = {
         type: 'website',
         locale: 'vi_VN',
         url: siteUrl,
-        siteName: 'DigitalMart',
-        title: 'DigitalMart - Kho template website, theme và sản phẩm số',
-        description: 'Mua template website, theme, landing page, UI kit và dashboard chất lượng cao. Xem demo trước khi mua, tải file nhanh.',
+        siteName: 'Shop Web rẻ',
+        title: 'Shop Web rẻ - Giao diện website, template và landing page',
+        description: 'Kho giao diện website, template, landing page, UI kit và dashboard chất lượng cao cho thị trường Việt Nam.',
         images: [
             {
-                url: '/thumbnail.png',
+                url: '/thumbnail.webp',
                 width: 1200,
                 height: 630,
-                alt: 'DigitalMart - Marketplace template, theme và UI kit',
+                alt: 'Shop Web rẻ - Kho giao diện website, template và landing page',
             },
         ],
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'DigitalMart - Kho template website, theme và sản phẩm số',
-        description: 'Mua template website, theme, landing page, UI kit và dashboard chất lượng cao.',
+        title: 'Shop Web rẻ - Giao diện website, template và landing page',
+        description: 'Mua giao diện website, template, landing page và UI kit chất lượng cao. Xem demo trước khi mua và tải file nhanh.',
         images: ['/thumbnail.webp'],
     },
     robots: {
@@ -75,7 +117,6 @@ export const metadata: Metadata = {
     },
 };
 
-// Loading fallback for Suspense
 function LoadingFallback() {
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50">
@@ -84,7 +125,7 @@ function LoadingFallback() {
                 <div className="relative animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-orange-600"></div>
             </div>
             <p className="mt-6 text-lg font-bold bg-gradient-to-r from-orange-600 via-red-600 to-amber-600 bg-clip-text text-transparent animate-pulse">
-                DigitalMart
+                Shop Web rẻ
             </p>
         </div>
     );
@@ -98,11 +139,14 @@ export default function RootLayout({
     return (
         <html lang="vi">
             <head>
-                {/* Preconnect to critical origins for faster loading */}
                 <link rel="preconnect" href="https://enxndlrdqotqaoatjkvo.supabase.co" />
                 <link rel="dns-prefetch" href="https://enxndlrdqotqaoatjkvo.supabase.co" />
                 <link rel="preconnect" href="https://images.unsplash.com" />
                 <link rel="dns-prefetch" href="https://images.unsplash.com" />
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+                />
             </head>
             <body className={`${beVietnamPro.variable} font-sans antialiased bg-slate-50`} suppressHydrationWarning>
                 <NavigationProgress />
@@ -115,4 +159,3 @@ export default function RootLayout({
         </html>
     );
 }
-

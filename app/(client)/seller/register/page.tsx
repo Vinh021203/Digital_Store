@@ -130,10 +130,10 @@ export default function SellerRegisterPage() {
                                 <Store size={28} className="text-orange-300" />
                             </div>
                             <h1 className="text-3xl md:text-4xl font-black tracking-tight mb-3">
-                                Mở gian hàng DigitalMart
+                                Mở gian hàng Shop Web rẻ
                             </h1>
                             <p className="text-slate-300 leading-7 mb-8">
-                                Tạo hồ sơ người bán để đăng sản phẩm số, theo dõi doanh thu và gửi sản phẩm cho admin duyệt.
+                                Tạo hồ sơ người bán để đăng giao diện website, theo dõi doanh thu và gửi sản phẩm cho admin duyệt.
                             </p>
                             <div className="space-y-4">
                                 {[

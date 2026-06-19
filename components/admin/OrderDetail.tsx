@@ -184,7 +184,7 @@ export default function OrderDetail({ orderId }: { orderId: string }) {
                         <div key={item.id} className="flex items-center gap-4 p-4 bg-slate-50 rounded-xl">
                             <div className="w-16 h-16 rounded-lg overflow-hidden relative flex-shrink-0">
                                 <Image
-                                    src={item.product_image || '/placeholder.png'}
+                                    src={item.product_image || '/hero_section/banner_1.webp'}
                                     alt={item.product_name}
                                     fill
                                     className="object-cover"

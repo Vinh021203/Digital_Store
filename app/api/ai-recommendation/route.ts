@@ -12,7 +12,9 @@ const LABELS = {
     },
     tech: {
         react: 'React / Next.js',
-        wordpress: 'WordPress',
+        figma: 'Figma / UI Kit',
+        vue: 'Vue.js',
+        backend: 'Laravel / Django / .NET',
         html: 'HTML/CSS thuần',
         any: 'linh hoạt, không bắt buộc nền tảng',
     },
@@ -39,7 +41,7 @@ function fallbackReasoning(answers: AIRecommendationFilters, hasProducts: boolea
         return `Mình chưa tìm thấy sản phẩm khớp đủ các tiêu chí: ${labelOf('goal', answers.goal)}, nền tảng ${labelOf('tech', answers.tech)}, phong cách ${labelOf('style', answers.style)} và ngân sách ${labelOf('budget', answers.budget)}. Bạn có thể nới ngân sách hoặc chọn nền tảng linh hoạt hơn để có thêm lựa chọn phù hợp.`;
     }
 
-    return `Dựa trên mục tiêu ${labelOf('goal', answers.goal)}, nền tảng ${labelOf('tech', answers.tech)}, phong cách ${labelOf('style', answers.style)} và ngân sách ${labelOf('budget', answers.budget)}, mình đã lọc các sản phẩm phù hợp nhất từ kho DigitalMart. Ưu tiên là sản phẩm đúng nhu cầu triển khai, dễ tùy biến và có mức giá nằm trong phạm vi bạn chọn.`;
+    return `Dựa trên mục tiêu ${labelOf('goal', answers.goal)}, nền tảng ${labelOf('tech', answers.tech)}, phong cách ${labelOf('style', answers.style)} và ngân sách ${labelOf('budget', answers.budget)}, mình đã lọc các sản phẩm phù hợp nhất từ kho Shop Web rẻ. Ưu tiên là sản phẩm đúng nhu cầu triển khai, dễ tùy biến và có mức giá nằm trong phạm vi bạn chọn.`;
 }
 
 function buildPrompt(answers: AIRecommendationFilters, products: Awaited<ReturnType<typeof fetchAIProducts>>) {
@@ -50,7 +52,7 @@ function buildPrompt(answers: AIRecommendationFilters, products: Awaited<ReturnT
         : 'Không có sản phẩm nào khớp đủ điều kiện.';
 
     return `
-Bạn là AI tư vấn sản phẩm số cho DigitalMart.
+Bạn là AI tư vấn giao diện website cho Shop Web rẻ.
 
 Tiêu chí khách chọn:
 - Mục tiêu: ${labelOf('goal', answers.goal)}
@@ -79,7 +81,7 @@ function sanitizeAnswers(body: unknown): AIRecommendationFilters {
 
     return {
         goal: pickAllowed(value.goal, ['business', 'ecommerce', 'portfolio', 'app'] as const),
-        tech: pickAllowed(value.tech, ['react', 'wordpress', 'html', 'any'] as const),
+        tech: pickAllowed(value.tech, ['react', 'figma', 'html', 'vue', 'backend', 'any'] as const),
         style: pickAllowed(value.style, ['minimal', 'modern', 'creative', 'corporate'] as const),
         budget: pickAllowed(value.budget, ['low', 'medium', 'high'] as const),
     };

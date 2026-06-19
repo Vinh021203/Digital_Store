@@ -254,7 +254,7 @@ export default function ProfileCommunityPage() {
                                     <div className="flex items-center gap-3">
                                         <div className="relative">
                                             <Image
-                                                src={profile?.avatar || '/default-avatar.jpg'}
+                                                src={profile?.avatar || '/favicon.png'}
                                                 alt={profile?.name || 'User'}
                                                 width={44}
                                                 height={44}

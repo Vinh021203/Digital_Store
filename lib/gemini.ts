@@ -52,7 +52,7 @@ const QUICK_REPLIES = {
 
 const FALLBACK_MESSAGES = {
     default: `Mình có thể giúp bạn tìm themes, templates, landing pages, hướng dẫn thanh toán, download và license. Bạn đang cần sản phẩm kiểu nào?`,
-    payment: `DigitalMart hỗ trợ thanh toán qua chuyển khoản ngân hàng/QR và các cổng thanh toán đang bật trên website. Sau khi thanh toán thành công, bạn có thể tải sản phẩm trong Profile > Downloads.`,
+    payment: `Shop Web rẻ hỗ trợ thanh toán qua chuyển khoản ngân hàng/QR và các cổng thanh toán đang bật trên website. Sau khi thanh toán thành công, bạn có thể tải sản phẩm trong Profile > Downloads.`,
     download: `Sau khi mua hàng, bạn vào Profile > Downloads để tải file. Nếu chưa thấy file, hãy kiểm tra trạng thái đơn hàng hoặc liên hệ hỗ trợ kèm mã đơn hàng.`,
     refund: `Chính sách hoàn tiền thường được xét theo từng đơn hàng, đặc biệt nếu sản phẩm chưa được tải xuống hoặc không đúng mô tả. Bạn nên gửi mã đơn hàng và lý do để được hỗ trợ nhanh hơn.`,
     license: `Regular License thường phù hợp cho một website/dự án. Extended License phù hợp khi cần dùng rộng hơn. Nếu bạn cho mình biết nhu cầu triển khai, mình sẽ gợi ý loại license hợp lý.`,
@@ -66,7 +66,7 @@ function matchIntent(message: string) {
     if (/(hoàn tiền|refund|đổi trả)/i.test(lower)) return 'refund';
     if (/(license|bản quyền|giấy phép|key)/i.test(lower)) return 'license';
     if (/(hỗ trợ|support|liên hệ|contact|help)/i.test(lower)) return 'support';
-    if (/(theme|template|landing|dashboard|admin|shop|store|wordpress|react|next|portfolio|sản phẩm|giao diện|mẫu)/i.test(lower)) return 'product';
+    if (/(theme|template|landing|dashboard|admin|shop|store|figma|html|css|javascript|react|next|vue|laravel|django|dotnet|portfolio|sản phẩm|giao diện|mẫu)/i.test(lower)) return 'product';
     if (/(chào|hello|hi|xin chào|hey|alo)/i.test(lower)) return 'greeting';
     return 'default';
 }
@@ -104,7 +104,11 @@ function parseProductFilters(message: string) {
     if (normalized.includes('landing') || normalized.includes('trang dich')) keywords.push('landing');
     if (normalized.includes('dashboard') || normalized.includes('admin') || normalized.includes('quan tri')) keywords.push('dashboard', 'admin');
     if (normalized.includes('shop') || normalized.includes('store') || normalized.includes('ecommerce') || normalized.includes('ban hang')) keywords.push('shop', 'store', 'ecommerce');
-    if (normalized.includes('wordpress') || normalized.includes('wp')) keywords.push('wordpress', 'theme');
+    if (normalized.includes('figma')) keywords.push('figma', 'ui kit');
+    if (normalized.includes('vue')) keywords.push('vue', 'vue.js');
+    if (normalized.includes('laravel')) keywords.push('laravel', 'php');
+    if (normalized.includes('django')) keywords.push('django', 'python');
+    if (normalized.includes('.net') || normalized.includes('dotnet')) keywords.push('.net', 'asp.net');
     if (normalized.includes('react') || normalized.includes('next')) keywords.push('react', 'next');
     if (normalized.includes('portfolio') || normalized.includes('cv')) keywords.push('portfolio', 'cv');
     if (normalized.includes('figma')) keywords.push('figma');
@@ -222,7 +226,7 @@ function buildPrompt(userMessage: string, history: ChatHistoryMessage[], searchR
     ].filter(Boolean).join('\n') || 'Không có bộ lọc rõ ràng.';
 
     return `
-Bạn là trợ lý AI của DigitalMart, một website bán sản phẩm số như theme, template, landing page, dashboard và UI kit.
+Bạn là trợ lý AI của Shop Web rẻ, một website bán giao diện website như theme, template, landing page, dashboard và UI kit.
 
 Yêu cầu:
 - Trả lời bằng tiếng Việt, thân thiện, ngắn gọn, tự nhiên.
@@ -326,7 +330,7 @@ function fallbackResponse(intent: string, searchResult: ProductSearchResult): Ch
 
     if (intent === 'product' && searchResult.hasHardFilters && !searchResult.hasExactMatches) {
         return {
-            message: `Hiện mình chưa thấy sản phẩm nào khớp đúng ${filterSummary(searchResult)} trong kho DigitalMart. Bạn có thể nới ngân sách hoặc đổi loại sản phẩm để mình tìm tiếp nhé.`,
+            message: `Hiện mình chưa thấy sản phẩm nào khớp đúng ${filterSummary(searchResult)} trong kho Shop Web rẻ. Bạn có thể nới ngân sách hoặc đổi loại sản phẩm để mình tìm tiếp nhé.`,
             quickReplies: ['Nới ngân sách', 'Tìm loại khác', 'Xem sản phẩm phổ biến'],
         };
     }

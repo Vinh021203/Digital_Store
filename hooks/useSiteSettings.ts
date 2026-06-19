@@ -41,9 +41,9 @@ export interface PaymentSettings {
 
 // Default settings before data loads
 const defaultPublicSettings: PublicSiteSettings = {
-    siteName: 'DigitalMart',
-    tagline: 'Nền tảng mua bán sản phẩm số hàng đầu',
-    description: '',
+    siteName: 'Shop Web rẻ',
+    tagline: 'Kho giao diện website đẹp, dễ dùng, giá hợp lý',
+    description: 'Mua giao diện website, template, landing page, UI kit, dashboard và source code chất lượng cao.',
     email: '',
     phone: '',
     address: '',

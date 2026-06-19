@@ -23,7 +23,7 @@ import {
 } from 'lucide-react';
 import ProductVersionManager from '@/components/seller/ProductVersionManager';
 import RichTextEditor from '@/components/admin/RichTextEditor';
-import { uploadNewVersion } from '@/lib/productFiles';
+import { getCurrentVersion, updateVersion, uploadNewVersion } from '@/lib/productFiles';
 import {
   getProductById,
   createProduct,
@@ -88,6 +88,8 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
     size: number;
     name: string;
   } | null>(null);
+  const [currentProductFileId, setCurrentProductFileId] = useState<number | null>(null);
+  const [savedVersion, setSavedVersion] = useState('');
 
   const [product, setProduct] = useState<EditorProduct>({
     name: '',
@@ -98,7 +100,7 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
     format: 'Theme',
     image: '',
     gallery: [],
-    author: 'DigitalMart',
+    author: 'Shop Web rẻ',
     isActive: true,
     isFeatured: false,
     isNew: true,
@@ -127,6 +129,9 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
       if (isEditMode && productId) {
         const found = await getProductById(Number(productId));
         if (found) {
+          const currentFile = await getCurrentVersion(found.id);
+          setCurrentProductFileId(currentFile?.id ?? null);
+          setSavedVersion(currentFile?.version ?? '');
           setProduct({
             name: found.name,
             price: Number(found.price),
@@ -141,9 +146,9 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
             isFeatured: found.is_featured,
             isNew: found.is_new,
             demoUrl: found.demo_url || '',
-            fileFormat: '',
-            compatibility: '',
-            version: '1.0.0',
+            fileFormat: found.file_format || '',
+            compatibility: found.compatibility || '',
+            version: currentFile?.version || '',
             tags: found.tags || [],
             features: found.features || [],
             techStack: found.tech_stack || [],
@@ -297,11 +302,13 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
         images: product.gallery,
         format: product.format,
         category_id: product.category ? Number(product.category) : null,
-        author: product.author || 'DigitalMart',
+        author: product.author || 'Shop Web rẻ',
         is_new: product.isNew,
         is_featured: product.isFeatured,
         status: product.isActive ? 'active' : 'draft',
         demo_url: product.demoUrl || null,
+        file_format: product.fileFormat || null,
+        compatibility: product.compatibility || null,
         tags: product.tags,
         features: product.features,
         tech_stack: product.techStack,
@@ -310,6 +317,18 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
 
       if (isEditMode && productId) {
         await updateProduct(Number(productId), payload);
+        if (
+          currentProductFileId &&
+          product.version.trim() &&
+          product.version.trim() !== savedVersion
+        ) {
+          const versionUpdated = await updateVersion(currentProductFileId, {
+            version: product.version.trim(),
+          });
+          if (!versionUpdated) {
+            throw new Error('Product saved, but the file version could not be updated');
+          }
+        }
         toast.success('Cập nhật sản phẩm thành công!');
       } else {
         const newProduct = await createProduct(payload);
@@ -450,7 +469,7 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
               </label>
               <div className="flex flex-col sm:flex-row bg-slate-50 border border-slate-200 rounded-xl overflow-hidden">
                 <span className="px-4 py-2.5 text-slate-500 text-xs sm:text-sm border-b sm:border-b-0 sm:border-r border-slate-200">
-                  https://DigitalMart.vn/product/
+                  https://shopwebre.vn/product/
                 </span>
                 <input
                   type="text"
@@ -528,9 +547,15 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
                   type="text"
                   value={product.version}
                   onChange={e => setProduct({ ...product, version: e.target.value })}
-                  className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-orange-500"
-                  placeholder="1.0.0"
+                  disabled={isEditMode && !currentProductFileId}
+                  className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-orange-500 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400"
+                  placeholder={isEditMode && !currentProductFileId ? 'Chưa có file sản phẩm' : '1.0.0'}
                 />
+                {isEditMode && !currentProductFileId && (
+                  <p className="mt-1.5 text-xs text-slate-400">
+                    Phiên bản được quản lý theo file sản phẩm trong lịch sử phiên bản.
+                  </p>
+                )}
               </div>
             </div>
           </div>

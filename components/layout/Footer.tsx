@@ -308,14 +308,14 @@ const CATEGORY_ITEMS = [
     label: "Mini Apps & Tools",
   },
   {
-    href: "/products?category=wordpress",
-    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/wordpress/wordpress-original.svg",
-    label: "WordPress",
+    href: "/products?search=React",
+    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg",
+    label: "React Templates",
   },
   {
-    href: "/products?category=ecommerce",
-    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/woocommerce/woocommerce-original.svg",
-    label: "E-commerce",
+    href: "/products?search=Vue",
+    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vuejs/vuejs-original.svg",
+    label: "Vue.js Templates",
   },
   {
     href: "/products?category=marketing",
@@ -376,9 +376,9 @@ const Footer = () => {
   const brands = React.useMemo(
     () => [
       {
-        name: "WordPress",
-        color: "#21759b",
-        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/wordpress/wordpress-original.svg",
+        name: "Django",
+        color: "#092e20",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/django/django-plain.svg",
       },
       {
         name: "React",
@@ -545,29 +545,17 @@ const Footer = () => {
           <div className="lg:grid lg:grid-cols-4 lg:gap-8 lg:mb-12">
             {/* ── CỘT 1: Brand + Contact + Social ── */}
             <div className="mb-6 lg:mb-0 space-y-4 lg:space-y-6">
-              <div className="flex items-center gap-3 group">
-                <div className="relative flex-shrink-0">
-                  <div className="absolute inset-0 bg-gradient-to-r from-orange-600 via-red-600 to-amber-600 rounded-2xl blur-lg opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
-                  <img
-                    src="/favicon.png"
-                    alt="DigitalMart Logo"
-                    className="relative w-10 h-10 lg:w-12 lg:h-12 rounded-2xl shadow-lg transform group-hover:rotate-6 transition-transform duration-500"
-                  />
-                </div>
-                <div className="flex flex-col">
-                  <h3 className="font-serif text-xl lg:text-2xl font-bold bg-gradient-to-r from-orange-400 via-red-400 to-amber-400 bg-clip-text text-transparent tracking-tight">
-                    DigitalMart
-                  </h3>
-                  <span className="text-[10px] font-semibold text-orange-500 -mt-0.5 tracking-wider">
-                    DIGITAL PRODUCTS
-                  </span>
-                </div>
+              <div className="group relative h-14 w-[230px]">
+                <img
+                  src="/logo_webgiare_footer.webp"
+                  alt="Shop Web rẻ"
+                  className="h-full w-full object-contain object-left transition-transform duration-300 group-hover:scale-[1.02]"
+                />
               </div>
 
               <p className="hidden lg:block text-sm leading-relaxed text-slate-400">
-                DigitalMart là marketplace cung cấp các sản phẩm số chất lượng
-                cao như themes, templates, plugin, UI kits, và nhiều tài nguyên
-                thiết kế khác.
+                Shop Web rẻ là kho giao diện website, template, landing page và UI kit
+                chất lượng cao dành cho cá nhân, doanh nghiệp và agency tại Việt Nam.
               </p>
 
               <div className="grid grid-cols-2 lg:grid-cols-1 gap-x-4 gap-y-2 text-sm text-slate-400">
@@ -740,7 +728,7 @@ const Footer = () => {
           <div className="border-t border-slate-800/50 pt-5 mt-2 lg:mt-0">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-slate-500">
               <p className="flex flex-wrap items-center justify-center sm:justify-start gap-x-2 gap-y-0.5">
-                <span>&copy; {new Date().getFullYear()} DigitalMart Corp.</span>
+                <span>&copy; {new Date().getFullYear()} Shop Web rẻ.</span>
                 <span className="opacity-40">•</span>
                 <span className="flex items-center gap-1">
                   Made with{" "}
@@ -759,7 +747,7 @@ const Footer = () => {
                   { href: "/policy/terms", label: "Điều khoản" },
                   { href: "/policy/refund", label: "Hoàn tiền" },
                   { href: "/contact", label: "Liên hệ" },
-                  { href: "/sitemap", label: "Sitemap" },
+                  { href: "/sitemap.xml", label: "Sitemap" },
                 ].map((link) => (
                   <Link
                     key={link.href}

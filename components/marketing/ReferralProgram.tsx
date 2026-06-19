@@ -29,7 +29,7 @@ export default function ReferralProgram({
 }: ReferralProgramProps) {
     const { addToast } = useToast();
     const [copied, setCopied] = useState(false);
-    const referralLink = `https://digitalmart.vn/ref/${referralCode}`;
+    const referralLink = `https://shopwebre.vn/ref/${referralCode}`;
 
     const handleCopy = (text: string, label: string) => {
         navigator.clipboard.writeText(text);
@@ -39,7 +39,7 @@ export default function ReferralProgram({
     };
 
     const handleShare = (platform: string) => {
-        const message = `🎁 Nhận voucher ${(reward / 1000).toFixed(0)}K khi mua hàng trên DigitalMart! Dùng mã: ${referralCode} hoặc link: ${referralLink}`;
+        const message = `🎁 Nhận voucher ${(reward / 1000).toFixed(0)}K khi mua hàng trên Shop Web rẻ! Dùng mã: ${referralCode} hoặc link: ${referralLink}`;
         let shareUrl = '';
 
         switch (platform) {
@@ -53,7 +53,7 @@ export default function ReferralProgram({
                 shareUrl = `https://www.facebook.com/dialog/send?link=${encodeURIComponent(referralLink)}&app_id=123456789`;
                 break;
             case 'email':
-                shareUrl = `mailto:?subject=Tặng bạn voucher ${(reward / 1000).toFixed(0)}K từ DigitalMart&body=${encodeURIComponent(message)}`;
+                shareUrl = `mailto:?subject=Tặng bạn voucher ${(reward / 1000).toFixed(0)}K từ Shop Web rẻ&body=${encodeURIComponent(message)}`;
                 break;
         }
         if (shareUrl) window.open(shareUrl, '_blank', 'width=600,height=400');

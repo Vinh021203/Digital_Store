@@ -17,10 +17,10 @@ function AffiliatePageContent() {
     const { addToast } = useToast();
     const [copied, setCopied] = useState(false);
 
-    const affiliateCode = profile?.affiliate_code || 'DIGITALMART';
+    const affiliateCode = profile?.affiliate_code || 'SHOPWEBRE';
     const affiliateLink = typeof window !== 'undefined'
         ? `${window.location.origin}?ref=${affiliateCode}`
-        : `https://digitalmart.vn?ref=${affiliateCode}`;
+        : `https://shopwebre.vn?ref=${affiliateCode}`;
 
     const handleCopy = () => {
         navigator.clipboard.writeText(affiliateLink);
@@ -129,7 +129,7 @@ function AffiliatePageContent() {
                         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-6 leading-tight">
                             Kiếm tiền cùng{' '}
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-300">
-                                DigitalMart
+                                Shop Web rẻ
                             </span>
                         </h1>
 
@@ -216,7 +216,7 @@ function AffiliatePageContent() {
                             Cách thức <span className="text-orange-600">hoạt động</span>
                         </h2>
                         <p className="text-slate-500 max-w-xl mx-auto">
-                            Chỉ 4 bước đơn giản để bắt đầu kiếm tiền với DigitalMart Affiliate
+                            Chỉ 4 bước đơn giản để bắt đầu kiếm tiền với Shop Web rẻ Affiliate
                         </p>
                     </div>
 
@@ -252,7 +252,7 @@ function AffiliatePageContent() {
                             Tại sao chọn <span className="text-orange-600">chúng tôi?</span>
                         </h2>
                         <p className="text-slate-500 max-w-xl mx-auto">
-                            Chương trình affiliate hấp dẫn nhất thị trường sản phẩm số
+                            Chương trình affiliate hấp dẫn nhất thị trường giao diện website
                         </p>
                     </div>
 

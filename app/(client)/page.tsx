@@ -1,43 +1,49 @@
-﻿import { Metadata } from 'next';
+import { Metadata } from 'next';
 import HomePage from '@/components/pages/HomePage';
 import { getHomepageData } from '@/lib/homepageData';
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.shopwebre.vn';
+
 export const metadata: Metadata = {
   title: {
-    absolute: 'DigitalMart - Kho template website, theme và sản phẩm số',
+    absolute: 'Shop Web rẻ - Giao diện website, template và landing page',
   },
-  description: 'Mua template website, theme, landing page, dashboard và UI kit chất lượng cao. Xem demo trước khi mua, tải file nhanh và triển khai dự án chuyên nghiệp.',
+  description: 'Mua giao diện website, template, landing page, UI kit và dashboard chất lượng cao. Xem demo trước khi mua, tải file nhanh, hỗ trợ tận tâm.',
   alternates: {
-    canonical: '/',
+    canonical: siteUrl,
   },
   keywords: [
-    'template bán hàng',
+    'shop web rẻ',
+    'mua giao diện website',
+    'giao diện website',
+    'giao diện website bán hàng',
+    'template website',
     'theme website',
-    'landing page',
-    'UI kit',
+    'landing page đẹp',
+    'landing page bán hàng',
+    'source code website',
+    'mẫu website đẹp',
+    'ui kit',
     'dashboard template',
-    'digital products',
-    'sản phẩm số',
-    'DigitalMart',
   ],
   openGraph: {
     type: 'website',
     url: '/',
-    title: 'DigitalMart - Kho template website, theme và sản phẩm số',
-    description: 'Kho template và sản phẩm số giúp bạn dựng website, landing page và giao diện bán hàng chuyên nghiệp nhanh hơn.',
+    title: 'Shop Web rẻ - Giao diện website, template và landing page',
+    description: 'Kho giao diện website, template, landing page, UI kit và dashboard giúp bạn triển khai website nhanh hơn, đẹp hơn và tiết kiệm chi phí.',
     images: [
       {
-        url: '/thumbnail.png',
+        url: '/thumbnail.webp',
         width: 1200,
         height: 630,
-        alt: 'DigitalMart - Marketplace template, theme và UI kit',
+        alt: 'Shop Web rẻ - Kho giao diện website, template và landing page',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'DigitalMart - Kho template website, theme và sản phẩm số',
-    description: 'Mua template website, theme, landing page và UI kit chất lượng cao. Xem demo trước khi mua và tải file nhanh.',
+    title: 'Shop Web rẻ - Giao diện website, template và landing page',
+    description: 'Mua giao diện website, template, landing page và UI kit chất lượng cao. Xem demo trước khi mua và tải file nhanh.',
     images: ['/thumbnail.webp'],
   },
 };
@@ -45,31 +51,11 @@ export const metadata: Metadata = {
 export default async function Page() {
   const homepageData = await getHomepageData();
 
-  const structuredData = {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    name: 'DigitalMart',
-    url: process.env.NEXT_PUBLIC_SITE_URL || 'https://www.martdigitalhub.dev',
-    description: metadata.description,
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.martdigitalhub.dev'}/products?search={search_term_string}`,
-      'query-input': 'required name=search_term_string',
-    },
-  };
-
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-      />
-      <HomePage
-        initialProducts={homepageData.products}
-        initialCategories={homepageData.categories}
-        initialBlogPosts={homepageData.blogPosts}
-      />
-    </>
+    <HomePage
+      initialProducts={homepageData.products}
+      initialCategories={homepageData.categories}
+      initialBlogPosts={homepageData.blogPosts}
+    />
   );
 }
-

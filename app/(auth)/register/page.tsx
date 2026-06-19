@@ -188,23 +188,17 @@ const RegisterPage = () => {
             {/* Right Column - Form */}
             <div className="w-full lg:w-[46%] flex flex-col h-full bg-white">
                 <div className="flex items-center justify-between px-6 pt-6 sm:px-8 flex-shrink-0">
-                    <Link href="/" className="flex items-center gap-2.5 group" prefetch={true}>
-                        <Image
-                            src="/favicon.png"
-                            alt="DigitalMart logo"
-                            width={36}
-                            height={36}
-                            className="rounded-xl shadow-sm"
-                            priority
+                    <Link
+                        href="/"
+                        className="group relative h-11 w-[180px]"
+                        prefetch={true}
+                        aria-label="Shop Web rẻ - Trang chủ"
+                    >
+                        <img
+                            src="/logo_webgiare_display.webp"
+                            alt="Shop Web rẻ logo"
+                            className="h-full w-full object-contain object-left transition-transform duration-300 group-hover:scale-[1.02]"
                         />
-                        <div className="flex flex-col leading-none">
-                            <span className="font-black text-[15px] text-slate-900 tracking-tight">
-                                Digital<span className="text-orange-500">Mart</span>
-                            </span>
-                            <span className="mt-[2px] text-[8.5px] font-bold tracking-[0.15em] text-slate-400">
-                                DIGITAL PRODUCTS
-                            </span>
-                        </div>
                     </Link>
 
                     <Link

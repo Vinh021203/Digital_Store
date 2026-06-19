@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Get site URL for download link
-        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.martdigitalhub.dev';
+        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.shopwebre.vn';
 
         // Send license delivery email
         await sendLicenseDeliveryEmail({

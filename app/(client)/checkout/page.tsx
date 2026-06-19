@@ -9,7 +9,7 @@ export const metadata: Metadata = {
         follow: false,
     },
     openGraph: {
-        title: 'Thanh toán | DigitalMart',
+        title: 'Thanh toán | Shop Web rẻ',
         description: 'Hoàn tất đơn hàng của bạn - Thanh toán an toàn và bảo mật',
     }
 };

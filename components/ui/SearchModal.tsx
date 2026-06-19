@@ -40,7 +40,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
 
   // Load recent searches from localStorage
   useEffect(() => {
-    const saved = localStorage.getItem('digitalmart_recent_searches');
+    const saved = localStorage.getItem('shopwebre_recent_searches');
     if (saved) setRecentSearches(JSON.parse(saved));
   }, []);
 
@@ -78,7 +78,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
   const saveRecentSearch = useCallback((term: string) => {
     const updated = [term, ...recentSearches.filter(s => s !== term)].slice(0, 5);
     setRecentSearches(updated);
-    localStorage.setItem('digitalmart_recent_searches', JSON.stringify(updated));
+    localStorage.setItem('shopwebre_recent_searches', JSON.stringify(updated));
   }, [recentSearches]);
 
   const handleRecentSearch = (term: string) => {
@@ -112,7 +112,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
 
   const clearRecentSearches = () => {
     setRecentSearches([]);
-    localStorage.removeItem('digitalmart_recent_searches');
+    localStorage.removeItem('shopwebre_recent_searches');
   };
 
   // Group results by format

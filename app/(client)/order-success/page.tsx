@@ -9,7 +9,7 @@ export const metadata: Metadata = {
         follow: false,
     },
     openGraph: {
-        title: 'Đặt hàng thành công | DigitalMart',
+        title: 'Đặt hàng thành công | Shop Web rẻ',
         description: 'Cảm ơn bạn đã mua hàng - Đơn hàng của bạn đã được xác nhận',
     }
 };

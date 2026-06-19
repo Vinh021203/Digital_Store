@@ -9,7 +9,7 @@ export const metadata: Metadata = {
         follow: false,
     },
     openGraph: {
-        title: 'Giỏ hàng | DigitalMart',
+        title: 'Giỏ hàng | Shop Web rẻ',
         description: 'Giỏ hàng của bạn - Xem và quản lý sản phẩm trước khi thanh toán',
     }
 };

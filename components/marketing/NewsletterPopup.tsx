@@ -6,7 +6,7 @@ import { X, BookOpen, ArrowRight, Sparkles, Gift, CheckCircle } from 'lucide-rea
 // ============================================
 // Local Storage Key
 // ============================================
-const STORAGE_KEY = 'DigitalMart_newsletter_seen';
+const STORAGE_KEY = 'shopwebre_newsletter_seen';
 const POPUP_DELAY = 5000; // 5 seconds
 
 // ============================================
@@ -197,7 +197,7 @@ const NewsletterPopup = () => {
             <div className="relative mb-6">
               <div className="absolute inset-0 bg-white/30 rounded-3xl blur-xl animate-pulse" />
               <div className="relative w-20 h-20 bg-white rounded-3xl flex items-center justify-center shadow-2xl animate-bounce-slow p-3">
-                <img src="/favicon.png" alt="DigitalMart" className="w-full h-full object-contain" />
+                <img src="/logo_webgiare_display.webp" alt="Shop Web rẻ" className="w-full h-full object-contain" />
               </div>
               <Sparkles
                 size={16}
@@ -227,7 +227,7 @@ const NewsletterPopup = () => {
             />
             <div className="absolute inset-0 bg-gradient-to-b from-orange-600/80 to-red-600/80 flex items-center justify-center">
               <div className="text-white text-center">
-                <img src="/favicon.png" alt="DigitalMart" className="w-10 h-10 mx-auto mb-2" />
+                <img src="/logo_webgiare_display.webp" alt="Shop Web rẻ" className="w-10 h-10 mx-auto mb-2 object-contain" />
                 <p className="font-bold text-lg">Tặng Ebook Miễn Phí</p>
               </div>
             </div>
@@ -243,7 +243,7 @@ const NewsletterPopup = () => {
 
               {/* Title */}
               <h2 id="newsletter-title" className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 mb-3 sm:mb-4 flex items-center gap-2 flex-wrap">
-                Nhận Ebook Hay <img src="/favicon.png" alt="icon" className="w-8 h-8 inline-block" />
+                Nhận Ebook Hay <img src="/logo_webgiare_display.webp" alt="icon" className="w-8 h-8 inline-block object-contain" />
               </h2>
 
               {/* Description */}

@@ -128,7 +128,7 @@ export async function uploadNewVersion(payload: ProductFilePayload): Promise<DbP
 // ============================================
 export async function updateVersion(
     fileId: number,
-    updates: Partial<Pick<DbProductFile, 'file_url' | 'file_size' | 'changelog'>>
+    updates: Partial<Pick<DbProductFile, 'version' | 'file_url' | 'file_size' | 'changelog'>>
 ): Promise<boolean> {
     const supabase = createClient();
     if (!supabase) return false;
