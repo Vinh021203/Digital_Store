@@ -11,14 +11,14 @@ export const metadata: Metadata = {
         title: 'Blog - Kiến thức & Tin tức | Shop Web rẻ',
         description: 'Kiến thức, hướng dẫn và tips hữu ích về thiết kế & phát triển web',
         url: '/blog',
-        images: ['/thumbnail.webp'],
+        images: ['/thumbnail.jpg'],
         type: 'website',
     },
     twitter: {
         card: 'summary_large_image',
         title: 'Blog - Kiến thức & Tin tức | Shop Web rẻ',
         description: 'Kiến thức, hướng dẫn và tips hữu ích',
-        images: ['/thumbnail.webp'],
+        images: ['/thumbnail.jpg'],
     },
 };
 

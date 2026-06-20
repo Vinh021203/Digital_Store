@@ -11,14 +11,14 @@ export const metadata: Metadata = {
         title: 'Giao diện website chuyên nghiệp | Shop Web rẻ',
         description: 'Khám phá hàng ngàn giao diện website chất lượng cao cho dự án của bạn',
         url: '/products',
-        images: ['/thumbnail.webp'],
+        images: ['/thumbnail.jpg'],
         type: 'website',
     },
     twitter: {
         card: 'summary_large_image',
         title: 'Giao diện website chuyên nghiệp | Shop Web rẻ',
         description: 'Khám phá hàng ngàn giao diện website chất lượng cao',
-        images: ['/thumbnail.webp'],
+        images: ['/thumbnail.jpg'],
     },
 };
 

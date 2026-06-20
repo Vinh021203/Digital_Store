@@ -13,13 +13,13 @@ export const metadata: Metadata = {
         url: '/products',
         title: 'Sản phẩm | Shop Web rẻ',
         description: 'Khám phá kho giao diện website chất lượng cao: template website, UI kit, source code, dashboard và nhiều tài nguyên số khác.',
-        images: ['/thumbnail.webp'],
+        images: ['/thumbnail.jpg'],
     },
     twitter: {
         card: 'summary_large_image',
         title: 'Giao diện website chuyên nghiệp | Shop Web rẻ',
         description: 'Khám phá template website, landing page, UI kit và dashboard chất lượng cao.',
-        images: ['/thumbnail.webp'],
+        images: ['/thumbnail.jpg'],
     },
 };
 

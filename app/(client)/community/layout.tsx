@@ -11,14 +11,14 @@ export const metadata: Metadata = {
         title: 'Cộng đồng Developer & Designer | Shop Web rẻ',
         description: 'Nơi kết nối và chia sẻ kiến thức của cộng đồng developer & designer',
         url: '/community',
-        images: ['/thumbnail.webp'],
+        images: ['/thumbnail.jpg'],
         type: 'website',
     },
     twitter: {
         card: 'summary_large_image',
         title: 'Cộng đồng Developer & Designer | Shop Web rẻ',
         description: 'Nơi kết nối và chia sẻ kiến thức',
-        images: ['/thumbnail.webp'],
+        images: ['/thumbnail.jpg'],
     },
 };
 

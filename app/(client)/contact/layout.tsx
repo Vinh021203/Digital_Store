@@ -11,14 +11,14 @@ export const metadata: Metadata = {
         title: 'Liên hệ - Hỗ trợ khách hàng | Shop Web rẻ',
         description: 'Liên hệ với đội ngũ hỗ trợ 24/7',
         url: '/contact',
-        images: ['/thumbnail.webp'],
+        images: ['/thumbnail.jpg'],
         type: 'website',
     },
     twitter: {
         card: 'summary',
         title: 'Liên hệ | Shop Web rẻ',
         description: 'Hỗ trợ khách hàng 24/7',
-        images: ['/thumbnail.webp'],
+        images: ['/thumbnail.jpg'],
     },
 };
 

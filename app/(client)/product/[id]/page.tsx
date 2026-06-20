@@ -102,7 +102,7 @@ export default async function Page({ params }: Props) {
     return <ProductDetailPage />;
   }
 
-  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://www.shopwebre.vn').replace(/\/$/, '');
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://webgiare.id.vn').replace(/\/$/, '');
   const productPath = `/product/${product.slug || product.id}`;
   const plainDescription = product.description?.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
   const ratingValue = Number(product.rating || 0);

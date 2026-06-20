@@ -12,13 +12,13 @@ export const metadata: Metadata = {
         url: '/ai-recommendation',
         title: 'AI Gợi ý sản phẩm | Shop Web rẻ',
         description: 'Để AI giúp bạn tìm giao diện website phù hợp nhất với dự án của bạn',
-        images: ['/thumbnail.webp'],
+        images: ['/thumbnail.jpg'],
     },
     twitter: {
         card: 'summary_large_image',
         title: 'AI Gợi ý giao diện | Shop Web rẻ',
         description: 'Tìm giao diện website phù hợp theo nhu cầu, công nghệ và ngân sách.',
-        images: ['/thumbnail.webp'],
+        images: ['/thumbnail.jpg'],
     },
 };
 

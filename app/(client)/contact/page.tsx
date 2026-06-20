@@ -12,13 +12,13 @@ export const metadata: Metadata = {
         url: '/contact',
         title: 'Liên hệ | Shop Web rẻ',
         description: 'Liên hệ với Shop Web rẻ - Đội ngũ hỗ trợ 24/7 sẵn sàng giải đáp mọi thắc mắc của bạn',
-        images: ['/thumbnail.webp'],
+        images: ['/thumbnail.jpg'],
     },
     twitter: {
         card: 'summary_large_image',
         title: 'Liên hệ | Shop Web rẻ',
         description: 'Liên hệ đội ngũ hỗ trợ Shop Web rẻ.',
-        images: ['/thumbnail.webp'],
+        images: ['/thumbnail.jpg'],
     },
 };
 

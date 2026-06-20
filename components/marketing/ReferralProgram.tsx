@@ -29,7 +29,7 @@ export default function ReferralProgram({
 }: ReferralProgramProps) {
     const { addToast } = useToast();
     const [copied, setCopied] = useState(false);
-    const referralLink = `https://shopwebre.vn/ref/${referralCode}`;
+    const referralLink = `https://webgiare.id.vn/ref/${referralCode}`;
 
     const handleCopy = (text: string, label: string) => {
         navigator.clipboard.writeText(text);

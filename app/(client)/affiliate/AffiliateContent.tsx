@@ -20,7 +20,7 @@ function AffiliatePageContent() {
     const affiliateCode = profile?.affiliate_code || 'SHOPWEBRE';
     const affiliateLink = typeof window !== 'undefined'
         ? `${window.location.origin}?ref=${affiliateCode}`
-        : `https://shopwebre.vn?ref=${affiliateCode}`;
+        : `https://webgiare.id.vn?ref=${affiliateCode}`;
 
     const handleCopy = () => {
         navigator.clipboard.writeText(affiliateLink);

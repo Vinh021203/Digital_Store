@@ -12,13 +12,13 @@ export const metadata: Metadata = {
         url: '/community',
         title: 'Cộng đồng | Shop Web rẻ',
         description: 'Tham gia cộng đồng Shop Web rẻ - Kết nối, chia sẻ và học hỏi cùng nhau',
-        images: ['/thumbnail.webp'],
+        images: ['/thumbnail.jpg'],
     },
     twitter: {
         card: 'summary_large_image',
         title: 'Cộng đồng | Shop Web rẻ',
         description: 'Kết nối và chia sẻ kiến thức thiết kế, phát triển website.',
-        images: ['/thumbnail.webp'],
+        images: ['/thumbnail.jpg'],
     },
 };
 

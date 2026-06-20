@@ -68,7 +68,7 @@ export default function AffiliateDashboardPage() {
 
     const affiliateLink = typeof window !== 'undefined'
         ? `${window.location.origin}?ref=${stats.affiliateCode || 'SHOPWEBRE'}`
-        : `https://shopwebre.vn?ref=${stats.affiliateCode || 'SHOPWEBRE'}`;
+        : `https://webgiare.id.vn?ref=${stats.affiliateCode || 'SHOPWEBRE'}`;
 
     const loadData = useCallback(async () => {
         if (!user?.id) return;

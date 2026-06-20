@@ -12,13 +12,13 @@ export const metadata: Metadata = {
         url: '/compare',
         title: 'So sánh sản phẩm | Shop Web rẻ',
         description: 'So sánh tính năng và giá cả giữa các giao diện website - Tìm lựa chọn tốt nhất cho bạn',
-        images: ['/thumbnail.webp'],
+        images: ['/thumbnail.jpg'],
     },
     twitter: {
         card: 'summary_large_image',
         title: 'So sánh giao diện website | Shop Web rẻ',
         description: 'So sánh tính năng và giá để chọn giao diện phù hợp.',
-        images: ['/thumbnail.webp'],
+        images: ['/thumbnail.jpg'],
     },
 };
 

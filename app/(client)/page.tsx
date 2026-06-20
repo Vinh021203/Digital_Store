@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import HomePage from '@/components/pages/HomePage';
 import { getHomepageData } from '@/lib/homepageData';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.shopwebre.vn';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://webgiare.id.vn';
 
 export const metadata: Metadata = {
   title: {
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     description: 'Kho giao diện website, template, landing page, UI kit và dashboard giúp bạn triển khai website nhanh hơn, đẹp hơn và tiết kiệm chi phí.',
     images: [
       {
-        url: '/thumbnail.webp',
+        url: '/thumbnail.jpg',
         width: 1200,
         height: 630,
         alt: 'Shop Web rẻ - Kho giao diện website, template và landing page',
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Shop Web rẻ - Giao diện website, template và landing page',
     description: 'Mua giao diện website, template, landing page và UI kit chất lượng cao. Xem demo trước khi mua và tải file nhanh.',
-    images: ['/thumbnail.webp'],
+    images: ['/thumbnail.jpg'],
   },
 };
 

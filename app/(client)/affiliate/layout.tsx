@@ -11,14 +11,14 @@ export const metadata: Metadata = {
         title: 'Chương trình Affiliate - Kiếm đến 30% hoa hồng | Shop Web rẻ',
         description: 'Tham gia Affiliate, kiếm hoa hồng lên đến 30% mỗi đơn hàng',
         url: '/affiliate',
-        images: ['/thumbnail.webp'],
+        images: ['/thumbnail.jpg'],
         type: 'website',
     },
     twitter: {
         card: 'summary_large_image',
         title: 'Chương trình Affiliate | Shop Web rẻ',
         description: 'Kiếm hoa hồng lên đến 30% mỗi đơn hàng',
-        images: ['/thumbnail.webp'],
+        images: ['/thumbnail.jpg'],
     },
 };
 

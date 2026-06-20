@@ -469,7 +469,7 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
               </label>
               <div className="flex flex-col sm:flex-row bg-slate-50 border border-slate-200 rounded-xl overflow-hidden">
                 <span className="px-4 py-2.5 text-slate-500 text-xs sm:text-sm border-b sm:border-b-0 sm:border-r border-slate-200">
-                  https://shopwebre.vn/product/
+                  https://webgiare.id.vn/product/
                 </span>
                 <input
                   type="text"

@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         const description = seller.description?.trim()
             || `Khám phá giao diện website và template từ ${seller.store_name} trên Shop Web rẻ.`;
         const canonical = `/seller/${seller.store_slug}`;
-        const image = seller.banner || seller.logo || '/thumbnail.webp';
+        const image = seller.banner || seller.logo || '/thumbnail.jpg';
 
         return {
             title,

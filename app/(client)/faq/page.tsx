@@ -12,13 +12,13 @@ export const metadata: Metadata = {
         url: '/faq',
         title: 'Câu hỏi thường gặp (FAQ) | Shop Web rẻ',
         description: 'Tìm câu trả lời cho các thắc mắc về sản phẩm, thanh toán, license và hỗ trợ tại Shop Web rẻ',
-        images: ['/thumbnail.webp'],
+        images: ['/thumbnail.jpg'],
     },
     twitter: {
         card: 'summary_large_image',
         title: 'Câu hỏi thường gặp | Shop Web rẻ',
         description: 'Giải đáp về giao diện, thanh toán, tải file, license và hỗ trợ.',
-        images: ['/thumbnail.webp'],
+        images: ['/thumbnail.jpg'],
     },
 };
 

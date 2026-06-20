@@ -11,14 +11,14 @@ export const metadata: Metadata = {
         title: 'Về chúng tôi | Shop Web rẻ',
         description: 'Kho giao diện website hàng đầu Việt Nam',
         url: '/about',
-        images: ['/thumbnail.webp'],
+        images: ['/thumbnail.jpg'],
         type: 'website',
     },
     twitter: {
         card: 'summary_large_image',
         title: 'Về chúng tôi | Shop Web rẻ',
         description: 'Kho giao diện website, template và landing page dành cho thị trường Việt Nam',
-        images: ['/thumbnail.webp'],
+        images: ['/thumbnail.jpg'],
     },
 };
 
