@@ -1,359 +1,501 @@
 'use client';
 
-import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import { motion } from 'framer-motion';
+import type { LucideIcon } from 'lucide-react';
 import {
-    Home, ChevronRight, FileText, Shield, Scale, RefreshCcw, Key,
-    Sparkles, Star, CheckCircle, ArrowRight, BookOpen, Clock,
-    AlertCircle, Lock, Eye, Users, CreditCard, Download
+    AlertTriangle, ArrowLeft, ArrowRight, BadgeCheck, BookOpen,
+    CheckCircle2, ChevronRight, Clock3, CreditCard, Database,
+    Download, Eye, FileCheck2, FileText, Fingerprint, Headphones,
+    Home, KeyRound, LockKeyhole, Mail, RefreshCcw, Scale,
+    ShieldCheck, UserRound, UsersRound, XCircle,
 } from 'lucide-react';
 
-const POLICY_CONTENT: Record<string, {
+type PolicySection = {
     title: string;
-    icon: any;
+    icon: LucideIcon;
+    paragraphs: string[];
+    bullets?: string[];
+    note?: string;
+};
+
+type Policy = {
+    title: string;
+    shortTitle: string;
     description: string;
-    badge: string;
-    badgeColor: string;
-    heroImage: string;
-    sections: { title: string; icon: any; content: string }[];
-}> = {
+    eyebrow: string;
+    icon: LucideIcon;
+    summary: string;
+    sections: PolicySection[];
+};
+
+const UPDATED_AT = '22/06/2026';
+
+const POLICIES: Record<string, Policy> = {
     privacy: {
-        title: 'Chính sách Bảo mật',
-        icon: Shield,
-        description: 'Cam kết bảo vệ thông tin cá nhân và quyền riêng tư của bạn',
-        badge: 'BẢO MẬT',
-        badgeColor: 'emerald',
-        heroImage: 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=1920&q=80',
+        title: 'Chính sách bảo mật',
+        shortTitle: 'Bảo mật',
+        eyebrow: 'Quyền riêng tư và dữ liệu',
+        icon: ShieldCheck,
+        description: 'Cách Shop Web rẻ thu thập, sử dụng và bảo vệ thông tin trong quá trình bạn sử dụng website.',
+        summary: 'Mình chỉ thu thập dữ liệu cần thiết để vận hành tài khoản, xử lý đơn hàng và hỗ trợ khách hàng.',
         sections: [
             {
-                title: 'Thu thập thông tin',
-                icon: Users,
-                content: 'Chúng tôi thu thập thông tin khi bạn đăng ký tài khoản, mua sản phẩm, hoặc liên hệ với chúng tôi. Thông tin bao gồm: họ tên, email, số điện thoại. Chúng tôi chỉ thu thập những thông tin cần thiết để cung cấp dịch vụ tốt nhất cho bạn.'
+                title: 'Thông tin được thu thập',
+                icon: Database,
+                paragraphs: [
+                    'Khi bạn đăng ký tài khoản, đặt hàng hoặc gửi yêu cầu hỗ trợ, Shop Web rẻ có thể tiếp nhận một số thông tin cần thiết để cung cấp dịch vụ.',
+                ],
+                bullets: [
+                    'Họ tên, địa chỉ email và số điện thoại do bạn cung cấp.',
+                    'Thông tin đơn hàng, sản phẩm, giấy phép và lịch sử tải xuống.',
+                    'Dữ liệu kỹ thuật cơ bản như thiết bị, trình duyệt và nhật ký truy cập phục vụ bảo mật.',
+                ],
             },
             {
-                title: 'Sử dụng thông tin',
+                title: 'Mục đích sử dụng dữ liệu',
                 icon: Eye,
-                content: 'Thông tin của bạn được sử dụng để xử lý đơn hàng, gửi thông báo quan trọng, hỗ trợ khách hàng và cải thiện trải nghiệm dịch vụ. Chúng tôi cam kết không sử dụng thông tin vào mục đích ngoài phạm vi đã thông báo.'
+                paragraphs: [
+                    'Thông tin được sử dụng đúng với mục đích vận hành dịch vụ và hỗ trợ giao dịch của bạn.',
+                ],
+                bullets: [
+                    'Xác thực tài khoản và quản lý quyền truy cập.',
+                    'Xử lý thanh toán, cấp quyền tải file và giấy phép sản phẩm.',
+                    'Gửi thông báo quan trọng liên quan đến đơn hàng hoặc bảo mật.',
+                    'Tiếp nhận yêu cầu hỗ trợ và cải thiện trải nghiệm website.',
+                ],
             },
             {
-                title: 'Bảo vệ thông tin',
-                icon: Lock,
-                content: 'Chúng tôi áp dụng các biện pháp bảo mật tiên tiến bao gồm mã hóa SSL 256-bit, firewall và các giao thức bảo mật khác để bảo vệ thông tin cá nhân của bạn khỏi truy cập, sử dụng hoặc tiết lộ trái phép.'
+                title: 'Lưu trữ và bảo vệ',
+                icon: LockKeyhole,
+                paragraphs: [
+                    'Shop Web rẻ sử dụng các dịch vụ hạ tầng và thanh toán phù hợp để lưu trữ, xử lý dữ liệu. Quyền truy cập quản trị được giới hạn theo vai trò và mục đích sử dụng.',
+                    'Không có hệ thống trực tuyến nào bảo đảm an toàn tuyệt đối. Khi phát hiện dấu hiệu bất thường, bạn nên đổi mật khẩu và liên hệ ngay để được kiểm tra.',
+                ],
             },
             {
-                title: 'Chia sẻ thông tin',
-                icon: Users,
-                content: 'Chúng tôi không bán, trao đổi hoặc chia sẻ thông tin cá nhân của bạn với bên thứ ba, trừ khi được pháp luật yêu cầu hoặc cần thiết để cung cấp dịch vụ bạn đã yêu cầu (ví dụ: đối tác thanh toán).'
-            }
-        ]
+                title: 'Chia sẻ với bên cung cấp dịch vụ',
+                icon: UsersRound,
+                paragraphs: [
+                    'Dữ liệu có thể được xử lý bởi các nhà cung cấp hạ tầng, xác thực, lưu trữ file, email hoặc thanh toán khi cần thiết để hoàn thành dịch vụ.',
+                    'Shop Web rẻ không bán thông tin cá nhân. Thông tin chỉ được cung cấp khi có căn cứ hợp pháp, yêu cầu từ cơ quan có thẩm quyền hoặc để bảo vệ quyền lợi chính đáng.',
+                ],
+            },
+            {
+                title: 'Quyền của bạn',
+                icon: Fingerprint,
+                paragraphs: [
+                    'Bạn có thể yêu cầu kiểm tra, cập nhật hoặc đề nghị xóa thông tin cá nhân trong phạm vi pháp luật và nghĩa vụ lưu trữ giao dịch cho phép.',
+                ],
+                note: 'Gửi yêu cầu qua email veutong961@gmail.com và cung cấp email tài khoản để xác minh.',
+            },
+        ],
     },
     terms: {
-        title: 'Điều khoản Sử dụng',
+        title: 'Điều khoản sử dụng',
+        shortTitle: 'Điều khoản',
+        eyebrow: 'Quy định sử dụng dịch vụ',
         icon: Scale,
-        description: 'Quy định và điều kiện sử dụng dịch vụ của Shop Web rẻ',
-        badge: 'ĐIỀU KHOẢN',
-        badgeColor: 'blue',
-        heroImage: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1920&q=80',
+        description: 'Các nguyên tắc áp dụng khi truy cập website, tạo tài khoản và mua sản phẩm số tại Shop Web rẻ.',
+        summary: 'Việc sử dụng website đồng nghĩa với việc bạn đồng ý tuân thủ các quy định được công bố tại đây.',
         sections: [
             {
-                title: 'Điều khoản chung',
-                icon: FileText,
-                content: 'Bằng việc truy cập và sử dụng Shop Web rẻ, bạn đồng ý tuân thủ các điều khoản và điều kiện được nêu trong tài liệu này. Nếu bạn không đồng ý với bất kỳ phần nào, vui lòng không sử dụng dịch vụ của chúng tôi.'
+                title: 'Phạm vi áp dụng',
+                icon: FileCheck2,
+                paragraphs: [
+                    'Điều khoản này áp dụng cho người truy cập, thành viên và khách hàng sử dụng các chức năng, nội dung hoặc sản phẩm được cung cấp trên Shop Web rẻ.',
+                    'Nếu không đồng ý với một nội dung trong điều khoản, bạn nên ngừng sử dụng phần dịch vụ có liên quan và liên hệ để được giải thích.',
+                ],
             },
             {
                 title: 'Tài khoản người dùng',
-                icon: Users,
-                content: 'Bạn có trách nhiệm bảo mật thông tin đăng nhập và chịu trách nhiệm cho mọi hoạt động trên tài khoản của mình. Thông báo ngay cho chúng tôi nếu phát hiện truy cập trái phép hoặc vi phạm bảo mật.'
+                icon: UserRound,
+                paragraphs: [
+                    'Bạn chịu trách nhiệm cung cấp thông tin chính xác, giữ bí mật thông tin đăng nhập và kiểm soát hoạt động phát sinh từ tài khoản của mình.',
+                ],
+                bullets: [
+                    'Không chia sẻ tài khoản hoặc quyền tải file cho người không có quyền.',
+                    'Không giả mạo danh tính hoặc sử dụng thông tin thanh toán trái phép.',
+                    'Thông báo ngay khi nghi ngờ tài khoản bị truy cập ngoài ý muốn.',
+                ],
             },
             {
-                title: 'Sử dụng sản phẩm',
+                title: 'Đặt hàng và thanh toán',
+                icon: CreditCard,
+                paragraphs: [
+                    'Đơn hàng chỉ được xác nhận sau khi hệ thống ghi nhận giao dịch hợp lệ. Giá, ưu đãi và phạm vi giấy phép được hiển thị tại thời điểm đặt hàng.',
+                    'Trong trường hợp giao dịch bị chậm đối soát, khách hàng nên giữ lại biên nhận và mã đơn để được kiểm tra.',
+                ],
+            },
+            {
+                title: 'Sử dụng sản phẩm số',
                 icon: Download,
-                content: 'Sản phẩm mua tại Shop Web rẻ chỉ được sử dụng theo license đã chọn. Nghiêm cấm phân phối lại, chia sẻ hoặc bán lại sản phẩm dưới mọi hình thức. Vi phạm sẽ bị chấm dứt tài khoản và xử lý theo pháp luật.'
+                paragraphs: [
+                    'Sản phẩm được sử dụng theo loại giấy phép đi kèm đơn hàng. Việc mua sản phẩm không đồng nghĩa với việc chuyển giao quyền tác giả hoặc quyền phân phối file gốc.',
+                ],
+                bullets: [
+                    'Không đăng tải công khai, chia sẻ, bán lại hoặc phân phối file gốc.',
+                    'Không sử dụng sản phẩm vào hoạt động vi phạm pháp luật.',
+                    'Không can thiệp trái phép vào hệ thống tải file, thanh toán hoặc cấp license.',
+                ],
             },
             {
-                title: 'Quyền sở hữu trí tuệ',
-                icon: Shield,
-                content: 'Tất cả nội dung trên Shop Web rẻ bao gồm nhưng không giới hạn: logo, thiết kế, văn bản, hình ảnh và mã nguồn đều được bảo vệ bởi luật bản quyền và các quyền sở hữu trí tuệ hiện hành.'
-            }
-        ]
+                title: 'Tạm ngừng quyền truy cập',
+                icon: AlertTriangle,
+                paragraphs: [
+                    'Shop Web rẻ có thể tạm khóa tài khoản, quyền tải hoặc license khi có dấu hiệu gian lận, chia sẻ trái phép, tấn công hệ thống hoặc vi phạm nghiêm trọng điều khoản.',
+                ],
+                note: 'Trước khi áp dụng biện pháp lâu dài, thông tin liên quan sẽ được kiểm tra trên dữ liệu giao dịch hiện có.',
+            },
+        ],
     },
     refund: {
-        title: 'Chính sách Hoàn tiền',
+        title: 'Chính sách hoàn tiền',
+        shortTitle: 'Hoàn tiền',
+        eyebrow: 'Xử lý giao dịch sản phẩm số',
         icon: RefreshCcw,
-        description: 'Quy định về hoàn tiền và đổi trả giao diện website',
-        badge: 'HOÀN TIỀN',
-        badgeColor: 'amber',
-        heroImage: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1920&q=80',
+        description: 'Điều kiện và quy trình tiếp nhận yêu cầu hoàn tiền đối với giao diện, template và mã nguồn số.',
+        summary: 'Do sản phẩm có thể được tải xuống ngay, yêu cầu hoàn tiền được xem xét dựa trên lỗi thực tế và lịch sử tải file.',
         sections: [
             {
-                title: 'Điều kiện hoàn tiền',
-                icon: CheckCircle,
-                content: 'Bạn có thể yêu cầu hoàn tiền trong vòng 7 ngày kể từ ngày mua nếu sản phẩm không đúng mô tả, không hoạt động như quảng cáo, hoặc có lỗi kỹ thuật nghiêm trọng không thể khắc phục.'
+                title: 'Trường hợp được xem xét',
+                icon: CheckCircle2,
+                paragraphs: [
+                    'Bạn có thể gửi yêu cầu trong vòng 7 ngày kể từ thời điểm thanh toán khi sản phẩm có vấn đề nghiêm trọng thuộc trách nhiệm của bên cung cấp.',
+                ],
+                bullets: [
+                    'File không thể tải xuống hoặc bị hỏng và không thể thay thế.',
+                    'Sản phẩm khác đáng kể so với nội dung mô tả tại thời điểm mua.',
+                    'Lỗi kỹ thuật cốt lõi đã được xác minh nhưng không có phương án khắc phục hợp lý.',
+                    'Giao dịch bị ghi nhận trùng do lỗi hệ thống.',
+                ],
             },
             {
-                title: 'Quy trình yêu cầu',
-                icon: FileText,
-                content: 'Gửi yêu cầu hoàn tiền đến email veutong961@gmail.com với thông tin: mã đơn hàng, email đăng ký, lý do hoàn tiền chi tiết, và bằng chứng (screenshot/video nếu có). Chúng tôi sẽ xem xét trong 24-48 giờ.'
+                title: 'Trường hợp không áp dụng',
+                icon: XCircle,
+                paragraphs: [
+                    'Yêu cầu có thể bị từ chối khi sản phẩm vẫn hoạt động đúng mô tả hoặc vấn đề phát sinh ngoài phạm vi của sản phẩm.',
+                ],
+                bullets: [
+                    'Thay đổi ý định, mua nhầm hoặc không còn nhu cầu sử dụng.',
+                    'Thiếu kiến thức, phần mềm hoặc môi trường cần thiết để chỉnh sửa sản phẩm.',
+                    'Sản phẩm đã được sử dụng, sao chép hoặc triển khai nhưng không có lỗi được xác minh.',
+                    'Yêu cầu được gửi sau thời hạn hoặc tài khoản vi phạm điều khoản sử dụng.',
+                ],
+            },
+            {
+                title: 'Cách gửi yêu cầu',
+                icon: Mail,
+                paragraphs: [
+                    'Gửi email tới veutong961@gmail.com với tiêu đề “Yêu cầu hoàn tiền” để việc kiểm tra được nhanh và chính xác.',
+                ],
+                bullets: [
+                    'Mã đơn hàng và email dùng khi mua.',
+                    'Tên sản phẩm và mô tả cụ thể vấn đề.',
+                    'Ảnh chụp, video hoặc thông báo lỗi nếu có.',
+                    'Các bước bạn đã thử để xử lý vấn đề.',
+                ],
             },
             {
                 title: 'Thời gian xử lý',
-                icon: Clock,
-                content: 'Yêu cầu hợp lệ sẽ được xử lý trong 3-5 ngày làm việc. Tiền sẽ được hoàn về phương thức thanh toán gốc trong 7-14 ngày tùy thuộc vào ngân hàng hoặc cổng thanh toán.'
+                icon: Clock3,
+                paragraphs: [
+                    'Yêu cầu hợp lệ thường được phản hồi ban đầu trong 1-2 ngày làm việc. Nếu được chấp thuận, thời gian tiền về phụ thuộc vào ngân hàng hoặc phương thức thanh toán ban đầu.',
+                    'Quyền tải file và license của đơn hàng được hoàn tiền có thể bị thu hồi sau khi yêu cầu hoàn tất.',
+                ],
             },
-            {
-                title: 'Trường hợp không hoàn tiền',
-                icon: AlertCircle,
-                content: 'Chúng tôi không hoàn tiền trong các trường hợp: bạn đã tải và sử dụng sản phẩm; yêu cầu sau 7 ngày kể từ ngày mua; vi phạm điều khoản sử dụng; thay đổi ý kiến đơn giản mà không có lý do hợp lệ.'
-            }
-        ]
+        ],
     },
     license: {
-        title: 'Điều khoản License',
-        icon: Key,
-        description: 'Chi tiết về các loại license và quyền sử dụng sản phẩm',
-        badge: 'LICENSE',
-        badgeColor: 'purple',
-        heroImage: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1920&q=80',
+        title: 'Điều khoản giấy phép',
+        shortTitle: 'Giấy phép',
+        eyebrow: 'Quyền sử dụng sản phẩm',
+        icon: KeyRound,
+        description: 'Phạm vi sử dụng, chỉnh sửa và các giới hạn áp dụng cho sản phẩm số được mua tại Shop Web rẻ.',
+        summary: 'Giấy phép cho phép bạn sử dụng sản phẩm theo phạm vi đơn hàng, nhưng không chuyển giao quyền sở hữu file gốc.',
         sections: [
             {
-                title: 'License Regular',
-                icon: Key,
-                content: 'Cho phép sử dụng cho 1 dự án thương mại hoặc cá nhân. License này phù hợp cho freelancer, dự án đơn lẻ, hoặc website cá nhân. Không được phân phối lại hoặc chuyển nhượng cho người khác.'
+                title: 'Giấy phép Regular',
+                icon: KeyRound,
+                paragraphs: [
+                    'Regular License áp dụng cho một sản phẩm cuối hoặc một dự án của chính người mua hay một khách hàng cụ thể, trừ khi trang sản phẩm có quy định khác.',
+                ],
+                bullets: [
+                    'Được chỉnh sửa giao diện và mã nguồn cho dự án được cấp phép.',
+                    'Được sử dụng trong dự án cá nhân hoặc thương mại phù hợp.',
+                    'Được bàn giao sản phẩm cuối cho khách hàng của dự án đó.',
+                ],
             },
             {
-                title: 'License Extended',
-                icon: Star,
-                content: 'Cho phép sử dụng không giới hạn số dự án. Có thể tích hợp vào sản phẩm thương mại mà bạn bán cho khách hàng. Lý tưởng cho agency, studio hoặc doanh nghiệp có nhiều dự án.'
+                title: 'Giấy phép mở rộng',
+                icon: BadgeCheck,
+                paragraphs: [
+                    'Nếu một sản phẩm có tùy chọn giấy phép mở rộng, phạm vi cụ thể sẽ được ghi tại trang sản phẩm hoặc đơn hàng. Không mặc định mọi giấy phép mở rộng đều cho phép sử dụng không giới hạn.',
+                ],
+                note: 'Hãy liên hệ trước khi mua nếu bạn cần dùng cho SaaS, nhiều khách hàng hoặc sản phẩm bán lại.',
             },
             {
-                title: 'Những gì được phép',
-                icon: CheckCircle,
-                content: 'Sử dụng cho dự án cá nhân hoặc thương mại • Chỉnh sửa và tùy biến sản phẩm theo nhu cầu • Sử dụng trong portfolio và showcase • Tạo sản phẩm phái sinh (với Extended License)'
+                title: 'Quyền chỉnh sửa',
+                icon: FileText,
+                paragraphs: [
+                    'Bạn có thể chỉnh sửa nội dung, màu sắc, bố cục và mã nguồn để phù hợp với dự án trong phạm vi giấy phép.',
+                    'Các phần mềm, thư viện, font hoặc tài nguyên bên thứ ba đi kèm có thể chịu điều khoản riêng của nhà cung cấp tương ứng.',
+                ],
             },
             {
-                title: 'Những gì không được phép',
-                icon: AlertCircle,
-                content: 'Bán lại hoặc phân phối sản phẩm gốc • Chia sẻ file hoặc license key với người khác • Sử dụng trong nhiều dự án với Regular License • Xóa bỏ thông tin bản quyền hoặc watermark'
-            }
-        ]
-    }
+                title: 'Hành vi không được phép',
+                icon: AlertTriangle,
+                paragraphs: [
+                    'Dù đã chỉnh sửa một phần hay toàn bộ, bạn vẫn không được thực hiện các hành vi làm lộ hoặc cạnh tranh trực tiếp bằng file nguồn của sản phẩm.',
+                ],
+                bullets: [
+                    'Bán lại, chia sẻ hoặc phân phối file nguồn dưới mọi hình thức.',
+                    'Đưa file lên kho tải công khai, nhóm chia sẻ hoặc dịch vụ lưu trữ dùng chung.',
+                    'Chuyển nhượng license độc lập với dự án được cấp phép.',
+                    'Tuyên bố mình là tác giả của toàn bộ sản phẩm gốc.',
+                ],
+            },
+            {
+                title: 'Thu hồi giấy phép',
+                icon: LockKeyhole,
+                paragraphs: [
+                    'Giấy phép có thể bị tạm ngừng hoặc thu hồi nếu đơn hàng được hoàn tiền, giao dịch bị hủy hoặc phát hiện hành vi vi phạm phạm vi sử dụng.',
+                ],
+            },
+        ],
+    },
 };
 
-interface PolicyContentProps {
-    type: string;
-}
+const policyOrder = ['privacy', 'terms', 'refund', 'license'];
 
-export default function PolicyContent({ type }: PolicyContentProps) {
-    const policy = POLICY_CONTENT[type];
+const reveal = {
+    hidden: { opacity: 0, y: 16 },
+    visible: { opacity: 1, y: 0 },
+};
+
+export default function PolicyContent({ type }: { type: string }) {
+    const policy = POLICIES[type];
 
     if (!policy) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex flex-col items-center justify-center relative overflow-hidden">
-                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px]" />
-                <div className="relative z-10 text-center px-4">
-                    <div className="w-24 h-24 bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-slate-700">
-                        <FileText size={48} className="text-slate-600" />
+            <main className="flex min-h-[70vh] items-center justify-center bg-[#f8fafc] px-4">
+                <div className="max-w-md text-center">
+                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-lg bg-slate-950 text-orange-400">
+                        <FileText size={26} />
                     </div>
-                    <h2 className="text-3xl font-black text-white mb-3">Không tìm thấy trang</h2>
-                    <p className="text-slate-400 mb-8 text-lg">Trang chính sách này không tồn tại.</p>
-                    <Link
-                        href="/"
-                        className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-8 py-4 rounded-2xl font-bold hover:shadow-xl hover:shadow-blue-500/25 transition-all"
-                    >
-                        <Home size={20} /> Về trang chủ
+                    <h1 className="mt-5 text-2xl font-black">Không tìm thấy chính sách</h1>
+                    <p className="mt-2 text-sm leading-6 text-slate-500">Đường dẫn này không thuộc hệ thống chính sách hiện có.</p>
+                    <Link href="/policy/terms" className="mt-6 inline-flex items-center gap-2 rounded-md bg-orange-600 px-5 py-3 text-sm font-bold text-white">
+                        Xem điều khoản <ArrowRight size={16} />
                     </Link>
                 </div>
-            </div>
+            </main>
         );
     }
 
     const Icon = policy.icon;
-    const badgeColors: Record<string, string> = {
-        emerald: 'bg-emerald-500/20 border-emerald-500/30 text-emerald-400',
-        blue: 'bg-blue-500/20 border-blue-500/30 text-blue-400',
-        amber: 'bg-amber-500/20 border-amber-500/30 text-amber-400',
-        purple: 'bg-purple-500/20 border-purple-500/30 text-purple-400',
-    };
-    const iconColors: Record<string, string> = {
-        emerald: 'from-emerald-500 to-green-600',
-        blue: 'from-blue-500 to-indigo-600',
-        amber: 'from-amber-500 to-orange-600',
-        purple: 'from-purple-500 to-pink-600',
-    };
+    const currentIndex = policyOrder.indexOf(type);
+    const previous = currentIndex > 0 ? policyOrder[currentIndex - 1] : null;
+    const next = currentIndex < policyOrder.length - 1 ? policyOrder[currentIndex + 1] : null;
 
     return (
-        <div className="min-h-screen bg-slate-50">
-            {/* Hero Section with Background */}
-            <div className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 overflow-hidden">
-                {/* Background Image */}
-                <div className="absolute inset-0">
-                    <Image
-                        src={policy.heroImage}
-                        alt={policy.title}
-                        fill
-                        className="object-cover opacity-20"
-                        priority
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/95 to-slate-900/80" />
-                </div>
+        <main className="min-h-screen bg-[#f8fafc] text-slate-950">
+            <section className="relative overflow-hidden border-b border-orange-100 bg-[#fffaf6]">
+                <div className="absolute inset-0 bg-[linear-gradient(rgba(234,88,12,0.055)_1px,transparent_1px),linear-gradient(90deg,rgba(234,88,12,0.055)_1px,transparent_1px)] bg-[size:48px_48px]" />
+                <div className="relative mx-auto max-w-7xl px-4 pb-10 pt-6 sm:px-6 sm:pb-14 lg:px-8">
+                    <nav className="mb-8 flex items-center gap-2 text-sm font-semibold text-slate-500" aria-label="Breadcrumb">
+                        <Link href="/" className="inline-flex items-center gap-1.5 transition hover:text-orange-600">
+                            <Home size={15} /> Trang chủ
+                        </Link>
+                        <ChevronRight size={14} />
+                        <span className="text-slate-900">{policy.shortTitle}</span>
+                    </nav>
 
-                {/* Decorative Elements */}
-                <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl" />
-                    <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-purple-500/15 rounded-full blur-3xl" />
-                    <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px]" />
-                </div>
-
-                <div className="relative z-10 max-w-6xl mx-auto px-4 py-16 sm:py-20 lg:py-24">
-                    <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-                        {/* Left Content */}
-                        <div className="text-center lg:text-left">
-                            {/* Breadcrumb */}
-                            <div className="inline-flex items-center gap-2 text-sm text-slate-400 mb-6">
-                                <Link href="/" className="hover:text-white flex items-center gap-1 transition-colors">
-                                    <Home size={14} /> Trang chủ
-                                </Link>
-                                <ChevronRight size={14} />
-                                <span className="text-white font-semibold">{policy.title}</span>
-                            </div>
-
-                            {/* Badge */}
-                            <div className={`inline-flex items-center gap-2 ${badgeColors[policy.badgeColor]} border px-4 py-2 rounded-full text-sm font-bold mb-6 backdrop-blur-sm`}>
-                                <Icon size={16} />
-                                {policy.badge}
-                            </div>
-
-                            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-4 leading-tight">
-                                {policy.title}
-                            </h1>
-
-                            <p className="text-slate-400 text-lg sm:text-xl max-w-md mx-auto lg:mx-0 mb-8">
-                                {policy.description}
-                            </p>
-
-                            {/* Meta Info */}
-                            <div className="flex flex-wrap justify-center lg:justify-start gap-6 text-sm">
-                                <div className="flex items-center gap-2 text-slate-300">
-                                    <Clock size={18} className="text-slate-400" />
-                                    <span>Cập nhật: <strong className="text-white">{new Date().toLocaleDateString('vi-VN')}</strong></span>
-                                </div>
-                                <div className="flex items-center gap-2 text-slate-300">
-                                    <BookOpen size={18} className="text-slate-400" />
-                                    <span><strong className="text-white">{policy.sections.length}</strong> mục</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Right - Icon Display */}
-                        <div className="hidden lg:flex justify-center">
-                            <div className="relative">
-                                <div className={`absolute -inset-8 bg-gradient-to-r ${iconColors[policy.badgeColor]} rounded-full blur-3xl opacity-30`} />
-                                <div className={`relative w-48 h-48 bg-gradient-to-br ${iconColors[policy.badgeColor]} rounded-3xl flex items-center justify-center shadow-2xl transform rotate-6 hover:rotate-0 transition-transform`}>
-                                    <Icon size={80} className="text-white" />
-                                </div>
-
-                                {/* Floating Elements */}
-                                <Sparkles size={28} className="absolute -top-4 -right-4 text-amber-400 animate-pulse" />
-                                <Star size={20} className="absolute bottom-4 -left-6 text-blue-400 animate-pulse" style={{ animationDelay: '0.5s' }} />
-                                <CheckCircle size={24} className="absolute top-8 -left-8 text-emerald-400 animate-pulse" style={{ animationDelay: '1s' }} />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Main Content */}
-            <div className="max-w-6xl mx-auto px-4 py-12 sm:py-16">
-                <div className="grid lg:grid-cols-4 gap-8">
-                    {/* Sidebar - Quick Links */}
-                    <div className="lg:col-span-1">
-                        <div className="bg-white rounded-2xl border border-slate-100 shadow-lg p-5 lg:sticky lg:top-24">
-                            <h3 className="font-black text-slate-900 mb-4 flex items-center gap-2">
-                                <BookOpen size={18} className="text-blue-600" />
-                                Chính sách
-                            </h3>
-                            <div className="space-y-2">
-                                {Object.entries(POLICY_CONTENT).map(([key, p]) => {
-                                    const PIcon = p.icon;
-                                    const isActive = type === key;
-                                    return (
-                                        <Link
-                                            key={key}
-                                            href={`/policy/${key}`}
-                                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all ${isActive
-                                                ? `bg-gradient-to-r ${iconColors[p.badgeColor]} text-white shadow-lg`
-                                                : 'hover:bg-slate-50 text-slate-600'
-                                                }`}
-                                        >
-                                            <PIcon size={18} className={isActive ? 'text-white' : 'text-slate-400'} />
-                                            <span className="font-semibold text-sm">{p.title}</span>
-                                        </Link>
-                                    );
-                                })}
-                            </div>
-
-                            {/* Contact CTA */}
-                            <div className="mt-6 pt-6 border-t border-slate-100">
-                                <p className="text-sm text-slate-500 mb-3">Có câu hỏi?</p>
-                                <Link
-                                    href="/contact"
-                                    className="flex items-center justify-center gap-2 bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-slate-800 transition-all text-sm"
-                                >
-                                    Liên hệ hỗ trợ <ArrowRight size={16} />
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Content Sections */}
-                    <div className="lg:col-span-3 space-y-6">
-                        {policy.sections.map((section, idx) => {
-                            const SectionIcon = section.icon;
-                            return (
-                                <div
-                                    key={idx}
-                                    className="bg-white rounded-2xl border border-slate-100 shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
-                                >
-                                    <div className="p-6 sm:p-8">
-                                        <div className="flex items-start gap-4">
-                                            <div className={`w-12 h-12 bg-gradient-to-br ${iconColors[policy.badgeColor]} rounded-xl flex items-center justify-center text-white shadow-lg flex-shrink-0`}>
-                                                <SectionIcon size={24} />
-                                            </div>
-                                            <div className="flex-1">
-                                                <h2 className="text-xl sm:text-2xl font-black text-slate-900 mb-4">
-                                                    {idx + 1}. {section.title}
-                                                </h2>
-                                                <p className="text-slate-600 leading-relaxed text-base sm:text-lg">
-                                                    {section.content}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            );
-                        })}
-
-                        {/* Bottom Note */}
-                        <div className="bg-slate-100 rounded-2xl p-6 sm:p-8 border border-slate-200">
-                            <div className="flex items-start gap-4">
-                                <div className="w-12 h-12 bg-slate-200 rounded-xl flex items-center justify-center flex-shrink-0">
-                                    <AlertCircle size={24} className="text-slate-500" />
+                    <div className="grid items-end gap-8 lg:grid-cols-[1fr_390px] lg:gap-14">
+                        <motion.div initial="hidden" animate="visible" variants={reveal} transition={{ duration: 0.45 }}>
+                            <div className="mb-5 flex w-fit items-center gap-3 rounded-lg border border-slate-200 bg-white px-3.5 py-3 shadow-sm">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-md bg-slate-950 text-orange-400">
+                                    <Icon size={21} />
                                 </div>
                                 <div>
-                                    <h3 className="font-bold text-slate-900 mb-2">Lưu ý quan trọng</h3>
-                                    <p className="text-slate-600">
-                                        Các điều khoản này có thể được cập nhật định kỳ. Chúng tôi khuyến khích bạn
-                                        kiểm tra lại trang này thường xuyên để nắm bắt các thay đổi mới nhất.
-                                        Việc tiếp tục sử dụng dịch vụ sau khi có thay đổi đồng nghĩa với việc bạn
-                                        chấp nhận các điều khoản mới.
-                                    </p>
+                                    <p className="text-sm font-extrabold">Trung tâm chính sách</p>
+                                    <p className="mt-0.5 text-xs font-medium text-slate-500">{policy.eyebrow}</p>
                                 </div>
                             </div>
-                        </div>
+                            <h1 className="max-w-3xl text-3xl font-black leading-tight sm:text-4xl md:text-5xl">{policy.title}</h1>
+                            <p className="mt-4 max-w-2xl text-sm font-medium leading-7 text-slate-600 sm:text-base sm:leading-8">{policy.description}</p>
+                        </motion.div>
+
+                        <motion.aside
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.45, delay: 0.08 }}
+                            className="rounded-lg border border-slate-800 bg-slate-950 p-5 text-white shadow-[0_20px_45px_rgba(15,23,42,0.16)]"
+                        >
+                            <p className="text-xs font-bold uppercase text-orange-300">Tóm tắt nhanh</p>
+                            <p className="mt-3 text-sm font-semibold leading-6 text-slate-200">{policy.summary}</p>
+                            <div className="mt-5 grid grid-cols-2 border-t border-white/10 pt-4 text-xs">
+                                <div className="border-r border-white/10">
+                                    <p className="text-slate-500">Cập nhật</p>
+                                    <p className="mt-1 font-bold text-white">{UPDATED_AT}</p>
+                                </div>
+                                <div className="pl-4">
+                                    <p className="text-slate-500">Nội dung</p>
+                                    <p className="mt-1 font-bold text-white">{policy.sections.length} mục chính</p>
+                                </div>
+                            </div>
+                        </motion.aside>
                     </div>
                 </div>
+            </section>
+
+            <div className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">
+                <nav className="mx-auto flex max-w-7xl gap-1 overflow-x-auto px-4 py-2 [scrollbar-width:none] sm:px-6 lg:px-8 [&::-webkit-scrollbar]:hidden" aria-label="Các chính sách">
+                    {policyOrder.map((key) => {
+                        const item = POLICIES[key];
+                        const ItemIcon = item.icon;
+                        const active = key === type;
+                        return (
+                            <Link
+                                key={key}
+                                href={`/policy/${key}`}
+                                className={`inline-flex shrink-0 items-center gap-2 rounded-md px-3.5 py-2.5 text-xs font-bold transition sm:text-sm ${active ? 'bg-orange-600 text-white shadow-md shadow-orange-100' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950'}`}
+                            >
+                                <ItemIcon size={16} /> {item.shortTitle}
+                            </Link>
+                        );
+                    })}
+                </nav>
             </div>
-        </div>
+
+            <section className="mx-auto grid max-w-7xl items-start gap-7 px-4 py-10 sm:px-6 sm:py-14 lg:grid-cols-[250px_minmax(0,1fr)] lg:px-8">
+                <aside className="hidden space-y-4 lg:sticky lg:top-20 lg:block">
+                    <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+                        <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+                            <BookOpen size={17} className="text-orange-600" />
+                            <p className="text-sm font-black">Trong tài liệu này</p>
+                        </div>
+                        <ol className="mt-2">
+                            {policy.sections.map((section, index) => (
+                                <li key={section.title}>
+                                    <a href={`#section-${index + 1}`} className="flex gap-2 border-l-2 border-slate-100 px-3 py-2.5 text-xs font-semibold leading-5 text-slate-500 transition hover:border-orange-500 hover:bg-orange-50 hover:text-orange-700">
+                                        <span className="text-slate-300">{String(index + 1).padStart(2, '0')}</span>
+                                        {section.title}
+                                    </a>
+                                </li>
+                            ))}
+                        </ol>
+                    </div>
+
+                    <div className="rounded-lg bg-slate-950 p-5 text-white">
+                        <Headphones size={20} className="text-orange-400" />
+                        <p className="mt-4 text-sm font-black">Cần làm rõ nội dung?</p>
+                        <p className="mt-2 text-xs font-medium leading-5 text-slate-400">Trao đổi trực tiếp trước khi mua hoặc sử dụng sản phẩm.</p>
+                        <Link href="/contact" className="mt-4 inline-flex items-center gap-2 text-xs font-bold text-orange-300 hover:text-orange-200">
+                            Liên hệ hỗ trợ <ArrowRight size={14} />
+                        </Link>
+                    </div>
+                </aside>
+
+                <motion.article
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.05 }}
+                    className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-[0_18px_50px_rgba(15,23,42,0.06)]"
+                >
+                    <div className="border-b border-slate-200 bg-slate-50 px-5 py-4 sm:px-8">
+                        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-semibold text-slate-500">
+                            <span className="inline-flex items-center gap-1.5"><FileText size={14} /> Tài liệu chính thức</span>
+                            <span className="inline-flex items-center gap-1.5"><Clock3 size={14} /> Cập nhật {UPDATED_AT}</span>
+                            <span className="inline-flex items-center gap-1.5"><BadgeCheck size={14} /> Áp dụng tại Shop Web rẻ</span>
+                        </div>
+                    </div>
+
+                    <div className="px-5 sm:px-8">
+                        {policy.sections.map((section, index) => {
+                            const SectionIcon = section.icon;
+                            return (
+                                <motion.section
+                                    id={`section-${index + 1}`}
+                                    key={section.title}
+                                    variants={reveal}
+                                    transition={{ duration: 0.35, delay: index * 0.04 }}
+                                    className="scroll-mt-28 border-b border-slate-200 py-7 last:border-b-0 sm:py-9"
+                                >
+                                    <div className="grid gap-4 sm:grid-cols-[48px_1fr] sm:gap-5">
+                                        <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-orange-50 text-orange-600 ring-1 ring-orange-100">
+                                            <SectionIcon size={20} />
+                                        </div>
+                                        <div>
+                                            <div className="flex items-baseline gap-3">
+                                                <span className="text-xs font-black text-orange-600">{String(index + 1).padStart(2, '0')}</span>
+                                                <h2 className="text-xl font-black leading-tight sm:text-2xl">{section.title}</h2>
+                                            </div>
+
+                                            <div className="mt-4 space-y-3 text-sm font-medium leading-7 text-slate-600 sm:text-base sm:leading-8">
+                                                {section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+                                            </div>
+
+                                            {section.bullets && (
+                                                <ul className="mt-5 grid gap-3">
+                                                    {section.bullets.map((bullet) => (
+                                                        <li key={bullet} className="flex items-start gap-3 rounded-md border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium leading-6 text-slate-700">
+                                                            <CheckCircle2 size={17} className="mt-0.5 shrink-0 text-emerald-600" />
+                                                            {bullet}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            )}
+
+                                            {section.note && (
+                                                <div className="mt-5 flex items-start gap-3 rounded-md border border-orange-200 bg-orange-50 px-4 py-3 text-sm font-semibold leading-6 text-slate-700">
+                                                    <AlertTriangle size={18} className="mt-0.5 shrink-0 text-orange-600" />
+                                                    {section.note}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </motion.section>
+                            );
+                        })}
+                    </div>
+
+                    <footer className="border-t border-slate-200 bg-slate-950 p-5 text-white sm:p-7">
+                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                            <div>
+                                <p className="text-sm font-black">Có câu hỏi về chính sách này?</p>
+                                <p className="mt-1 text-xs font-medium text-slate-400">Email hỗ trợ: veutong961@gmail.com</p>
+                            </div>
+                            <a href="mailto:veutong961@gmail.com" className="inline-flex h-11 items-center justify-center gap-2 rounded-md bg-orange-600 px-5 text-sm font-bold text-white transition hover:bg-orange-500">
+                                <Mail size={16} /> Gửi email
+                            </a>
+                        </div>
+                    </footer>
+                </motion.article>
+
+                <div className="lg:col-start-2">
+                    <div className="grid grid-cols-2 gap-3">
+                        {previous ? (
+                            <Link href={`/policy/${previous}`} className="group flex min-w-0 items-center gap-3 rounded-lg border border-slate-200 bg-white p-4 transition hover:border-orange-200 hover:shadow-md">
+                                <ArrowLeft size={17} className="shrink-0 text-slate-400 group-hover:text-orange-600" />
+                                <div className="min-w-0">
+                                    <p className="text-[10px] font-bold uppercase text-slate-400">Trước đó</p>
+                                    <p className="mt-1 truncate text-xs font-black sm:text-sm">{POLICIES[previous].shortTitle}</p>
+                                </div>
+                            </Link>
+                        ) : <div />}
+                        {next && (
+                            <Link href={`/policy/${next}`} className="group flex min-w-0 items-center justify-end gap-3 rounded-lg border border-slate-200 bg-white p-4 text-right transition hover:border-orange-200 hover:shadow-md">
+                                <div className="min-w-0">
+                                    <p className="text-[10px] font-bold uppercase text-slate-400">Tiếp theo</p>
+                                    <p className="mt-1 truncate text-xs font-black sm:text-sm">{POLICIES[next].shortTitle}</p>
+                                </div>
+                                <ArrowRight size={17} className="shrink-0 text-slate-400 group-hover:text-orange-600" />
+                            </Link>
+                        )}
+                    </div>
+                </div>
+            </section>
+        </main>
     );
 }

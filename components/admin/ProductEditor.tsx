@@ -53,6 +53,7 @@ interface EditorProduct {
   author: string;
   isActive: boolean;
   isFeatured: boolean;
+  isBestseller: boolean;
   isNew: boolean;
   // Digital Product Specific
   demoUrl: string;
@@ -103,6 +104,7 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
     author: 'Shop Web rẻ',
     isActive: true,
     isFeatured: false,
+    isBestseller: false,
     isNew: true,
     demoUrl: '',
     fileFormat: '',
@@ -144,6 +146,7 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
             author: found.author,
             isActive: found.status === 'active',
             isFeatured: found.is_featured,
+            isBestseller: found.is_bestseller,
             isNew: found.is_new,
             demoUrl: found.demo_url || '',
             fileFormat: found.file_format || '',
@@ -305,6 +308,7 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
         author: product.author || 'Shop Web rẻ',
         is_new: product.isNew,
         is_featured: product.isFeatured,
+        is_bestseller: product.isBestseller,
         status: product.isActive ? 'active' : 'draft',
         demo_url: product.demoUrl || null,
         file_format: product.fileFormat || null,
@@ -351,6 +355,13 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
         }
 
         toast.success('Tạo sản phẩm thành công!');
+      }
+
+      const revalidateResponse = await fetch('/api/admin/revalidate-storefront', {
+        method: 'POST',
+      });
+      if (!revalidateResponse.ok) {
+        console.warn('Product saved, but storefront cache could not be refreshed');
       }
 
       router.push('/admin/products');
@@ -794,6 +805,26 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
                 >
                   <div
                     className={`w-3 h-3 bg-white rounded-full absolute top-1 transition-all ${product.isFeatured ? 'right-1' : 'left-1'
+                      }`}
+                  />
+                </div>
+              </label>
+              <label className="flex items-center justify-between p-3 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50">
+                <span className="font-medium text-slate-700">
+                  Sản phẩm bán chạy
+                </span>
+                <div
+                  onClick={() =>
+                    setProduct({
+                      ...product,
+                      isBestseller: !product.isBestseller,
+                    })
+                  }
+                  className={`w-10 h-5 ${product.isBestseller ? 'bg-rose-500' : 'bg-slate-300'
+                    } rounded-full relative cursor-pointer transition-colors`}
+                >
+                  <div
+                    className={`w-3 h-3 bg-white rounded-full absolute top-1 transition-all ${product.isBestseller ? 'right-1' : 'left-1'
                       }`}
                   />
                 </div>

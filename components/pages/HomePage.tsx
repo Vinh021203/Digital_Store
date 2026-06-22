@@ -677,27 +677,11 @@ const HomePage = ({
   };
 
   const getFeaturedProducts = () => {
-    const featured = allProducts.filter((p) => p.isFeatured);
-    if (featured.length > 0) {
-      return featured.slice(0, 4);
-    }
-    // Fallback: take 4 random items
-    if (allProducts.length > 0) {
-      return allProducts.slice(0, 4);
-    }
-    return mockProducts.slice(0, 4);
+    return allProducts.filter((p) => p.isFeatured).slice(0, 4);
   };
 
   const getBestSellers = () => {
-    const bestsellers = allProducts.filter((p) => p.isBestseller);
-    if (bestsellers.length > 0) {
-      return bestsellers.slice(0, 6);
-    }
-    // Fallback: take 6 products sorted by rating/downloads or random
-    if (allProducts.length > 0) {
-      return [...allProducts].sort(() => 0.5 - Math.random()).slice(0, 6);
-    }
-    return mockProducts.slice(0, 6);
+    return allProducts.filter((p) => p.isBestseller).slice(0, 6);
   };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -710,14 +694,21 @@ const HomePage = ({
   const displayArrivalProducts = getNewArrivalProducts();
   const displayFeaturedProducts = getFeaturedProducts();
   const displayBestSellers = getBestSellers();
+  const shouldLoopBestSellers = displayBestSellers.length > 4;
   const displayBlogs =
     blogPosts.length >= 4
       ? blogPosts.slice(0, 4)
       : [...blogPosts, ...mockBlogs].slice(0, 4);
 
   useEffect(() => {
+    if (bestsellerCarouselRef.current) {
+      bestsellerCarouselRef.current.scrollLeft = 0;
+    }
+  }, [displayBestSellers.length, shouldLoopBestSellers]);
+
+  useEffect(() => {
     const carousel = bestsellerCarouselRef.current;
-    if (!carousel || displayBestSellers.length === 0) return;
+    if (!carousel || !shouldLoopBestSellers) return;
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const desktopViewport = window.matchMedia("(min-width: 768px)");
@@ -743,11 +734,11 @@ const HomePage = ({
 
     const intervalId = window.setInterval(scrollOneCard, 4200);
     return () => window.clearInterval(intervalId);
-  }, [displayBestSellers.length]);
+  }, [displayBestSellers.length, shouldLoopBestSellers]);
 
   useEffect(() => {
     const carousel = bestsellerCarouselRef.current;
-    if (!carousel) return;
+    if (!carousel || !shouldLoopBestSellers) return;
 
     const syncLoopPosition = () => {
       const loopWidth = carousel.scrollWidth / 2;
@@ -762,7 +753,7 @@ const HomePage = ({
 
     carousel.addEventListener("scroll", syncLoopPosition, { passive: true });
     return () => carousel.removeEventListener("scroll", syncLoopPosition);
-  }, [displayBestSellers.length]);
+  }, [displayBestSellers.length, shouldLoopBestSellers]);
 
   const handleBestsellerMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
     const carousel = bestsellerCarouselRef.current;
@@ -1420,6 +1411,7 @@ const HomePage = ({
         </div>
       </section>
 
+      {(loading || displayFeaturedProducts.length > 0) && (
       <section className="relative pb-7 pt-4 md:pb-12 md:pt-8 overflow-hidden">
         {/* Premium warm gradient */}
         <div className="absolute inset-0 bg-gradient-to-b from-white via-[#fff7f0] to-white z-0" />
@@ -1580,7 +1572,9 @@ const HomePage = ({
           </div>
         </div>
       </section>
+      )}
 
+      {(loading || displayBestSellers.length > 0) && (
       <section
         className="relative overflow-hidden border-y border-slate-200/80 py-7 md:py-12"
         style={{
@@ -1676,12 +1670,12 @@ const HomePage = ({
                   bestsellerPointerInside.current = true;
                 }}
               >
-                <div className="flex w-max snap-x md:snap-none scroll-smooth">
-                  {[0, 1].map((loopIndex) => (
+                <div className={`flex snap-x scroll-smooth md:snap-none ${shouldLoopBestSellers ? "w-max" : "w-max md:w-full md:justify-center"}`}>
+                  {(shouldLoopBestSellers ? [0, 1] : [0]).map((loopIndex) => (
                     <div
                       key={loopIndex}
                       aria-hidden={loopIndex === 1}
-                      className={`flex gap-3 md:gap-5 md:pr-5 ${loopIndex === 1 ? "hidden md:flex" : ""}`}
+                      className={`flex gap-3 md:gap-5 ${shouldLoopBestSellers ? "md:pr-5" : ""} ${loopIndex === 1 ? "hidden md:flex" : ""}`}
                     >
                       {displayBestSellers.map((product, idx) => (
                         <div
@@ -1712,6 +1706,7 @@ const HomePage = ({
           )}
         </div>
       </section>
+      )}
 
       {/* === FEATURED AUTHOR SECTION â€” Light Pastel Style === */}
       <section className="hidden">

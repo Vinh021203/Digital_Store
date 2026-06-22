@@ -224,7 +224,7 @@ function CartPageContent() {
                             </Link>
 
                             <p className="text-center text-xs text-slate-400 mt-4">
-                                Bằng việc thanh toán, bạn đồng ý với <Link href="/terms" className="underline hover:text-slate-600">Điều khoản dịch vụ</Link>
+                                Bằng việc thanh toán, bạn đồng ý với <Link href="/policy/terms" className="underline hover:text-slate-600">Điều khoản dịch vụ</Link>
                             </p>
 
                             <div className="mt-8 pt-6 border-t border-slate-100">

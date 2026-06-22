@@ -1,16 +1,16 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import TrackingContent from './TrackingContent';
 
 export const metadata: Metadata = {
-    title: 'Theo dõi đơn hàng',
-    description: 'Tra cứu và theo dõi trạng thái đơn hàng của bạn tại Shop Web rẻ',
+    title: 'Tra cứu đơn hàng',
+    description: 'Tra cứu trạng thái thanh toán, giấy phép và quyền tải sản phẩm số tại Shop Web rẻ.',
     robots: {
         index: false,
         follow: false,
     },
     openGraph: {
-        title: 'Theo dõi đơn hàng | Shop Web rẻ',
-        description: 'Tra cứu và theo dõi trạng thái đơn hàng của bạn tại Shop Web rẻ',
+        title: 'Tra cứu đơn hàng | Shop Web rẻ',
+        description: 'Kiểm tra trạng thái thanh toán và quyền tải sản phẩm số tại Shop Web rẻ.',
     },
 };
 

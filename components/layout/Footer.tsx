@@ -746,6 +746,7 @@ const Footer = () => {
                   { href: "/policy/privacy", label: "Bảo mật" },
                   { href: "/policy/terms", label: "Điều khoản" },
                   { href: "/policy/refund", label: "Hoàn tiền" },
+                  { href: "/policy/license", label: "Giấy phép" },
                   { href: "/contact", label: "Liên hệ" },
                   { href: "/sitemap.xml", label: "Sitemap" },
                 ].map((link) => (

@@ -1,360 +1,354 @@
 'use client';
 
-import React, { useState } from 'react';
-import Link from 'next/link';
+import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
 import {
-    Home, ChevronRight, Mail, Phone, MapPin, Send, MessageCircle, Clock,
-    Loader2, Sparkles, Star, Headphones, Zap, ArrowRight, CheckCircle,
-    Facebook, Instagram, Youtube, Globe, Shield, Heart
+    ArrowRight, BookOpen, CheckCircle2, ChevronRight, Clock3,
+    ExternalLink, Facebook, Headphones, Home, Mail, MapPin,
+    MessageCircle, Phone, Send, ShieldCheck, Sparkles, UserRound,
 } from 'lucide-react';
 import { useToast } from '@/context/ToastContext';
 
-const CONTACT_INFO = [
-    { icon: Mail, label: 'Email hỗ trợ', value: 'veutong961@gmail.com', href: 'mailto:support@shopwebre.vn', color: 'blue' },
-    { icon: Phone, label: 'Hotline', value: '0971 386 588', href: 'tel:0971386588', color: 'emerald' },
-    { icon: MapPin, label: 'Địa chỉ', value: 'Hạ Long, Quảng Ninh', href: '#', color: 'rose' },
-    { icon: Clock, label: 'Giờ làm việc', value: '8:00 - 22:00 hàng ngày', href: '#', color: 'amber' },
+const reveal = {
+    hidden: { opacity: 0, y: 18 },
+    visible: { opacity: 1, y: 0 },
+};
+
+const stagger = {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.08 } },
+};
+
+const contactMethods = [
+    {
+        icon: Mail,
+        label: 'Email hỗ trợ',
+        value: 'veutong961@gmail.com',
+        detail: 'Phù hợp khi cần gửi mã đơn hoặc hình ảnh',
+        href: 'mailto:veutong961@gmail.com',
+    },
+    {
+        icon: Phone,
+        label: 'Điện thoại',
+        value: '0971 386 588',
+        detail: 'Trao đổi nhanh trong giờ làm việc',
+        href: 'tel:0971386588',
+    },
+    {
+        icon: Facebook,
+        label: 'Facebook',
+        value: 'Lương Vinh',
+        detail: 'Nhắn tin để được phản hồi trực tiếp',
+        href: 'https://www.facebook.com/',
+    },
 ];
 
-const SOCIAL_LINKS = [
-    { icon: Facebook, href: '#', label: 'Facebook', color: 'bg-blue-600' },
-    { icon: Instagram, href: '#', label: 'Instagram', color: 'bg-gradient-to-br from-purple-600 to-pink-500' },
-    { icon: Youtube, href: '#', label: 'Youtube', color: 'bg-red-600' },
-    { icon: Globe, href: '#', label: 'Website', color: 'bg-slate-700' },
-];
-
-const SUPPORT_FEATURES = [
-    { icon: Zap, title: 'Phản hồi nhanh', desc: 'Trong vòng 2-4 giờ làm việc' },
-    { icon: Shield, title: 'Hỗ trợ chuyên nghiệp', desc: 'Đội ngũ kỹ thuật giàu kinh nghiệm' },
-    { icon: Heart, title: 'Tận tâm 24/7', desc: 'Luôn sẵn sàng giúp đỡ bạn' },
+const supportSteps = [
+    { icon: MessageCircle, title: 'Gửi yêu cầu', detail: 'Mô tả nhu cầu, sản phẩm hoặc vấn đề bạn gặp.' },
+    { icon: UserRound, title: 'Mình trực tiếp kiểm tra', detail: 'Không qua tổng đài hoặc bộ phận trung gian.' },
+    { icon: CheckCircle2, title: 'Phản hồi rõ ràng', detail: 'Đề xuất hướng xử lý phù hợp và dễ thực hiện.' },
 ];
 
 export default function ContactContent() {
     const { addToast } = useToast();
-    const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         subject: '',
-        message: ''
+        message: '',
     });
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-        await new Promise(r => setTimeout(r, 1500));
-        addToast('Đã gửi tin nhắn thành công! Chúng tôi sẽ phản hồi sớm.', 'success');
-        setFormData({ name: '', email: '', subject: '', message: '' });
-        setLoading(false);
+    const handleSubmit = (event: React.FormEvent) => {
+        event.preventDefault();
+
+        const body = [
+            `Họ tên: ${formData.name}`,
+            `Email phản hồi: ${formData.email}`,
+            '',
+            formData.message,
+        ].join('\n');
+
+        const mailto = `mailto:veutong961@gmail.com?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(body)}`;
+        addToast('Đang mở ứng dụng email với nội dung đã điền sẵn', 'success');
+        window.location.href = mailto;
     };
 
     return (
-        <div className="min-h-screen bg-slate-50">
-            {/* Hero Section with Background */}
-            <div className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 overflow-hidden">
-                {/* Background Image */}
-                <div className="absolute inset-0">
-                    <Image
-                        src="https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=1920&q=80"
-                        alt="Contact Background"
-                        fill
-                        className="object-cover opacity-20"
-                        priority
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/95 to-slate-900/80" />
-                </div>
+        <main className="min-h-screen bg-[#f8fafc] text-slate-950">
+            <section className="relative overflow-hidden border-b border-orange-100 bg-[#fffaf6]">
+                <div className="absolute inset-0 bg-[linear-gradient(rgba(234,88,12,0.055)_1px,transparent_1px),linear-gradient(90deg,rgba(234,88,12,0.055)_1px,transparent_1px)] bg-[size:48px_48px]" />
 
-                {/* Decorative Elements */}
-                <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl" />
-                    <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-blue-500/15 rounded-full blur-3xl" />
-                    <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px]" />
-                </div>
+                <div className="relative mx-auto max-w-7xl px-4 pb-12 pt-6 sm:px-6 sm:pb-16 lg:px-8">
+                    <nav className="mb-8 flex items-center gap-2 text-sm font-semibold text-slate-500" aria-label="Breadcrumb">
+                        <Link href="/" className="inline-flex items-center gap-1.5 transition hover:text-orange-600">
+                            <Home size={15} /> Trang chủ
+                        </Link>
+                        <ChevronRight size={14} />
+                        <span className="text-slate-900">Liên hệ</span>
+                    </nav>
 
-                <div className="relative z-10 max-w-6xl mx-auto px-4 py-16 sm:py-20 lg:py-24">
-                    <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-                        {/* Left Content */}
-                        <div className="text-center lg:text-left">
-                            {/* Breadcrumb */}
-                            <div className="inline-flex items-center gap-2 text-sm text-slate-400 mb-6">
-                                <Link href="/" className="hover:text-white flex items-center gap-1 transition-colors">
-                                    <Home size={14} /> Trang chủ
-                                </Link>
-                                <ChevronRight size={14} />
-                                <span className="text-white font-semibold">Liên hệ</span>
+                    <div className="grid items-center gap-9 lg:grid-cols-[1.08fr_0.92fr] lg:gap-16">
+                        <motion.div initial="hidden" animate="visible" variants={stagger}>
+                            <motion.div variants={reveal} className="mb-5 flex w-fit items-center gap-3 rounded-lg border border-slate-200 bg-white px-3.5 py-3 shadow-sm">
+                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-slate-950 text-orange-400">
+                                    <Headphones size={21} />
+                                </div>
+                                <div>
+                                    <div className="flex items-center gap-2">
+                                        <p className="text-sm font-extrabold">Hỗ trợ trực tiếp</p>
+                                        <span className="h-2 w-2 rounded-full bg-emerald-500 ring-4 ring-emerald-50" />
+                                    </div>
+                                    <p className="mt-0.5 text-xs font-medium text-slate-500">Tiếp nhận bởi chính người xây dựng website</p>
+                                </div>
+                            </motion.div>
+
+                            <motion.div variants={reveal} className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-white px-3.5 py-2 text-[10px] font-extrabold uppercase text-orange-700 shadow-sm sm:text-xs">
+                                <Sparkles size={15} /> Trao đổi rõ ràng, hỗ trợ đúng vấn đề
+                            </motion.div>
+
+                            <motion.h1 variants={reveal} className="mt-5 max-w-3xl text-3xl font-black leading-tight sm:text-4xl md:text-5xl lg:text-6xl">
+                                Bạn cần tìm một giao diện <span className="text-orange-600">phù hợp hơn?</span>
+                            </motion.h1>
+
+                            <motion.p variants={reveal} className="mt-5 max-w-2xl text-sm font-medium leading-7 text-slate-600 sm:text-base sm:leading-8">
+                                Hãy gửi nhu cầu, công nghệ đang sử dụng hoặc mã đơn hàng. Mình sẽ trực tiếp kiểm tra và phản hồi trong phạm vi hỗ trợ của sản phẩm.
+                            </motion.p>
+
+                            <motion.div variants={reveal} className="mt-7 grid grid-cols-2 gap-3 sm:flex">
+                                <a href="mailto:veutong961@gmail.com" className="inline-flex min-w-0 items-center justify-center gap-2 rounded-lg bg-orange-600 px-4 py-3.5 text-xs font-bold text-white shadow-lg shadow-orange-200 transition hover:bg-orange-700 sm:px-6 sm:text-sm">
+                                    <Mail size={17} /> <span className="truncate">Gửi email</span>
+                                </a>
+                                <a href="tel:0971386588" className="inline-flex min-w-0 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3.5 text-xs font-bold text-slate-700 transition hover:border-orange-200 hover:text-orange-700 sm:px-6 sm:text-sm">
+                                    <Phone size={17} /> 0971 386 588
+                                </a>
+                            </motion.div>
+                        </motion.div>
+
+                        <motion.div
+                            initial={{ opacity: 0, x: 24, scale: 0.98 }}
+                            animate={{ opacity: 1, x: 0, scale: 1 }}
+                            transition={{ duration: 0.5, delay: 0.1 }}
+                            className="overflow-hidden rounded-lg border border-slate-200 bg-slate-950 text-white shadow-[0_26px_60px_rgba(15,23,42,0.18)]"
+                        >
+                            <div className="flex items-center gap-4 border-b border-white/10 p-5 sm:p-6">
+                                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-white/15 bg-slate-800">
+                                    <Image src="/luongvinh.jpg" alt="Lương Thế Vinh" fill priority sizes="64px" className="object-cover object-[center_30%]" />
+                                </div>
+                                <div>
+                                    <p className="text-lg font-extrabold">Lương Thế Vinh</p>
+                                    <p className="mt-1 text-xs font-semibold text-orange-300 sm:text-sm">Người xây dựng Shop Web rẻ</p>
+                                </div>
                             </div>
 
-                            {/* Badge */}
-                            <div className="inline-flex items-center gap-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 px-4 py-2 rounded-full text-sm font-bold mb-6 backdrop-blur-sm">
-                                <Headphones size={16} />
-                                HỖ TRỢ 24/7
+                            <div className="grid grid-cols-2 border-b border-white/10">
+                                <div className="border-r border-white/10 p-5">
+                                    <Clock3 size={19} className="text-orange-400" />
+                                    <p className="mt-3 text-xs font-bold text-white">Thời gian phản hồi</p>
+                                    <p className="mt-1 text-xs leading-5 text-slate-400">Trong ngày làm việc</p>
+                                </div>
+                                <div className="p-5">
+                                    <MapPin size={19} className="text-orange-400" />
+                                    <p className="mt-3 text-xs font-bold text-white">Khu vực</p>
+                                    <p className="mt-1 text-xs leading-5 text-slate-400">Hạ Long, Quảng Ninh</p>
+                                </div>
                             </div>
 
-                            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-4 leading-tight">
-                                Liên Hệ <br className="hidden sm:block" />
-                                <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">Với Chúng Tôi</span>
-                            </h1>
+                            <div className="flex items-start gap-3 p-5 sm:p-6">
+                                <ShieldCheck size={20} className="mt-0.5 shrink-0 text-emerald-400" />
+                                <p className="text-xs font-medium leading-6 text-slate-300">
+                                    Thông tin bạn gửi chỉ được sử dụng để trao đổi và hỗ trợ yêu cầu hiện tại.
+                                </p>
+                            </div>
+                        </motion.div>
+                    </div>
+                </div>
+            </section>
 
-                            <p className="text-slate-400 text-lg sm:text-xl max-w-md mx-auto lg:mx-0 mb-8">
-                                Đội ngũ hỗ trợ luôn sẵn sàng lắng nghe và giải đáp mọi thắc mắc của bạn.
+            <section className="border-b border-slate-200 bg-white">
+                <div className="mx-auto grid max-w-7xl md:grid-cols-3">
+                    {contactMethods.map((method, index) => (
+                        <a
+                            key={method.label}
+                            href={method.href}
+                            target={method.label === 'Facebook' ? '_blank' : undefined}
+                            rel={method.label === 'Facebook' ? 'noopener noreferrer' : undefined}
+                            className={`group flex items-center gap-4 px-5 py-5 transition hover:bg-orange-50/60 sm:px-7 ${index < contactMethods.length - 1 ? 'border-b border-slate-100 md:border-b-0 md:border-r' : ''}`}
+                        >
+                            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-orange-50 text-orange-600 transition group-hover:bg-orange-600 group-hover:text-white">
+                                <method.icon size={20} />
+                            </div>
+                            <div className="min-w-0">
+                                <p className="text-xs font-bold uppercase text-slate-400">{method.label}</p>
+                                <p className="mt-1 truncate text-sm font-extrabold text-slate-900">{method.value}</p>
+                                <p className="mt-1 hidden text-xs text-slate-500 sm:block">{method.detail}</p>
+                            </div>
+                            <ExternalLink size={15} className="ml-auto shrink-0 text-slate-300 transition group-hover:text-orange-600" />
+                        </a>
+                    ))}
+                </div>
+            </section>
+
+            <section className="mx-auto grid max-w-7xl items-start gap-7 px-4 py-10 sm:px-6 sm:py-14 lg:grid-cols-[1fr_360px] lg:px-8">
+                <motion.div
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.12 }}
+                    variants={stagger}
+                    className="space-y-5"
+                >
+                <motion.article variants={reveal} className="self-start overflow-hidden rounded-lg border border-slate-300 bg-white shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
+                    <header className="border-b border-slate-200 p-5 sm:p-7">
+                        <div className="flex items-center gap-3">
+                            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-orange-600 text-white">
+                                <MessageCircle size={21} />
+                            </div>
+                            <div>
+                                <h2 className="text-xl font-black sm:text-2xl">Gửi nội dung cần hỗ trợ</h2>
+                                <p className="mt-1 text-xs font-medium text-slate-500 sm:text-sm">Form sẽ mở ứng dụng email với nội dung đã điền sẵn.</p>
+                            </div>
+                        </div>
+                    </header>
+
+                    <form onSubmit={handleSubmit} className="space-y-5 bg-[#fffdfb] p-5 sm:p-7">
+                        <div className="grid gap-5 sm:grid-cols-2">
+                            <label className="block">
+                                <span className="mb-2 block text-sm font-bold text-slate-700">Họ và tên <span className="text-orange-600">*</span></span>
+                                <input
+                                    type="text"
+                                    required
+                                    autoComplete="name"
+                                    placeholder="Nguyễn Văn A"
+                                    value={formData.name}
+                                    onChange={(event) => setFormData({ ...formData, name: event.target.value })}
+                                    className="h-12 w-full rounded-md border border-slate-300 bg-white px-4 text-sm font-medium shadow-sm outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-orange-500 focus:ring-4 focus:ring-orange-100"
+                                />
+                            </label>
+                            <label className="block">
+                                <span className="mb-2 block text-sm font-bold text-slate-700">Email phản hồi <span className="text-orange-600">*</span></span>
+                                <input
+                                    type="email"
+                                    required
+                                    autoComplete="email"
+                                    placeholder="email@example.com"
+                                    value={formData.email}
+                                    onChange={(event) => setFormData({ ...formData, email: event.target.value })}
+                                    className="h-12 w-full rounded-md border border-slate-300 bg-white px-4 text-sm font-medium shadow-sm outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-orange-500 focus:ring-4 focus:ring-orange-100"
+                                />
+                            </label>
+                        </div>
+
+                        <label className="block">
+                            <span className="mb-2 block text-sm font-bold text-slate-700">Chủ đề <span className="text-orange-600">*</span></span>
+                            <input
+                                type="text"
+                                required
+                                placeholder="Ví dụ: Cần tư vấn giao diện bán hàng"
+                                value={formData.subject}
+                                onChange={(event) => setFormData({ ...formData, subject: event.target.value })}
+                                className="h-12 w-full rounded-md border border-slate-300 bg-white px-4 text-sm font-medium shadow-sm outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-orange-500 focus:ring-4 focus:ring-orange-100"
+                            />
+                        </label>
+
+                        <label className="block">
+                            <span className="mb-2 block text-sm font-bold text-slate-700">Nội dung <span className="text-orange-600">*</span></span>
+                            <textarea
+                                rows={4}
+                                required
+                                placeholder="Mô tả nhu cầu, công nghệ, ngân sách dự kiến hoặc mã đơn hàng..."
+                                value={formData.message}
+                                onChange={(event) => setFormData({ ...formData, message: event.target.value })}
+                                className="min-h-32 w-full resize-y rounded-md border border-slate-300 bg-white px-4 py-3.5 text-sm font-medium leading-6 shadow-sm outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-orange-500 focus:ring-4 focus:ring-orange-100"
+                            />
+                        </label>
+
+                        <div className="flex flex-col gap-3 border-t border-slate-200 pt-5 sm:flex-row sm:items-center sm:justify-between">
+                            <p className="flex items-center gap-2 text-xs font-medium text-slate-500">
+                                <ShieldCheck size={15} className="text-emerald-600" /> Không chia sẻ thông tin với bên thứ ba.
                             </p>
-
-                            {/* Quick Contact */}
-                            <div className="flex flex-wrap justify-center lg:justify-start gap-4 mb-8">
-                                <a
-                                    href="mailto:support@shopwebre.vn"
-                                    className="flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white px-5 py-3 rounded-xl hover:bg-white/20 transition-all"
-                                >
-                                    <Mail size={18} className="text-emerald-400" />
-                                    <span className="font-semibold">support@shopwebre.vn</span>
-                                </a>
-                                <a
-                                    href="tel:0971386588"
-                                    className="flex items-center gap-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 px-5 py-3 rounded-xl hover:bg-emerald-500/30 transition-all"
-                                >
-                                    <Phone size={18} />
-                                    <span className="font-bold">0971 386 588</span>
-                                </a>
-                            </div>
-
-                            {/* Support Features */}
-                            <div className="grid grid-cols-3 gap-4 text-sm">
-                                {SUPPORT_FEATURES.map((feat, idx) => (
-                                    <div key={idx} className="text-center lg:text-left">
-                                        <feat.icon size={20} className="text-emerald-400 mx-auto lg:mx-0 mb-2" />
-                                        <p className="font-bold text-white text-xs sm:text-sm">{feat.title}</p>
-                                        <p className="text-slate-500 hidden sm:block text-xs">{feat.desc}</p>
-                                    </div>
-                                ))}
-                            </div>
+                            <button type="submit" className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-orange-600 px-6 text-sm font-bold text-white shadow-lg shadow-orange-100 transition hover:bg-orange-700">
+                                <Send size={17} /> Soạn email
+                            </button>
                         </div>
+                    </form>
+                </motion.article>
 
-                        {/* Right - Feature Cards */}
-                        <div className="hidden lg:block">
-                            <div className="relative">
-                                <div className="absolute -inset-4 bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 rounded-3xl blur-2xl" />
-
-                                <div className="relative space-y-4">
-                                    {CONTACT_INFO.map((info, idx) => (
-                                        <a
-                                            key={idx}
-                                            href={info.href}
-                                            className={`bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-5 flex items-center gap-4 transform hover:translate-x-2 transition-all ${idx === 1 ? 'translate-x-8' : ''
-                                                }`}
-                                        >
-                                            <div className={`w-14 h-14 rounded-xl flex items-center justify-center shadow-lg ${info.color === 'blue' ? 'bg-gradient-to-br from-blue-500 to-cyan-500' :
-                                                info.color === 'emerald' ? 'bg-gradient-to-br from-emerald-500 to-green-500' :
-                                                    info.color === 'rose' ? 'bg-gradient-to-br from-rose-500 to-pink-500' :
-                                                        'bg-gradient-to-br from-amber-500 to-orange-500'
-                                                }`}>
-                                                <info.icon size={28} className="text-white" />
-                                            </div>
-                                            <div>
-                                                <p className="text-slate-400 text-sm">{info.label}</p>
-                                                <p className="text-white font-bold text-lg">{info.value}</p>
-                                            </div>
-                                        </a>
-                                    ))}
-                                </div>
-
-                                {/* Floating Elements */}
-                                <Sparkles size={24} className="absolute -top-4 right-8 text-amber-400 animate-pulse" />
-                                <Star size={18} className="absolute bottom-4 -left-4 text-emerald-400 animate-pulse" style={{ animationDelay: '0.5s' }} />
+                    <motion.div
+                        variants={reveal}
+                        whileHover={{ y: -3 }}
+                        transition={{ type: 'spring', stiffness: 260, damping: 22 }}
+                        className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-[0_14px_35px_rgba(15,23,42,0.07)]"
+                    >
+                        <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4 sm:px-6">
+                            <div>
+                                <p className="text-xs font-bold uppercase text-orange-600">Khu vực hoạt động</p>
+                                <h2 className="mt-1 font-black text-slate-950">Hạ Long, Quảng Ninh</h2>
                             </div>
+                            <motion.div
+                                whileHover={{ scale: 1.08, rotate: -6 }}
+                                className="flex h-10 w-10 items-center justify-center rounded-md bg-orange-50 text-orange-600"
+                            >
+                                <MapPin size={19} />
+                            </motion.div>
                         </div>
-                    </div>
-                </div>
-            </div>
+                        <iframe
+                            title="Bản đồ khu vực Hạ Long, Quảng Ninh"
+                            src="https://www.google.com/maps?q=Ha%20Long%2C%20Quang%20Ninh%2C%20Vietnam&z=12&output=embed"
+                            width="100%"
+                            height="280"
+                            loading="lazy"
+                            referrerPolicy="no-referrer-when-downgrade"
+                            className="block border-0 grayscale-[15%] transition duration-500 hover:grayscale-0"
+                        />
+                    </motion.div>
+                </motion.div>
 
-            {/* Main Content */}
-            <div className="max-w-6xl mx-auto px-4 py-12 sm:py-16">
-                <div className="grid lg:grid-cols-5 gap-8 lg:gap-12">
-                    {/* Contact Form - 3 columns */}
-                    <div className="lg:col-span-3">
-                        <div className="bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/50 overflow-hidden">
-                            <div className="p-6 sm:p-8 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white">
-                                <h2 className="text-2xl font-black text-slate-900 flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
-                                        <MessageCircle size={20} />
-                                    </div>
-                                    Gửi tin nhắn
-                                </h2>
-                                <p className="text-slate-500 mt-2">Điền thông tin bên dưới, chúng tôi sẽ phản hồi trong vòng 2-4 giờ</p>
-                            </div>
-
-                            <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-5">
-                                <div className="grid sm:grid-cols-2 gap-5">
+                <motion.aside
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.1 }}
+                    variants={stagger}
+                    className="space-y-5"
+                >
+                    <motion.div variants={reveal} whileHover={{ y: -3 }} transition={{ type: 'spring', stiffness: 260, damping: 22 }} className="rounded-lg bg-slate-950 p-5 text-white shadow-[0_16px_35px_rgba(15,23,42,0.14)] sm:p-6">
+                        <p className="text-xs font-bold uppercase text-orange-300">Quy trình hỗ trợ</p>
+                        <h2 className="mt-2 text-xl font-black">Ba bước để xử lý nhanh hơn</h2>
+                        <div className="mt-6 space-y-5">
+                            {supportSteps.map((step, index) => (
+                                <div key={step.title} className="flex gap-3">
+                                    <motion.div whileHover={{ scale: 1.08 }} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-white/10 text-orange-400">
+                                        <step.icon size={17} />
+                                    </motion.div>
                                     <div>
-                                        <label className="text-sm font-bold text-slate-700 block mb-2">
-                                            Họ tên <span className="text-rose-500">*</span>
-                                        </label>
-                                        <input
-                                            type="text"
-                                            required
-                                            placeholder="Nguyễn Văn A"
-                                            value={formData.name}
-                                            onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                            className="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all font-medium text-slate-900 placeholder:text-slate-400"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="text-sm font-bold text-slate-700 block mb-2">
-                                            Email <span className="text-rose-500">*</span>
-                                        </label>
-                                        <input
-                                            type="email"
-                                            required
-                                            placeholder="email@example.com"
-                                            value={formData.email}
-                                            onChange={e => setFormData({ ...formData, email: e.target.value })}
-                                            className="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all font-medium text-slate-900 placeholder:text-slate-400"
-                                        />
+                                        <p className="text-sm font-bold">{index + 1}. {step.title}</p>
+                                        <p className="mt-1 text-xs font-medium leading-5 text-slate-400">{step.detail}</p>
                                     </div>
                                 </div>
-
-                                <div>
-                                    <label className="text-sm font-bold text-slate-700 block mb-2">
-                                        Tiêu đề <span className="text-rose-500">*</span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        required
-                                        placeholder="VD: Hỏi về sản phẩm XYZ"
-                                        value={formData.subject}
-                                        onChange={e => setFormData({ ...formData, subject: e.target.value })}
-                                        className="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all font-medium text-slate-900 placeholder:text-slate-400"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="text-sm font-bold text-slate-700 block mb-2">
-                                        Nội dung <span className="text-rose-500">*</span>
-                                    </label>
-                                    <textarea
-                                        rows={5}
-                                        required
-                                        placeholder="Mô tả chi tiết vấn đề hoặc câu hỏi của bạn..."
-                                        value={formData.message}
-                                        onChange={e => setFormData({ ...formData, message: e.target.value })}
-                                        className="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all font-medium text-slate-900 placeholder:text-slate-400 resize-none"
-                                    />
-                                </div>
-
-                                <button
-                                    type="submit"
-                                    disabled={loading}
-                                    className="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-emerald-500 to-green-600 text-white py-4 rounded-2xl font-bold hover:shadow-xl hover:shadow-emerald-500/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
-                                >
-                                    {loading ? (
-                                        <>
-                                            <Loader2 size={20} className="animate-spin" />
-                                            Đang gửi...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Send size={20} className="group-hover:translate-x-1 transition-transform" />
-                                            Gửi tin nhắn
-                                        </>
-                                    )}
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-
-                    {/* Sidebar - 2 columns */}
-                    <div className="lg:col-span-2 space-y-6">
-                        {/* Contact Info Cards - Mobile visible */}
-                        <div className="lg:hidden space-y-3">
-                            {CONTACT_INFO.map((info, idx) => (
-                                <a
-                                    key={idx}
-                                    href={info.href}
-                                    className="flex items-center gap-4 bg-white rounded-xl border border-slate-100 p-4 hover:border-emerald-200 hover:shadow-md transition-all"
-                                >
-                                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${info.color === 'blue' ? 'bg-blue-100 text-blue-600' :
-                                        info.color === 'emerald' ? 'bg-emerald-100 text-emerald-600' :
-                                            info.color === 'rose' ? 'bg-rose-100 text-rose-600' :
-                                                'bg-amber-100 text-amber-600'
-                                        }`}>
-                                        <info.icon size={24} />
-                                    </div>
-                                    <div>
-                                        <p className="text-sm text-slate-500">{info.label}</p>
-                                        <p className="font-bold text-slate-900">{info.value}</p>
-                                    </div>
-                                </a>
                             ))}
                         </div>
+                    </motion.div>
 
-                        {/* FAQ CTA */}
-                        <div className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl p-6 text-white shadow-xl shadow-blue-500/20">
-                            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-4">
-                                <Zap size={24} />
-                            </div>
-                            <h3 className="text-xl font-black mb-2">Câu hỏi thường gặp</h3>
-                            <p className="text-blue-100 text-sm mb-4">Tìm câu trả lời nhanh cho các thắc mắc phổ biến</p>
-                            <Link
-                                href="/faq"
-                                className="inline-flex items-center gap-2 bg-white text-blue-600 px-5 py-3 rounded-xl font-bold hover:bg-blue-50 transition-all"
-                            >
-                                Xem FAQ <ArrowRight size={18} />
-                            </Link>
-                        </div>
+                    <motion.div variants={reveal} whileHover={{ y: -3 }} transition={{ type: 'spring', stiffness: 260, damping: 22 }} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                        <BookOpen size={21} className="text-orange-600" />
+                        <h2 className="mt-4 text-lg font-black">Xem hướng dẫn trước</h2>
+                        <p className="mt-2 text-sm font-medium leading-6 text-slate-500">
+                            Blog có các bài chia sẻ về lựa chọn giao diện, triển khai và tối ưu website.
+                        </p>
+                        <a href="https://blog.webgiare.id.vn/" target="_blank" rel="noopener noreferrer" className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-orange-600 hover:text-orange-700">
+                            Đọc blog chia sẻ <ArrowRight size={16} />
+                        </a>
+                    </motion.div>
 
-                        {/* Social Links */}
-                        <div className="bg-white rounded-2xl border border-slate-100 shadow-lg p-6">
-                            <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
-                                <Globe size={18} className="text-slate-400" />
-                                Kết nối với chúng tôi
-                            </h3>
-                            <div className="flex gap-3">
-                                {SOCIAL_LINKS.map((social, idx) => (
-                                    <a
-                                        key={idx}
-                                        href={social.href}
-                                        className={`w-12 h-12 ${social.color} rounded-xl flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg`}
-                                        title={social.label}
-                                    >
-                                        <social.icon size={22} />
-                                    </a>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Response Time */}
-                        <div className="bg-emerald-50 rounded-2xl border border-emerald-100 p-6">
-                            <div className="flex items-start gap-4">
-                                <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                    <CheckCircle size={24} className="text-emerald-600" />
-                                </div>
-                                <div>
-                                    <h4 className="font-bold text-slate-900 mb-1">Cam kết phản hồi</h4>
-                                    <p className="text-sm text-slate-600">Mọi yêu cầu sẽ được phản hồi trong vòng <strong className="text-emerald-600">2-4 giờ</strong> làm việc.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Map */}
-                        <div className="bg-white rounded-2xl border border-slate-100 shadow-lg overflow-hidden">
-                            <div className="p-4 border-b border-slate-100">
-                                <h3 className="font-bold text-slate-900 flex items-center gap-2">
-                                    <MapPin size={18} className="text-rose-500" />
-                                    Vị trí của chúng tôi
-                                </h3>
-                            </div>
-                            <iframe
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3721.3439367867064!2d107.0853896!3d20.9591988!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x314a5796518cee87%3A0x55c7a1d7d39c101e!2sVincom%20Plaza%20H%E1%BA%A1%20Long!5e0!3m2!1svi!2s!4v1703235000000"
-                                width="100%"
-                                height="200"
-                                style={{ border: 0 }}
-                                loading="lazy"
-                                className="grayscale hover:grayscale-0 transition-all"
-                            />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                    <motion.div variants={reveal} whileHover={{ y: -3 }} transition={{ type: 'spring', stiffness: 260, damping: 22 }} className="rounded-lg border border-orange-200 bg-orange-50 p-5 shadow-sm sm:p-6">
+                        <Clock3 size={21} className="text-orange-600" />
+                        <h2 className="mt-4 text-lg font-black">Để được phản hồi nhanh</h2>
+                        <p className="mt-2 text-sm font-medium leading-6 text-slate-600">
+                            Hãy gửi kèm tên sản phẩm, mã đơn và ảnh chụp lỗi nếu yêu cầu liên quan đến đơn hàng.
+                        </p>
+                    </motion.div>
+                </motion.aside>
+            </section>
+        </main>
     );
 }
