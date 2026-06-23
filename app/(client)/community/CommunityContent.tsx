@@ -264,7 +264,7 @@ export default function CommunityPage() {
                                 Chia sẻ kiến thức để nhận Voucher 500k!
                             </p>
                             <Link
-                                href="/leaderboard"
+                                href="#bai-viet-cong-dong"
                                 className="block w-full text-center bg-white text-purple-600 font-bold py-3 rounded-xl hover:bg-purple-50 transition-colors"
                             >
                                 Xem Bảng Xếp Hạng
@@ -278,26 +278,27 @@ export default function CommunityPage() {
                             </h3>
                             <div className="space-y-2">
                                 {[
-                                    { icon: Heart, label: 'Bài viết đã lưu', color: 'text-rose-500' },
-                                    { icon: Users, label: 'Đang theo dõi', color: 'text-blue-500' },
-                                    { icon: Award, label: 'Thành tích', color: 'text-amber-500' },
-                                    { icon: Star, label: 'Đánh dấu', color: 'text-purple-500' },
+                                    { icon: Heart, label: 'Bài viết đã lưu', color: 'text-rose-500', href: '/profile/community' },
+                                    { icon: Users, label: 'Đang theo dõi', color: 'text-blue-500', href: '/community' },
+                                    { icon: Award, label: 'Thành tích', color: 'text-amber-500', href: '/profile' },
+                                    { icon: Star, label: 'Đánh dấu', color: 'text-purple-500', href: '/profile/community' },
                                 ].map((item, idx) => (
-                                    <button
+                                    <Link
                                         key={idx}
+                                        href={item.href}
                                         className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors text-left group"
                                     >
                                         <item.icon className={`${item.color} group-hover:scale-110 transition-transform`} size={18} />
                                         <span className="text-sm font-medium text-slate-700">{item.label}</span>
                                         <ChevronRight size={14} className="ml-auto text-slate-300 group-hover:text-slate-500" />
-                                    </button>
+                                    </Link>
                                 ))}
                             </div>
                         </div>
                     </aside>
 
                     {/* Main Feed */}
-                    <div className="lg:col-span-2 space-y-6">
+                    <div id="bai-viet-cong-dong" className="lg:col-span-2 space-y-6 scroll-mt-24">
                         {/* Quick Post Box */}
                         {user && (
                             <div
@@ -374,9 +375,7 @@ export default function CommunityPage() {
                                                 <p className="text-xs text-slate-500">{6 - i}.{i}k tương tác</p>
                                             </div>
                                         </div>
-                                        <button className="text-xs font-bold text-purple-600 hover:bg-purple-50 px-3 py-1.5 rounded-full transition-colors">
-                                            Follow
-                                        </button>
+                                        <span className="text-xs font-bold text-slate-400">Gợi ý</span>
                                     </div>
                                 ))}
                             </div>
@@ -444,6 +443,19 @@ const PostCard = memo(({ post, delay, isLiked, onLike }: {
     // Reply state
     const [replyingTo, setReplyingTo] = useState<number | null>(null);
     const [replyText, setReplyText] = useState('');
+
+    const handleSharePost = async () => {
+        const url = `${window.location.origin}/community`;
+        try {
+            if (navigator.share) {
+                await navigator.share({ title: post.title, text: post.content.slice(0, 120), url });
+            } else {
+                await navigator.clipboard.writeText(url);
+            }
+        } catch {
+            // Người dùng đóng hộp thoại chia sẻ.
+        }
+    };
 
     // Fetch comments when opened
     useEffect(() => {
@@ -554,9 +566,6 @@ const PostCard = memo(({ post, delay, isLiked, onLike }: {
                             </p>
                         </div>
                     </div>
-                    <button className="p-2 hover:bg-slate-100 rounded-full transition-colors">
-                        <MoreHorizontal size={18} className="text-slate-400" />
-                    </button>
                 </div>
 
                 {/* Content */}
@@ -603,7 +612,7 @@ const PostCard = memo(({ post, delay, isLiked, onLike }: {
                         >
                             <MessageSquare size={16} /> {post.comments_count}
                         </button>
-                        <button className="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-medium hover:bg-slate-100 text-slate-500 transition-all">
+                        <button onClick={handleSharePost} className="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-medium hover:bg-slate-100 text-slate-500 transition-all" aria-label="Chia sẻ bài viết">
                             <Share2 size={16} />
                         </button>
                     </div>

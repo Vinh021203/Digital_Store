@@ -136,7 +136,9 @@ const CreatePostModal: React.FC<CreatePostModalProps> = memo(({ isOpen, onClose,
               <p className="font-bold text-slate-900 text-sm">{profile?.name || user?.email}</p>
               <button
                 type="button"
+                disabled
                 className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-600 transition-colors"
+                title="Bài viết hiện được đăng công khai"
               >
                 <Globe size={12} /> Công khai <ChevronDown size={12} />
               </button>

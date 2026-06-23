@@ -338,13 +338,6 @@ const FloatingWidgets = () => {
           {/* Input */}
           <div className="p-2.5 bg-white border-t border-orange-100 flex-shrink-0">
             <form className="flex gap-2 items-center" onSubmit={handleSendMessage}>
-              <button
-                type="button"
-                className="text-slate-400 hover:text-orange-600 p-2 transition-colors rounded-lg hover:bg-orange-50 active:scale-90"
-                aria-label="More"
-              >
-                <MoreHorizontal size={20} />
-              </button>
               <input
                 ref={inputRef}
                 type="text"

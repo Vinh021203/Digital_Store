@@ -147,7 +147,11 @@ export const ToolsView = ({ user }: ToolsViewProps) => {
                         </div>
                         <div className="flex justify-between items-center">
                             <span className="text-sm font-bold text-slate-500">Size: 600x300</span>
-                            <button className="text-orange-600 font-bold text-sm hover:underline flex items-center gap-1">
+                            <button
+                                type="button"
+                                onClick={() => addToast('Banner 600x300 đang được chuẩn bị để tải xuống.', 'info')}
+                                className="text-orange-600 font-bold text-sm hover:underline flex items-center gap-1"
+                            >
                                 Tải xuống <ArrowRight size={14} />
                             </button>
                         </div>
@@ -158,7 +162,11 @@ export const ToolsView = ({ user }: ToolsViewProps) => {
                         </div>
                         <div className="flex justify-between items-center">
                             <span className="text-sm font-bold text-slate-500">Size: 300x300</span>
-                            <button className="text-orange-600 font-bold text-sm hover:underline flex items-center gap-1">
+                            <button
+                                type="button"
+                                onClick={() => addToast('Banner 300x300 đang được chuẩn bị để tải xuống.', 'info')}
+                                className="text-orange-600 font-bold text-sm hover:underline flex items-center gap-1"
+                            >
                                 Tải xuống <ArrowRight size={14} />
                             </button>
                         </div>

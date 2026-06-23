@@ -758,10 +758,9 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
                                 <p className="mt-1 text-sm font-medium text-slate-600">Đừng bỏ lỡ các sản phẩm chất lượng và chương trình khuyến mãi hấp dẫn.</p>
 	                            </div>
 	                        </div>
-	                        <div className="relative mt-4 flex overflow-hidden rounded-xl border border-orange-100 bg-white p-1 shadow-sm md:mt-0 md:w-[430px]">
-                            <input className="min-w-0 flex-1 px-4 text-sm font-semibold text-slate-700 outline-none placeholder:text-slate-400" placeholder="Nhập email của bạn" />
-                            <button className="rounded-lg bg-orange-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-orange-700">Đăng ký ngay</button>
-	                        </div>
+		                        <Link href="/blog" className="relative mt-4 inline-flex items-center justify-center rounded-xl bg-orange-600 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-orange-700 md:mt-0">
+	                            Xem bài viết mới
+		                        </Link>
 	                    </div>
 	                </div>
 

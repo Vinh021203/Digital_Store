@@ -180,21 +180,6 @@ function CartPageContent() {
                         <div className="bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/50 p-6 sticky top-24">
                             <h3 className="font-black text-xl text-slate-900 mb-6">Tổng đơn hàng</h3>
 
-                            {/* Promo input */}
-                            <div className="mb-6 relative">
-                                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-                                    <Tag size={18} />
-                                </div>
-                                <input
-                                    type="text"
-                                    placeholder="Mã giảm giá"
-                                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-24 py-3 font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-                                />
-                                <button className="absolute right-2 top-1/2 -translate-y-1/2 bg-white text-slate-900 text-sm font-bold px-3 py-1.5 rounded-lg border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all shadow-sm">
-                                    Áp dụng
-                                </button>
-                            </div>
-
                             <div className="space-y-4 mb-8">
                                 <div className="flex justify-between text-slate-600">
                                     <span>Tạm tính</span>

@@ -18,6 +18,13 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [activeTab, setActiveTab] = useState('profile');
+  const [notificationSettings, setNotificationSettings] = useState<Record<string, boolean>>({
+    email_orders: true,
+    email_promo: true,
+    email_news: false,
+    push_orders: true,
+  });
+  const [appearance, setAppearance] = useState<'light' | 'dark' | 'system'>('light');
   const [formData, setFormData] = useState({
     name: profile?.name || '',
     phone: profile?.phone || '',
@@ -83,6 +90,10 @@ export default function SettingsPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const showUnavailableNotice = (feature: string) => {
+    addToast(`${feature} đang được hoàn thiện. Vui lòng liên hệ hỗ trợ nếu bạn cần xử lý ngay.`, 'info');
   };
 
   const tabs = [
@@ -175,14 +186,23 @@ export default function SettingsPage() {
                     profile?.name?.charAt(0)?.toUpperCase() || 'U'
                   )}
                 </div>
-                <button className="absolute -bottom-2 -right-2 w-8 h-8 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg flex items-center justify-center hover:shadow-lg hover:shadow-orange-500/30 transition-all">
+                <button
+                  type="button"
+                  onClick={() => showUnavailableNotice('Tải ảnh đại diện')}
+                  className="absolute -bottom-2 -right-2 w-8 h-8 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg flex items-center justify-center hover:shadow-lg hover:shadow-orange-500/30 transition-all"
+                  aria-label="Đổi ảnh đại diện"
+                >
                   <Camera size={14} />
                 </button>
               </div>
               <div>
                 <p className="font-bold text-slate-900">{profile?.name || 'User'}</p>
                 <p className="text-sm text-slate-500">{user?.email}</p>
-                <button className="text-orange-600 text-sm font-bold mt-2 hover:underline">
+                <button
+                  type="button"
+                  onClick={() => showUnavailableNotice('Tải ảnh đại diện')}
+                  className="text-orange-600 text-sm font-bold mt-2 hover:underline"
+                >
                   Đổi ảnh đại diện
                 </button>
               </div>
@@ -341,7 +361,11 @@ export default function SettingsPage() {
                   <p className="text-sm text-slate-500">Tăng cường bảo mật tài khoản</p>
                 </div>
               </div>
-              <button className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-green-500 text-white rounded-xl font-bold hover:shadow-lg hover:shadow-emerald-500/30 transition-all">
+              <button
+                type="button"
+                onClick={() => showUnavailableNotice('Xác thực hai lớp')}
+                className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-green-500 text-white rounded-xl font-bold hover:shadow-lg hover:shadow-emerald-500/30 transition-all"
+              >
                 Kích hoạt
               </button>
             </div>
@@ -357,7 +381,11 @@ export default function SettingsPage() {
                 <h4 className="font-bold text-red-900">Xóa tài khoản</h4>
                 <p className="text-sm text-red-600">Hành động này không thể hoàn tác</p>
               </div>
-              <button className="px-4 py-2 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 hover:shadow-lg hover:shadow-red-500/30 transition-all">
+              <button
+                type="button"
+                onClick={() => showUnavailableNotice('Xóa tài khoản')}
+                className="px-4 py-2 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 hover:shadow-lg hover:shadow-red-500/30 transition-all"
+              >
                 Xóa tài khoản
               </button>
             </div>
@@ -387,8 +415,17 @@ export default function SettingsPage() {
                   <p className="font-bold text-slate-900">{item.label}</p>
                   <p className="text-sm text-slate-500">{item.desc}</p>
                 </div>
-                <button className={`w-14 h-8 rounded-full flex items-center transition-all ${item.enabled ? `bg-gradient-to-r ${item.color} shadow-lg` : 'bg-slate-200'}`}>
-                  <div className={`w-6 h-6 bg-white rounded-full shadow transition-transform mx-1 ${item.enabled ? 'translate-x-6' : ''}`} />
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={notificationSettings[item.id]}
+                  onClick={() => setNotificationSettings(current => ({
+                    ...current,
+                    [item.id]: !current[item.id],
+                  }))}
+                  className={`w-14 h-8 rounded-full flex items-center transition-all ${notificationSettings[item.id] ? `bg-gradient-to-r ${item.color} shadow-lg` : 'bg-slate-200'}`}
+                >
+                  <div className={`w-6 h-6 bg-white rounded-full shadow transition-transform mx-1 ${notificationSettings[item.id] ? 'translate-x-6' : ''}`} />
                 </button>
               </div>
             ))}
@@ -407,22 +444,43 @@ export default function SettingsPage() {
           </h3>
 
           <div className="grid md:grid-cols-3 gap-4">
-            <button className="p-6 border-2 border-orange-500 rounded-2xl text-center hover:shadow-xl transition-all bg-gradient-to-br from-orange-50 to-amber-50">
+            <button
+              type="button"
+              onClick={() => {
+                setAppearance('light');
+                addToast('Đã chọn giao diện sáng', 'success');
+              }}
+              className={`p-6 rounded-2xl text-center hover:shadow-xl transition-all ${appearance === 'light' ? 'border-2 border-orange-500 bg-gradient-to-br from-orange-50 to-amber-50' : 'border border-slate-200'}`}
+            >
               <div className="w-14 h-14 bg-gradient-to-r from-orange-500 to-amber-500 rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg shadow-orange-500/30">
                 <Sun size={28} className="text-white" />
               </div>
               <p className="font-bold text-slate-900">Sáng</p>
               <div className="mt-2">
-                <Check size={18} className="mx-auto text-orange-600" />
+                {appearance === 'light' && <Check size={18} className="mx-auto text-orange-600" />}
               </div>
             </button>
-            <button className="p-6 border border-slate-200 rounded-2xl text-center hover:border-slate-400 hover:shadow-lg transition-all">
+            <button
+              type="button"
+              onClick={() => {
+                setAppearance('dark');
+                addToast('Đã lưu lựa chọn giao diện tối. Chế độ này sẽ được áp dụng ở bản cập nhật tiếp theo.', 'info');
+              }}
+              className={`p-6 rounded-2xl text-center hover:shadow-lg transition-all ${appearance === 'dark' ? 'border-2 border-orange-500 bg-orange-50' : 'border border-slate-200 hover:border-slate-400'}`}
+            >
               <div className="w-14 h-14 bg-gradient-to-r from-slate-700 to-slate-900 rounded-xl flex items-center justify-center mx-auto mb-3">
                 <Moon size={28} className="text-white" />
               </div>
               <p className="font-bold text-slate-900">Tối</p>
             </button>
-            <button className="p-6 border border-slate-200 rounded-2xl text-center hover:border-slate-400 hover:shadow-lg transition-all">
+            <button
+              type="button"
+              onClick={() => {
+                setAppearance('system');
+                addToast('Đã lưu lựa chọn theo giao diện hệ thống.', 'info');
+              }}
+              className={`p-6 rounded-2xl text-center hover:shadow-lg transition-all ${appearance === 'system' ? 'border-2 border-orange-500 bg-orange-50' : 'border border-slate-200 hover:border-slate-400'}`}
+            >
               <div className="w-14 h-14 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center mx-auto mb-3">
                 <Globe size={28} className="text-white" />
               </div>

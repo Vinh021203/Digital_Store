@@ -4,8 +4,8 @@ import React, { useState, useCallback, memo } from "react";
 import {
   Facebook,
   Instagram,
-  Twitter,
   Youtube,
+  Linkedin,
   Mail,
   Send,
   Heart,
@@ -340,34 +340,28 @@ const Footer = () => {
   const socialLinks = React.useMemo(
     () => [
       {
-        href: "https://facebook.com",
+        href: "https://www.facebook.com/Ltvinh212",
         icon: <Facebook size={17} />,
         gradient: "from-blue-600 to-blue-400",
         label: "Facebook",
       },
       {
-        href: "https://instagram.com",
+        href: "https://www.instagram.com/luongvinh_0212?igsh=MWxtM2RlNm16ZjM2MA==",
         icon: <Instagram size={17} />,
         gradient: "from-pink-600 to-orange-500",
         label: "Instagram",
       },
       {
-        href: "https://twitter.com",
-        icon: <Twitter size={17} />,
-        gradient: "from-sky-500 to-blue-400",
-        label: "Twitter",
+        href: "https://www.linkedin.com/in/vinh-l%C6%B0%C6%A1ng-th%E1%BA%BF-69640734b?utm_source=share_via&utm_content=profile&utm_medium=member_android",
+        icon: <Linkedin size={17} />,
+        gradient: "from-blue-700 to-sky-500",
+        label: "LinkedIn",
       },
       {
-        href: "https://youtube.com",
+        href: "https://www.youtube.com/@VINHDEV_0212",
         icon: <Youtube size={17} />,
         gradient: "from-red-600 to-red-400",
-        label: "Youtube",
-      },
-      {
-        href: "https://t.me",
-        icon: <Send size={17} />,
-        gradient: "from-sky-500 to-cyan-400",
-        label: "Telegram",
+        label: "YouTube",
       },
     ],
     [],
@@ -612,8 +606,8 @@ const Footer = () => {
                 <FooterLink href="/policy/terms">
                   Chính Sách & Điều Khoản
                 </FooterLink>
-                <FooterLink href="/payment-guide">
-                  Hướng Dẫn Thanh Toán
+                <FooterLink href="/faq">
+                  Hướng Dẫn & FAQ
                 </FooterLink>
               </AccordionSection>
 
@@ -766,6 +760,8 @@ const Footer = () => {
 
         {/* Floating Chat */}
         <button
+          type="button"
+          onClick={() => { window.location.href = "/contact"; }}
           className="fixed bottom-6 right-6 z-50 hidden w-12 h-12 rounded-full md:flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all duration-200"
           style={{
             background: "linear-gradient(135deg, #f97316 0%, #dc2626 100%)",

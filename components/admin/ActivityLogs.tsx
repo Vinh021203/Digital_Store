@@ -231,7 +231,19 @@ export default function ActivityLogs() {
                     <h1 className="text-2xl font-black text-slate-900">Nhật ký hoạt động</h1>
                     <p className="text-slate-500">Theo dõi mọi thao tác trong hệ thống</p>
                 </div>
-                <button className="flex items-center gap-2 px-4 py-2.5 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition-colors">
+                <button
+                    type="button"
+                    onClick={() => {
+                        const blob = new Blob([JSON.stringify(filteredLogs, null, 2)], { type: 'application/json' });
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = `activity-logs-${new Date().toISOString().slice(0, 10)}.json`;
+                        link.click();
+                        URL.revokeObjectURL(url);
+                    }}
+                    className="flex items-center gap-2 px-4 py-2.5 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition-colors"
+                >
                     <Download size={18} />
                     Xuất logs
                 </button>

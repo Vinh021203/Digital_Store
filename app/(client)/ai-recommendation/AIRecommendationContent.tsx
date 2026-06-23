@@ -354,6 +354,25 @@ export default function AIRecommendationPage() {
     // Use a ref to track if we already started analysis to prevent double fetching
     const analysisStarted = React.useRef(false);
 
+    const handleShareResults = useCallback(async () => {
+        const shareData = {
+            title: 'Gợi ý giao diện từ Shop Web rẻ',
+            text: reasoning || 'Xem công cụ AI tư vấn giao diện phù hợp tại Shop Web rẻ.',
+            url: window.location.href,
+        };
+
+        try {
+            if (navigator.share) {
+                await navigator.share(shareData);
+            } else {
+                await navigator.clipboard.writeText(window.location.href);
+                addToast('Đã sao chép liên kết kết quả', 'success');
+            }
+        } catch {
+            // Người dùng đóng hộp thoại chia sẻ.
+        }
+    }, [addToast, reasoning]);
+
     useEffect(() => {
         // Hide navbar and footer
         const navbar = document.querySelector('nav');
@@ -714,6 +733,7 @@ export default function AIRecommendationPage() {
                                     </span>
                                     <div className="flex gap-2">
                                         <button
+                                            onClick={handleShareResults}
                                             className="p-2 text-slate-400 hover:text-orange-600 hover:bg-slate-50 rounded-full transition-colors"
                                             title="Chia sẻ"
                                             aria-label="Share"

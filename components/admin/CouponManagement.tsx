@@ -249,7 +249,11 @@ export default function CouponManagement() {
                     <h1 className="text-2xl font-black text-slate-900">Quản lý mã giảm giá</h1>
                     <p className="text-slate-500">Tạo và quản lý các mã khuyến mãi</p>
                 </div>
-                <button className="flex items-center gap-2 px-4 py-2.5 bg-orange-600 text-white rounded-xl font-bold hover:bg-orange-700 transition-colors">
+                <button
+                    type="button"
+                    onClick={() => addToast('Biểu mẫu tạo mã giảm giá đang được hoàn thiện.', 'info')}
+                    className="flex items-center gap-2 px-4 py-2.5 bg-orange-600 text-white rounded-xl font-bold hover:bg-orange-700 transition-colors"
+                >
                     <Plus size={18} />
                     Tạo mã mới
                 </button>

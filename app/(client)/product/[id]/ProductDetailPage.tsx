@@ -816,9 +816,9 @@ export default function ProductDetailPage() {
                             </div>
                             <h3 className="text-xl font-bold mb-3 relative z-10">Bạn cần hỗ trợ?</h3>
                             <p className="text-white/80 mb-4 relative z-10 text-sm leading-relaxed">Đội ngũ kỹ thuật sẵn sàng hỗ trợ 24/7.</p>
-                            <button className="w-full bg-white text-orange-600 py-2.5 rounded-xl font-bold hover:bg-orange-50 transition-colors shadow-lg relative z-10 text-sm">
+                            <Link href="/contact" className="block w-full bg-white text-center text-orange-600 py-2.5 rounded-xl font-bold hover:bg-orange-50 transition-colors shadow-lg relative z-10 text-sm">
                                 Liên hệ ngay
-                            </button>
+                            </Link>
                         </div>
 
                         {/* Trust Badges in Sidebar */}
@@ -907,16 +907,9 @@ export default function ProductDetailPage() {
                         <p className="text-slate-400 mb-6 text-sm">
                             Đăng ký để nhận thông tin về sản phẩm mới và khuyến mãi độc quyền!
                         </p>
-                        <div className="flex gap-3 max-w-md mx-auto">
-                            <input
-                                type="email"
-                                placeholder="Email của bạn..."
-                                className="flex-1 px-4 py-3 bg-white/10 border border-white/10 rounded-xl text-white placeholder:text-slate-400 focus:outline-none focus:border-orange-500 text-sm"
-                            />
-                            <button className="px-6 py-3 bg-orange-600 text-white font-bold rounded-xl hover:bg-orange-700 transition-colors shadow-lg shadow-orange-500/30 text-sm">
-                                Đăng ký
-                            </button>
-                        </div>
+                        <Link href="/products?sort=newest" className="mx-auto inline-flex items-center justify-center rounded-xl bg-orange-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-orange-500/30 transition-colors hover:bg-orange-700">
+                            Xem sản phẩm mới
+                        </Link>
                     </div>
                 </div>
 

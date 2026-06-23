@@ -271,7 +271,7 @@ export default function ProfileCommunityPage() {
                                     </div>
                                     <div className="flex items-center gap-1">
                                         <Link
-                                            href={`/community/${post.id}`}
+                                            href="/community"
                                             className="p-2 hover:bg-blue-50 rounded-lg transition-colors"
                                             title="Xem bài viết"
                                         >
@@ -293,7 +293,7 @@ export default function ProfileCommunityPage() {
                                 </div>
 
                                 {/* Content */}
-                                <Link href={`/community/${post.id}`}>
+                                <Link href="/community">
                                     <h3 className="font-bold text-lg text-slate-900 mb-2 hover:text-blue-600 transition-colors">
                                         {post.title}
                                     </h3>

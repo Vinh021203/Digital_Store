@@ -232,7 +232,7 @@ function OrderSuccessContent() {
                                     </div>
                                     {item.product?.slug && (
                                         <Link
-                                            href={`/products/${item.product.slug}`}
+                                            href={`/product/${item.product.slug}`}
                                             className="hidden sm:flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 font-semibold self-center"
                                         >
                                             Xem <ExternalLink size={14} />

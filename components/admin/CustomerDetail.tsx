@@ -206,7 +206,11 @@ export default function CustomerDetail({ customerId }: CustomerDetailProps) {
                                         <option value="seller">Seller</option>
                                         <option value="admin">Admin</option>
                                     </select>
-                                    <button className="flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-600 rounded-lg text-sm font-medium hover:bg-rose-100">
+                                    <button
+                                        type="button"
+                                        onClick={() => addToast('Chức năng khóa tài khoản đang được hoàn thiện.', 'info')}
+                                        className="flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-600 rounded-lg text-sm font-medium hover:bg-rose-100"
+                                    >
                                         <Ban size={16} /> Khóa
                                     </button>
                                 </div>

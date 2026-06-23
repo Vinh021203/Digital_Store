@@ -281,7 +281,11 @@ export default function MarketplacePage() {
                                 <p className="text-emerald-100 text-sm">Số dư hiện tại</p>
                                 <p className="text-2xl font-black">{Number(seller.balance).toLocaleString('vi-VN')}₫</p>
                             </div>
-                            <button className="bg-white text-emerald-600 px-4 py-2.5 rounded-xl font-bold hover:bg-emerald-50 transition-colors flex items-center gap-2 shadow-lg">
+                            <button
+                                type="button"
+                                onClick={() => addToast('Yêu cầu rút tiền của người bán sẽ được mở sau khi hoàn tất đối soát.', 'info')}
+                                className="bg-white text-emerald-600 px-4 py-2.5 rounded-xl font-bold hover:bg-emerald-50 transition-colors flex items-center gap-2 shadow-lg"
+                            >
                                 <Wallet size={18} />
                                 Rút tiền
                             </button>

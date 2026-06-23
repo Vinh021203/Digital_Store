@@ -116,7 +116,7 @@ export default function ProfilePage() {
             hoverBorder: 'hover:border-pink-200'
         },
         {
-            href: '#',
+            href: '/products?sort=rating',
             icon: Star,
             label: 'Reviews',
             value: stats.reviewsGiven,

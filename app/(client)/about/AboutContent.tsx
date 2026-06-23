@@ -171,9 +171,9 @@ export default function AboutPage() {
                                     <a href="tel:0971386588" className="flex items-center gap-3 text-xs font-semibold text-slate-200 transition hover:text-orange-300 sm:text-sm">
                                         <Phone size={17} className="text-orange-400" /> 0971 386 588
                                     </a>
-                                    <div className="flex items-center gap-3 text-xs font-semibold text-slate-200 sm:text-sm">
+                                    <a href="https://www.facebook.com/Ltvinh212" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-xs font-semibold text-slate-200 transition hover:text-orange-300 sm:text-sm">
                                         <Facebook size={17} className="text-orange-400" /> Facebook: Lương Vinh
-                                    </div>
+                                    </a>
                                 </div>
                             </motion.div>
                         </motion.div>
@@ -356,7 +356,7 @@ export default function AboutPage() {
                     </div>
                     <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 border-t border-white/10 pt-6 text-xs font-semibold text-slate-400">
                         <span className="inline-flex items-center gap-1.5"><UserRound size={14} /> Lương Thế Vinh</span>
-                        <span className="inline-flex items-center gap-1.5"><Facebook size={14} /> Lương Vinh</span>
+                        <a href="https://www.facebook.com/Ltvinh212" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 transition hover:text-orange-300"><Facebook size={14} /> Lương Vinh</a>
                         <span className="inline-flex items-center gap-1.5"><Check size={14} className="text-emerald-400" /> Hỗ trợ trực tiếp</span>
                     </div>
                 </motion.div>

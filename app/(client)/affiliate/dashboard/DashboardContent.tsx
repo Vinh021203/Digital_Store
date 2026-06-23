@@ -334,7 +334,13 @@ export default function AffiliateDashboardPage() {
                                 <span className="hidden lg:inline">{copied ? 'Đã copy!' : 'Copy Link'}</span>
                             </button>
 
-                            <button className="p-2 bg-slate-100 hover:bg-slate-200 rounded-xl relative">
+                            <button
+                                type="button"
+                                onClick={() => setActiveTab('withdrawals')}
+                                className="p-2 bg-slate-100 hover:bg-slate-200 rounded-xl relative"
+                                aria-label="Xem lịch sử rút tiền"
+                                title="Xem lịch sử rút tiền"
+                            >
                                 <Bell size={18} className="text-slate-600" />
                                 <span className="absolute top-1 right-1 w-2 h-2 bg-orange-500 rounded-full"></span>
                             </button>
@@ -591,7 +597,16 @@ export default function AffiliateDashboardPage() {
                                                             </p>
                                                         </div>
                                                     </div>
-                                                    <button className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            setPaymentMethods(current => current.filter(item => item.id !== method.id));
+                                                            addToast('Đã xóa phương thức thanh toán', 'success');
+                                                        }}
+                                                        className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                                        aria-label={`Xóa phương thức thanh toán ${method.name}`}
+                                                        title="Xóa phương thức thanh toán"
+                                                    >
                                                         <Trash2 size={16} />
                                                     </button>
                                                 </div>

@@ -459,6 +459,8 @@ const DesktopNavItem = memo<DesktopNavItemProps>(
         onMouseLeave={() => setOpen(false)}
       >
         <button
+          type="button"
+          onClick={() => setOpen(current => !current)}
           className={`relative px-3.5 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-all duration-200 flex items-center gap-1 ${
             isActive
               ? "text-white"
@@ -796,7 +798,7 @@ const MobileMenu = memo<MobileMenuProps>(
                   bg: "bg-slate-50",
                 },
                 {
-                  href: "/help",
+                  href: "/faq",
                   icon: HelpCircle,
                   label: "Trợ giúp",
                   color: "text-slate-600",

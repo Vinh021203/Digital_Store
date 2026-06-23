@@ -2,7 +2,7 @@
 
 import React, { memo, useState, useCallback } from 'react';
 import Image from 'next/image';
-import { Heart, MessageSquare, Share2, MoreHorizontal, Globe } from 'lucide-react';
+import { Heart, MessageSquare, Share2, Globe } from 'lucide-react';
 import type { Post } from '@/types';
 
 interface PostCardProps {
@@ -17,6 +17,15 @@ const PostCard: React.FC<PostCardProps> = memo(({ post }) => {
     setLiked(prev => !prev);
     setLikeCount(prev => liked ? prev - 1 : prev + 1);
   }, [liked]);
+
+  const handleShare = useCallback(async () => {
+    const url = window.location.href;
+    if (navigator.share) {
+      await navigator.share({ title: post.title, text: post.content, url });
+      return;
+    }
+    await navigator.clipboard.writeText(url);
+  }, [post.content, post.title]);
 
   return (
     <article className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 hover:shadow-md transition-shadow">
@@ -41,12 +50,6 @@ const PostCard: React.FC<PostCardProps> = memo(({ post }) => {
             </div>
           </div>
         </div>
-        <button
-          className="text-slate-400 hover:text-slate-600 p-1 hover:bg-slate-50 rounded-full transition-colors"
-          aria-label="More options"
-        >
-          <MoreHorizontal size={18} />
-        </button>
       </div>
 
       {/* Content */}
@@ -76,7 +79,7 @@ const PostCard: React.FC<PostCardProps> = memo(({ post }) => {
         {post.tags.map((tag) => (
           <span
             key={tag}
-            className="text-xs font-bold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-lg hover:bg-orange-100 cursor-pointer transition-colors"
+            className="text-xs font-bold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-lg"
           >
             #{tag}
           </span>
@@ -100,13 +103,17 @@ const PostCard: React.FC<PostCardProps> = memo(({ post }) => {
           <span className="hidden sm:inline">Thích</span>
         </button>
 
-        <button className="flex items-center gap-2 hover:text-orange-600 transition-colors group px-2 py-1 rounded-lg hover:bg-orange-50">
+        <span className="flex items-center gap-2 px-2 py-1">
           <MessageSquare size={18} />
           <span>{post.comments}</span>
           <span className="hidden sm:inline">Bình luận</span>
-        </button>
+        </span>
 
-        <button className="flex items-center gap-2 hover:text-orange-600 transition-colors group px-2 py-1 rounded-lg hover:bg-orange-50">
+        <button
+          type="button"
+          onClick={handleShare}
+          className="flex items-center gap-2 hover:text-orange-600 transition-colors group px-2 py-1 rounded-lg hover:bg-orange-50"
+        >
           <Share2 size={18} />
           <span className="hidden sm:inline">Chia sẻ</span>
         </button>

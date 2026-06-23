@@ -41,7 +41,7 @@ const contactMethods = [
         label: 'Facebook',
         value: 'Lương Vinh',
         detail: 'Nhắn tin để được phản hồi trực tiếp',
-        href: 'https://www.facebook.com/',
+        href: 'https://www.facebook.com/Ltvinh212',
     },
 ];
 

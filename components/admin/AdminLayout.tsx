@@ -194,7 +194,16 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                                     { label: 'Xem báo cáo', icon: <BarChart3 size={16} />, shortcut: '⌘R' },
                                     { label: 'Thêm sản phẩm', icon: <Package size={16} />, shortcut: '⌘P' },
                                 ].map((action, idx) => (
-                                    <button key={idx} className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-slate-50 transition-colors group">
+                                    <button
+                                        key={idx}
+                                        type="button"
+                                        onClick={() => {
+                                            const paths = ['/admin/orders', '/admin/reports', '/admin/products/new'];
+                                            router.push(paths[idx]);
+                                            setIsSearchOpen(false);
+                                        }}
+                                        className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-slate-50 transition-colors group"
+                                    >
                                         <div className="flex items-center gap-3">
                                             <span className="text-slate-400 group-hover:text-orange-600">{action.icon}</span>
                                             <span className="text-sm font-medium text-slate-700">{action.label}</span>
@@ -406,7 +415,11 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                         </button>
 
                         {/* Add New Button */}
-                        <button className="hidden sm:flex items-center gap-2 bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-lg shadow-orange-200 hover:bg-orange-700 hover:-translate-y-0.5 transition-all">
+                        <button
+                            type="button"
+                            onClick={() => router.push('/admin/products/new')}
+                            className="hidden sm:flex items-center gap-2 bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-lg shadow-orange-200 hover:bg-orange-700 hover:-translate-y-0.5 transition-all"
+                        >
                             <UserPlus size={16} /> <span className="hidden lg:inline">Thêm mới</span>
                         </button>
 
@@ -446,7 +459,11 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                                                     </span>
                                                 </h3>
                                             </div>
-                                            <button className="text-xs text-orange-600 font-bold hover:underline flex items-center gap-1">
+                                            <button
+                                                type="button"
+                                                onClick={() => router.push('/admin/notifications')}
+                                                className="text-xs text-orange-600 font-bold hover:underline flex items-center gap-1"
+                                            >
                                                 <Check size={12} /> Đánh dấu đã đọc
                                             </button>
                                         </div>
@@ -477,7 +494,14 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
 
                                         {/* Footer */}
                                         <div className="p-3 text-center border-t border-slate-100 bg-slate-50/50">
-                                            <button className="text-xs font-bold text-orange-600 hover:text-orange-700 hover:underline">
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setIsNotiOpen(false);
+                                                    router.push('/admin/notifications');
+                                                }}
+                                                className="text-xs font-bold text-orange-600 hover:text-orange-700 hover:underline"
+                                            >
                                                 Xem tất cả thông báo →
                                             </button>
                                         </div>

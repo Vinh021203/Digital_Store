@@ -17,6 +17,12 @@ const organizationSchema = [
         logo: `${siteUrl}/logo_webgiare_display.webp`,
         email: 'mailto:veutong961@gmail.com',
         telephone: '+84971386588',
+        sameAs: [
+            'https://www.facebook.com/Ltvinh212',
+            'https://www.youtube.com/@VINHDEV_0212',
+            'https://www.instagram.com/luongvinh_0212?igsh=MWxtM2RlNm16ZjM2MA==',
+            'https://www.linkedin.com/in/vinh-l%C6%B0%C6%A1ng-th%E1%BA%BF-69640734b?utm_source=share_via&utm_content=profile&utm_medium=member_android',
+        ],
         address: {
             '@type': 'PostalAddress',
             addressLocality: 'Hạ Long',
@@ -65,7 +71,7 @@ export const metadata: Metadata = {
         'source code website',
         'mẫu website đẹp',
     ],
-    authors: [{ name: 'Đội ngũ Shop Web rẻ' }],
+    authors: [{ name: 'Lương Thế Vinh' }],
     creator: 'Shop Web rẻ',
     publisher: 'Shop Web rẻ',
     formatDetection: {

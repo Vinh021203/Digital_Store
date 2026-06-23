@@ -329,7 +329,7 @@ export function NotificationCenter({ isOpen, onClose, onCountChange }: Notificat
                 {notifications.length > 0 && (
                     <div className="p-3 border-t border-slate-100 flex items-center justify-between">
                         <Link
-                            href="/profile/notifications"
+                            href="/profile"
                             onClick={onClose}
                             className="text-sm font-bold text-slate-600 hover:text-orange-600"
                         >
