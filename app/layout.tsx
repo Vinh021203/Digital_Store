@@ -6,8 +6,10 @@ import './animations.css';
 import './nprogress.css';
 import Providers from './providers';
 import { NavigationProgress } from '@/components/layout';
+import { getSiteUrl, getSocialImageUrl } from '@/lib/site-url';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://webgiare.id.vn';
+const siteUrl = getSiteUrl();
+const socialImageUrl = getSocialImageUrl();
 const organizationSchema = [
     {
         '@context': 'https://schema.org',
@@ -92,7 +94,7 @@ export const metadata: Metadata = {
         description: 'Kho giao diện website, template, landing page, UI kit và dashboard chất lượng cao cho thị trường Việt Nam.',
         images: [
             {
-                url: '/thumbnail.jpg',
+                url: socialImageUrl,
                 width: 1200,
                 height: 630,
                 alt: 'Shop Web rẻ - Kho giao diện website, template và landing page',
@@ -103,7 +105,7 @@ export const metadata: Metadata = {
         card: 'summary_large_image',
         title: 'Shop Web rẻ - Giao diện website, template và landing page',
         description: 'Mua giao diện website, template, landing page và UI kit chất lượng cao. Xem demo trước khi mua và tải file nhanh.',
-        images: ['/thumbnail.jpg'],
+        images: [socialImageUrl],
     },
     robots: {
         index: true,

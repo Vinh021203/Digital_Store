@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
+import { getSiteUrl } from '@/lib/site-url';
 
-// Use environment variable or fallback to production URL
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://webgiare.id.vn';
+const SITE_URL = getSiteUrl();
 
 export default function robots(): MetadataRoute.Robots {
     return {

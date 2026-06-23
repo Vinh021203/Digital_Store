@@ -5,6 +5,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/server';
 import { sendLicenseDeliveryEmail } from '@/lib/email';
+import { getSiteUrl } from '@/lib/site-url';
 
 export async function POST(request: NextRequest) {
     try {
@@ -70,7 +71,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Get site URL for download link
-        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://webgiare.id.vn';
+        const siteUrl = getSiteUrl();
 
         // Send license delivery email
         await sendLicenseDeliveryEmail({

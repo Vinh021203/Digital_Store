@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { getProductById, getProductBySlug } from '@/lib/products';
+import { getSiteUrl } from '@/lib/site-url';
 import ProductDetailPage from './ProductDetailPage';
 
 interface Props {
@@ -102,7 +103,7 @@ export default async function Page({ params }: Props) {
     return <ProductDetailPage />;
   }
 
-  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://webgiare.id.vn').replace(/\/$/, '');
+  const siteUrl = getSiteUrl();
   const productPath = `/product/${product.slug || product.id}`;
   const plainDescription = product.description?.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
   const ratingValue = Number(product.rating || 0);

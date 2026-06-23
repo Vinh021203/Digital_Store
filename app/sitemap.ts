@@ -1,7 +1,8 @@
 import { MetadataRoute } from 'next';
 import { createClient } from '@supabase/supabase-js';
+import { getSiteUrl } from '@/lib/site-url';
 
-const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://webgiare.id.vn').replace(/\/$/, '');
+const SITE_URL = getSiteUrl();
 
 export const revalidate = 3600;
 

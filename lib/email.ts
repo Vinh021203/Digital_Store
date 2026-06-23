@@ -2,10 +2,11 @@
 // Email service using Resend for sending transactional emails
 
 import { Resend } from 'resend';
+import { getSiteUrl } from '@/lib/site-url';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
-const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://webgiare.id.vn').replace(/\/$/, '');
+const SITE_URL = getSiteUrl();
 
 export interface EmailOptions {
     to: string | string[];
