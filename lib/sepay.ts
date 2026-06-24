@@ -130,6 +130,9 @@ export interface SepayWebhookPayload {
 
 export function parseWebhookPayload(body: any): SepayWebhookPayload | null {
     try {
+        const transferType = String(body.transferType || '').toLowerCase() === 'out' ? 'out' : 'in';
+        const transferAmount = Number(body.transferAmount || body.amount || 0);
+
         return {
             id: body.id,
             gateway: body.gateway,
@@ -137,8 +140,8 @@ export function parseWebhookPayload(body: any): SepayWebhookPayload | null {
             accountNumber: body.accountNumber,
             code: body.code,
             content: body.content || '',
-            transferType: body.transferType,
-            transferAmount: body.transferAmount,
+            transferType,
+            transferAmount,
             accumulated: body.accumulated,
             subAccount: body.subAccount,
             referenceCode: body.referenceCode,
@@ -160,6 +163,19 @@ export function extractOrderIdFromContent(content: string): number | null {
         return parseInt(match[1], 10);
     }
     return null;
+}
+
+export function extractOrderIdFromPayload(payload: SepayWebhookPayload): number | null {
+    const searchableText = [
+        payload.content,
+        payload.description,
+        payload.code,
+        payload.referenceCode,
+    ]
+        .filter(Boolean)
+        .join(' ');
+
+    return extractOrderIdFromContent(searchableText);
 }
 
 // ============================================

@@ -55,6 +55,7 @@ export default function ProfileLayout({
     cover: user?.cover_image || '',
     phone: user?.phone || '',
     address: user?.address || '',
+    profileTextColor: user?.profile_text_color || '#0f172a',
   });
 
   // Real stats from database - MUST be before any early return
@@ -101,8 +102,9 @@ export default function ProfileLayout({
       cover: user.cover_image || '',
       phone: user.phone || '',
       address: user.address || '',
+      profileTextColor: user.profile_text_color || '#0f172a',
     });
-  }, [user?.id, user?.avatar, user?.cover_image, user?.phone, user?.address]);
+  }, [user?.id, user?.avatar, user?.cover_image, user?.phone, user?.address, user?.profile_text_color]);
 
   // tránh bị push /login khi auth còn đang load
   useEffect(() => {
@@ -226,10 +228,11 @@ export default function ProfileLayout({
         .update({
           name: formValues.name,
           avatar: formValues.avatar,
-          cover_image: formValues.cover,
-          phone: formValues.phone,
-          address: formValues.address,
-        })
+	          cover_image: formValues.cover,
+	          phone: formValues.phone,
+	          address: formValues.address,
+	          profile_text_color: formValues.profileTextColor || '#0f172a',
+	        })
         .eq('id', user.id);
 
       if (error) {
@@ -243,7 +246,9 @@ export default function ProfileLayout({
     }
   };
 
-  return (
+	  const profileTextColor = formValues.profileTextColor || '#0f172a';
+
+	  return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-orange-50/30 font-sans text-slate-800 pb-20 lg:pb-0 animate-fade-in">
       {/* Premium Header Section */}
       <div className="bg-white border-b border-slate-200 shadow-sm">
@@ -317,9 +322,12 @@ export default function ProfileLayout({
             {/* User Info & Actions */}
             <div className="flex-1 mb-2 w-full md:w-auto">
               <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-3 md:gap-4">
-                <div>
-                  <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-slate-900 flex flex-col md:flex-row items-center gap-2 mb-1">
-                    {user.name}
+	                <div>
+	                  <h1
+	                    className="text-2xl md:text-3xl lg:text-4xl font-black flex flex-col md:flex-row items-center gap-2 mb-1"
+	                    style={{ color: profileTextColor }}
+	                  >
+	                    {user.name}
                     {user.isAffiliate && (
                       <span
                         className="inline-flex items-center gap-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs px-3 py-1 rounded-full shadow-lg"
@@ -329,17 +337,20 @@ export default function ProfileLayout({
                         Đối tác
                       </span>
                     )}
-                    <button
-                      onClick={() => setEditOpen(true)}
-                      className="text-slate-400 hover:text-orange-600 transition-colors"
-                    >
+	                    <button
+	                      onClick={() => setEditOpen(true)}
+	                      className="opacity-75 transition-colors hover:text-orange-600 hover:opacity-100"
+	                    >
                       <Edit2 size={18} className="lg:w-5 lg:h-5" />
                     </button>
                   </h1>
 
-                  <div className="flex flex-wrap justify-center md:justify-start items-center gap-2 md:gap-3 text-slate-500 text-sm">
-                    <span className="hidden lg:inline">{user.email}</span>
-                    <span className="hidden lg:inline w-1 h-1 bg-slate-300 rounded-full" />
+	                  <div
+	                    className="flex flex-wrap justify-center md:justify-start items-center gap-2 md:gap-3 text-sm"
+	                    style={{ color: profileTextColor }}
+	                  >
+	                    <span className="hidden lg:inline opacity-85">{user.email}</span>
+	                    <span className="hidden lg:inline w-1 h-1 rounded-full opacity-60" style={{ backgroundColor: profileTextColor }} />
                     <span className="inline-flex items-center gap-1.5 text-orange-600 font-bold bg-orange-50 px-3 py-1 rounded-lg text-xs uppercase">
                       <ShieldCheck size={14} />
                       {user.role === 'admin'
@@ -348,8 +359,8 @@ export default function ProfileLayout({
                           ? 'Đối Tác'
                           : stats.rank}
                     </span>
-                    <span className="hidden md:inline w-1 h-1 bg-slate-300 rounded-full" />
-                    <span className="inline-flex items-center gap-1 text-xs text-slate-500">
+	                    <span className="hidden md:inline w-1 h-1 rounded-full opacity-60" style={{ backgroundColor: profileTextColor }} />
+	                    <span className="inline-flex items-center gap-1 text-xs opacity-85">
                       <Calendar size={12} />
                       Tham gia 2024
                     </span>

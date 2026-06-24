@@ -164,7 +164,7 @@ const ToastContainer = memo<ToastContainerProps>(({ toasts, removeToast }) => {
 
   return (
     <div
-      className="fixed top-20 sm:top-24 right-2 sm:right-4 z-[60] flex flex-col gap-2 sm:gap-3 pointer-events-none max-w-[calc(100vw-16px)] sm:max-w-md"
+      className="fixed top-24 sm:top-28 right-2 sm:right-4 z-[9999] flex flex-col gap-2 sm:gap-3 pointer-events-none max-w-[calc(100vw-16px)] sm:max-w-md"
       aria-live="polite"
       aria-atomic="false"
     >

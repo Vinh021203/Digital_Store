@@ -6,7 +6,7 @@ import { createClient } from '@supabase/supabase-js';
 import {
     verifyWebhookSignature,
     parseWebhookPayload,
-    extractOrderIdFromContent
+    extractOrderIdFromPayload
 } from '@/lib/sepay';
 
 // Create admin client for server-side operations (bypasses RLS)
@@ -26,9 +26,9 @@ function createAdminClient() {
 
 export async function POST(request: NextRequest) {
     try {
-        const body = await request.json();
+        const rawBody = await request.text();
+        const body = JSON.parse(rawBody);
         const signature = request.headers.get('x-sepay-signature') || '';
-        const rawBody = JSON.stringify(body);
 
         // ========================================
         // SECURITY: Verify webhook signature (optional)
@@ -50,11 +50,22 @@ export async function POST(request: NextRequest) {
         // Parse webhook payload
         const payload = parseWebhookPayload(body);
         if (!payload) {
+            console.error('SePay webhook invalid payload:', body);
             return NextResponse.json(
                 { success: false, error: 'Invalid payload' },
                 { status: 400 }
             );
         }
+
+        console.info('SePay webhook received:', {
+            id: payload.id,
+            transferType: payload.transferType,
+            transferAmount: payload.transferAmount,
+            content: payload.content,
+            description: payload.description,
+            code: payload.code,
+            referenceCode: payload.referenceCode,
+        });
 
         // Only process incoming transfers
         if (payload.transferType !== 'in') {
@@ -65,9 +76,15 @@ export async function POST(request: NextRequest) {
         }
 
         // Extract order ID from payment content
-        const orderId = extractOrderIdFromContent(payload.content);
+        const orderId = extractOrderIdFromPayload(payload);
 
         if (!orderId) {
+            console.warn('SePay webhook ignored: no DM order code found', {
+                content: payload.content,
+                description: payload.description,
+                code: payload.code,
+                referenceCode: payload.referenceCode,
+            });
             return NextResponse.json({
                 success: true,
                 message: 'No order ID in content'
@@ -91,7 +108,7 @@ export async function POST(request: NextRequest) {
             .single();
 
         if (fetchError || !order) {
-            console.error('Order not found:', orderId);
+            console.error('SePay webhook order not found:', { orderId, fetchError });
             return NextResponse.json(
                 { success: false, error: 'Order not found' },
                 { status: 404 }
@@ -100,7 +117,8 @@ export async function POST(request: NextRequest) {
 
         // Verify payment amount matches order total
         if (payload.transferAmount < order.total) {
-            console.error('Payment amount mismatch:', {
+            console.error('SePay payment amount mismatch:', {
+                orderId,
                 expected: order.total,
                 received: payload.transferAmount,
             });
@@ -121,7 +139,7 @@ export async function POST(request: NextRequest) {
             .eq('id', orderId);
 
         if (updateError) {
-            console.error('Failed to update order:', updateError);
+            console.error('SePay failed to update order:', { orderId, updateError });
             return NextResponse.json(
                 { success: false, error: 'Failed to update order' },
                 { status: 500 }

@@ -15,6 +15,7 @@ export interface DbProfile {
     affiliate_code: string | null;
     phone: string | null;
     address: string | null;
+    profile_text_color: string | null;
     created_at: string;
     updated_at: string;
 }
@@ -25,6 +26,7 @@ export interface ProfilePayload {
     cover_image?: string | null;
     phone?: string | null;
     address?: string | null;
+    profile_text_color?: string | null;
 }
 
 // ============================================

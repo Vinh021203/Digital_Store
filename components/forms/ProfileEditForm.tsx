@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, User, Phone, MapPin, Camera, Image, CheckCircle, Loader2, ArrowRight } from 'lucide-react';
+import { X, User, Phone, MapPin, Camera, Image, CheckCircle, Loader2, ArrowRight, Palette } from 'lucide-react';
 
 export interface ProfileFormValues {
   name: string;
@@ -9,6 +9,7 @@ export interface ProfileFormValues {
   cover?: string;
   phone?: string;
   address?: string;
+  profileTextColor?: string;
 }
 
 interface Props {
@@ -40,6 +41,8 @@ export function ProfileEditForm({
       (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         onChange({ ...values, [field]: e.target.value });
       };
+
+  const colorPresets = ['#0f172a', '#ffffff', '#f8fafc', '#ffedd5', '#fed7aa', '#f97316'];
 
   // Upload avatar
   const handleAvatarFileChange = async (
@@ -106,7 +109,7 @@ export function ProfileEditForm({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
       <div className="bg-white rounded-3xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col md:flex-row animate-fade-in">
 
         {/* Left Panel - Orange Branding */}
@@ -294,6 +297,44 @@ export function ProfileEditForm({
                 className="w-full border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none text-sm"
                 placeholder="Nhập địa chỉ..."
               />
+            </div>
+
+            {/* Profile cover text color */}
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <label className="flex items-center gap-2 text-sm font-bold text-slate-700 mb-3">
+                <Palette size={14} className="text-orange-600" />
+                Màu chữ trên ảnh bìa
+              </label>
+              <div className="flex flex-wrap items-center gap-2">
+                {colorPresets.map((color) => (
+                  <button
+                    key={color}
+                    type="button"
+                    onClick={() => onChange({ ...values, profileTextColor: color })}
+                    className={`h-8 w-8 rounded-full border-2 shadow-sm transition hover:scale-105 ${values.profileTextColor === color ? 'border-orange-600 ring-2 ring-orange-100' : 'border-white'
+                      }`}
+                    style={{ backgroundColor: color }}
+                    aria-label={`Chọn màu ${color}`}
+                  />
+                ))}
+                <input
+                  type="color"
+                  value={values.profileTextColor || '#0f172a'}
+                  onChange={handleInput('profileTextColor')}
+                  className="h-9 w-12 cursor-pointer rounded-lg border border-slate-200 bg-white p-1"
+                  aria-label="Chọn màu chữ profile"
+                />
+                <input
+                  type="text"
+                  value={values.profileTextColor || '#0f172a'}
+                  onChange={handleInput('profileTextColor')}
+                  className="min-w-[120px] flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold uppercase text-slate-700 outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+                  placeholder="#ffffff"
+                />
+              </div>
+              <p className="mt-2 text-xs text-slate-400">
+                Dùng màu sáng nếu ảnh bìa tối, màu đậm nếu ảnh bìa sáng.
+              </p>
             </div>
 
             {/* Submit Button */}

@@ -20,7 +20,6 @@ import {
   Search,
   Heart,
   BookOpen,
-  GraduationCap,
   Users,
   Repeat,
   Bell,
@@ -732,7 +731,7 @@ const MobileMenu = memo<MobileMenuProps>(
                   bg: "bg-orange-50",
                 },
                 {
-                  href: "/profile?tab=downloads",
+                  href: "/profile/downloads",
                   icon: Download,
                   label: "Downloads",
                   color: "text-emerald-500",
@@ -784,9 +783,9 @@ const MobileMenu = memo<MobileMenuProps>(
                   bg: "bg-slate-50",
                 },
                 {
-                  href: "/profile?tab=orders",
-                  icon: GraduationCap,
-                  label: t("nav.orders"),
+                  href: "/profile/orders",
+                  icon: ShoppingBag,
+                  label: "Đơn hàng",
                   color: "text-slate-600",
                   bg: "bg-slate-50",
                 },
@@ -974,13 +973,9 @@ const UserDropdown = memo<UserDropdownProps>(
             )}
             {[
               { href: "/profile", icon: UserIcon, label: t("nav.profile") },
+              { href: "/profile/orders", icon: ShoppingBag, label: "Đơn hàng" },
               {
-                href: "/profile?tab=orders",
-                icon: GraduationCap,
-                label: t("nav.orders"),
-              },
-              {
-                href: "/profile?tab=downloads",
+                href: "/profile/downloads",
                 icon: Download,
                 label: "Downloads",
               },

@@ -152,6 +152,7 @@ export async function fetchUserDownloads(userId: string): Promise<UserDownload[]
     }
 
     const orderIds = orders.map(o => o.id);
+    const orderCreatedAtById = new Map(orders.map(o => [o.id, o.created_at]));
 
     // Get all order items for these orders with product info
     const { data: items, error: itemsError } = await supabase
@@ -174,18 +175,20 @@ export async function fetchUserDownloads(userId: string): Promise<UserDownload[]
         return [];
     }
 
-    // Map to UserDownload format
-    return (items || []).map((item: any) => ({
-        id: item.id,
-        product_id: item.product_id,
-        product_name: item.product_name,
-        product_image: item.product_image,
-        license_type: item.license_type,
-        price: item.price,
-        purchased_at: item.created_at,
-        order_id: item.order_id,
-        product_slug: item.product?.slug,
-    }));
+    // Map to UserDownload format and keep newest purchases first.
+    return (items || [])
+        .map((item: any) => ({
+            id: item.id,
+            product_id: item.product_id,
+            product_name: item.product_name,
+            product_image: item.product_image,
+            license_type: item.license_type,
+            price: item.price,
+            purchased_at: orderCreatedAtById.get(item.order_id) || item.created_at,
+            order_id: item.order_id,
+            product_slug: item.product?.slug,
+        }))
+        .sort((a, b) => new Date(b.purchased_at).getTime() - new Date(a.purchased_at).getTime());
 }
 
 // ============================================

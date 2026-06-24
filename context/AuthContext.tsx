@@ -11,6 +11,7 @@ interface MappedUser {
   cover_image?: string | null;
   phone?: string | null;
   address?: string | null;
+  profile_text_color?: string | null;
   role: 'user' | 'seller' | 'admin';
   isAffiliate: boolean;
   affiliateCode?: string;
@@ -47,6 +48,7 @@ export const AuthProvider = ({ children }: { children?: ReactNode }) => {
       cover_image: profile.cover_image ?? null,
       phone: profile.phone ?? null,
       address: profile.address ?? null,
+      profile_text_color: profile.profile_text_color ?? null,
       role: profile.role as 'user' | 'seller' | 'admin',
       isAffiliate: profile.is_affiliate ?? false,
       affiliateCode: profile.affiliate_code,

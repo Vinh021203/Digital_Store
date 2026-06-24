@@ -24,6 +24,7 @@ interface UserProfile {
   affiliate_code?: string;
   phone?: string;
   address?: string;
+  profile_text_color?: string;
   created_at: string;
 }
 
