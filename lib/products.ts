@@ -16,7 +16,6 @@ export interface DbProduct {
   images: string[];
   format: string;
   category_id: number | null;
-  seller_id: number | null;
   author: string;
   rating: number;
   reviews_count: number;
@@ -37,7 +36,6 @@ export interface DbProduct {
   updated_at: string;
   // Joined data
   category?: { id: number; name: string; slug: string } | null;
-  seller?: { id: number; store_name: string } | null;
   product_files?: Array<{
     id: number;
     version: string;
@@ -56,7 +54,6 @@ export interface ProductPayload {
   images?: string[];
   format: string;
   category_id?: number | null;
-  seller_id?: number | null;
   author?: string;
   is_new?: boolean;
   is_featured?: boolean;
@@ -75,7 +72,6 @@ export interface ProductFilters {
   status?: string;
   format?: string;
   category_id?: number;
-  seller_id?: number;
   search?: string;
   is_featured?: boolean;
   limit?: number;
@@ -111,8 +107,7 @@ export async function fetchAllProducts(filters?: ProductFilters): Promise<DbProd
     .from('products')
     .select(`
       *,
-      category:category_id (id, name, slug),
-      seller:seller_id (id, store_name)
+      category:category_id (id, name, slug)
     `)
     .order('created_at', { ascending: false });
 
@@ -125,9 +120,6 @@ export async function fetchAllProducts(filters?: ProductFilters): Promise<DbProd
   }
   if (filters?.category_id) {
     query = query.eq('category_id', filters.category_id);
-  }
-  if (filters?.seller_id) {
-    query = query.eq('seller_id', filters.seller_id);
   }
   if (filters?.is_featured !== undefined) {
     query = query.eq('is_featured', filters.is_featured);
@@ -235,7 +227,6 @@ export async function getProductById(id: number): Promise<DbProduct | null> {
     .select(`
       *,
       category:category_id (id, name, slug),
-      seller:seller_id (id, store_name),
       product_files (id, version, file_size, is_current)
     `)
     .eq('id', id)
@@ -261,7 +252,6 @@ export async function getProductBySlug(slug: string): Promise<DbProduct | null> 
     .select(`
       *,
       category:category_id (id, name, slug),
-      seller:seller_id (id, store_name),
       product_files (id, version, file_size, is_current)
     `)
     .eq('slug', slug)
@@ -306,7 +296,6 @@ export async function createProduct(payload: ProductPayload): Promise<DbProduct 
       images: payload.images || [],
       format: payload.format || 'Template',
       category_id: payload.category_id || null,
-      seller_id: payload.seller_id || null,
       author: payload.author || 'Shop Web rẻ',
       is_new: payload.is_new ?? true,
       is_featured: payload.is_featured ?? false,
@@ -360,7 +349,6 @@ export async function updateProduct(
   if (payload.images !== undefined) updates.images = payload.images;
   if (payload.format !== undefined) updates.format = payload.format;
   if (payload.category_id !== undefined) updates.category_id = payload.category_id;
-  if (payload.seller_id !== undefined) updates.seller_id = payload.seller_id;
   if (payload.author !== undefined) updates.author = payload.author;
   if (payload.is_new !== undefined) updates.is_new = payload.is_new;
   if (payload.is_featured !== undefined) updates.is_featured = payload.is_featured;
@@ -541,20 +529,14 @@ export type EditorProductPayload = ProductPayload;
 
 export async function upsertProductDb(
   payload: ProductPayload,
-  options?: { id?: number; sellerId?: number }
+  options?: { id?: number }
 ) {
   if (options?.id) {
-    const updated = await updateProduct(options.id, {
-      ...payload,
-      seller_id: options.sellerId,
-    });
+    const updated = await updateProduct(options.id, payload);
     return updated?.id;
   }
 
-  const created = await createProduct({
-    ...payload,
-    seller_id: options?.sellerId,
-  });
+  const created = await createProduct(payload);
   return created?.id;
 }
 

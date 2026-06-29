@@ -1071,7 +1071,7 @@ const ModernProductDetailLayout = ({
                 <section className="grid items-start gap-8 lg:grid-cols-[0.84fr_1.16fr] xl:gap-10">
                     <div>
                         <span className="inline-flex rounded-full border border-orange-100 bg-orange-50 px-4 py-2 text-xs font-bold uppercase tracking-wide text-orange-700">
-                            Best seller
+                            BÃ¡n cháº¡y
                         </span>
                         <h1 className="mt-5 max-w-2xl text-3xl font-extrabold leading-[1.2] tracking-normal text-slate-950 md:text-4xl xl:text-[44px]">
                             {product.name}

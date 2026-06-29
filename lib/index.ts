@@ -10,7 +10,6 @@ export * from './products';
 export * from './orders';
 export * from './licenses';
 export * from './reviews';
-export * from './sellers';
 export * from './tickets';
 export * from './notifications';
 export * from './coupons';

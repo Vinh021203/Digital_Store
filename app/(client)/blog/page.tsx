@@ -1,26 +1,14 @@
 import { Metadata } from 'next';
 import BlogPage from './BlogContent';
+import { buildSeoMetadata, seoKeywords } from '@/lib/seo';
 
-export const metadata: Metadata = {
-    title: 'Blog',
-    description: 'Kiến thức và xu hướng công nghệ, thiết kế website, template, UI/UX và giao diện website từ Shop Web rẻ.',
-    alternates: {
-        canonical: '/blog',
-    },
-    openGraph: {
-        type: 'website',
-        url: '/blog',
-        title: 'Blog | Shop Web rẻ',
-        description: 'Kiến thức và xu hướng công nghệ, thiết kế website, template, UI/UX và giao diện website từ Shop Web rẻ.',
-        images: ['/thumbnail.jpg'],
-    },
-    twitter: {
-        card: 'summary_large_image',
-        title: 'Blog | Shop Web rẻ',
-        description: 'Kiến thức thiết kế website, template, UI/UX và phát triển web.',
-        images: ['/thumbnail.jpg'],
-    },
-};
+export const metadata: Metadata = buildSeoMetadata({
+    title: 'Blog thiết kế website, landing page và template',
+    description: 'Kiến thức chọn giao diện website, tối ưu landing page, UI/UX, template HTML/CSS/JS, React, Next.js và kinh nghiệm triển khai web.',
+    path: '/blog',
+    keywords: seoKeywords.blog,
+    ogTitle: 'Blog thiết kế website và template | Shop Web rẻ',
+});
 
 export default function Page() {
     return <BlogPage />;

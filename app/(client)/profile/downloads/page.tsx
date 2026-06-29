@@ -265,15 +265,16 @@ export default function DownloadsPage() {
                                 key={item.id}
                                 className="bg-white rounded-2xl border border-slate-100 overflow-hidden hover:border-green-200 hover:shadow-xl transition-all"
                             >
-                                <div className="flex flex-col md:flex-row">
+                                <div className="flex flex-col gap-0 md:flex-row md:items-start">
                                     {/* Product Image */}
-                                    <div className="md:w-52 h-44 md:h-auto flex-shrink-0 relative overflow-hidden">
+                                    <div className="relative aspect-video w-full flex-shrink-0 overflow-hidden bg-slate-100 md:w-80 lg:w-96">
                                         {item.product_image ? (
                                             <Image
                                                 src={item.product_image}
                                                 alt={item.product_name}
                                                 fill
                                                 className="object-cover"
+                                                sizes="(max-width: 768px) 100vw, 384px"
                                             />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200">
@@ -289,17 +290,17 @@ export default function DownloadsPage() {
                                     </div>
 
                                     {/* Content */}
-                                    <div className="flex-1 p-5">
+                                    <div className="min-w-0 flex-1 p-4 sm:p-5">
                                         <div className="flex flex-col h-full">
                                             {/* Header */}
-                                            <div className="flex items-start justify-between gap-4 mb-3">
-                                                <div>
+                                            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4 mb-3">
+                                                <div className="min-w-0">
                                                     <div className="flex items-center gap-2 mb-1">
                                                         <span className="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5">
                                                             <CheckCircle size={10} /> Đã thanh toán
                                                         </span>
                                                     </div>
-                                                    <h3 className="font-bold text-lg text-slate-900 hover:text-green-600 transition-colors">
+                                                    <h3 className="font-bold text-lg text-slate-900 hover:text-green-600 transition-colors line-clamp-2">
                                                         <Link href={`/product/${item.product_slug || item.product_id}`}>
                                                             {item.product_name}
                                                         </Link>
@@ -318,7 +319,7 @@ export default function DownloadsPage() {
                                                 </span>
                                                 <span className="flex items-center gap-1">
                                                     <ShoppingBag size={12} className="text-blue-400" />
-                                                    Đơn hàng #{item.order_id}
+                                                    {item.order_id ? `Đơn hàng #${item.order_id}` : 'License trực tiếp'}
                                                 </span>
                                                 {item.currentVersion && (
                                                     <span className="flex items-center gap-1 text-orange-600 font-medium">
@@ -329,7 +330,7 @@ export default function DownloadsPage() {
                                             </div>
 
                                             {/* Version Selection & Download */}
-                                            <div className="mt-auto flex flex-col sm:flex-row items-stretch gap-3">
+                                            <div className="mt-auto flex flex-col lg:flex-row items-stretch gap-3">
                                                 {/* Version Selector */}
                                                 {hasMultipleVersions ? (
                                                     <div className="relative flex-1">
@@ -392,10 +393,10 @@ export default function DownloadsPage() {
                                                 )}
 
                                                 {/* Actions */}
-                                                <div className="flex gap-2">
+                                                <div className="flex flex-shrink-0 gap-2">
                                                     <Link
                                                         href={`/product/${item.product_slug || item.product_id}`}
-                                                        className="flex items-center justify-center gap-2 px-4 py-3 border border-slate-200 text-slate-600 rounded-xl font-medium hover:bg-slate-50 transition-colors"
+                                                        className="flex min-w-[92px] items-center justify-center gap-2 px-4 py-3 border border-slate-200 text-slate-600 rounded-xl font-medium hover:bg-slate-50 transition-colors"
                                                     >
                                                         <Eye size={18} />
                                                         <span className="hidden sm:inline">Xem</span>
@@ -403,7 +404,7 @@ export default function DownloadsPage() {
                                                     <button
                                                         onClick={() => handleDownload(item)}
                                                         disabled={!selectedVersionData?.file_url}
-                                                        className="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl font-bold hover:shadow-lg hover:shadow-green-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        className="flex min-w-[132px] items-center justify-center gap-2 px-5 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl font-bold hover:shadow-lg hover:shadow-green-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                                                     >
                                                         <Download size={18} />
                                                         Tải xuống

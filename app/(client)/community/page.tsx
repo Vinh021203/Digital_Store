@@ -1,26 +1,14 @@
 import { Metadata } from 'next';
 import CommunityPage from './CommunityContent';
+import { buildSeoMetadata, seoKeywords } from '@/lib/seo';
 
-export const metadata: Metadata = {
-    title: 'Cộng đồng',
-    description: 'Tham gia cộng đồng Shop Web rẻ - Kết nối, chia sẻ và học hỏi cùng nhau',
-    alternates: {
-        canonical: '/community',
-    },
-    openGraph: {
-        type: 'website',
-        url: '/community',
-        title: 'Cộng đồng | Shop Web rẻ',
-        description: 'Tham gia cộng đồng Shop Web rẻ - Kết nối, chia sẻ và học hỏi cùng nhau',
-        images: ['/thumbnail.jpg'],
-    },
-    twitter: {
-        card: 'summary_large_image',
-        title: 'Cộng đồng | Shop Web rẻ',
-        description: 'Kết nối và chia sẻ kiến thức thiết kế, phát triển website.',
-        images: ['/thumbnail.jpg'],
-    },
-};
+export const metadata: Metadata = buildSeoMetadata({
+    title: 'Cộng đồng thiết kế website và developer Việt Nam',
+    description: 'Tham gia cộng đồng Shop Web rẻ để chia sẻ template website, hỏi đáp lập trình, UI/UX và kinh nghiệm triển khai website.',
+    path: '/community',
+    keywords: seoKeywords.community,
+    ogTitle: 'Cộng đồng thiết kế website | Shop Web rẻ',
+});
 
 export default function Page() {
     return <CommunityPage />;

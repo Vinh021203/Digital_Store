@@ -6,6 +6,7 @@ import {
   useEffect,
   useState,
   useCallback,
+  useRef,
   type ReactNode,
 } from 'react';
 import type { User, Session, AuthChangeEvent } from '@supabase/supabase-js';
@@ -19,7 +20,7 @@ interface UserProfile {
   name: string;
   avatar?: string;
   cover_image?: string;
-  role: 'user' | 'seller' | 'admin';
+  role: 'user' | 'admin';
   is_affiliate: boolean;
   affiliate_code?: string;
   phone?: string;
@@ -57,6 +58,7 @@ export function SupabaseAuthProvider({ children }: SupabaseAuthProviderProps) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [isConfigured, setIsConfigured] = useState(false);
+  const profileUserIdRef = useRef<string | null>(null);
 
   const supabase = getSupabaseClient();
 
@@ -101,8 +103,10 @@ export function SupabaseAuthProvider({ children }: SupabaseAuthProviderProps) {
 
         if (currentSession?.user) {
           const userProfile = await fetchProfile(currentSession.user.id);
+          profileUserIdRef.current = currentSession.user.id;
           setProfile(userProfile);
         } else {
+          profileUserIdRef.current = null;
           setProfile(null);
         }
       } catch (error) {
@@ -121,15 +125,24 @@ export function SupabaseAuthProvider({ children }: SupabaseAuthProviderProps) {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(
       (event: AuthChangeEvent, newSession: Session | null) => {
+        const nextUser = newSession?.user ?? null;
         setSession(newSession);
-        setUser(newSession?.user ?? null);
+        setUser((prevUser) => (prevUser?.id === nextUser?.id ? prevUser : nextUser));
 
-        if (newSession?.user) {
-          fetchProfile(newSession.user.id).then((userProfile) => {
+        if (!nextUser) {
+          profileUserIdRef.current = null;
+          setProfile(null);
+          return;
+        }
+
+        const shouldRefreshProfile =
+          event === 'USER_UPDATED' || profileUserIdRef.current !== nextUser.id;
+
+        if (shouldRefreshProfile) {
+          fetchProfile(nextUser.id).then((userProfile) => {
+            profileUserIdRef.current = nextUser.id;
             setProfile(userProfile);
           });
-        } else {
-          setProfile(null);
         }
       },
     );
@@ -277,6 +290,7 @@ export function SupabaseAuthProvider({ children }: SupabaseAuthProviderProps) {
   const refreshProfile = async () => {
     if (user) {
       const userProfile = await fetchProfile(user.id);
+      profileUserIdRef.current = user.id;
       setProfile(userProfile);
     }
   };

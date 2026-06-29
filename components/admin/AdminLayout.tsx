@@ -27,7 +27,7 @@ interface MenuItem {
     href: string;
 }
 
-// ✅ Enhanced Menu Structure for Digital Marketplace
+// Enhanced admin menu structure
 const MENU_GROUPS: { title: string; items: MenuItem[] }[] = [
     {
         title: "TỔNG QUAN",
@@ -44,14 +44,6 @@ const MENU_GROUPS: { title: string; items: MenuItem[] }[] = [
             { id: 'orders-kanban', label: 'Kanban Board', icon: <LayoutGrid size={20} />, isNew: true, href: '/admin/orders/kanban' },
             { id: 'products', label: 'Giao diện website', icon: <Package size={20} />, href: '/admin/products' },
             { id: 'licenses', label: 'Licenses', icon: <Shield size={20} />, badge: 'New', badgeColor: 'amber', href: '/admin/products/licenses' },
-        ]
-    },
-    {
-        title: "MARKETPLACE",
-        items: [
-            { id: 'sellers', label: 'Người bán', icon: <Users size={20} />, badge: '156', badgeColor: 'blue', href: '/admin/marketplace/sellers' },
-            { id: 'pending-products', label: 'Duyệt sản phẩm', icon: <Box size={20} />, badge: '8', badgeColor: 'red', href: '/admin/marketplace/pending' },
-            { id: 'transactions', label: 'Giao dịch & Phí', icon: <CreditCard size={20} />, href: '/admin/marketplace/transactions' },
         ]
     },
     {

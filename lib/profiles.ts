@@ -10,7 +10,7 @@ export interface DbProfile {
     name: string;
     avatar: string | null;
     cover_image: string | null;
-    role: 'user' | 'seller' | 'admin';
+    role: 'user' | 'admin';
     is_affiliate: boolean;
     affiliate_code: string | null;
     phone: string | null;
@@ -199,7 +199,6 @@ export async function getUserStats() {
     return {
         total: users.length,
         users: users.filter(u => u.role === 'user').length,
-        sellers: users.filter(u => u.role === 'seller').length,
         admins: users.filter(u => u.role === 'admin').length,
         affiliates: users.filter(u => u.is_affiliate).length,
         newToday: users.filter(u => new Date(u.created_at).toDateString() === today).length,

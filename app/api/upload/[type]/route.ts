@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { v2 as cloudinary } from 'cloudinary';
 import { createClient } from '@/lib/supabase/server';
 
-type UploadRole = 'admin' | 'seller' | 'user';
+type UploadRole = 'admin' | 'user';
 type UploadConfig = {
     folder: string;
     transformation?: any[];
@@ -47,7 +47,7 @@ const UPLOAD_CONFIGS: Record<string, UploadConfig> = {
         maxSizeBytes: 2 * MB,
         allowedMimeTypes: IMAGE_MIME_TYPES,
         allowedExtensions: IMAGE_EXTENSIONS,
-        allowedRoles: ['user', 'seller', 'admin'],
+        allowedRoles: ['user', 'admin'],
     },
     cover: {
         folder: 'digitalmart/covers',
@@ -55,7 +55,7 @@ const UPLOAD_CONFIGS: Record<string, UploadConfig> = {
         maxSizeBytes: 5 * MB,
         allowedMimeTypes: IMAGE_MIME_TYPES,
         allowedExtensions: IMAGE_EXTENSIONS,
-        allowedRoles: ['user', 'seller', 'admin'],
+        allowedRoles: ['user', 'admin'],
     },
 
     // Products
@@ -65,7 +65,7 @@ const UPLOAD_CONFIGS: Record<string, UploadConfig> = {
         maxSizeBytes: 8 * MB,
         allowedMimeTypes: IMAGE_MIME_TYPES,
         allowedExtensions: IMAGE_EXTENSIONS,
-        allowedRoles: ['seller', 'admin'],
+        allowedRoles: ['admin'],
     },
     'product-gallery': {
         folder: 'digitalmart/products/gallery',
@@ -75,7 +75,7 @@ const UPLOAD_CONFIGS: Record<string, UploadConfig> = {
         maxSizeBytes: 8 * MB,
         allowedMimeTypes: IMAGE_MIME_TYPES,
         allowedExtensions: IMAGE_EXTENSIONS,
-        allowedRoles: ['seller', 'admin'],
+        allowedRoles: ['admin'],
     },
 
     // Blog
@@ -88,24 +88,6 @@ const UPLOAD_CONFIGS: Record<string, UploadConfig> = {
         allowedRoles: ['admin'],
     },
 
-    // Sellers
-    'seller-logo': {
-        folder: 'digitalmart/sellers/logos',
-        transformation: [{ width: 200, height: 200, crop: 'fill', quality: 'auto' }],
-        maxSizeBytes: 2 * MB,
-        allowedMimeTypes: IMAGE_MIME_TYPES,
-        allowedExtensions: IMAGE_EXTENSIONS,
-        allowedRoles: ['seller', 'admin'],
-    },
-    'seller-banner': {
-        folder: 'digitalmart/sellers/banners',
-        transformation: [{ width: 1400, height: 400, crop: 'fill', quality: 'auto' }],
-        maxSizeBytes: 5 * MB,
-        allowedMimeTypes: IMAGE_MIME_TYPES,
-        allowedExtensions: IMAGE_EXTENSIONS,
-        allowedRoles: ['seller', 'admin'],
-    },
-
     // Community
     'community-image': {
         folder: 'digitalmart/community',
@@ -113,7 +95,7 @@ const UPLOAD_CONFIGS: Record<string, UploadConfig> = {
         maxSizeBytes: 8 * MB,
         allowedMimeTypes: IMAGE_MIME_TYPES,
         allowedExtensions: IMAGE_EXTENSIONS,
-        allowedRoles: ['user', 'seller', 'admin'],
+        allowedRoles: ['user', 'admin'],
     },
 
     // Categories
@@ -135,7 +117,7 @@ const UPLOAD_CONFIGS: Record<string, UploadConfig> = {
         maxSizeBytes: 10 * MB,
         allowedMimeTypes: [...IMAGE_MIME_TYPES, 'application/pdf'],
         allowedExtensions: [...IMAGE_EXTENSIONS, 'pdf'],
-        allowedRoles: ['user', 'seller', 'admin'],
+        allowedRoles: ['user', 'admin'],
     },
 
     // Product Files (digital downloads - zip, rar, etc.)
@@ -145,7 +127,7 @@ const UPLOAD_CONFIGS: Record<string, UploadConfig> = {
         maxSizeBytes: 150 * MB,
         allowedMimeTypes: DOCUMENT_MIME_TYPES,
         allowedExtensions: DOCUMENT_EXTENSIONS,
-        allowedRoles: ['seller', 'admin'],
+        allowedRoles: ['admin'],
     },
 };
 
@@ -156,25 +138,6 @@ function getFileExtension(fileName: string) {
 function roleCanUpload(role: string | null | undefined, allowedRoles: UploadRole[]) {
     if (role === 'admin') return true;
     return allowedRoles.includes((role || 'user') as UploadRole);
-}
-
-async function hasActiveSellerProfile(
-    supabase: Awaited<ReturnType<typeof createClient>>,
-    userId: string
-) {
-    const { data, error } = await supabase
-        .from('sellers')
-        .select('id')
-        .eq('user_id', userId)
-        .eq('status', 'active')
-        .maybeSingle();
-
-    if (error) {
-        console.error('Active seller check error:', error);
-        return false;
-    }
-
-    return Boolean(data);
 }
 
 function validateFile(file: File, config: UploadConfig) {
@@ -266,18 +229,6 @@ export async function POST(
             );
         }
 
-        const requiresApprovedSeller = config.allowedRoles.includes('seller') && !config.allowedRoles.includes('user');
-
-        if (requiresApprovedSeller && profile?.role !== 'admin') {
-            const isActiveSeller = await hasActiveSellerProfile(supabase, user.id);
-
-            if (!isActiveSeller) {
-                return NextResponse.json(
-                    { error: 'Forbidden. Seller account must be approved before uploading this file type.' },
-                    { status: 403 }
-                );
-            }
-        }
         // ========================================
 
         const formData = await req.formData();

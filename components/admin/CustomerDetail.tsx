@@ -179,9 +179,7 @@ export default function CustomerDetail({ customerId }: CustomerDetailProps) {
                                         <span
                                             className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold uppercase ${customer.role === 'admin'
                                                 ? 'bg-indigo-100 text-indigo-700'
-                                                : customer.role === 'seller'
-                                                    ? 'bg-emerald-100 text-emerald-700'
-                                                    : 'bg-slate-100 text-slate-600'
+                                                : 'bg-slate-100 text-slate-600'
                                                 }`}
                                         >
                                             {customer.role === 'admin' && <Shield size={12} />}
@@ -203,7 +201,6 @@ export default function CustomerDetail({ customerId }: CustomerDetailProps) {
                                         className="text-sm border border-slate-200 rounded-lg px-3 py-2 bg-white"
                                     >
                                         <option value="user">User</option>
-                                        <option value="seller">Seller</option>
                                         <option value="admin">Admin</option>
                                     </select>
                                     <button

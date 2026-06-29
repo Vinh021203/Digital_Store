@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import HomePage from '@/components/pages/HomePage';
 import { getHomepageData } from '@/lib/homepageData';
 import { getSiteUrl, getSocialImageUrl } from '@/lib/site-url';
+import { seoKeywords } from '@/lib/seo';
 
 const siteUrl = getSiteUrl();
 const socialImageUrl = getSocialImageUrl();
@@ -14,20 +15,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: siteUrl,
   },
-  keywords: [
-    'shop web rẻ',
-    'mua giao diện website',
-    'giao diện website',
-    'giao diện website bán hàng',
-    'template website',
-    'theme website',
-    'landing page đẹp',
-    'landing page bán hàng',
-    'source code website',
-    'mẫu website đẹp',
-    'ui kit',
-    'dashboard template',
-  ],
+  keywords: seoKeywords.home,
   openGraph: {
     type: 'website',
     url: '/',

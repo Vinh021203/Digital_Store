@@ -780,7 +780,7 @@ const HomePage = ({
     carousel?.classList.remove("is-dragging");
   };
 
-  // Find a seller or show mock top author
+  // Find a featured creator or show mock top author
   const topAuthorName = allProducts[0]?.author || "CodeCrafter Studio";
   const authorProducts = allProducts
     .filter((p) => p.author === topAuthorName)
@@ -1760,7 +1760,7 @@ const HomePage = ({
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/45 to-transparent" />
                   <span className="absolute bottom-3 left-4 rounded-full bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-700 shadow-sm">
-                    Verified seller
+                    Tác giả nổi bật
                   </span>
                 </div>
                 <div className="flex items-center gap-4 p-4">
@@ -2410,7 +2410,7 @@ const HomePage = ({
         </div>
       </section>
 
-      {/* === BECOME SELLER & SUPPORT SECTION â€” Pastel & Outline Style === */}
+      {/* === AFFILIATE & SUPPORT SECTION === */}
       <section className="relative pt-4 md:pt-6 pb-8 md:pb-12 overflow-hidden bg-gradient-to-b from-white via-[#f8fafc] to-white">
         <div
           className="absolute inset-0 opacity-[0.035]"
@@ -2424,57 +2424,57 @@ const HomePage = ({
         <div className="absolute left-0 bottom-0 h-[360px] w-[360px] rounded-full bg-pink-100/35 blur-[100px]" />
         <div className="relative max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 z-10">
           <div className="grid md:grid-cols-2 gap-4 md:gap-6 mb-5 md:mb-6">
-            {/* Card 1: Become a Seller */}
+            {/* Card 1: Affiliate */}
             <div className="relative overflow-hidden p-8 md:p-12 lg:p-14 rounded-3xl shadow-sm z-10 bg-[#F3EBFF] min-h-[320px] flex flex-col justify-between">
               <div className="absolute top-0 left-0 w-full h-full -z-10 pointer-events-none">
                 <img
-                  src="/dpmarket-assets/images/shapes/seller-bg.png"
+                  src="/dpmarket-assets/images/shapes/affiliate-bg.png"
                   alt="Bg shape"
                   className="object-cover w-full h-full"
                 />
               </div>
               <div>
                 <h3 className="text-2xl md:text-3xl font-bold text-[#0b0f19] mb-4 leading-tight tracking-tight">
-                  Kiếm đến 75% giá trị sản phẩm bán ra
+                  Kiếm hoa hồng khi giới thiệu khách mua template
                 </h3>
                 <p className="text-sm md:text-base text-slate-800 font-medium leading-relaxed mb-6 md:mb-8 max-w-xl">
-                  Tham gia mạng lưới tác giả sáng tạo của chúng tôi và bán sản
-                  phẩm số của bạn. Bạn nhận tới 75% doanh thu cho các sản phẩm
-                  phân phối độc quyền.
+                  Tham gia chương trình affiliate của Shop Web rẻ, chia sẻ link
+                  giới thiệu và nhận hoa hồng khi khách mua giao diện website,
+                  landing page hoặc source code.
                 </p>
               </div>
               <Link
-                href="/register"
+                href="/affiliate"
                 className="self-start inline-flex items-center justify-center px-6 py-3 md:px-8 md:py-3.5 rounded-full border-2 border-[#0b0f19] text-[#0b0f19] hover:bg-[#0b0f19] hover:text-white font-semibold text-sm transition-all duration-300 select-none bg-transparent"
               >
-                Trở thành tác giả
+                Tham gia affiliate
               </Link>
             </div>
 
-            {/* Card 2: Become an Affiliate */}
+            {/* Card 2: Custom Service */}
             <div className="relative overflow-hidden p-8 md:p-12 lg:p-14 rounded-3xl shadow-sm z-10 bg-[#FFCBE7] min-h-[320px] flex flex-col justify-between">
               <div className="absolute top-0 left-0 w-full h-full -z-10 pointer-events-none">
                 <img
-                  src="/dpmarket-assets/images/shapes/seller-bg-two.png"
+                  src="/dpmarket-assets/images/shapes/service-bg.png"
                   alt="Bg shape"
                   className="object-cover w-full h-full"
                 />
               </div>
               <div>
                 <h3 className="text-2xl md:text-3xl font-bold text-[#0b0f19] mb-4 leading-tight tracking-tight">
-                  Kiếm tới 30% hoa hồng Tiếp thị liên kết
+                  Cần chỉnh sửa giao diện theo thương hiệu?
                 </h3>
                 <p className="text-sm md:text-base text-slate-800 font-medium leading-relaxed mb-6 md:mb-8 max-w-xl">
-                  Giới thiệu khách hàng mua bất kỳ sản phẩm nào trên Shop Web rẻ
-                  bằng liên kết tiếp thị của bạn và nhận hoa hồng lên tới 30%
-                  giá trị đơn hàng.
+                  Bạn có thể mua template sẵn rồi yêu cầu hỗ trợ thay logo,
+                  đổi màu, sửa nội dung, gắn form hoặc deploy lên hosting theo
+                  nhu cầu thực tế.
                 </p>
               </div>
               <Link
-                href="/register"
+                href="/contact"
                 className="self-start inline-flex items-center justify-center px-6 py-3 md:px-8 md:py-3.5 rounded-full border-2 border-[#0b0f19] text-[#0b0f19] hover:bg-[#0b0f19] hover:text-white font-semibold text-sm transition-all duration-300 select-none bg-transparent"
               >
-                Trở thành cộng tác viên
+                Liên hệ tùy chỉnh
               </Link>
             </div>
           </div>

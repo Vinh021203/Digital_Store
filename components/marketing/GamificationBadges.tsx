@@ -2,8 +2,8 @@
 
 import React from 'react';
 import {
-    Award, Star, Zap, Crown, Shield, Heart, Target, Flame,
-    Medal, Trophy, Sparkles, Gift, Coffee, Rocket, BookOpen
+    Award, Star, Crown, Heart, Target,
+    Trophy, Sparkles, Rocket, BookOpen
 } from 'lucide-react';
 
 interface Badge {
@@ -31,9 +31,6 @@ const BADGES: Badge[] = [
     { id: 'top-contributor', name: 'Top Contributor', description: 'Top 10 thành viên tích cực', icon: Trophy, color: 'text-amber-600', bgColor: 'bg-amber-100', rarity: 'legendary' },
     { id: 'reviewer', name: 'Nhà Phê Bình', description: 'Viết 20+ đánh giá', icon: BookOpen, color: 'text-indigo-600', bgColor: 'bg-indigo-100', rarity: 'rare' },
 
-    // Seller badges
-    { id: 'verified-seller', name: 'Seller Xác Thực', description: 'Đã xác minh danh tính', icon: Shield, color: 'text-green-600', bgColor: 'bg-green-100', rarity: 'common' },
-    { id: 'power-seller', name: 'Power Seller', description: 'Doanh thu trên 50 triệu', icon: Zap, color: 'text-orange-600', bgColor: 'bg-orange-100', rarity: 'epic' },
     { id: 'top-rated', name: 'Đánh Giá Cao', description: '4.8+ sao trung bình', icon: Star, color: 'text-yellow-500', bgColor: 'bg-yellow-100', rarity: 'legendary' },
 
     // Special badges

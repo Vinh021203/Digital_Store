@@ -27,6 +27,73 @@ function isAllowedDownloadUrl(fileUrl: string) {
     }
 }
 
+function getStorageBucket() {
+    return process.env.SUPABASE_STORAGE_BUCKET || 'product-files';
+}
+
+function getStoragePath(fileUrl: string) {
+    const bucket = getStorageBucket();
+    let path = fileUrl.trim();
+
+    if (!path || /^https?:\/\//i.test(path)) return null;
+
+    if (path.startsWith(`supabase://${bucket}/`)) {
+        path = path.slice(`supabase://${bucket}/`.length);
+    }
+
+    if (path.startsWith(`${bucket}/`)) {
+        path = path.slice(bucket.length + 1);
+    }
+
+    path = path.replace(/^\/+/, '');
+
+    if (!path || path.includes('..') || path.includes('\\')) return null;
+
+    return path;
+}
+
+function getFileNameFromPath(path: string, fallback: string) {
+    const fileName = path.split('/').pop()?.trim();
+    return fileName || fallback;
+}
+
+async function resolveDownloadUrl(
+    adminClient: ReturnType<typeof createAdminClient>,
+    fileUrl: string,
+    fallbackFilename: string,
+) {
+    if (isAllowedDownloadUrl(fileUrl)) {
+        return {
+            url: fileUrl,
+            filename: fallbackFilename,
+            expiresIn: null as number | null,
+        };
+    }
+
+    const storagePath = getStoragePath(fileUrl);
+    if (!storagePath) return null;
+
+    const bucket = getStorageBucket();
+    const filename = getFileNameFromPath(storagePath, fallbackFilename);
+    const expiresIn = 30 * 60;
+    const { data, error } = await adminClient.storage
+        .from(bucket)
+        .createSignedUrl(storagePath, expiresIn, {
+            download: filename,
+        });
+
+    if (error || !data?.signedUrl) {
+        console.error('Signed download URL error:', error);
+        return null;
+    }
+
+    return {
+        url: data.signedUrl,
+        filename,
+        expiresIn,
+    };
+}
+
 export async function GET(
     request: NextRequest,
     { params }: { params: Promise<{ productId: string }> }
@@ -157,12 +224,39 @@ export async function GET(
             finalFile = fallbackFile;
         }
 
+        // Get product info for the response
+        const { data: product } = await adminClient
+            .from('products')
+            .select('name')
+            .eq('id', productIdNum)
+            .single();
+
+        // Return file URL
+        const fileUrl = finalFile?.file_url;
+        const fallbackFilename = `${product?.name || 'download'}-v${finalFile?.version}.zip`;
+
+        if (!fileUrl) {
+            return NextResponse.json(
+                { error: 'Download file is not available.' },
+                { status: 404 }
+            );
+        }
+
+        const download = await resolveDownloadUrl(adminClient, fileUrl, fallbackFilename);
+
+        if (!download) {
+            return NextResponse.json(
+                { error: 'Download file is not available.' },
+                { status: 404 }
+            );
+        }
+
         // Get client IP for logging
         const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
             request.headers.get('x-real-ip') ||
             'unknown';
 
-        // Log the download
+        // Log the download after the private/signed URL is generated successfully.
         const { error: logError } = await adminClient.from('downloads').insert({
             user_id: user.id,
             product_id: productIdNum,
@@ -185,31 +279,15 @@ export async function GET(
             console.error('Download count update error:', updateError);
         }
 
-        // Get product info for the response
-        const { data: product } = await adminClient
-            .from('products')
-            .select('name')
-            .eq('id', productIdNum)
-            .single();
-
-        // Return file URL
-        const fileUrl = finalFile?.file_url;
-
-        if (!fileUrl || !isAllowedDownloadUrl(fileUrl)) {
-            return NextResponse.json(
-                { error: 'Download file is not available.' },
-                { status: 404 }
-            );
-        }
-
         return NextResponse.json({
             success: true,
             download: {
-                url: fileUrl,
-                filename: `${product?.name || 'download'}-v${finalFile?.version}.zip`,
+                url: download.url,
+                filename: download.filename,
                 version: finalFile?.version,
                 size: finalFile?.file_size,
                 changelog: finalFile?.changelog,
+                expiresIn: download.expiresIn,
             },
             license: {
                 type: license.type,

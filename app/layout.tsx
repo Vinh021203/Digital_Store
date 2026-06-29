@@ -7,6 +7,7 @@ import './nprogress.css';
 import Providers from './providers';
 import { NavigationProgress } from '@/components/layout';
 import { getSiteUrl, getSocialImageUrl } from '@/lib/site-url';
+import { seoKeywords } from '@/lib/seo';
 
 const siteUrl = getSiteUrl();
 const socialImageUrl = getSocialImageUrl();
@@ -59,20 +60,7 @@ export const metadata: Metadata = {
         template: '%s | Shop Web rẻ',
     },
     description: 'Mua giao diện website, template, landing page, UI kit và dashboard chất lượng cao. Xem demo trước khi mua, tải file nhanh, hỗ trợ tận tâm.',
-    keywords: [
-        'shop web rẻ',
-        'mua giao diện website',
-        'giao diện website',
-        'giao diện website bán hàng',
-        'template website',
-        'theme website',
-        'landing page',
-        'landing page bán hàng',
-        'ui kit',
-        'dashboard template',
-        'source code website',
-        'mẫu website đẹp',
-    ],
+    keywords: seoKeywords.home,
     authors: [{ name: 'Lương Thế Vinh' }],
     creator: 'Shop Web rẻ',
     publisher: 'Shop Web rẻ',

@@ -45,7 +45,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     if (!supabase) return staticPages;
 
     try {
-        const [productsResult, blogResult, sellersResult] = await Promise.all([
+        const [productsResult, blogResult] = await Promise.all([
             supabase
                 .from('products')
                 .select('id, slug, updated_at, created_at')
@@ -58,12 +58,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
                 .eq('is_published', true)
                 .order('published_at', { ascending: false })
                 .limit(2000),
-            supabase
-                .from('sellers')
-                .select('store_slug, updated_at, created_at')
-                .eq('status', 'active')
-                .order('updated_at', { ascending: false })
-                .limit(2000),
         ]);
 
         if (productsResult.error) {
@@ -72,10 +66,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         if (blogResult.error) {
             console.error('Sitemap blog error:', blogResult.error.message);
         }
-        if (sellersResult.error) {
-            console.error('Sitemap sellers error:', sellersResult.error.message);
-        }
-
         const productPages: MetadataRoute.Sitemap = (productsResult.data || []).map((product) => ({
             url: `${SITE_URL}/product/${product.slug || product.id}`,
             lastModified: toDate(product.updated_at || product.created_at),
@@ -90,14 +80,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             priority: 0.65,
         }));
 
-        const sellerPages: MetadataRoute.Sitemap = (sellersResult.data || []).map((seller) => ({
-            url: `${SITE_URL}/seller/${seller.store_slug}`,
-            lastModified: toDate(seller.updated_at || seller.created_at),
-            changeFrequency: 'weekly',
-            priority: 0.55,
-        }));
-
-        return [...staticPages, ...productPages, ...blogPages, ...sellerPages];
+        return [...staticPages, ...productPages, ...blogPages];
     } catch (error) {
         console.error('Sitemap generation error:', error);
         return staticPages;

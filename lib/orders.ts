@@ -130,7 +130,7 @@ export interface UserDownload {
     license_type: 'Regular' | 'Extended' | 'Unlimited';
     price: number;
     purchased_at: string;
-    order_id: number;
+    order_id: number | null;
     product_slug?: string;
 }
 
@@ -146,48 +146,87 @@ export async function fetchUserDownloads(userId: string): Promise<UserDownload[]
         .in('status', ['completed', 'paid'])
         .order('created_at', { ascending: false });
 
-    if (ordersError || !orders?.length) {
+    if (ordersError) {
         console.error('Error fetching user orders:', ordersError);
-        return [];
     }
 
-    const orderIds = orders.map(o => o.id);
-    const orderCreatedAtById = new Map(orders.map(o => [o.id, o.created_at]));
+    const orderIds = (orders || []).map(o => o.id);
+    const orderCreatedAtById = new Map((orders || []).map(o => [o.id, o.created_at]));
+    const downloadsByProduct = new Map<number, UserDownload>();
 
     // Get all order items for these orders with product info
-    const { data: items, error: itemsError } = await supabase
-        .from('order_items')
-        .select(`
-            id,
-            order_id,
-            product_id,
-            product_name,
-            product_image,
-            license_type,
-            price,
-            created_at,
-            product:product_id (slug)
-        `)
-        .in('order_id', orderIds);
+    if (orderIds.length > 0) {
+        const { data: items, error: itemsError } = await supabase
+            .from('order_items')
+            .select(`
+                id,
+                order_id,
+                product_id,
+                product_name,
+                product_image,
+                license_type,
+                price,
+                created_at,
+                product:product_id (slug)
+            `)
+            .in('order_id', orderIds);
 
-    if (itemsError) {
-        console.error('Error fetching order items:', itemsError);
-        return [];
+        if (itemsError) {
+            console.error('Error fetching order items:', itemsError);
+        } else {
+            (items || []).forEach((item: any) => {
+                if (!item.product_id) return;
+                downloadsByProduct.set(item.product_id, {
+                    id: item.id,
+                    product_id: item.product_id,
+                    product_name: item.product_name,
+                    product_image: item.product_image,
+                    license_type: item.license_type,
+                    price: item.price,
+                    purchased_at: orderCreatedAtById.get(item.order_id) || item.created_at,
+                    order_id: item.order_id,
+                    product_slug: item.product?.slug,
+                });
+            });
+        }
     }
 
-    // Map to UserDownload format and keep newest purchases first.
-    return (items || [])
-        .map((item: any) => ({
-            id: item.id,
-            product_id: item.product_id,
-            product_name: item.product_name,
-            product_image: item.product_image,
-            license_type: item.license_type,
-            price: item.price,
-            purchased_at: orderCreatedAtById.get(item.order_id) || item.created_at,
-            order_id: item.order_id,
-            product_slug: item.product?.slug,
-        }))
+    // Also include products that have an active license, even when the order row is missing.
+    const { data: licenses, error: licensesError } = await supabase
+        .from('licenses')
+        .select(`
+            id,
+            product_id,
+            type,
+            created_at,
+            product:product_id (id, name, slug, image, price)
+        `)
+        .eq('user_id', userId)
+        .eq('status', 'active')
+        .order('created_at', { ascending: false });
+
+    if (licensesError) {
+        console.error('Error fetching user licenses for downloads:', licensesError);
+    } else {
+        (licenses || []).forEach((license: any) => {
+            const product = Array.isArray(license.product) ? license.product[0] : license.product;
+            if (!license.product_id || downloadsByProduct.has(license.product_id)) return;
+
+            downloadsByProduct.set(license.product_id, {
+                id: -license.id,
+                product_id: license.product_id,
+                product_name: product?.name || 'Sản phẩm đã mua',
+                product_image: product?.image || null,
+                license_type: license.type || 'Regular',
+                price: Number(product?.price || 0),
+                purchased_at: license.created_at,
+                order_id: null,
+                product_slug: product?.slug,
+            });
+        });
+    }
+
+    return Array.from(downloadsByProduct.values())
         .sort((a, b) => new Date(b.purchased_at).getTime() - new Date(a.purchased_at).getTime());
 }
 

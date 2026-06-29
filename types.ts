@@ -468,53 +468,6 @@ export interface TicketMessage {
   created_at: string;
 }
 
-export interface Seller {
-  id: number;
-  user_id: number;
-  store_name: string;
-  store_slug: string;
-  description: string;
-  logo: string;
-  banner?: string;
-  rating: number;
-  total_sales: number;
-  total_products: number;
-  total_earnings: number;
-  balance: number;
-  status: 'active' | 'pending' | 'suspended';
-  is_verified: boolean;
-  joined_at: string;
-  created_at: string;
-}
-
-export interface SellerPayout {
-  id: number;
-  seller_id: number;
-  amount: number;
-  fee: number;
-  net_amount: number;
-  method: string;
-  status: 'pending' | 'processing' | 'completed' | 'failed';
-  notes?: string;
-  created_at: string;
-  processed_at?: string;
-}
-
-export interface Transaction {
-  id: number;
-  order_id: number;
-  seller_id: number;
-  buyer_id: number;
-  buyer_name: string;
-  product_id: number;
-  product_name: string;
-  amount: number;
-  fee: number;
-  net_amount: number;
-  status: 'pending' | 'completed' | 'refunded' | 'withdrawn';
-  created_at: string;
-}
-
 export interface AffiliateReferral {
   id: number;
   referrer_id: number;
@@ -578,21 +531,6 @@ export interface ActivityLog {
   ip_address?: string;
   severity: 'info' | 'warning' | 'error' | 'success';
   created_at: string;
-}
-
-export interface PendingProduct {
-  id: number;
-  seller_id: number;
-  seller_name: string;
-  name: string;
-  category: string;
-  format: string;
-  price: number;
-  submitted_at: string;
-  status: 'pending' | 'approved' | 'rejected';
-  rejection_reason?: string;
-  reviewed_by?: number;
-  reviewed_at?: string;
 }
 
 // ============================================

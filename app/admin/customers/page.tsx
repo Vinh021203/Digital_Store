@@ -23,7 +23,7 @@ import {
 import { fetchAllProfiles, getUserStats, type DbProfile } from '@/lib/profiles';
 import { useToast } from '@/context/ToastContext';
 
-type RoleFilter = 'all' | 'user' | 'admin' | 'seller';
+type RoleFilter = 'all' | 'user' | 'admin';
 
 const PAGE_SIZE = 8;
 
@@ -40,7 +40,6 @@ const CustomersManager: React.FC = () => {
   const [stats, setStats] = useState<{
     total: number;
     users: number;
-    sellers: number;
     admins: number;
     affiliates: number;
     newToday: number;
@@ -196,14 +195,14 @@ const CustomersManager: React.FC = () => {
               <BookOpen size={20} className="text-emerald-600" />
             </div>
             <div>
-              <p className="text-xs text-slate-500 uppercase font-bold">Seller</p>
+              <p className="text-xs text-slate-500 uppercase font-bold">User</p>
               <p className="text-2xl font-bold text-emerald-600">
-                {stats?.sellers || 0}
+                {stats?.users || 0}
               </p>
             </div>
           </div>
           <p className="text-[11px] text-slate-400">
-            Người bán hàng
+            TÃ i khoáº£n khÃ¡ch hÃ ng
           </p>
         </div>
       </div>
@@ -216,7 +215,6 @@ const CustomersManager: React.FC = () => {
             {[
               { key: 'all', label: 'Tất cả' },
               { key: 'user', label: 'User' },
-              { key: 'seller', label: 'Seller' },
               { key: 'admin', label: 'Admin' },
             ].map(filter => (
               <button
@@ -306,9 +304,7 @@ const CustomersManager: React.FC = () => {
                           <span
                             className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${user.role === 'admin'
                                 ? 'bg-indigo-50 text-indigo-700 border-indigo-100'
-                                : user.role === 'seller'
-                                  ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
-                                  : 'bg-slate-50 text-slate-600 border-slate-200'
+                                : 'bg-slate-50 text-slate-600 border-slate-200'
                               }`}
                           >
                             {user.role === 'admin' && <Shield size={10} />}

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, ReactNode } from 'react';
+import React, { createContext, useContext, ReactNode, useMemo } from 'react';
 import { useSupabaseAuth } from '@/context/SupabaseAuthContext';
 
 interface MappedUser {
@@ -12,7 +12,7 @@ interface MappedUser {
   phone?: string | null;
   address?: string | null;
   profile_text_color?: string | null;
-  role: 'user' | 'seller' | 'admin';
+  role: 'user' | 'admin';
   isAffiliate: boolean;
   affiliateCode?: string;
 }
@@ -30,13 +30,13 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children?: ReactNode }) => {
   const { user, profile, signOut, loading, registerAffiliate } = useSupabaseAuth();
 
-  let mappedUser: MappedUser | null = null;
+  const mappedUser = useMemo<MappedUser | null>(() => {
+    if (!user || !profile) return null;
 
-  if (user && profile) {
     const name = profile.name || user.email || 'User';
     const email = profile.email || user.email || '';
 
-    mappedUser = {
+    return {
       id: user.id,
       email,
       name,
@@ -49,11 +49,24 @@ export const AuthProvider = ({ children }: { children?: ReactNode }) => {
       phone: profile.phone ?? null,
       address: profile.address ?? null,
       profile_text_color: profile.profile_text_color ?? null,
-      role: profile.role as 'user' | 'seller' | 'admin',
+      role: profile.role === 'admin' ? 'admin' : 'user',
       isAffiliate: profile.is_affiliate ?? false,
       affiliateCode: profile.affiliate_code,
     };
-  }
+  }, [
+    user?.id,
+    user?.email,
+    profile?.email,
+    profile?.name,
+    profile?.avatar,
+    profile?.cover_image,
+    profile?.phone,
+    profile?.address,
+    profile?.profile_text_color,
+    profile?.role,
+    profile?.is_affiliate,
+    profile?.affiliate_code,
+  ]);
 
   const isAdmin = mappedUser?.role === 'admin';
 

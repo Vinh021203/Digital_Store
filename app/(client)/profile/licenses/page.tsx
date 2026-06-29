@@ -73,7 +73,7 @@ export default function LicensesPage() {
         const status = isExpired ? 'expired' : license.status;
 
         const statusMap = {
-            active: { icon: CheckCircle, color: 'bg-emerald-100 text-emerald-700 border-emerald-200', label: 'Active' },
+            active: { icon: CheckCircle, color: 'bg-emerald-100 text-emerald-700 border-emerald-200', label: 'Còn hiệu lực' },
             expired: { icon: Clock, color: 'bg-amber-100 text-amber-700 border-amber-200', label: 'Hết hạn' },
             revoked: { icon: XCircle, color: 'bg-red-100 text-red-700 border-red-200', label: 'Thu hồi' },
         };
@@ -249,7 +249,7 @@ export default function LicensesPage() {
                                 : 'text-slate-600 hover:bg-slate-100'
                                 }`}
                         >
-                            {status === 'all' ? 'Tất cả' : status === 'active' ? 'Active' : 'Hết hạn'}
+                            {status === 'all' ? 'Tất cả' : status === 'active' ? 'Còn hiệu lực' : 'Hết hạn'}
                         </button>
                     ))}
                 </div>
@@ -261,38 +261,42 @@ export default function LicensesPage() {
                     {filteredLicenses.map((license) => {
                         const statusInfo = getStatusInfo(license);
                         const StatusIcon = statusInfo.icon;
-                        const canActivate = license.status === 'active' && license.activations_used < license.activations_limit;
+                        const canAttachProject = license.status === 'active' && license.activations_used < license.activations_limit;
+                        const isAttached = license.activations_used > 0;
 
                         return (
                             <div
                                 key={license.id}
-                                className="bg-white rounded-2xl border border-slate-100 overflow-hidden hover:border-violet-200 hover:shadow-xl transition-all"
+                                className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition-all hover:border-violet-200 hover:shadow-xl"
                             >
-                                <div className="flex flex-col md:flex-row">
+                                <div className="grid gap-0 md:grid-cols-[minmax(340px,46%)_1fr]">
                                     {/* Product Image */}
-                                    <div className="md:w-44 h-36 md:h-auto flex-shrink-0 relative overflow-hidden bg-slate-100">
-                                        {license.product?.image ? (
-                                            <Image
-                                                src={license.product.image}
-                                                alt={license.product.name || 'Product'}
-                                                fill
-                                                className="object-cover"
-                                            />
-                                        ) : (
-                                            <div className="w-full h-full flex items-center justify-center">
-                                                <Package size={40} className="text-slate-300" />
-                                            </div>
-                                        )}
+                                    <div className="p-2.5">
+                                        <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-slate-100">
+                                            {license.product?.image ? (
+                                                <Image
+                                                    src={license.product.image}
+                                                    alt={license.product.name || 'Product'}
+                                                    fill
+                                                    className="object-cover"
+                                                    sizes="(max-width: 768px) 100vw, 46vw"
+                                                />
+                                            ) : (
+                                                <div className="flex h-full w-full items-center justify-center">
+                                                    <Package size={40} className="text-slate-300" />
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
 
                                     {/* Content */}
-                                    <div className="flex-1 p-5">
-                                        <div className="flex flex-col h-full">
+                                    <div className="min-w-0 p-4">
+                                        <div className="flex h-full min-h-0 flex-col">
                                             {/* Header Row */}
-                                            <div className="flex items-start justify-between gap-4 mb-3">
-                                                <div>
+                                            <div className="mb-2.5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+                                                <div className="min-w-0">
                                                     {/* Badges */}
-                                                    <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                                                    <div className="mb-1.5 flex flex-wrap items-center gap-2">
                                                         <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-bold border ${statusInfo.color}`}>
                                                             <StatusIcon size={12} />
                                                             {statusInfo.label}
@@ -300,9 +304,16 @@ export default function LicensesPage() {
                                                         <span className={`px-2 py-0.5 rounded-md text-xs font-bold ${getTypeColor(license.type)}`}>
                                                             {license.type}
                                                         </span>
+                                                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-bold ${isAttached
+                                                            ? 'bg-blue-50 text-blue-700 border border-blue-100'
+                                                            : 'bg-slate-100 text-slate-600 border border-slate-200'
+                                                            }`}>
+                                                            <Globe size={12} />
+                                                            {isAttached ? 'Đã gắn dự án' : 'Chưa gắn dự án'}
+                                                        </span>
                                                     </div>
                                                     {/* Product Name */}
-                                                    <h3 className="font-bold text-lg text-slate-900 hover:text-violet-600 transition-colors">
+                                                    <h3 className="line-clamp-2 text-lg font-bold text-slate-900 transition-colors hover:text-violet-600">
                                                         <Link href={`/product/${license.product?.slug || license.product_id}`}>
                                                             {license.product?.name || `Product #${license.product_id}`}
                                                         </Link>
@@ -310,24 +321,29 @@ export default function LicensesPage() {
                                                 </div>
 
                                                 {/* Actions */}
-                                                <div className="flex flex-col gap-2">
-                                                    {canActivate && (
+                                                <div className="flex flex-row gap-2 sm:flex-shrink-0">
+                                                    {canAttachProject ? (
                                                         <button
                                                             onClick={() => handleActivate(license)}
                                                             disabled={activatingId === license.id}
-                                                            className="flex items-center justify-center gap-1.5 bg-gradient-to-r from-violet-500 to-purple-500 text-white px-4 py-2 rounded-xl text-sm font-bold transition-all shadow-lg shadow-violet-500/25 disabled:opacity-50 hover:shadow-xl"
+                                                            className="flex min-w-[112px] items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-violet-500 to-purple-500 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-violet-500/25 transition-all hover:shadow-xl disabled:opacity-50"
                                                         >
                                                             {activatingId === license.id ? (
                                                                 <Loader2 size={14} className="animate-spin" />
                                                             ) : (
                                                                 <Shield size={14} />
                                                             )}
-                                                            Kích hoạt
+                                                            Gắn dự án
                                                         </button>
+                                                    ) : (
+                                                        <div className="flex min-w-[112px] items-center justify-center gap-1.5 rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-2 text-sm font-bold text-emerald-700">
+                                                            <CheckCircle size={14} />
+                                                            Đã gắn
+                                                        </div>
                                                     )}
                                                     <Link
                                                         href={`/product/${license.product?.slug || license.product_id}`}
-                                                        className="flex items-center justify-center gap-1.5 border border-slate-200 text-slate-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-slate-50 transition-colors"
+                                                        className="flex min-w-[112px] items-center justify-center gap-1.5 rounded-xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50"
                                                     >
                                                         <Eye size={14} />
                                                         Chi tiết
@@ -336,7 +352,7 @@ export default function LicensesPage() {
                                             </div>
 
                                             {/* License Key */}
-                                            <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-xl border border-slate-200 mb-3">
+                                            <div className="mb-2.5 flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 p-2.5">
                                                 <Key size={14} className="text-violet-500 flex-shrink-0" />
                                                 <code className="flex-1 font-mono text-sm text-slate-700 truncate">
                                                     {license.license_key}
@@ -364,19 +380,23 @@ export default function LicensesPage() {
                                                         Hết hạn: {new Date(license.expires_at).toLocaleDateString('vi-VN')}
                                                     </span>
                                                 )}
-                                                <span className="flex items-center gap-1">
-                                                    <Zap size={12} className="text-emerald-400" />
-                                                    Kích hoạt: {license.activations_used}/{license.activations_limit}
-                                                </span>
-                                                {license.domain && (
-                                                    <span className="flex items-center gap-1">
-                                                        <Globe size={12} className="text-blue-400" />
-                                                        {license.domain}
+	                                                <span className="flex items-center gap-1">
+	                                                    <Zap size={12} className="text-emerald-400" />
+	                                                    Dự án đã gắn: {license.activations_used}/{license.activations_limit}
+	                                                </span>
+	                                                {license.domain && (
+	                                                    <span className="flex items-center gap-1">
+	                                                        <Globe size={12} className="text-blue-400" />
+	                                                        {license.domain}
+	                                                    </span>
+	                                                )}
+                                                    <span className="flex items-center gap-1 text-blue-700">
+                                                        <AlertCircle size={12} className="text-blue-500" />
+                                                        Gắn dự án không ảnh hưởng quyền tải file.
                                                     </span>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
+		                                        </div>
+		                                    </div>
+		                                </div>
                                 </div>
                             </div>
                         );
@@ -410,11 +430,11 @@ export default function LicensesPage() {
                         <AlertCircle size={20} className="text-violet-600" />
                     </div>
                     <div className="text-sm">
-                        <p className="font-bold text-violet-900 mb-2">Về License Keys</p>
+                        <p className="font-bold text-violet-900 mb-2">Cách hiểu License</p>
                         <ul className="text-violet-700 space-y-1">
-                            <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 bg-violet-400 rounded-full"></span> <strong>Regular:</strong> 1 dự án cá nhân hoặc client</li>
-                            <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 bg-violet-400 rounded-full"></span> <strong>Extended:</strong> Không giới hạn số dự án</li>
-                            <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 bg-violet-400 rounded-full"></span> <strong>Unlimited:</strong> Sử dụng vĩnh viễn + hỗ trợ ưu tiên</li>
+                            <li className="flex items-start gap-2"><span className="mt-2 w-1.5 h-1.5 bg-violet-400 rounded-full"></span> <strong>Còn hiệu lực:</strong> license hợp lệ, bạn có thể tải file trong mục Downloads.</li>
+                            <li className="flex items-start gap-2"><span className="mt-2 w-1.5 h-1.5 bg-violet-400 rounded-full"></span> <strong>Gắn dự án:</strong> liên kết license với một website/dự án cụ thể để quản lý bản quyền.</li>
+                            <li className="flex items-start gap-2"><span className="mt-2 w-1.5 h-1.5 bg-violet-400 rounded-full"></span> <strong>Hết hạn/Thu hồi:</strong> license không còn quyền sử dụng hoặc tải bản cập nhật.</li>
                         </ul>
                     </div>
                 </div>

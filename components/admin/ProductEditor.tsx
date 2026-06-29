@@ -21,7 +21,7 @@ import {
   History,
   File,
 } from 'lucide-react';
-import ProductVersionManager from '@/components/seller/ProductVersionManager';
+import ProductVersionManager from '@/components/admin/ProductVersionManager';
 import RichTextEditor from '@/components/admin/RichTextEditor';
 import { getCurrentVersion, updateVersion, uploadNewVersion } from '@/lib/productFiles';
 import {

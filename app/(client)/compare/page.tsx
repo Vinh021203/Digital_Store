@@ -1,26 +1,14 @@
 import { Metadata } from 'next';
 import ComparePage from './CompareContent';
+import { buildSeoMetadata, seoKeywords } from '@/lib/seo';
 
-export const metadata: Metadata = {
-    title: 'So sánh sản phẩm',
-    description: 'So sánh tính năng và giá cả giữa các giao diện website - Tìm lựa chọn tốt nhất cho bạn',
-    alternates: {
-        canonical: '/compare',
-    },
-    openGraph: {
-        type: 'website',
-        url: '/compare',
-        title: 'So sánh sản phẩm | Shop Web rẻ',
-        description: 'So sánh tính năng và giá cả giữa các giao diện website - Tìm lựa chọn tốt nhất cho bạn',
-        images: ['/thumbnail.jpg'],
-    },
-    twitter: {
-        card: 'summary_large_image',
-        title: 'So sánh giao diện website | Shop Web rẻ',
-        description: 'So sánh tính năng và giá để chọn giao diện phù hợp.',
-        images: ['/thumbnail.jpg'],
-    },
-};
+export const metadata: Metadata = buildSeoMetadata({
+    title: 'So sánh giao diện website và template trước khi mua',
+    description: 'So sánh tính năng, công nghệ, giá bán và demo giữa các template website để chọn giao diện phù hợp nhất với dự án của bạn.',
+    path: '/compare',
+    keywords: seoKeywords.compare,
+    ogTitle: 'So sánh template website | Shop Web rẻ',
+});
 
 export default function Page() {
     return <ComparePage />;

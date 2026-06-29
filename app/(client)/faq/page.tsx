@@ -1,26 +1,14 @@
 import type { Metadata } from 'next';
 import FAQContent from './FAQContent';
+import { buildSeoMetadata, seoKeywords } from '@/lib/seo';
 
-export const metadata: Metadata = {
-    title: 'Câu hỏi thường gặp',
-    description: 'Giải đáp về giao diện website, thanh toán, tải file, giấy phép và hỗ trợ sản phẩm tại Shop Web rẻ.',
-    alternates: {
-        canonical: '/faq',
-    },
-    openGraph: {
-        type: 'website',
-        url: '/faq',
-        title: 'Câu hỏi thường gặp | Shop Web rẻ',
-        description: 'Tìm câu trả lời về sản phẩm, thanh toán, tải file và giấy phép tại Shop Web rẻ.',
-        images: ['/thumbnail.jpg'],
-    },
-    twitter: {
-        card: 'summary_large_image',
-        title: 'Câu hỏi thường gặp | Shop Web rẻ',
-        description: 'Giải đáp nhanh trước và sau khi mua sản phẩm số.',
-        images: ['/thumbnail.jpg'],
-    },
-};
+export const metadata: Metadata = buildSeoMetadata({
+    title: 'Câu hỏi thường gặp khi mua template website',
+    description: 'Giải đáp về cách mua giao diện website, thanh toán, tải file, license, cập nhật phiên bản và hỗ trợ sản phẩm tại Shop Web rẻ.',
+    path: '/faq',
+    keywords: seoKeywords.faq,
+    ogTitle: 'FAQ mua template website | Shop Web rẻ',
+});
 
 export default function FAQPage() {
     return <FAQContent />;

@@ -1,26 +1,14 @@
 import { Metadata } from 'next';
 import AIRecommendationPage from './AIRecommendationContent';
+import { buildSeoMetadata, seoKeywords } from '@/lib/seo';
 
-export const metadata: Metadata = {
-    title: 'AI Gợi ý sản phẩm',
-    description: 'Để AI giúp bạn tìm giao diện website phù hợp nhất với dự án của bạn',
-    alternates: {
-        canonical: '/ai-recommendation',
-    },
-    openGraph: {
-        type: 'website',
-        url: '/ai-recommendation',
-        title: 'AI Gợi ý sản phẩm | Shop Web rẻ',
-        description: 'Để AI giúp bạn tìm giao diện website phù hợp nhất với dự án của bạn',
-        images: ['/thumbnail.jpg'],
-    },
-    twitter: {
-        card: 'summary_large_image',
-        title: 'AI Gợi ý giao diện | Shop Web rẻ',
-        description: 'Tìm giao diện website phù hợp theo nhu cầu, công nghệ và ngân sách.',
-        images: ['/thumbnail.jpg'],
-    },
-};
+export const metadata: Metadata = buildSeoMetadata({
+    title: 'AI tư vấn giao diện website theo nhu cầu và ngân sách',
+    description: 'Dùng AI để tìm template website, landing page, UI kit hoặc dashboard phù hợp với ngành nghề, công nghệ và ngân sách của bạn.',
+    path: '/ai-recommendation',
+    keywords: seoKeywords.aiRecommendation,
+    ogTitle: 'AI tư vấn chọn template website | Shop Web rẻ',
+});
 
 export default function Page() {
     return <AIRecommendationPage />;

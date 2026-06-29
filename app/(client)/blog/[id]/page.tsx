@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { getPostBySlug } from '@/lib/blog';
+import { seoKeywords } from '@/lib/seo';
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -26,15 +27,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const keywords = [
       ...(post.tags || []),
       post.category,
-      'blog',
+      ...seoKeywords.blog,
       'template website',
       'giao diện website',
-    ].filter(Boolean);
+    ].filter((keyword): keyword is string => Boolean(keyword));
 
     return {
       title,
       description,
-      keywords: keywords.join(', '),
+      keywords,
       authors: post.author ? [{ name: post.author.name }] : undefined,
       openGraph: {
         type: 'article',

@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {
     User, Package, ShoppingBag, Download, Key, Star,
-    Settings, ChevronRight, Loader2, Award,
+    Settings, ChevronRight, Loader2,
     TrendingUp, Clock, CheckCircle, Heart, MessageSquare,
     Zap, Target, Trophy, BookOpen, CreditCard, LifeBuoy, FileText,
     Sparkles, Crown, Gift, Hand
@@ -224,12 +224,6 @@ export default function ProfilePage() {
                                 <Crown size={14} />
                                 {stats.rank}
                             </span>
-                            {profile?.role === 'seller' && (
-                                <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-orange-500 px-3 py-1.5 rounded-full font-bold">
-                                    <Award size={14} />
-                                    Seller
-                                </span>
-                            )}
                         </div>
                     </div>
 

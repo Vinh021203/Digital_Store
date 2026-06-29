@@ -1,26 +1,14 @@
 import { Metadata } from 'next';
 import AffiliatePage from './AffiliateContent';
+import { buildSeoMetadata, seoKeywords } from '@/lib/seo';
 
-export const metadata: Metadata = {
-    title: 'Chương trình Affiliate',
-    description: 'Kiếm tiền cùng Shop Web rẻ - Hoa hồng lên đến 20% cho mỗi đơn hàng thành công',
-    alternates: {
-        canonical: '/affiliate',
-    },
-    openGraph: {
-        type: 'website',
-        url: '/affiliate',
-        title: 'Chương trình Affiliate | Shop Web rẻ',
-        description: 'Kiếm tiền cùng Shop Web rẻ - Hoa hồng lên đến 20% cho mỗi đơn hàng thành công',
-        images: ['/thumbnail.jpg'],
-    },
-    twitter: {
-        card: 'summary_large_image',
-        title: 'Chương trình Affiliate | Shop Web rẻ',
-        description: 'Giới thiệu khách hàng và nhận hoa hồng từ đơn hàng thành công.',
-        images: ['/thumbnail.jpg'],
-    },
-};
+export const metadata: Metadata = buildSeoMetadata({
+    title: 'Affiliate template website và giao diện web',
+    description: 'Tham gia chương trình affiliate của Shop Web rẻ, giới thiệu khách mua template website, landing page và nhận hoa hồng từ đơn hàng thành công.',
+    path: '/affiliate',
+    keywords: seoKeywords.affiliate,
+    ogTitle: 'Kiếm tiền với affiliate template website | Shop Web rẻ',
+});
 
 export default function Page() {
     return <AffiliatePage />;

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { getProductById, getProductBySlug } from '@/lib/products';
 import { getSiteUrl } from '@/lib/site-url';
+import { buildProductSeoKeywords } from '@/lib/seo';
 import ProductDetailPage from './ProductDetailPage';
 
 interface Props {
@@ -30,31 +31,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       };
     }
 
-    const title = product.name;
+    const title = `${product.name} - Template website có demo và tải file`;
     const plainDescription = product.description?.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
     const description =
       plainDescription ||
       `Mua ${product.name} chất lượng cao với giá ${product.price.toLocaleString('vi-VN')}đ. ${product.category?.name || 'Giao diện website'} chuyên nghiệp từ ${product.author || 'Shop Web rẻ'}.`;
     const productPath = `/product/${product.slug || product.id}`;
 
-    const keywords = [
-      product.name,
-      product.category?.name,
-      product.format,
-      product.author,
-      product.file_format,
-      product.compatibility,
-      ...(product.tags || []),
-      ...(product.tech_stack || []),
-      'giao diện website',
-      'template',
-      'theme',
-    ].filter(Boolean);
+    const keywords = buildProductSeoKeywords({
+      name: product.name,
+      category: product.category?.name,
+      format: product.format,
+      author: product.author,
+      fileFormat: product.file_format,
+      compatibility: product.compatibility,
+      tags: product.tags,
+      techStack: product.tech_stack,
+    });
 
     return {
       title,
       description: description.substring(0, 160),
-      keywords: keywords.join(', '),
+      keywords,
       authors: [{ name: product.author || 'Shop Web rẻ' }],
       openGraph: {
         type: 'website',

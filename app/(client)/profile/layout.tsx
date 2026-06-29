@@ -141,7 +141,6 @@ export default function ProfileLayout({
       badge: stats.licenses > 0 ? stats.licenses : null,
     },
     { id: '/profile/community', icon: Bell, label: 'Bài Viết', badge: null },
-    { id: '/profile/marketplace', icon: Star, label: 'Bán Hàng', badge: '1-5%' },
     {
       id: '/profile/support',
       icon: Trophy,
