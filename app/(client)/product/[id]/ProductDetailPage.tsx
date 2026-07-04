@@ -950,6 +950,7 @@ const ModernProductDetailLayout = ({
 }: any) => {
     const [showFullDescription, setShowFullDescription] = useState(false);
     const [mobileQuickBuyOpen, setMobileQuickBuyOpen] = useState(false);
+    const [isFooterVisible, setIsFooterVisible] = useState(false);
     const categoryLabel = typeof product.category === 'string'
         ? product.category
         : product.category?.name || 'SaaS Templates';
@@ -992,6 +993,23 @@ const ModernProductDetailLayout = ({
             ? `${plainDescription.slice(0, 190)}${plainDescription.length > 190 ? '...' : ''}`
             : 'Bộ giao diện website hiện đại, dễ tùy biến, giúp bạn triển khai website nhanh chóng và chuyên nghiệp.'
     );
+    const shouldCompactDesktopQuickBuy = quickBuyCollapsed || isFooterVisible;
+
+    useEffect(() => {
+        const footer = document.querySelector('footer');
+        if (!footer || typeof IntersectionObserver === 'undefined') return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => setIsFooterVisible(entry.isIntersecting),
+            {
+                threshold: 0.08,
+                rootMargin: '0px 0px -8% 0px',
+            }
+        );
+
+        observer.observe(footer);
+        return () => observer.disconnect();
+    }, []);
     const tabs = [
         ['description', 'Mô tả sản phẩm'],
         ['features', 'Tính năng nổi bật'],
@@ -1485,13 +1503,13 @@ const ModernProductDetailLayout = ({
                     )}
                 </div>
 
-                <div className="fixed bottom-24 left-6 z-30 hidden xl:block">
-                    {quickBuyCollapsed ? (
+                <div className={`fixed left-6 hidden xl:block ${isFooterVisible ? 'bottom-6 z-[25]' : 'bottom-24 z-[35]'}`}>
+                    {shouldCompactDesktopQuickBuy ? (
                         <button
                             type="button"
                             onClick={() => setQuickBuyCollapsed(false)}
-                            className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-950 text-white shadow-2xl shadow-slate-300 transition hover:-translate-y-0.5 hover:bg-orange-600"
-                            aria-label="Mở mua nhanh"
+                            className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-950 text-white shadow-2xl shadow-slate-950/20 transition hover:-translate-y-0.5 hover:bg-orange-600"
+                            aria-label={isFooterVisible ? 'Mua nhanh đã thu gọn khi xem footer' : 'Mở mua nhanh'}
                         >
                             <ShoppingBag size={24} strokeWidth={2.4} />
                             <span className="absolute -right-1 -top-1 h-4 w-4 rounded-full border-2 border-white bg-orange-500" />
