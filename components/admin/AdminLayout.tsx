@@ -7,7 +7,7 @@ import {
     LayoutDashboard, Package, ShoppingBag, Box, MessageSquare, Users,
     BarChart3, Settings, LogOut, BookOpen, Menu, Bell, Search, Home,
     ChevronRight, FileText, Tag, Shield, CreditCard, Globe, HelpCircle,
-    UserPlus, LifeBuoy, Image as ImageIcon, History, LayoutGrid,
+    UserPlus, LifeBuoy, Image as ImageIcon, History, LayoutGrid, Server,
     Maximize2, Minimize2, Moon, Sun, Bookmark, Command, X, Check,
     TrendingUp, AlertCircle, ChevronDown, Sparkles, Zap, Clock
 } from 'lucide-react';
@@ -68,6 +68,7 @@ const MENU_GROUPS: { title: string; items: MenuItem[] }[] = [
         title: "HỆ THỐNG",
         items: [
             { id: 'notifications', label: 'Thông báo', icon: <Bell size={20} />, href: '/admin/notifications' },
+            { id: 'maintenance', label: 'Bảo trì website', icon: <Server size={20} />, href: '/admin/maintenance' },
             { id: 'settings', label: 'Cài đặt hệ thống', icon: <Settings size={20} />, href: '/admin/settings' },
             { id: 'finance', label: 'Tài chính & Rút tiền', icon: <CreditCard size={20} />, href: '/admin/settings/finance' },
             { id: 'roles', label: 'Phân quyền', icon: <Shield size={20} />, badge: 'Pro', badgeColor: 'blue', href: '/admin/settings/roles' },

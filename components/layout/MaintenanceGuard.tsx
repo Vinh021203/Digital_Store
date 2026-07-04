@@ -1,11 +1,11 @@
 // components/MaintenanceGuard.tsx
-// Wraps the app to check maintenance mode and redirect non-admins
+// Wraps the app to check maintenance mode and hide storefront for non-admins
 // Auto-updates when maintenance mode changes
 
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { getSetting } from '@/lib/siteSettings';
 
@@ -27,43 +27,28 @@ const POLL_INTERVAL = 5000;
 
 export default function MaintenanceGuard({ children }: MaintenanceGuardProps) {
     const { isAdmin, isLoading } = useAuth();
-    const router = useRouter();
     const pathname = usePathname();
     const [checked, setChecked] = useState(false);
+    const [blocked, setBlocked] = useState(false);
 
     const checkMaintenance = useCallback(async () => {
-        // Skip check for allowed paths (except maintenance page - we check that for auto-redirect back)
+        // Keep admin/auth/api available while the public storefront is hidden.
         const isAllowed = ALLOWED_PATHS.some(path => pathname?.startsWith(path));
-        const isOnMaintenancePage = pathname === '/maintenance';
 
         // Wait for auth to load
         if (isLoading) return;
 
         try {
             const maintenanceMode = await getSetting('maintenance_mode');
-
-            if (maintenanceMode === true) {
-                // Maintenance is ON
-                if (!isAdmin && !isAllowed) {
-                    // Not admin and not on allowed page → redirect to maintenance
-                    router.replace('/maintenance');
-                    return;
-                }
-            } else {
-                // Maintenance is OFF
-                if (isOnMaintenancePage) {
-                    // User is on maintenance page but maintenance is off → go home
-                    router.replace('/');
-                    return;
-                }
-            }
+            setBlocked(maintenanceMode === true && !isAdmin && !isAllowed);
         } catch (error) {
             // If error (table doesn't exist), continue normally
             console.error('Maintenance check error:', error);
+            setBlocked(false);
         }
 
         setChecked(true);
-    }, [pathname, isAdmin, isLoading, router]);
+    }, [pathname, isAdmin, isLoading]);
 
     // Initial check
     useEffect(() => {
@@ -79,8 +64,8 @@ export default function MaintenanceGuard({ children }: MaintenanceGuardProps) {
         return () => clearInterval(interval);
     }, [checkMaintenance]);
 
-    // Show nothing while initial check
-    if (!checked && isLoading) {
+    // Show nothing while checking or when the storefront is locked.
+    if (!checked || isLoading || blocked) {
         return null;
     }
 
