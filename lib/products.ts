@@ -226,8 +226,7 @@ export async function getProductById(id: number): Promise<DbProduct | null> {
     .from('products')
     .select(`
       *,
-      category:category_id (id, name, slug),
-      product_files (id, version, file_size, is_current)
+      category:category_id (id, name, slug)
     `)
     .eq('id', id)
     .single();
@@ -251,8 +250,7 @@ export async function getProductBySlug(slug: string): Promise<DbProduct | null> 
     .from('products')
     .select(`
       *,
-      category:category_id (id, name, slug),
-      product_files (id, version, file_size, is_current)
+      category:category_id (id, name, slug)
     `)
     .eq('slug', slug)
     .eq('status', 'active')
