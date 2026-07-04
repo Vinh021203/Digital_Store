@@ -202,7 +202,7 @@ const CustomersManager: React.FC = () => {
             </div>
           </div>
           <p className="text-[11px] text-slate-400">
-            TÃ i khoáº£n khÃ¡ch hÃ ng
+            Tài khoản khách hàng
           </p>
         </div>
       </div>

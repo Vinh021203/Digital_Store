@@ -1708,7 +1708,7 @@ const HomePage = ({
       </section>
       )}
 
-      {/* === FEATURED AUTHOR SECTION â€” Light Pastel Style === */}
+              {/* === FEATURED AUTHOR SECTION - Light Pastel Style === */}
       <section className="hidden">
         {/* Light pastel background matching Stats section */}
         <div
@@ -1857,7 +1857,7 @@ const HomePage = ({
                 </button>
               </div>
 
-              {/* Rotating badge â€” positioned at right edge of left panel, overlapping the grid */}
+              {/* Rotating badge - positioned at right edge of left panel, overlapping the grid */}
               <div className="hidden">
                 <svg
                   className="absolute inset-0 w-full h-full animate-[spin_14s_linear_infinite]"
@@ -2009,7 +2009,7 @@ const HomePage = ({
         </div>
       </section>
 
-      {/* === PERFORMANCE STATS SECTION â€” Blob Pastel Style === */}
+              {/* === PERFORMANCE STATS SECTION - Blob Pastel Style === */}
       <section className="relative overflow-hidden py-0">
         {/* Light background with subtle topographic lines */}
         <div
@@ -2033,7 +2033,7 @@ const HomePage = ({
           <div className="grid lg:grid-cols-[minmax(0,1fr)_460px] items-stretch min-h-[390px] overflow-hidden">
             {/* LEFT: 2x2 Blob Grid */}
             <div className="relative grid grid-cols-2 grid-rows-2 min-h-[540px] sm:min-h-[500px] lg:min-h-[390px]">
-              {/* Blob 1 â€” Yellow-Green (top-left) */}
+                {/* Blob 1 - Yellow-Green (top-left) */}
               <div className="relative flex flex-col justify-between p-6 sm:p-8 lg:p-10 overflow-hidden group">
                 <div
                   className="absolute inset-0 rounded-br-[80px] md:rounded-br-[120px] transition-transform duration-500 group-hover:scale-105 origin-top-left"
@@ -2071,7 +2071,7 @@ const HomePage = ({
                 </div>
               </div>
 
-              {/* Blob 2 â€” Lavender (top-right) */}
+                {/* Blob 2 - Lavender (top-right) */}
               <div className="relative flex flex-col justify-between p-6 sm:p-8 lg:p-10 overflow-hidden group">
                 <div
                   className="absolute inset-0 rounded-bl-[80px] md:rounded-bl-[120px] transition-transform duration-500 group-hover:scale-105 origin-top-right"
@@ -2102,7 +2102,7 @@ const HomePage = ({
                 </div>
               </div>
 
-              {/* Blob 3 â€” Pink/Rose (bottom-left) */}
+                {/* Blob 3 - Pink/Rose (bottom-left) */}
               <div className="relative flex flex-col justify-between p-6 sm:p-8 lg:p-10 overflow-hidden group">
                 <div
                   className="absolute inset-0 rounded-tr-[80px] md:rounded-tr-[120px] transition-transform duration-500 group-hover:scale-105 origin-bottom-left"
@@ -2133,7 +2133,7 @@ const HomePage = ({
                 </div>
               </div>
 
-              {/* Blob 4 â€” Teal/Cyan (bottom-right) */}
+                {/* Blob 4 - Teal/Cyan (bottom-right) */}
               <div className="relative flex flex-col justify-between p-6 sm:p-8 lg:p-10 overflow-hidden group">
                 <div
                   className="absolute inset-0 rounded-tl-[80px] md:rounded-tl-[120px] transition-transform duration-500 group-hover:scale-105 origin-bottom-right"
@@ -2164,7 +2164,7 @@ const HomePage = ({
                 </div>
               </div>
 
-              {/* Center Rotating Badge â€” positioned absolutely at the intersection */}
+                {/* Center Rotating Badge - positioned absolutely at the intersection */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-28 h-28 md:w-32 md:h-32 pointer-events-none select-none">
                 {/* Rotating text ring */}
                 <svg
