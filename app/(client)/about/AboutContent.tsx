@@ -83,7 +83,7 @@ const milestones = [
     {
         year: '2026',
         title: 'Hoàn thiện Shop Web rẻ',
-        description: 'Phát triển kho giao diện, quy trình mua hàng, tải file, quản lý phiên bản và nội dung tư vấn dành cho người Việt.',
+        description: 'Phát triển kho giao diện, quy trình tư vấn, quản lý phiên bản và nội dung hỗ trợ dành cho người Việt.',
     },
     {
         year: 'Tiếp theo',

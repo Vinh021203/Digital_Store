@@ -5,9 +5,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
-    Search, Filter, Grid, List, ChevronDown, Star, Download, Eye, Package,
+    Search, Filter, Grid, List, ChevronDown, Star, Eye, Package,
     Heart, ShoppingCart, Home, ChevronRight, Loader2, X, SlidersHorizontal,
-    Check, ArrowUpDown, Tag, Zap, LayoutGrid, CreditCard, Headphones, Send
+    Check, ArrowUpDown, Tag, Zap, LayoutGrid, Headphones, Send
 } from 'lucide-react';
 import type { DbCategory } from '@/lib/categories';
 import { ProductCard } from '@/components/product';
@@ -729,12 +729,12 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
 
 	                <div className="mt-6 space-y-5">
 		                    <div className="grid grid-cols-2 gap-2 rounded-2xl border border-orange-100 bg-gradient-to-r from-orange-50 via-white to-orange-50 p-2.5 shadow-sm md:grid-cols-4 md:gap-3 md:p-4">
-	                        {[
+                        {[
                             { icon: Package, title: 'Sản phẩm chất lượng', desc: 'Đã được kiểm duyệt kỹ lưỡng' },
-                            { icon: CreditCard, title: 'Thanh toán an toàn', desc: 'Bảo mật tuyệt đối' },
-                            { icon: Download, title: 'Tải về không giới hạn', desc: 'Sử dụng trọn đời' },
+                            { icon: Eye, title: 'Xem demo trước', desc: 'Đánh giá giao diện rõ ràng' },
+                            { icon: Send, title: 'Nhận tư vấn nhanh', desc: 'Gợi ý theo nhu cầu thực tế' },
                             { icon: Headphones, title: 'Hỗ trợ tận tâm 24/7', desc: 'Giải đáp mọi thắc mắc' },
-	                        ].map((item) => (
+                        ].map((item) => (
 		                            <div key={item.title} className="flex items-start gap-2 rounded-xl bg-white/45 px-2 py-2 md:items-center md:gap-3 md:bg-transparent">
 		                                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-orange-100 text-orange-600 shadow-sm ring-1 ring-orange-200/70 md:h-11 md:w-11">
 		                                    <item.icon size={16} className="md:h-5 md:w-5" />
@@ -754,8 +754,8 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
 	                                <Send size={34} />
 	                            </span>
 	                            <div>
-                                <h3 className="text-lg font-extrabold text-orange-700">Cập nhật sản phẩm mới & ưu đãi mỗi tuần!</h3>
-                                <p className="mt-1 text-sm font-medium text-slate-600">Đừng bỏ lỡ các sản phẩm chất lượng và chương trình khuyến mãi hấp dẫn.</p>
+                                <h3 className="text-lg font-extrabold text-orange-700">Cập nhật mẫu giao diện mới mỗi tuần!</h3>
+                                <p className="mt-1 text-sm font-medium text-slate-600">Đừng bỏ lỡ các template chất lượng, ý tưởng triển khai và gợi ý lựa chọn phù hợp.</p>
 	                            </div>
 	                        </div>
 		                        <Link href="/blog" className="relative mt-4 inline-flex items-center justify-center rounded-xl bg-orange-600 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-orange-700 md:mt-0">

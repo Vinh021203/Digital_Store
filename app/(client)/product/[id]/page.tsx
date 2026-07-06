@@ -31,11 +31,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       };
     }
 
-    const title = `${product.name} - Template website có demo và tải file`;
+    const title = `${product.name} - Template website có demo và thông tin kỹ thuật`;
     const plainDescription = product.description?.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
     const description =
       plainDescription ||
-      `Mua ${product.name} chất lượng cao với giá ${product.price.toLocaleString('vi-VN')}đ. ${product.category?.name || 'Giao diện website'} chuyên nghiệp từ ${product.author || 'Shop Web rẻ'}.`;
+      `Tham khảo ${product.name} với demo, công nghệ và thông tin kỹ thuật rõ ràng. ${product.category?.name || 'Giao diện website'} chuyên nghiệp từ ${product.author || 'Shop Web rẻ'}.`;
     const productPath = `/product/${product.slug || product.id}`;
 
     const keywords = buildProductSeoKeywords({

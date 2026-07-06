@@ -45,15 +45,15 @@ const GEMINI_MODELS = (process.env.GEMINI_MODEL || 'gemini-2.5-flash,gemini-2.5-
     .filter(Boolean);
 
 const QUICK_REPLIES = {
-    greeting: ['Tìm Landing Page', 'Xem Theme phổ biến', 'Hỏi về thanh toán'],
-    product: ['Xem thêm sản phẩm', 'Hỏi về license', 'Cách thanh toán'],
-    support: ['Hỗ trợ download', 'Chính sách hoàn tiền', 'Liên hệ hotline'],
+    greeting: ['Tìm Landing Page', 'Xem Theme phổ biến', 'Nhận tư vấn'],
+    product: ['Xem thêm sản phẩm', 'Hỏi về license', 'Nhận báo giá'],
+    support: ['Tư vấn sản phẩm', 'Hỏi về license', 'Liên hệ hotline'],
 };
 
 const FALLBACK_MESSAGES = {
-    default: `Mình có thể giúp bạn tìm themes, templates, landing pages, hướng dẫn thanh toán, download và license. Bạn đang cần sản phẩm kiểu nào?`,
-    payment: `Shop Web rẻ hỗ trợ thanh toán qua chuyển khoản ngân hàng/QR và các cổng thanh toán đang bật trên website. Sau khi thanh toán thành công, bạn có thể tải sản phẩm trong Profile > Downloads.`,
-    download: `Sau khi mua hàng, bạn vào Profile > Downloads để tải file. Nếu chưa thấy file, hãy kiểm tra trạng thái đơn hàng hoặc liên hệ hỗ trợ kèm mã đơn hàng.`,
+    default: `Mình có thể giúp bạn tìm themes, templates, landing pages, xem demo, hỏi license và nhận tư vấn theo nhu cầu. Bạn đang cần sản phẩm kiểu nào?`,
+    payment: `Website đang ưu tiên chế độ tư vấn/catalog. Bạn có thể gửi sản phẩm quan tâm, ngân sách và công nghệ mong muốn để mình hỗ trợ báo giá hoặc hướng dẫn bước tiếp theo.`,
+    download: `Hiện website đang ở chế độ catalog/tư vấn nên chưa mở tải file trực tiếp. Nếu bạn đã có đơn trước đó, hãy gửi mã đơn hoặc email để được kiểm tra quyền truy cập.`,
     refund: `Chính sách hoàn tiền thường được xét theo từng đơn hàng, đặc biệt nếu sản phẩm chưa được tải xuống hoặc không đúng mô tả. Bạn nên gửi mã đơn hàng và lý do để được hỗ trợ nhanh hơn.`,
     license: `Regular License thường phù hợp cho một website/dự án. Extended License phù hợp khi cần dùng rộng hơn. Nếu bạn cho mình biết nhu cầu triển khai, mình sẽ gợi ý loại license hợp lý.`,
     support: `Bạn có thể liên hệ hỗ trợ qua email hoặc chat này. Hãy gửi rõ mã đơn hàng, email mua hàng và vấn đề đang gặp để được xử lý nhanh hơn.`,

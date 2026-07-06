@@ -72,10 +72,10 @@ export default function FlashSaleTimer({
                             </div>
                             <div>
                                 <h3 className="font-black text-lg md:text-xl flex items-center gap-2">
-                                    FLASH SALE
+                                    ƯU ĐÃI TƯ VẤN
                                     <span className="bg-white text-red-600 px-2 py-0.5 rounded-lg text-sm">-{discount}%</span>
                                 </h3>
-                                <p className="text-xs md:text-sm text-orange-100">{productCount}+ sản phẩm đang giảm giá</p>
+                                <p className="text-xs md:text-sm text-orange-100">{productCount}+ mẫu giao diện đang được quan tâm</p>
                             </div>
                         </div>
 
@@ -98,7 +98,7 @@ export default function FlashSaleTimer({
                             href="/products?sale=true"
                             className="hidden md:flex items-center gap-2 bg-white text-red-600 px-5 py-2.5 rounded-xl font-bold hover:bg-orange-50 transition-all hover:scale-105 shadow-lg group"
                         >
-                            Mua ngay
+                            Xem mẫu
                             <ArrowRight className="group-hover:translate-x-1 transition-transform" size={16} />
                         </Link>
                     </div>
@@ -122,7 +122,7 @@ export default function FlashSaleTimer({
         return (
             <div className="inline-flex items-center gap-3 bg-gradient-to-r from-red-600 to-orange-500 text-white px-4 py-2 rounded-full text-sm font-bold">
                 <Zap className="w-4 h-4 animate-pulse" />
-                <span>Flash Sale -{discount}%</span>
+                <span>Ưu đãi tư vấn -{discount}%</span>
                 <div className="flex items-center gap-1 bg-white/20 px-2 py-1 rounded-full text-xs">
                     <span>{String(timeLeft.hours).padStart(2, '0')}</span>:
                     <span>{String(timeLeft.minutes).padStart(2, '0')}</span>:
@@ -141,12 +141,12 @@ export default function FlashSaleTimer({
             <div className="relative">
                 <div className="flex items-center gap-2 mb-4">
                     <Flame className="animate-bounce" size={24} />
-                    <span className="font-black text-lg">FLASH SALE</span>
+                    <span className="font-black text-lg">ƯU ĐÃI TƯ VẤN</span>
                 </div>
 
                 <div className="text-center mb-4">
                     <div className="text-5xl font-black mb-1">-{discount}%</div>
-                    <p className="text-sm text-orange-100">Trên {productCount}+ sản phẩm</p>
+                    <p className="text-sm text-orange-100">Trên {productCount}+ mẫu giao diện</p>
                 </div>
 
                 <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4 mb-4">
@@ -165,7 +165,7 @@ export default function FlashSaleTimer({
                     href="/products?sale=true"
                     className="block w-full text-center bg-white text-red-600 font-bold py-3 rounded-xl hover:bg-orange-50 transition-colors"
                 >
-                    Mua ngay →
+                    Xem mẫu →
                 </Link>
             </div>
         </div>

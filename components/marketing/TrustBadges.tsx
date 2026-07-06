@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Shield, Clock, RefreshCw, CreditCard, Headphones, Award, Lock, Zap } from 'lucide-react';
+import { Shield, Clock, RefreshCw, Headphones, Award, Lock, Zap } from 'lucide-react';
 
 interface TrustBadgesProps {
     variant?: 'horizontal' | 'grid';
@@ -16,12 +16,12 @@ const BADGES = [
 ];
 
 const EXTENDED_BADGES = [
-    { icon: Shield, label: 'Bảo mật SSL', desc: 'Thanh toán an toàn', color: 'text-green-600 bg-green-100' },
-    { icon: Clock, label: 'Hoàn tiền 7 ngày', desc: 'Không cần lý do', color: 'text-blue-600 bg-blue-100' },
+    { icon: Shield, label: 'Bảo mật SSL', desc: 'Thông tin được bảo vệ', color: 'text-green-600 bg-green-100' },
+    { icon: Clock, label: 'Tư vấn nhanh', desc: 'Phản hồi rõ ràng', color: 'text-blue-600 bg-blue-100' },
     { icon: RefreshCw, label: 'Cập nhật miễn phí', desc: 'Trọn đời', color: 'text-purple-600 bg-purple-100' },
     { icon: Headphones, label: '6 tháng hỗ trợ', desc: '24/7 Support', color: 'text-orange-600 bg-orange-100' },
-    { icon: Zap, label: 'Download tức thì', desc: 'Nhận file ngay', color: 'text-amber-600 bg-amber-100' },
-    { icon: Award, label: 'License chính hãng', desc: 'Sử dụng thương mại', color: 'text-rose-600 bg-rose-100' },
+    { icon: Zap, label: 'Xem demo trước', desc: 'Dễ đánh giá', color: 'text-amber-600 bg-amber-100' },
+    { icon: Award, label: 'License rõ ràng', desc: 'Theo từng sản phẩm', color: 'text-rose-600 bg-rose-100' },
 ];
 
 export default function TrustBadges({ variant = 'horizontal', className = '' }: TrustBadgesProps) {

@@ -1,10 +1,16 @@
 // hooks/useSiteSettings.ts
-// React hook to fetch and cache site settings for client components
+// React hooks to fetch and cache site settings for client components.
 
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { getPublicSettings, getPaymentSettings, isMaintenanceMode } from '@/lib/siteSettings';
+import { useCallback, useEffect, useState } from 'react';
+import {
+    getPaymentSettings,
+    getPublicSettings,
+    getSiteMode,
+    isMaintenanceMode,
+    type SiteMode,
+} from '@/lib/siteSettings';
 
 export interface PublicSiteSettings {
     siteName: string;
@@ -17,6 +23,7 @@ export interface PublicSiteSettings {
     favicon: string;
     maintenanceMode: boolean;
     maintenanceMessage: string;
+    siteMode: SiteMode;
     social: {
         facebook: string;
         youtube: string;
@@ -39,7 +46,6 @@ export interface PaymentSettings {
     };
 }
 
-// Default settings before data loads
 const defaultPublicSettings: PublicSiteSettings = {
     siteName: 'Shop Web rẻ',
     tagline: 'Kho giao diện website đẹp, dễ dùng, giá hợp lý',
@@ -51,6 +57,7 @@ const defaultPublicSettings: PublicSiteSettings = {
     favicon: '',
     maintenanceMode: false,
     maintenanceMessage: '',
+    siteMode: 'sales',
     social: {
         facebook: '',
         youtube: '',
@@ -60,10 +67,6 @@ const defaultPublicSettings: PublicSiteSettings = {
     },
 };
 
-/**
- * Hook to get public site settings
- * Use this in Header, Footer, etc. for site name, logo, contact info
- */
 export function useSiteSettings() {
     const [settings, setSettings] = useState<PublicSiteSettings>(defaultPublicSettings);
     const [loading, setLoading] = useState(true);
@@ -71,7 +74,11 @@ export function useSiteSettings() {
     const refresh = useCallback(async () => {
         try {
             const data = await getPublicSettings();
-            setSettings(data);
+            setSettings({
+                ...defaultPublicSettings,
+                ...data,
+                siteMode: data.siteMode === 'catalog' ? 'catalog' : 'sales',
+            });
         } catch (error) {
             console.error('Error loading site settings:', error);
         } finally {
@@ -86,9 +93,6 @@ export function useSiteSettings() {
     return { settings, loading, refresh };
 }
 
-/**
- * Hook to get payment settings for checkout
- */
 export function usePaymentSettings() {
     const [settings, setSettings] = useState<PaymentSettings | null>(null);
     const [loading, setLoading] = useState(true);
@@ -110,10 +114,6 @@ export function usePaymentSettings() {
     return { settings, loading };
 }
 
-/**
- * Hook to check maintenance mode
- * Use this in layout to redirect to maintenance page
- */
 export function useMaintenanceMode() {
     const [isMaintenance, setIsMaintenance] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -133,4 +133,32 @@ export function useMaintenanceMode() {
     }, []);
 
     return { isMaintenance, loading };
+}
+
+export function useSiteMode() {
+    const [siteMode, setSiteMode] = useState<SiteMode>('sales');
+    const [loading, setLoading] = useState(true);
+
+    const refresh = useCallback(async () => {
+        try {
+            setSiteMode(await getSiteMode());
+        } catch (error) {
+            console.error('Error loading site mode:', error);
+            setSiteMode('sales');
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        refresh();
+    }, [refresh]);
+
+    return {
+        siteMode,
+        isCatalogMode: siteMode === 'catalog',
+        isSalesMode: siteMode === 'sales',
+        loading,
+        refresh,
+    };
 }

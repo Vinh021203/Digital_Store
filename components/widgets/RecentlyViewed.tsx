@@ -3,9 +3,10 @@
 import React, { useState, useEffect, memo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Clock, X, ChevronRight, Eye, ShoppingCart } from 'lucide-react';
+import { Clock, X, ChevronRight, Eye, ShoppingCart, MessageCircle } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useToast } from '@/context/ToastContext';
+import { useSiteMode } from '@/hooks/useSiteSettings';
 import type { Product } from '@/types';
 
 const STORAGE_KEY = 'shopwebre_recently_viewed';
@@ -113,6 +114,7 @@ export const RecentlyViewedSection = memo(({
     const { items, removeItem, clearAll } = useRecentlyViewed();
     const { addToCart } = useCart();
     const { addToast } = useToast();
+    const { isCatalogMode } = useSiteMode();
     const displayItems = items.slice(0, maxItems);
 
     if (displayItems.length === 0) return null;
@@ -120,6 +122,12 @@ export const RecentlyViewedSection = memo(({
     const handleAddToCart = (product: Product, e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
+        if (isCatalogMode) {
+            addToast('Website đang ở chế độ tư vấn. Mình sẽ chuyển bạn sang trang liên hệ.', 'info');
+            const productSlug = (product as any).slug || product.id;
+            window.location.href = `/contact?product=${encodeURIComponent(String(productSlug))}`;
+            return;
+        }
         addToCart(product);
         addToast('Đã thêm vào giỏ hàng!', 'success');
     };
@@ -169,12 +177,13 @@ export const RecentlyViewedSection = memo(({
                             >
                                 <X size={12} />
                             </button>
-                            {/* Quick add to cart */}
+                            {/* Quick action */}
                             <button
                                 onClick={(e) => handleAddToCart(product, e)}
                                 className="absolute bottom-2 right-2 w-8 h-8 bg-orange-600 hover:bg-orange-700 text-white rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-lg"
+                                aria-label={isCatalogMode ? 'Nhận tư vấn' : 'Thêm vào giỏ hàng'}
                             >
-                                <ShoppingCart size={14} />
+                                {isCatalogMode ? <MessageCircle size={14} /> : <ShoppingCart size={14} />}
                             </button>
                         </div>
 

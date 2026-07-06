@@ -9,9 +9,9 @@ const socialImageUrl = getSocialImageUrl();
 
 export const metadata: Metadata = {
   title: {
-    absolute: 'Shop Web rẻ - Giao diện website, template và landing page',
+    absolute: 'Shop Web rẻ - Kho giao diện website, template và landing page',
   },
-  description: 'Mua giao diện website, template, landing page, UI kit và dashboard chất lượng cao. Xem demo trước khi mua, tải file nhanh, hỗ trợ tận tâm.',
+  description: 'Kho giao diện website, template, landing page, UI kit và dashboard chất lượng cao. Xem demo, tham khảo mẫu phù hợp và nhận tư vấn triển khai.',
   alternates: {
     canonical: siteUrl,
   },
@@ -19,8 +19,8 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     url: '/',
-    title: 'Shop Web rẻ - Giao diện website, template và landing page',
-    description: 'Kho giao diện website, template, landing page, UI kit và dashboard giúp bạn triển khai website nhanh hơn, đẹp hơn và tiết kiệm chi phí.',
+    title: 'Shop Web rẻ - Kho giao diện website, template và landing page',
+    description: 'Kho giao diện website, template, landing page, UI kit và dashboard giúp bạn tham khảo mẫu phù hợp, triển khai nhanh hơn và tiết kiệm chi phí.',
     images: [
       {
         url: socialImageUrl,
@@ -32,8 +32,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Shop Web rẻ - Giao diện website, template và landing page',
-    description: 'Mua giao diện website, template, landing page và UI kit chất lượng cao. Xem demo trước khi mua và tải file nhanh.',
+    title: 'Shop Web rẻ - Kho giao diện website, template và landing page',
+    description: 'Tham khảo giao diện website, template, landing page và UI kit chất lượng cao. Xem demo và nhận tư vấn triển khai.',
     images: [socialImageUrl],
   },
 };

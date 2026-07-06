@@ -61,6 +61,7 @@ import {
 } from "@/components/ui";
 import { useTranslation } from "react-i18next";
 import { ThemeToggle } from "@/context/ThemeContext";
+import { useSiteMode } from "@/hooks/useSiteSettings";
 
 // ============================================
 // Types
@@ -141,10 +142,13 @@ Badge.displayName = "Badge";
 // ============================================
 const AnnouncementBar = memo(() => {
   const [visible, setVisible] = useState(true);
+  const { isCatalogMode } = useSiteMode();
   if (!visible) return null;
 
   const msg =
-    "🎉 Flash Sale — Giảm đến 50% toàn bộ Themes & Templates tuần này!";
+    isCatalogMode
+      ? "🎉 Bộ sưu tập mới — Xem demo và nhận tư vấn giao diện phù hợp tuần này!"
+      : "🎉 Flash Sale — Giảm đến 50% toàn bộ Themes & Templates tuần này!";
 
   return (
     <div
@@ -156,8 +160,11 @@ const AnnouncementBar = memo(() => {
         <div className="hidden lg:flex flex-1 items-center justify-center gap-2 px-4">
           <Zap size={12} className="flex-shrink-0 animate-pulse" />
           <span>
-            🎉 Flash Sale — Giảm đến <strong>50%</strong> toàn bộ Themes &amp;
-            Templates tuần này!
+            {isCatalogMode ? (
+              <>🎉 Bộ sưu tập mới — Xem demo và nhận tư vấn giao diện phù hợp tuần này!</>
+            ) : (
+              <>🎉 Flash Sale — Giảm đến <strong>50%</strong> toàn bộ Themes &amp; Templates tuần này!</>
+            )}
           </span>
           <Link
             href="/products?sale=1"
@@ -515,6 +522,7 @@ interface MobileMenuProps {
   handleLogout: () => void;
   totalItems: number;
   wishlistCount: number;
+  isCatalogMode: boolean;
   t: any;
 }
 const MobileMenu = memo<MobileMenuProps>(
@@ -528,6 +536,7 @@ const MobileMenu = memo<MobileMenuProps>(
     handleLogout,
     totalItems,
     wishlistCount,
+    isCatalogMode,
     t,
   }) => (
     <>
@@ -601,7 +610,7 @@ const MobileMenu = memo<MobileMenuProps>(
                   value: totalItems.toString(),
                   href: "/cart",
                 },
-              ].map((stat) => (
+              ].filter((stat) => !isCatalogMode || stat.href !== "/cart").map((stat) => (
                 <Link
                   key={stat.href}
                   href={stat.href}
@@ -1080,6 +1089,7 @@ const Navbar = () => {
   const pathname = usePathname();
   const { t } = useTranslation();
   const { unreadCount } = useNotifications();
+  const { isCatalogMode } = useSiteMode();
 
   // ── Mega menu data ──
   const productsMega: MegaMenuData = useMemo(
@@ -1339,7 +1349,7 @@ const Navbar = () => {
               {/* Cart — desktop only */}
               <Link
                 href="/cart"
-                className="hidden lg:flex relative p-2.5 text-slate-500 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-all duration-200"
+                className={`${isCatalogMode ? 'hidden' : 'hidden lg:flex'} relative p-2.5 text-slate-500 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-all duration-200`}
                 aria-label={`Giỏ hàng (${totalItems})`}
               >
                 <ShoppingCart size={20} />
@@ -1394,6 +1404,7 @@ const Navbar = () => {
         handleLogout={handleLogout}
         totalItems={totalItems}
         wishlistCount={wishlist.length}
+        isCatalogMode={isCatalogMode}
         t={t}
       />
 

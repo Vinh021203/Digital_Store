@@ -9,10 +9,13 @@ import {
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { fetchActiveProducts } from '@/lib/products';
+import { useSiteMode } from '@/hooks/useSiteSettings';
+import CatalogModeNotice from '@/components/common/CatalogModeNotice';
 
 function CartPageContent() {
     // FIX: Using 'cart' instead of 'cartItems' and 'totalPrice' instead of 'getTotal'
     const { cart, removeFromCart, totalPrice, clearCart } = useCart();
+    const { isCatalogMode, loading: siteModeLoading } = useSiteMode();
 
     // Safety check for cart
     const safeCart = cart || [];
@@ -35,8 +38,17 @@ function CartPageContent() {
         loadSuggestions();
     }, []); // Removed cart dependency to prevent loop if cart changes frequently
 
-    if (!cart) {
+    if (siteModeLoading || !cart) {
         return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-blue-600" /></div>;
+    }
+
+    if (isCatalogMode) {
+        return (
+            <CatalogModeNotice
+                title="Giỏ hàng đang tạm tắt"
+                description="Website hiện chỉ mở ở chế độ Catalog/Tư vấn. Bạn vẫn có thể xem demo, chọn mẫu phù hợp và gửi yêu cầu để được báo giá trước khi đặt mua."
+            />
+        );
     }
 
     if (safeCart.length === 0) {

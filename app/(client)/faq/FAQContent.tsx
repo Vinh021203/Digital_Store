@@ -24,8 +24,8 @@ type FAQItem = {
 const categories: { id: CategoryId; name: string; icon: LucideIcon }[] = [
     { id: 'all', name: 'Tất cả', icon: Sparkles },
     { id: 'product', name: 'Sản phẩm', icon: PackageCheck },
-    { id: 'payment', name: 'Thanh toán', icon: CreditCard },
-    { id: 'download', name: 'Tải file', icon: Download },
+    { id: 'payment', name: 'Tư vấn', icon: CreditCard },
+    { id: 'download', name: 'Quyền truy cập', icon: Download },
     { id: 'license', name: 'Giấy phép', icon: KeyRound },
     { id: 'support', name: 'Hỗ trợ', icon: Headphones },
 ];
@@ -33,58 +33,58 @@ const categories: { id: CategoryId; name: string; icon: LucideIcon }[] = [
 const faqs: FAQItem[] = [
     {
         category: 'product',
-        question: 'Tôi có thể xem demo trước khi mua không?',
-        answer: 'Nếu sản phẩm có bản demo, nút xem demo sẽ xuất hiện tại trang chi tiết. Bạn nên kiểm tra giao diện, tính năng, công nghệ và khả năng responsive trước khi quyết định mua.',
+        question: 'Tôi có thể xem demo trước khi quyết định không?',
+        answer: 'Nếu sản phẩm có bản demo, nút xem demo sẽ xuất hiện tại trang chi tiết. Bạn nên kiểm tra giao diện, tính năng, công nghệ và khả năng responsive trước khi gửi nhu cầu tư vấn.',
         featured: true,
     },
     {
         category: 'product',
-        question: 'Tôi nhận được những file gì sau khi mua?',
-        answer: 'Nội dung bàn giao phụ thuộc từng sản phẩm, có thể gồm HTML, CSS, JavaScript, React, Next.js, Figma hoặc tài nguyên liên quan. Hãy xem mục định dạng file và thông tin kỹ thuật trên trang sản phẩm.',
+        question: 'Một sản phẩm thường gồm những nội dung gì?',
+        answer: 'Nội dung phụ thuộc từng sản phẩm, có thể gồm HTML, CSS, JavaScript, React, Next.js, Figma hoặc tài nguyên liên quan. Hãy xem mục định dạng file và thông tin kỹ thuật trên trang sản phẩm.',
     },
     {
         category: 'product',
         question: 'Sản phẩm có tài liệu hướng dẫn không?',
-        answer: 'Tài liệu và mức độ hướng dẫn tùy từng sản phẩm. Thông tin này được ghi tại trang chi tiết hoặc bên trong gói tải xuống. Bạn có thể liên hệ trước khi mua nếu cần xác nhận.',
+        answer: 'Tài liệu và mức độ hướng dẫn tùy từng sản phẩm. Thông tin này được ghi tại trang chi tiết hoặc trong phần mô tả kỹ thuật. Bạn có thể liên hệ trước nếu cần xác nhận.',
     },
     {
         category: 'product',
         question: 'Sản phẩm có được cập nhật miễn phí không?',
-        answer: 'Quyền nhận bản cập nhật phụ thuộc vào từng sản phẩm và loại giấy phép. Nếu có bản mới được cung cấp cho đơn hàng của bạn, file sẽ xuất hiện trong khu vực tải xuống.',
+        answer: 'Quyền nhận bản cập nhật phụ thuộc vào từng sản phẩm và loại giấy phép. Nếu có bản mới được mở cho tài khoản của bạn, thông tin sẽ hiển thị trong khu vực hồ sơ.',
     },
     {
         category: 'payment',
-        question: 'Shop Web rẻ hỗ trợ phương thức thanh toán nào?',
-        answer: 'Website hiện ưu tiên chuyển khoản ngân hàng và VietQR thông qua quy trình đối soát giao dịch. Phương thức thực tế được hiển thị tại trang thanh toán ở thời điểm đặt hàng.',
+        question: 'Shop Web rẻ tư vấn theo quy trình nào?',
+        answer: 'Bạn có thể xem demo, gửi tên sản phẩm quan tâm, công nghệ mong muốn và ngân sách dự kiến. Mình sẽ kiểm tra mẫu phù hợp rồi phản hồi hướng triển khai rõ ràng trước khi mở bước mua bán trực tiếp.',
         featured: true,
     },
     {
         category: 'payment',
-        question: 'Sau khi chuyển khoản bao lâu đơn hàng được xác nhận?',
-        answer: 'Đơn thường được cập nhật sau khi hệ thống nhận đúng số tiền và nội dung chuyển khoản. Nếu trạng thái chưa thay đổi sau một khoảng thời gian hợp lý, hãy gửi mã đơn và biên nhận để kiểm tra.',
-        link: { label: 'Tra cứu đơn hàng', href: '/tracking' },
+        question: 'Tôi nên gửi thông tin gì để được tư vấn nhanh?',
+        answer: 'Hãy gửi tên sản phẩm, link demo nếu có, loại công nghệ cần dùng, ngân sách dự kiến và thời gian mong muốn. Nếu bạn đã có mã đơn cũ, có thể gửi kèm để kiểm tra lịch sử hỗ trợ.',
+        link: { label: 'Gửi yêu cầu tư vấn', href: '/contact' },
     },
     {
         category: 'payment',
-        question: 'Tôi có thể yêu cầu hoàn tiền không?',
-        answer: 'Yêu cầu hoàn tiền được xem xét trong vòng 7 ngày đối với lỗi nghiêm trọng thuộc trách nhiệm của sản phẩm. Do đây là hàng hóa số, thay đổi ý định hoặc mua nhầm thường không thuộc trường hợp hoàn tiền.',
+        question: 'Khi nào chính sách hoàn tiền được áp dụng?',
+        answer: 'Chính sách hoàn tiền chỉ áp dụng khi website mở luồng mua bán trực tiếp và đơn hàng đủ điều kiện theo quy định. Với chế độ tư vấn/catalog, bạn nên xem demo và xác nhận nhu cầu trước.',
         link: { label: 'Xem chính sách hoàn tiền', href: '/policy/refund' },
     },
     {
         category: 'download',
-        question: 'Tải sản phẩm ở đâu sau khi thanh toán?',
-        answer: 'Sau khi đơn hàng được xác nhận, bạn đăng nhập đúng tài khoản đã mua và mở khu vực Tải xuống trong hồ sơ. File chỉ hiển thị với tài khoản có quyền truy cập.',
+        question: 'Khi nào tài khoản có quyền truy cập file?',
+        answer: 'Quyền truy cập file chỉ được mở khi sản phẩm hoặc đơn hàng đủ điều kiện. Khi có quyền, bạn đăng nhập đúng tài khoản và mở khu vực hồ sơ để xem thông tin liên quan.',
         featured: true,
     },
     {
         category: 'download',
-        question: 'Tại sao tôi chưa thấy nút tải file?',
-        answer: 'Hãy kiểm tra trạng thái thanh toán, tài khoản đăng nhập và quyền của đơn hàng. Nếu đơn đã hoàn thành nhưng chưa có file, gửi mã đơn để mình kiểm tra quyền tải hoặc cấu hình sản phẩm.',
+        question: 'Tại sao tôi chưa thấy file trong hồ sơ?',
+        answer: 'Có thể tài khoản chưa được mở quyền, sản phẩm chưa gắn file hoặc website đang ở chế độ catalog/tư vấn. Hãy gửi tên sản phẩm hoặc mã đơn cũ để mình kiểm tra quyền truy cập.',
     },
     {
         category: 'download',
         question: 'Nếu file tải xuống bị lỗi thì làm gì?',
-        answer: 'Không chỉnh sửa file lỗi. Hãy chụp thông báo, ghi lại tên sản phẩm và mã đơn rồi gửi qua trang liên hệ. File sẽ được kiểm tra và thay thế nếu lỗi nằm ở gói bàn giao.',
+        answer: 'Không chỉnh sửa file lỗi. Hãy chụp thông báo, ghi lại tên sản phẩm và mã đơn nếu có rồi gửi qua trang liên hệ. File sẽ được kiểm tra và thay thế nếu lỗi nằm ở gói bàn giao.',
         link: { label: 'Gửi yêu cầu hỗ trợ', href: '/contact' },
     },
     {
@@ -96,7 +96,7 @@ const faqs: FAQItem[] = [
     {
         category: 'license',
         question: 'Giấy phép mở rộng có dùng không giới hạn không?',
-        answer: 'Không mặc định. Phạm vi của giấy phép mở rộng phải được ghi rõ tại sản phẩm hoặc xác nhận trước khi mua, đặc biệt với SaaS, nhiều khách hàng hoặc sản phẩm bán lại.',
+        answer: 'Không mặc định. Phạm vi của giấy phép mở rộng phải được ghi rõ tại sản phẩm hoặc xác nhận trước khi sử dụng, đặc biệt với SaaS, nhiều khách hàng hoặc sản phẩm bán lại.',
         link: { label: 'Xem điều khoản giấy phép', href: '/policy/license' },
     },
     {
@@ -184,7 +184,7 @@ export default function FAQContent() {
                                 </div>
                                 <div>
                                     <p className="text-sm font-extrabold">Trung tâm trợ giúp</p>
-                                    <p className="mt-0.5 text-xs font-medium text-slate-500">Câu trả lời rõ ràng trước và sau khi mua</p>
+                                    <p className="mt-0.5 text-xs font-medium text-slate-500">Câu trả lời rõ ràng trước khi chọn mẫu</p>
                                 </div>
                             </div>
 
@@ -192,7 +192,7 @@ export default function FAQContent() {
                                 Tìm câu trả lời <span className="text-orange-600">nhanh hơn.</span>
                             </h1>
                             <p className="mt-4 max-w-2xl text-sm font-medium leading-7 text-slate-600 sm:text-base sm:leading-8">
-                                Tra cứu thông tin về sản phẩm, thanh toán, tải file, giấy phép và quy trình hỗ trợ tại Shop Web rẻ.
+                                Tra cứu thông tin về sản phẩm, demo, quyền truy cập, giấy phép và quy trình hỗ trợ tại Shop Web rẻ.
                             </p>
 
                             <label className="relative mt-7 block max-w-2xl">
@@ -201,7 +201,7 @@ export default function FAQContent() {
                                     type="search"
                                     value={searchTerm}
                                     onChange={(event) => setSearchTerm(event.target.value)}
-                                    placeholder="Nhập từ khóa: tải file, hoàn tiền, license..."
+                                    placeholder="Nhập từ khóa: demo, license, hỗ trợ..."
                                     className="h-14 w-full rounded-lg border border-slate-300 bg-white pl-12 pr-12 text-sm font-semibold shadow-[0_14px_35px_rgba(15,23,42,0.08)] outline-none transition placeholder:font-medium placeholder:text-slate-400 focus:border-orange-500 focus:ring-4 focus:ring-orange-100"
                                 />
                                 {searchTerm && (
@@ -374,7 +374,7 @@ export default function FAQContent() {
                             <ShieldCheck size={20} className="mt-0.5 shrink-0 text-emerald-600" />
                             <div>
                                 <p className="text-sm font-black">Mua đúng nhu cầu</p>
-                                <p className="mt-1 text-xs font-medium leading-5 text-slate-600">Nên kiểm tra demo, định dạng file và công nghệ trước khi thanh toán.</p>
+                                <p className="mt-1 text-xs font-medium leading-5 text-slate-600">Nên kiểm tra demo, định dạng file và công nghệ trước khi gửi nhu cầu.</p>
                             </div>
                         </div>
                     </div>

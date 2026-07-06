@@ -16,6 +16,8 @@ import { useSupabaseAuth } from '@/context/SupabaseAuthContext';
 import { useToast } from '@/context/ToastContext';
 import { createPaymentQR, getSepayConfig, type QRCodeData } from '@/lib/sepay';
 import { validateCouponForUser } from '@/lib/coupons';
+import { useSiteMode } from '@/hooks/useSiteSettings';
+import CatalogModeNotice from '@/components/common/CatalogModeNotice';
 
 // Step configuration - 3 steps
 const STEPS = [
@@ -51,6 +53,7 @@ function CheckoutPageContent() {
     const { cart, totalPrice, clearCart } = useCart();
     const { user, profile } = useSupabaseAuth();
     const { addToast } = useToast();
+    const { isCatalogMode, loading: siteModeLoading } = useSiteMode();
 
     const safeCart = cart || [];
 
@@ -319,6 +322,23 @@ function CheckoutPageContent() {
 
     // Get SePay config for display
     const sepayConfig = getSepayConfig();
+
+    if (siteModeLoading) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30 flex items-center justify-center">
+                <Loader2 className="w-10 h-10 animate-spin text-blue-600" />
+            </div>
+        );
+    }
+
+    if (isCatalogMode) {
+        return (
+            <CatalogModeNotice
+                title="Checkout đang tạm dừng"
+                description="Shop Web rẻ đang ở chế độ Catalog/Tư vấn nên chưa nhận thanh toán trực tiếp. Hãy gửi nhu cầu, sản phẩm quan tâm và ngân sách để được tư vấn trước."
+            />
+        );
+    }
 
     // Empty cart state
     if (safeCart.length === 0 && currentStep === 1 && !showQRPayment) {

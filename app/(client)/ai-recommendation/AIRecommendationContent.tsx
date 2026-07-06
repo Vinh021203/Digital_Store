@@ -6,10 +6,11 @@ import Image from 'next/image';
 import {
     Brain, ArrowRight, Check, Sparkles, RefreshCw, BookOpen,
     Monitor, Briefcase, Smile, Coffee, TrendingUp, Users, Target,
-    Zap, Layers, Award, Clock, ShoppingCart, Heart, Share2, Star
+    Zap, Layers, Award, Clock, ShoppingCart, Heart, Share2, Star, MessageCircle
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useToast } from '@/context/ToastContext';
+import { useSiteMode } from '@/hooks/useSiteSettings';
 import confetti from 'canvas-confetti';
 import type { Product } from '@/types';
 
@@ -229,12 +230,18 @@ const AIProductCard = memo(({
     const router = useRouter();
     const { addToCart, addToWishlist, isInWishlist } = useCart();
     const { addToast } = useToast();
+    const { isCatalogMode } = useSiteMode();
 
     const handleAddToCart = useCallback((e: React.MouseEvent) => {
         e.stopPropagation();
+        if (isCatalogMode) {
+            addToast('Website đang ở chế độ tư vấn. Mình sẽ chuyển bạn sang trang liên hệ.', 'info');
+            router.push(`/contact?product=${encodeURIComponent(String((product as any).slug || product.id))}`);
+            return;
+        }
         addToCart(product);
         addToast('Đã thêm vào giỏ hàng', 'success');
-    }, [product, addToCart, addToast]);
+    }, [product, addToCart, addToast, router, isCatalogMode]);
 
     const handleToggleWishlist = useCallback((e: React.MouseEvent) => {
         e.stopPropagation();
@@ -343,6 +350,7 @@ export default function AIRecommendationPage() {
     const router = useRouter();
     const { addToCart } = useCart();
     const { addToast } = useToast();
+    const { isCatalogMode } = useSiteMode();
 
     const [step, setStep] = useState(0);
     const [answers, setAnswers] = useState<AIAnswers>({});
@@ -490,13 +498,19 @@ export default function AIRecommendationPage() {
 
     const handleBuyBundle = useCallback(() => {
         if (results.length === 0) {
-            addToast('Chưa có sản phẩm phù hợp để thêm vào giỏ hàng', 'warning');
+            addToast(isCatalogMode ? 'Chưa có sản phẩm phù hợp để tư vấn' : 'Chưa có sản phẩm phù hợp để thêm vào giỏ hàng', 'warning');
+            return;
+        }
+        if (isCatalogMode) {
+            const firstProduct = results[0];
+            addToast('Mình sẽ chuyển bạn sang trang liên hệ để nhận tư vấn lộ trình.', 'info');
+            router.push(`/contact?product=${encodeURIComponent(String((firstProduct as any).slug || firstProduct.id))}`);
             return;
         }
         results.forEach(p => addToCart(p));
         addToast('Đã thêm trọn bộ lộ trình vào giỏ hàng!', 'success');
         router.push('/cart');
-    }, [results, addToCart, addToast, router]);
+    }, [results, addToCart, addToast, router, isCatalogMode]);
 
     // ========== RENDER: INTRO ==========
     if (step === 0) {
@@ -785,10 +799,10 @@ export default function AIRecommendationPage() {
                                                 <p className="text-amber-400 text-xs font-bold uppercase tracking-wider mb-1">
                                                     Ưu Đãi Đặc Biệt
                                                 </p>
-                                                <h3 className="text-lg md:text-xl font-bold">Mua Trọn Bộ Lộ Trình</h3>
+                                                <h3 className="text-lg md:text-xl font-bold">{isCatalogMode ? 'Tư vấn trọn bộ lộ trình' : 'Mua Trọn Bộ Lộ Trình'}</h3>
                                             </div>
                                             <div className="bg-white/10 p-2 rounded-lg">
-                                                <ShoppingCart size={20} className="text-white" />
+                                            {isCatalogMode ? <MessageCircle size={20} className="text-white" /> : <ShoppingCart size={20} className="text-white" />}
                                             </div>
                                         </div>
 
@@ -808,7 +822,8 @@ export default function AIRecommendationPage() {
                                             onClick={handleBuyBundle}
                                             className="w-full bg-white text-orange-900 font-bold py-3 rounded-xl hover:bg-orange-50 transition-colors shadow-lg flex items-center justify-center gap-2"
                                         >
-                                            <ShoppingCart size={16} /> Thêm Tất Cả Vào Giỏ
+                                            {isCatalogMode ? <MessageCircle size={16} /> : <ShoppingCart size={16} />}
+                                            {isCatalogMode ? 'Nhận tư vấn lộ trình' : 'Thêm Tất Cả Vào Giỏ'}
                                         </button>
                                     </div>
                                     <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-orange-600 rounded-full blur-2xl opacity-50" />

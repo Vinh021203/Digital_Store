@@ -6,15 +6,17 @@ import Image from 'next/image';
 import {
     Layers, Trash2, ShoppingCart, Star, Download, Check, X,
     Home, ChevronRight, Sparkles, Package, Zap, Award,
-    ShieldCheck, Smartphone, Target, Trophy, ArrowRight, Plus
+    ShieldCheck, Smartphone, Target, Trophy, ArrowRight, Plus, MessageCircle
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useToast } from '@/context/ToastContext';
+import { useSiteMode } from '@/hooks/useSiteSettings';
 import { Product } from '@/types';
 
 export default function ComparePage() {
     const { compareList, removeFromCompare, addToCart, clearCompare } = useCart();
     const { addToast } = useToast();
+    const { isCatalogMode } = useSiteMode();
 
     // --- SMART ANALYSIS LOGIC ---
     const analysis = useMemo(() => {
@@ -33,6 +35,12 @@ export default function ComparePage() {
     }, [compareList]);
 
     const handleAddToCart = (item: any) => {
+        if (isCatalogMode) {
+            addToast('Website đang ở chế độ tư vấn. Mình sẽ chuyển bạn sang trang liên hệ.', 'info');
+            const productSlug = item.slug || item.id;
+            window.location.href = `/contact?product=${encodeURIComponent(String(productSlug))}`;
+            return;
+        }
         addToCart(item);
         addToast(`Đã thêm "${item.name}" vào giỏ hàng`, 'success');
     };
@@ -255,8 +263,8 @@ export default function ComparePage() {
                                         onClick={() => handleAddToCart(item)}
                                         className="w-full flex items-center justify-center gap-2 bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-blue-600 transition-all"
                                     >
-                                        <ShoppingCart size={18} />
-                                        Thêm vào giỏ
+                                        {isCatalogMode ? <MessageCircle size={18} /> : <ShoppingCart size={18} />}
+                                        {isCatalogMode ? 'Nhận tư vấn' : 'Thêm vào giỏ'}
                                     </button>
                                 </div>
 
@@ -430,8 +438,8 @@ export default function ComparePage() {
                                                 onClick={() => handleAddToCart(item)}
                                                 className="w-full flex items-center justify-center gap-2 bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-blue-600 transition-all shadow-lg shadow-slate-200 hover:shadow-blue-200"
                                             >
-                                                <ShoppingCart size={18} />
-                                                Thêm vào giỏ
+                                                {isCatalogMode ? <MessageCircle size={18} /> : <ShoppingCart size={18} />}
+                                                {isCatalogMode ? 'Nhận tư vấn' : 'Thêm vào giỏ'}
                                             </button>
                                         </td>
                                     ))}
@@ -456,7 +464,7 @@ export default function ComparePage() {
                     </div>
                     <div className="flex items-center gap-2">
                         <ShieldCheck size={14} />
-                        <span>Thanh toán an toàn</span>
+                        <span>Tư vấn rõ ràng</span>
                     </div>
                 </div>
             </div>

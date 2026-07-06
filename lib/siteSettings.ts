@@ -1,7 +1,9 @@
 // lib/siteSettings.ts
-// Functions to manage site settings from database
+// Functions to manage site settings from database.
 
 import { createClient } from './supabase/client';
+
+export type SiteMode = 'catalog' | 'sales';
 
 export interface SiteSetting {
     id: number;
@@ -13,7 +15,6 @@ export interface SiteSetting {
 }
 
 export interface SiteSettings {
-    // General
     site_name: string;
     site_tagline: string;
     site_description: string;
@@ -24,8 +25,8 @@ export interface SiteSettings {
     site_favicon: string;
     maintenance_mode: boolean;
     maintenance_message: string;
+    site_mode: SiteMode;
 
-    // Payment
     payment_vnpay_enabled: boolean;
     payment_momo_enabled: boolean;
     payment_bank_transfer_enabled: boolean;
@@ -35,25 +36,22 @@ export interface SiteSettings {
     payment_bank_branch: string;
     payment_qr_image: string;
 
-    // Social
     social_facebook: string;
     social_youtube: string;
     social_tiktok: string;
     social_instagram: string;
     social_zalo: string;
 
-    // Security
     security_strong_password: boolean;
     security_2fa_enabled: boolean;
     security_recaptcha_enabled: boolean;
     security_session_timeout: number;
 }
 
-// Default settings when not in database
 const defaultSettings: SiteSettings = {
     site_name: 'Shop Web rẻ',
     site_tagline: 'Kho giao diện website đẹp, dễ dùng, giá hợp lý',
-    site_description: 'Mua giao diện website, template, landing page, UI kit, dashboard và source code chất lượng cao tại Shop Web rẻ.',
+    site_description: 'Kho giao diện website, template, landing page, UI kit, dashboard và source code chất lượng cao tại Shop Web rẻ. Xem demo và nhận tư vấn triển khai.',
     contact_email: 'veutong961@gmail.com',
     contact_phone: '0971 386 588',
     contact_address: 'Hạ Long, Quảng Ninh, Việt Nam',
@@ -61,6 +59,7 @@ const defaultSettings: SiteSettings = {
     site_favicon: '',
     maintenance_mode: false,
     maintenance_message: 'Website đang được nâng cấp. Vui lòng quay lại sau!',
+    site_mode: 'sales',
     payment_vnpay_enabled: true,
     payment_momo_enabled: true,
     payment_bank_transfer_enabled: true,
@@ -80,9 +79,19 @@ const defaultSettings: SiteSettings = {
     security_session_timeout: 60,
 };
 
-/**
- * Parse setting value based on type
- */
+function getDefaultForType(type: string): any {
+    switch (type) {
+        case 'boolean':
+            return false;
+        case 'number':
+            return 0;
+        case 'json':
+            return {};
+        default:
+            return '';
+    }
+}
+
 function parseValue(value: string | null, type: string): any {
     if (value === null || value === '') return getDefaultForType(type);
 
@@ -92,24 +101,29 @@ function parseValue(value: string | null, type: string): any {
         case 'number':
             return Number(value) || 0;
         case 'json':
-            try { return JSON.parse(value); } catch { return {}; }
+            try {
+                return JSON.parse(value);
+            } catch {
+                return {};
+            }
         default:
             return value;
     }
 }
 
-function getDefaultForType(type: string): any {
-    switch (type) {
-        case 'boolean': return false;
-        case 'number': return 0;
-        case 'json': return {};
-        default: return '';
-    }
+function settingType(value: any): SiteSetting['type'] {
+    if (typeof value === 'boolean') return 'boolean';
+    if (typeof value === 'number') return 'number';
+    if (typeof value === 'object' && value !== null) return 'json';
+    return 'string';
 }
 
-/**
- * Get all site settings
- */
+function stringifyValue(value: any): string {
+    if (typeof value === 'boolean') return value ? 'true' : 'false';
+    if (typeof value === 'object' && value !== null) return JSON.stringify(value);
+    return String(value);
+}
+
 export async function getSiteSettings(): Promise<SiteSettings> {
     const supabase = createClient();
     if (!supabase) return defaultSettings;
@@ -119,12 +133,8 @@ export async function getSiteSettings(): Promise<SiteSettings> {
             .from('site_settings')
             .select('key, value, type');
 
-        if (error) {
-            // Table might not exist yet
-            return defaultSettings;
-        }
+        if (error) return defaultSettings;
 
-        // Convert array to object
         const settings = { ...defaultSettings };
         (data || []).forEach((row: any) => {
             const key = row.key as keyof SiteSettings;
@@ -133,6 +143,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
             }
         });
 
+        settings.site_mode = settings.site_mode === 'catalog' ? 'catalog' : 'sales';
         return settings;
     } catch (error) {
         console.error('Error fetching site settings:', error);
@@ -140,9 +151,6 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     }
 }
 
-/**
- * Get settings by group
- */
 export async function getSettingsByGroup(groupName: string): Promise<SiteSetting[]> {
     const supabase = createClient();
     if (!supabase) return [];
@@ -166,9 +174,6 @@ export async function getSettingsByGroup(groupName: string): Promise<SiteSetting
     }
 }
 
-/**
- * Get single setting value
- */
 export async function getSetting(key: string): Promise<any> {
     const supabase = createClient();
     if (!supabase) return (defaultSettings as any)[key] ?? null;
@@ -185,33 +190,33 @@ export async function getSetting(key: string): Promise<any> {
         }
 
         return parseValue(data.value, data.type);
-    } catch (error) {
+    } catch {
         return (defaultSettings as any)[key] ?? null;
     }
 }
 
-/**
- * Update a setting value
- */
 export async function updateSetting(key: string, value: any): Promise<boolean> {
     const supabase = createClient();
     if (!supabase) return false;
 
-    try {
-        // Convert value to string
-        let stringValue: string;
-        if (typeof value === 'boolean') {
-            stringValue = value ? 'true' : 'false';
-        } else if (typeof value === 'object') {
-            stringValue = JSON.stringify(value);
-        } else {
-            stringValue = String(value);
-        }
+    const payload = {
+        key,
+        value: stringifyValue(value),
+        type: settingType(value),
+        group_name: key.startsWith('payment_')
+            ? 'payment'
+            : key.startsWith('security_')
+                ? 'security'
+                : key.startsWith('social_')
+                    ? 'social'
+                    : 'general',
+        description: null,
+    };
 
+    try {
         const { error } = await supabase
             .from('site_settings')
-            .update({ value: stringValue })
-            .eq('key', key);
+            .upsert(payload, { onConflict: 'key' });
 
         if (error) {
             console.error('Error updating setting:', error);
@@ -224,48 +229,27 @@ export async function updateSetting(key: string, value: any): Promise<boolean> {
     }
 }
 
-/**
- * Update multiple settings at once
- */
 export async function updateSettings(updates: Record<string, any>): Promise<boolean> {
-    const supabase = createClient();
-    if (!supabase) return false;
+    const results = await Promise.all(
+        Object.entries(updates).map(([key, value]) => updateSetting(key, value)),
+    );
 
-    try {
-        const promises = Object.entries(updates).map(([key, value]) => {
-            let stringValue: string;
-            if (typeof value === 'boolean') {
-                stringValue = value ? 'true' : 'false';
-            } else if (typeof value === 'object') {
-                stringValue = JSON.stringify(value);
-            } else {
-                stringValue = String(value);
-            }
-
-            return supabase
-                .from('site_settings')
-                .update({ value: stringValue })
-                .eq('key', key);
-        });
-
-        const results = await Promise.all(promises);
-        return results.every(r => !r.error);
-    } catch (error) {
-        console.error('Error in updateSettings:', error);
-        return false;
-    }
+    return results.every(Boolean);
 }
 
-/**
- * Check if maintenance mode is enabled
- */
 export async function isMaintenanceMode(): Promise<boolean> {
-    return await getSetting('maintenance_mode') === true;
+    return (await getSetting('maintenance_mode')) === true;
 }
 
-/**
- * Get payment settings for checkout
- */
+export async function getSiteMode(): Promise<SiteMode> {
+    const mode = await getSetting('site_mode');
+    return mode === 'catalog' ? 'catalog' : 'sales';
+}
+
+export async function isSalesMode(): Promise<boolean> {
+    return (await getSiteMode()) === 'sales';
+}
+
 export async function getPaymentSettings() {
     const settings = await getSiteSettings();
     return {
@@ -286,9 +270,6 @@ export async function getPaymentSettings() {
     };
 }
 
-/**
- * Get public settings for client (non-sensitive)
- */
 export async function getPublicSettings() {
     const settings = await getSiteSettings();
     return {
@@ -302,6 +283,7 @@ export async function getPublicSettings() {
         favicon: settings.site_favicon,
         maintenanceMode: settings.maintenance_mode,
         maintenanceMessage: settings.maintenance_message,
+        siteMode: settings.site_mode,
         social: {
             facebook: settings.social_facebook,
             youtube: settings.social_youtube,

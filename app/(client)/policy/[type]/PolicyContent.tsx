@@ -232,7 +232,7 @@ const POLICIES: Record<string, Policy> = {
                 paragraphs: [
                     'Nếu một sản phẩm có tùy chọn giấy phép mở rộng, phạm vi cụ thể sẽ được ghi tại trang sản phẩm hoặc đơn hàng. Không mặc định mọi giấy phép mở rộng đều cho phép sử dụng không giới hạn.',
                 ],
-                note: 'Hãy liên hệ trước khi mua nếu bạn cần dùng cho SaaS, nhiều khách hàng hoặc sản phẩm bán lại.',
+                note: 'Hãy liên hệ trước khi sử dụng nếu bạn cần dùng cho SaaS, nhiều khách hàng hoặc sản phẩm bán lại.',
             },
             {
                 title: 'Quyền chỉnh sửa',
@@ -390,7 +390,7 @@ export default function PolicyContent({ type }: { type: string }) {
                     <div className="rounded-lg bg-slate-950 p-5 text-white">
                         <Headphones size={20} className="text-orange-400" />
                         <p className="mt-4 text-sm font-black">Cần làm rõ nội dung?</p>
-                        <p className="mt-2 text-xs font-medium leading-5 text-slate-400">Trao đổi trực tiếp trước khi mua hoặc sử dụng sản phẩm.</p>
+                        <p className="mt-2 text-xs font-medium leading-5 text-slate-400">Trao đổi trực tiếp trước khi chọn hoặc sử dụng sản phẩm.</p>
                         <Link href="/contact" className="mt-4 inline-flex items-center gap-2 text-xs font-bold text-orange-300 hover:text-orange-200">
                             Liên hệ hỗ trợ <ArrowRight size={14} />
                         </Link>

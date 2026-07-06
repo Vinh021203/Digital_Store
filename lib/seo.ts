@@ -5,7 +5,7 @@ export const seoKeywords = {
   home: [
     'shop web rẻ',
     'giao diện website giá rẻ',
-    'mua giao diện website',
+    'tham khảo giao diện website',
     'kho giao diện website',
     'template website giá rẻ',
     'landing page giá rẻ',
@@ -13,7 +13,7 @@ export const seoKeywords = {
     'mẫu website đẹp',
   ],
   products: [
-    'mua template website',
+    'template website có demo',
     'giao diện website mẫu',
     'template html css js',
     'template react',
@@ -32,7 +32,7 @@ export const seoKeywords = {
   blog: [
     'blog thiết kế website',
     'kiến thức landing page',
-    'kinh nghiệm mua template',
+    'kinh nghiệm chọn template',
     'tối ưu website',
     'ui ux website',
     'hướng dẫn làm website',
@@ -45,17 +45,17 @@ export const seoKeywords = {
     'dịch vụ giao diện website',
   ],
   contact: [
-    'liên hệ mua giao diện website',
+    'liên hệ tư vấn giao diện website',
     'tư vấn template website',
     'hỗ trợ giao diện website',
     'dịch vụ chỉnh sửa landing page',
     'Shop Web rẻ Hạ Long',
   ],
   faq: [
-    'câu hỏi mua template website',
+    'câu hỏi chọn template website',
     'hỏi đáp giao diện website',
-    'thanh toán template',
-    'tải file template',
+    'tư vấn template',
+    'xem demo template',
     'license giao diện website',
   ],
   compare: [
@@ -79,7 +79,7 @@ export const seoKeywords = {
   ],
   policy: [
     'chính sách sản phẩm số',
-    'điều khoản mua template',
+    'điều khoản tư vấn template',
     'license template website',
     'chính sách hoàn tiền sản phẩm số',
   ],
@@ -106,11 +106,11 @@ export function buildProductSeoKeywords(product: ProductSeoKeywordInput) {
     product.author,
     ...(product.tags || []),
     ...(product.techStack || []),
-    'mua giao diện website',
+    'tham khảo giao diện website',
     'template website',
     'source code website',
     'giao diện website có demo',
-    'tải template website',
+    'xem demo template website',
   ].filter(Boolean) as string[];
 
   const haystack = baseKeywords.join(' ').toLowerCase();

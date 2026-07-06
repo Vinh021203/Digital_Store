@@ -41,6 +41,7 @@ import {
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
+import { useSiteMode } from "@/hooks/useSiteSettings";
 import type { DbCategory } from "@/lib/categories";
 import type { DbBlogPost } from "@/lib/blog";
 import type { Product } from "@/types";
@@ -310,6 +311,7 @@ const DpMarketProductCard = memo(
     const { addToCart, addToWishlist, removeFromWishlist, isInWishlist } =
       useCart();
     const { addToast } = useToast();
+    const { isCatalogMode } = useSiteMode();
     const [imgLoaded, setImgLoaded] = useState(false);
 
     const isLiked = isInWishlist(product.id);
@@ -319,6 +321,13 @@ const DpMarketProductCard = memo(
     const handleAddToCart = (e: React.MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
+      if (isCatalogMode) {
+        addToast("Website đang ở chế độ tư vấn. Mình sẽ chuyển bạn sang trang liên hệ.", "info");
+        if (typeof window !== "undefined") {
+          window.location.href = `/contact?product=${encodeURIComponent(String(product.slug || product.id))}`;
+        }
+        return;
+      }
       addToCart(product);
       addToast("Đã thêm vào giỏ hàng", "success");
     };
@@ -502,7 +511,7 @@ const DpMarketProductCard = memo(
                 <button
                   onClick={handleAddToCart}
                   className={`${variant === "mobileHorizontal" ? "w-7 h-7" : "w-8 h-8 sm:w-9 sm:h-9"} md:w-[36px] md:h-[36px] rounded-full border border-slate-200 text-slate-500 hover:bg-[#ea580c] hover:text-white hover:border-[#ea580c] flex items-center justify-center transition-all duration-200 shadow-sm`}
-                  aria-label="Thêm vào giỏ"
+                  aria-label={isCatalogMode ? "Nhận tư vấn" : "Thêm vào giỏ"}
                 >
                   <Download size={14} strokeWidth={2.5} />
                 </button>
@@ -539,6 +548,7 @@ const HomePage = ({
   const [allProducts] = useState<Product[]>(initialProducts);
   const [categories] = useState<DbCategory[]>(initialCategories);
   const [blogPosts] = useState<DbBlogPost[]>(initialBlogPosts);
+  const { isCatalogMode } = useSiteMode();
   const loading = false;
 
   // States for interactive tabs
@@ -833,14 +843,23 @@ const HomePage = ({
               </div>
 
               <h1 className="max-w-full text-[2.1rem] sm:text-5xl md:text-6xl lg:text-[4.15rem] font-extrabold text-slate-950 tracking-normal leading-[1.08] md:leading-[1.06] mb-4 md:mb-5 break-words">
-                Mua <span className="text-[#ea580c]">giao diện website</span> đẹp,
-                dễ dùng và giá hợp lý
+                {isCatalogMode ? (
+                  <>
+                    Tham khảo <span className="text-[#ea580c]">giao diện website</span> đẹp,
+                    dễ tùy chỉnh và hợp nhu cầu
+                  </>
+                ) : (
+                  <>
+                    Mua <span className="text-[#ea580c]">giao diện website</span> đẹp,
+                    dễ dùng và giá hợp lý
+                  </>
+                )}
               </h1>
 
               <p className="max-w-xl text-sm sm:text-lg text-slate-600 font-normal leading-relaxed mb-5 md:mb-7">
-                Khám phá template website, landing page, UI kit và dashboard
-                chất lượng cao. Xem demo trước khi mua, tải file nhanh và dễ dàng
-                tùy chỉnh cho dự án của bạn.
+                {isCatalogMode
+                  ? 'Khám phá template website, landing page, UI kit và dashboard chất lượng cao. Xem demo, lọc mẫu phù hợp và gửi nhu cầu để được tư vấn triển khai.'
+                  : 'Khám phá template website, landing page, UI kit và dashboard chất lượng cao. Xem demo trước khi mua, tải file nhanh và dễ dàng tùy chỉnh cho dự án của bạn.'}
               </p>
 
               {/* Search Bar */}
@@ -1604,18 +1623,19 @@ const HomePage = ({
             <div>
               <span className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-white/90 px-3 py-1 text-[#ea580c] text-xs font-extrabold uppercase tracking-widest mb-3 shadow-sm shadow-orange-100">
                 <TrendingUp size={13} />
-                BÁN CHẠY NHẤT TUẦN
+                {isCatalogMode ? 'ĐƯỢC QUAN TÂM TUẦN NÀY' : 'BÁN CHẠY NHẤT TUẦN'}
               </span>
               <h2 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-slate-950 leading-tight">
-                Sản phẩm bán chạy hàng đầu
+                {isCatalogMode ? 'Sản phẩm được quan tâm hàng đầu' : 'Sản phẩm bán chạy hàng đầu'}
               </h2>
               <p className="text-slate-600 text-xs md:text-sm font-normal max-w-xl mt-2 leading-relaxed">
-                Danh sách những sản phẩm được người dùng tải và mua nhiều nhất
-                trong tuần qua.
+                {isCatalogMode
+                  ? 'Danh sách những mẫu giao diện được người dùng xem demo và quan tâm nhiều trong tuần qua.'
+                  : 'Danh sách những sản phẩm được người dùng tải và mua nhiều nhất trong tuần qua.'}
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
                 {[
-                  { label: "Top sales", value: "7 ngày" },
+                  { label: isCatalogMode ? "Quan tâm" : "Top sales", value: "7 ngày" },
                   { label: "Rating", value: "4.8+" },
                   { label: "Demo", value: "sẵn sàng" },
                 ].map((item) => (
@@ -2435,12 +2455,12 @@ const HomePage = ({
               </div>
               <div>
                 <h3 className="text-2xl md:text-3xl font-bold text-[#0b0f19] mb-4 leading-tight tracking-tight">
-                  Kiếm hoa hồng khi giới thiệu khách mua template
+                  {isCatalogMode ? 'Giới thiệu khách cần giao diện website' : 'Kiếm hoa hồng khi giới thiệu khách mua template'}
                 </h3>
                 <p className="text-sm md:text-base text-slate-800 font-medium leading-relaxed mb-6 md:mb-8 max-w-xl">
-                  Tham gia chương trình affiliate của Shop Web rẻ, chia sẻ link
-                  giới thiệu và nhận hoa hồng khi khách mua giao diện website,
-                  landing page hoặc source code.
+                  {isCatalogMode
+                    ? 'Tham gia chương trình affiliate của Shop Web rẻ, chia sẻ link giới thiệu và nhận ghi nhận khi khách để lại nhu cầu tư vấn giao diện website, landing page hoặc source code.'
+                    : 'Tham gia chương trình affiliate của Shop Web rẻ, chia sẻ link giới thiệu và nhận hoa hồng khi khách mua giao diện website, landing page hoặc source code.'}
                 </p>
               </div>
               <Link
@@ -2465,9 +2485,9 @@ const HomePage = ({
                   Cần chỉnh sửa giao diện theo thương hiệu?
                 </h3>
                 <p className="text-sm md:text-base text-slate-800 font-medium leading-relaxed mb-6 md:mb-8 max-w-xl">
-                  Bạn có thể mua template sẵn rồi yêu cầu hỗ trợ thay logo,
-                  đổi màu, sửa nội dung, gắn form hoặc deploy lên hosting theo
-                  nhu cầu thực tế.
+                  {isCatalogMode
+                    ? 'Bạn có thể gửi mẫu giao diện quan tâm rồi yêu cầu tư vấn thay logo, đổi màu, sửa nội dung, gắn form hoặc deploy lên hosting theo nhu cầu thực tế.'
+                    : 'Bạn có thể mua template sẵn rồi yêu cầu hỗ trợ thay logo, đổi màu, sửa nội dung, gắn form hoặc deploy lên hosting theo nhu cầu thực tế.'}
                 </p>
               </div>
               <Link

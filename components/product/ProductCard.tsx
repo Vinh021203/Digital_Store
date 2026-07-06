@@ -5,12 +5,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import {
   Star, ShoppingCart, Heart, Share2, Check, ArrowRightLeft,
-  Package, PlayCircle, Clock, Eye, Download
+  Package, PlayCircle, Clock, Eye, Download, MessageCircle
 } from 'lucide-react';
 import { Product } from '@/types';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/context/ToastContext';
+import { useSiteMode } from '@/hooks/useSiteSettings';
 
 // Blur placeholder for images
 const BLUR_DATA_URL = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMCwsLCgwMDhEODQ4RDgwMEhQSFhITExMOFRcZGxkWGhQWFhL/2wBDAQMEBAUEBQkFBQkWDwwPFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhL/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAYH/8QAJRAAAQMDAwMFAAAAAAAAAAAAAQIDBAAFEQYSIQcTMRQiQVFh/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAXEQEBAQEAAAAAAAAAAAAAAAABAgAD/9oADAMBERACEEQ8T//UAJwKkKV0NQAG0ADE8CuKH//Z';
@@ -26,6 +27,7 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
   const { addToCart, addToWishlist, removeFromWishlist, isInWishlist, addToCompare, removeFromCompare, isInCompare, compareList } = useCart();
   const { user } = useAuth();
   const { addToast } = useToast();
+  const { isCatalogMode } = useSiteMode();
   const [copied, setCopied] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -39,12 +41,20 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
   const handleAddToCart = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (isCatalogMode) {
+      addToast('Website đang ở chế độ tư vấn. Mình sẽ chuyển bạn sang trang liên hệ.', 'info');
+      if (typeof window !== 'undefined') {
+        const productSlug = (product as any).slug || product.id;
+        window.location.href = `/contact?product=${encodeURIComponent(String(productSlug))}`;
+      }
+      return;
+    }
     addToCart(product);
     addToast(
       'Đã thêm vào giỏ',
       'success'
     );
-  }, [product, addToCart, addToast]);
+  }, [product, addToCart, addToast, isCatalogMode]);
 
   const handleToggleWishlist = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
@@ -159,7 +169,8 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
               onClick={handleAddToCart}
               className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition-all shadow-sm hover:shadow-orange-500/20 flex items-center gap-2"
             >
-              <ShoppingCart size={16} /> Thêm giỏ
+              {isCatalogMode ? <MessageCircle size={16} /> : <ShoppingCart size={16} />}
+              {isCatalogMode ? 'Tư vấn' : 'Thêm giỏ'}
             </button>
           </div>
         </div>
@@ -330,9 +341,9 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
             onClick={handleAddToCart}
             className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white px-2.5 md:px-3 py-1.5 rounded-lg text-[10px] md:text-xs font-bold transition-all shadow-sm hover:shadow-lg hover:scale-105 whitespace-nowrap flex-shrink-0 flex items-center gap-1"
           >
-            <ShoppingCart size={12} />
-            <span className="hidden sm:inline">Thêm giỏ</span>
-            <span className="sm:hidden">Mua</span>
+            {isCatalogMode ? <MessageCircle size={12} /> : <ShoppingCart size={12} />}
+            <span className="hidden sm:inline">{isCatalogMode ? 'Tư vấn' : 'Thêm giỏ'}</span>
+            <span className="sm:hidden">{isCatalogMode ? 'Tư vấn' : 'Mua'}</span>
           </button>
         </div>
 

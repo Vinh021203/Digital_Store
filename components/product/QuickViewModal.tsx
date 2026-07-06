@@ -4,13 +4,14 @@ import React, { useState, useEffect, useCallback, memo } from 'react';
 import {
   X, Star, ShoppingCart, Check, Package, FileCode, Clock,
   ShieldCheck, Download, Users, TrendingUp, Heart, Share2, Key,
-  ArrowRightLeft, Eye, Zap, Copy, ExternalLink
+  ArrowRightLeft, Eye, Zap, Copy, ExternalLink, MessageCircle
 } from 'lucide-react';
 import { Product } from '@/types';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useCart } from '@/context/CartContext';
 import { useToast } from '@/context/ToastContext';
+import { useSiteMode } from '@/hooks/useSiteSettings';
 
 // Blur placeholder
 const BLUR_DATA_URL = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMCwsLCgwMDhEODQ4RDgwMEhQSFhITExMOFRcZGxkWGhQWFhL/2wBDAQMEBAUEBQkFBQkWDwwPFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhL/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAYH/8QAJRAAAQMDAwMFAAAAAAAAAAAAAQIDBAAFEQYSIQcTMRQiQVFh/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAXEQEBAQEAAAAAAAAAAAAAAAABAgAD/9oADAMBERACEEQ8T//UAJwKkKV0NQAG0ADE8CuKH//Z';
@@ -34,6 +35,7 @@ interface QuickViewModalProps {
 const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, isOpen, onClose }) => {
   const { addToCart, addToWishlist, isInWishlist, addToCompare, isInCompare } = useCart();
   const { addToast } = useToast();
+  const { isCatalogMode } = useSiteMode();
   const [isAdded, setIsAdded] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
 
@@ -76,6 +78,12 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, isOpen, onClos
 
   const handleAddToCart = useCallback(() => {
     if (!product) return;
+    if (isCatalogMode) {
+      addToast('Website đang ở chế độ tư vấn. Mình sẽ chuyển bạn sang trang liên hệ.', 'info');
+      const productSlug = (product as any).slug || product.id;
+      window.location.href = `/contact?product=${encodeURIComponent(String(productSlug))}`;
+      return;
+    }
     addToCart(product);
     setIsAdded(true);
     addToast(`Đã thêm "${product.name}" vào giỏ hàng`, 'success');
@@ -83,7 +91,7 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, isOpen, onClos
       setIsAdded(false);
       onClose();
     }, 1500);
-  }, [product, addToCart, addToast, onClose]);
+  }, [product, addToCart, addToast, onClose, isCatalogMode]);
 
   const handleWishlist = useCallback(() => {
     if (!product) return;
@@ -254,7 +262,7 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, isOpen, onClos
 
             {/* Features Grid */}
             <div className="grid grid-cols-2 gap-2 mb-4">
-              <FeatureItem icon={Download} text="Instant Download" />
+              <FeatureItem icon={isCatalogMode ? Eye : Download} text={isCatalogMode ? 'Xem demo trước' : 'Instant Download'} />
               <FeatureItem icon={Key} text="License Key" />
               <FeatureItem icon={ShieldCheck} text="6 tháng hỗ trợ" />
               <FeatureItem icon={FileCode} text={(product as any).fileType || 'Source Code'} />
@@ -283,9 +291,11 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, isOpen, onClos
                     ? 'bg-green-600 text-white'
                     : 'bg-gradient-to-r from-orange-600 to-red-600 text-white hover:from-orange-700 hover:to-red-700 active:scale-[0.98] shadow-lg shadow-orange-200'
                     }`}
-                  aria-label={isAdded ? 'Added' : 'Add to cart'}
+                  aria-label={isCatalogMode ? 'Nhận tư vấn' : isAdded ? 'Added' : 'Add to cart'}
                 >
-                  {isAdded ? (
+                  {isCatalogMode ? (
+                    <><MessageCircle size={18} strokeWidth={2} /> Nhận tư vấn</>
+                  ) : isAdded ? (
                     <><Check size={18} strokeWidth={2.5} /> Đã thêm vào giỏ</>
                   ) : (
                     <><ShoppingCart size={18} strokeWidth={2} /> Thêm vào giỏ</>

@@ -12,6 +12,7 @@ import {
     ShoppingBag, Sparkles, XCircle,
 } from 'lucide-react';
 import { useToast } from '@/context/ToastContext';
+import { useSiteMode } from '@/hooks/useSiteSettings';
 
 interface TrackingItem {
     name: string;
@@ -114,6 +115,7 @@ function maskEmail(value?: string | null) {
 }
 
 export default function TrackingContent() {
+    const { isCatalogMode } = useSiteMode();
     const { addToast } = useToast();
     const [orderCode, setOrderCode] = useState('');
     const [loading, setLoading] = useState(false);
@@ -224,7 +226,9 @@ export default function TrackingContent() {
                                 Kiểm tra đơn hàng <span className="text-orange-600">nhanh và rõ ràng.</span>
                             </h1>
                             <p className="mt-4 max-w-xl text-sm font-medium leading-7 text-slate-600 sm:text-base sm:leading-8">
-                                Nhập mã đơn để xem trạng thái thanh toán, sản phẩm đã mua và quyền tải xuống trong tài khoản của bạn.
+                                {isCatalogMode
+                                    ? 'Nhập mã tư vấn hoặc mã đơn cũ để kiểm tra thông tin hỗ trợ, sản phẩm quan tâm và quyền truy cập trong tài khoản của bạn.'
+                                    : 'Nhập mã đơn để xem trạng thái thanh toán, sản phẩm đã mua và quyền tải xuống trong tài khoản của bạn.'}
                             </p>
 
                             <form onSubmit={handleSearch} className="mt-7 max-w-xl">
@@ -251,14 +255,14 @@ export default function TrackingContent() {
                             <div className="flex items-center justify-between border-b border-white/10 pb-5">
                                 <div>
                                     <p className="text-[10px] font-bold uppercase text-orange-300">Quy trình tự động</p>
-                                    <h2 className="mt-1 text-xl font-black">Nhận file sau thanh toán</h2>
+                                    <h2 className="mt-1 text-xl font-black">{isCatalogMode ? 'Quy trình tư vấn rõ ràng' : 'Nhận file sau thanh toán'}</h2>
                                 </div>
                                 <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-orange-600"><PackageCheck size={22} /></div>
                             </div>
                             <div className="mt-5 grid grid-cols-2 gap-3">
                                 {[
-                                    { icon: Banknote, label: 'Thanh toán', value: 'SePay / Ngân hàng' },
-                                    { icon: BadgeCheck, label: 'Xác nhận', value: 'Tự động đối soát' },
+                                    { icon: Banknote, label: isCatalogMode ? 'Nhu cầu' : 'Thanh toán', value: isCatalogMode ? 'Gửi mẫu quan tâm' : 'SePay / Ngân hàng' },
+                                    { icon: BadgeCheck, label: 'Xác nhận', value: isCatalogMode ? 'Tư vấn phù hợp' : 'Tự động đối soát' },
                                     { icon: KeyRound, label: 'Giấy phép', value: 'Cấp theo đơn hàng' },
                                     { icon: FileArchive, label: 'Bàn giao', value: 'Tải file trong hồ sơ' },
                                 ].map((item, index) => (
@@ -271,7 +275,11 @@ export default function TrackingContent() {
                             </div>
                             <div className="mt-5 flex items-center gap-3 rounded-lg bg-white/5 px-4 py-3 ring-1 ring-white/10">
                                 <ShieldCheck size={20} className="shrink-0 text-emerald-400" />
-                                <p className="text-xs font-medium leading-5 text-slate-300">Không cần vận chuyển vật lý. File và giấy phép được bàn giao trực tiếp trong tài khoản.</p>
+                                <p className="text-xs font-medium leading-5 text-slate-300">
+                                    {isCatalogMode
+                                        ? 'Bạn có thể xem demo, gửi nhu cầu và nhận tư vấn trước khi quyết định triển khai.'
+                                        : 'Không cần vận chuyển vật lý. File và giấy phép được bàn giao trực tiếp trong tài khoản.'}
+                                </p>
                             </div>
                         </motion.div>
                     </div>
@@ -369,7 +377,7 @@ export default function TrackingContent() {
 
                         {(order.status === 'paid' || order.status === 'completed') && (
                             <div className="grid grid-cols-2 gap-3">
-                                <Link href="/profile/downloads" className="inline-flex min-w-0 items-center justify-center gap-2 rounded-lg bg-orange-600 px-3 py-3.5 text-xs font-bold text-white shadow-lg shadow-orange-100 transition hover:bg-orange-700 sm:text-sm"><Download size={17} /><span className="truncate">Tải sản phẩm</span></Link>
+                                <Link href={isCatalogMode ? '/profile' : '/profile/downloads'} className="inline-flex min-w-0 items-center justify-center gap-2 rounded-lg bg-orange-600 px-3 py-3.5 text-xs font-bold text-white shadow-lg shadow-orange-100 transition hover:bg-orange-700 sm:text-sm"><Download size={17} /><span className="truncate">{isCatalogMode ? 'Xem hồ sơ' : 'Tải sản phẩm'}</span></Link>
                                 <Link href="/profile/licenses" className="inline-flex min-w-0 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-3.5 text-xs font-bold text-slate-700 transition hover:border-orange-200 hover:text-orange-700 sm:text-sm"><KeyRound size={17} /><span className="truncate">Xem giấy phép</span></Link>
                             </div>
                         )}

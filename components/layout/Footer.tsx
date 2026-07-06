@@ -14,7 +14,6 @@ import {
   Phone,
   Clock,
   Shield,
-  MessageCircle,
   ChevronRight,
   ChevronDown,
 } from "lucide-react";
@@ -757,19 +756,6 @@ const Footer = () => {
             </div>
           </div>
         </div>
-
-        {/* Floating Chat */}
-        <button
-          type="button"
-          onClick={() => { window.location.href = "/contact"; }}
-          className="fixed bottom-6 right-6 z-50 hidden w-12 h-12 rounded-full md:flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all duration-200"
-          style={{
-            background: "linear-gradient(135deg, #f97316 0%, #dc2626 100%)",
-          }}
-          aria-label="Liên hệ hỗ trợ"
-        >
-          <MessageCircle size={20} className="text-white" />
-        </button>
 
         <style jsx global>{`
           @keyframes fade-in {

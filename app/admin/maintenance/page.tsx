@@ -9,18 +9,21 @@ import {
   Globe2,
   Loader2,
   Lock,
+  MessageSquareText,
   Power,
   RefreshCw,
   ShieldAlert,
+  ShoppingCart,
 } from 'lucide-react';
 import { useToast } from '@/context/ToastContext';
-import { getSiteSettings, updateSettings } from '@/lib/siteSettings';
+import { getSiteSettings, updateSettings, type SiteMode } from '@/lib/siteSettings';
 
 export default function AdminMaintenancePage() {
   const { addToast } = useToast();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [enabled, setEnabled] = useState(false);
+  const [siteMode, setSiteMode] = useState<SiteMode>('sales');
   const [message, setMessage] = useState('Website đang tạm bảo trì.');
 
   const loadStatus = useCallback(async () => {
@@ -28,9 +31,10 @@ export default function AdminMaintenancePage() {
     try {
       const settings = await getSiteSettings();
       setEnabled(Boolean(settings.maintenance_mode));
+      setSiteMode(settings.site_mode === 'catalog' ? 'catalog' : 'sales');
       setMessage(settings.maintenance_message || 'Website đang tạm bảo trì.');
-    } catch (error) {
-      addToast('Không thể tải trạng thái bảo trì', 'error');
+    } catch {
+      addToast('Không thể tải trạng thái website', 'error');
     } finally {
       setLoading(false);
     }
@@ -56,12 +60,36 @@ export default function AdminMaintenancePage() {
       setEnabled(nextEnabled);
       addToast(
         nextEnabled
-          ? 'Đã bật bảo trì. Storefront sẽ không hiển thị với khách.'
+          ? 'Đã bật bảo trì. Storefront sẽ hiển thị màn thông báo với khách.'
           : 'Đã tắt bảo trì. Website đã mở lại.',
-        nextEnabled ? 'warning' : 'success'
+        nextEnabled ? 'warning' : 'success',
       );
-    } catch (error) {
+    } catch {
       addToast('Có lỗi khi cập nhật bảo trì', 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const updateSiteMode = async (nextMode: SiteMode) => {
+    setSaving(true);
+    try {
+      const success = await updateSettings({ site_mode: nextMode });
+
+      if (!success) {
+        addToast('Không thể cập nhật chế độ website. Hãy kiểm tra site_settings.', 'error');
+        return;
+      }
+
+      setSiteMode(nextMode);
+      addToast(
+        nextMode === 'catalog'
+          ? 'Đã chuyển sang Catalog/Tư vấn. Các luồng mua bán trực tiếp sẽ tạm tắt.'
+          : 'Đã chuyển sang Sales. Giỏ hàng, checkout và tải file có thể hoạt động lại.',
+        nextMode === 'catalog' ? 'warning' : 'success',
+      );
+    } catch {
+      addToast('Có lỗi khi cập nhật chế độ website', 'error');
     } finally {
       setSaving(false);
     }
@@ -72,7 +100,7 @@ export default function AdminMaintenancePage() {
       <div className="flex min-h-[60vh] items-center justify-center">
         <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-5 py-4 text-slate-600 shadow-sm">
           <Loader2 className="animate-spin text-orange-600" size={22} />
-          <span className="font-bold">Đang kiểm tra trạng thái bảo trì...</span>
+          <span className="font-bold">Đang kiểm tra trạng thái website...</span>
         </div>
       </div>
     );
@@ -87,28 +115,35 @@ export default function AdminMaintenancePage() {
             <div className="max-w-2xl">
               <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1.5 text-xs font-black uppercase tracking-[0.16em] text-orange-200">
                 <ShieldAlert size={15} />
-                Chế độ bảo trì
+                Điều khiển hiển thị website
               </div>
               <h1 className="text-3xl font-black tracking-tight sm:text-4xl">
-                Tạm ẩn toàn bộ website client
+                Bảo trì và chế độ Catalog/Sales
               </h1>
               <p className="mt-4 max-w-xl text-base font-medium leading-7 text-slate-300">
-                Khi bật, khách truy cập storefront sẽ thấy màn hình trống. Khu vực admin, đăng nhập và API vẫn được giữ để bạn quản trị và tắt bảo trì khi cần.
+                Catalog giúp giữ giao diện, SEO và CTA tư vấn, nhưng tạm tắt các luồng mua bán trực tiếp như giỏ hàng, checkout và tải file.
               </p>
             </div>
 
-            <div className={`rounded-3xl border p-5 text-center ${
-              enabled
-                ? 'border-orange-400/40 bg-orange-500/15'
-                : 'border-emerald-400/30 bg-emerald-500/10'
-            }`}>
-              <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-slate-950">
-                {enabled ? <EyeOff size={26} /> : <Globe2 size={26} />}
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className={`rounded-3xl border p-5 text-center ${enabled ? 'border-orange-400/40 bg-orange-500/15' : 'border-emerald-400/30 bg-emerald-500/10'}`}>
+                <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-slate-950">
+                  {enabled ? <EyeOff size={26} /> : <Globe2 size={26} />}
+                </div>
+                <p className="text-sm font-bold text-slate-300">Bảo trì</p>
+                <p className={`mt-1 text-xl font-black ${enabled ? 'text-orange-200' : 'text-emerald-200'}`}>
+                  {enabled ? 'Đang bật' : 'Đang tắt'}
+                </p>
               </div>
-              <p className="text-sm font-bold text-slate-300">Trạng thái hiện tại</p>
-              <p className={`mt-1 text-2xl font-black ${enabled ? 'text-orange-200' : 'text-emerald-200'}`}>
-                {enabled ? 'Đang bảo trì' : 'Đang mở site'}
-              </p>
+              <div className={`rounded-3xl border p-5 text-center ${siteMode === 'catalog' ? 'border-blue-400/40 bg-blue-500/15' : 'border-orange-400/40 bg-orange-500/15'}`}>
+                <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-slate-950">
+                  {siteMode === 'catalog' ? <MessageSquareText size={26} /> : <ShoppingCart size={26} />}
+                </div>
+                <p className="text-sm font-bold text-slate-300">Chế độ</p>
+                <p className="mt-1 text-xl font-black text-white">
+                  {siteMode === 'catalog' ? 'Catalog' : 'Sales'}
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -117,30 +152,25 @@ export default function AdminMaintenancePage() {
       <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
         <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/50 sm:p-7">
           <div className="flex items-start gap-4">
-            <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${
-              enabled ? 'bg-orange-100 text-orange-700' : 'bg-emerald-100 text-emerald-700'
-            }`}>
+            <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${enabled ? 'bg-orange-100 text-orange-700' : 'bg-emerald-100 text-emerald-700'}`}>
               {enabled ? <Lock size={23} /> : <CheckCircle2 size={23} />}
             </div>
             <div>
-              <h2 className="text-2xl font-black text-slate-950">Điều khiển nhanh</h2>
+              <h2 className="text-2xl font-black text-slate-950">Bảo trì toàn site</h2>
               <p className="mt-1 text-sm font-medium leading-6 text-slate-500">
-                Dùng khi bạn muốn tạm đóng mua bán, kiểm tra pháp lý, deploy hoặc bảo trì dữ liệu.
+                Dùng khi bạn muốn tạm ẩn toàn bộ storefront. Admin, đăng nhập và API vẫn được giữ để quản trị.
               </p>
             </div>
           </div>
 
           <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-            <label className="text-sm font-black text-slate-800">Ghi chú nội bộ</label>
+            <label className="text-sm font-black text-slate-800">Thông báo bảo trì</label>
             <textarea
               value={message}
               onChange={(event) => setMessage(event.target.value)}
               className="mt-2 min-h-[116px] w-full resize-none rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-100"
-              placeholder="Lý do bảo trì hoặc ghi chú cho lần đóng site này..."
+              placeholder="Website đang được nâng cấp. Vui lòng quay lại sau..."
             />
-            <p className="mt-2 text-xs font-semibold text-slate-400">
-              Ghi chú này được lưu trong site settings. Storefront vẫn không hiển thị nội dung khi đang bảo trì.
-            </p>
           </div>
 
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
@@ -166,16 +196,43 @@ export default function AdminMaintenancePage() {
         </section>
 
         <aside className="space-y-5">
+          <div className="rounded-3xl border border-blue-200 bg-blue-50 p-6">
+            <h3 className="text-lg font-black text-slate-950">Chế độ bán hàng</h3>
+            <p className="mt-2 text-sm font-semibold leading-6 text-slate-600">
+              Chọn Catalog nếu chỉ muốn kéo khách về tư vấn, xem demo và nhận báo giá. Chọn Sales khi đã sẵn sàng mở giỏ hàng, thanh toán và giao file.
+            </p>
+            <div className="mt-5 grid gap-3">
+              <button
+                type="button"
+                onClick={() => updateSiteMode('catalog')}
+                disabled={saving || siteMode === 'catalog'}
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-blue-600 px-5 py-4 text-sm font-black text-white shadow-lg shadow-blue-100 transition hover:-translate-y-0.5 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:translate-y-0"
+              >
+                <MessageSquareText size={18} />
+                Bật Catalog / Tư vấn
+              </button>
+              <button
+                type="button"
+                onClick={() => updateSiteMode('sales')}
+                disabled={saving || siteMode === 'sales'}
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-orange-200 bg-white px-5 py-4 text-sm font-black text-orange-700 transition hover:-translate-y-0.5 hover:bg-orange-50 disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:translate-y-0"
+              >
+                <ShoppingCart size={18} />
+                Bật Sales / Bán hàng
+              </button>
+            </div>
+          </div>
+
           <div className="rounded-3xl border border-orange-200 bg-orange-50 p-6">
             <div className="flex items-start gap-3">
               <AlertTriangle className="mt-1 shrink-0 text-orange-600" size={22} />
               <div>
-                <h3 className="text-lg font-black text-slate-950">Khi bật sẽ xảy ra gì?</h3>
+                <h3 className="text-lg font-black text-slate-950">Catalog sẽ tạm tắt gì?</h3>
                 <ul className="mt-3 space-y-2 text-sm font-semibold leading-6 text-slate-600">
-                  <li>Storefront trả về màn hình trống cho khách.</li>
-                  <li>Admin vẫn vào được để quản trị.</li>
-                  <li>API vẫn mở để webhook hoặc tác vụ nền không bị ngắt.</li>
-                  <li>Không xóa dữ liệu, không tắt database.</li>
+                  <li>Ẩn giỏ hàng trên header.</li>
+                  <li>Chặn trang cart/checkout bằng CTA tư vấn.</li>
+                  <li>Đổi nút mua thành liên hệ nhận tư vấn.</li>
+                  <li>Chặn API tải file trực tiếp.</li>
                 </ul>
               </div>
             </div>
@@ -184,19 +241,11 @@ export default function AdminMaintenancePage() {
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
             <h3 className="text-lg font-black text-slate-950">Kiểm tra nhanh</h3>
             <div className="mt-4 grid gap-3">
-              <Link
-                href="/"
-                target="_blank"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 px-4 py-3 text-sm font-black text-slate-700 transition hover:border-orange-200 hover:bg-orange-50 hover:text-orange-700"
-              >
+              <Link href="/" target="_blank" className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 px-4 py-3 text-sm font-black text-slate-700 transition hover:border-orange-200 hover:bg-orange-50 hover:text-orange-700">
                 <Globe2 size={17} />
                 Mở trang chủ
               </Link>
-              <button
-                type="button"
-                onClick={loadStatus}
-                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 px-4 py-3 text-sm font-black text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
-              >
+              <button type="button" onClick={loadStatus} className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 px-4 py-3 text-sm font-black text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700">
                 <RefreshCw size={17} />
                 Tải lại trạng thái
               </button>

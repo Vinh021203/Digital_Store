@@ -31,6 +31,21 @@ function getStorageBucket() {
     return process.env.SUPABASE_STORAGE_BUCKET || 'product-files';
 }
 
+async function isCatalogMode(adminClient: ReturnType<typeof createAdminClient>) {
+    const { data, error } = await adminClient
+        .from('site_settings')
+        .select('value')
+        .eq('key', 'site_mode')
+        .maybeSingle();
+
+    if (error) {
+        console.error('Site mode check error:', error);
+        return false;
+    }
+
+    return data?.value === 'catalog';
+}
+
 function getStoragePath(fileUrl: string) {
     const bucket = getStorageBucket();
     let path = fileUrl.trim();
@@ -150,6 +165,13 @@ export async function GET(
 
         // Use admin client for database operations (bypasses RLS)
         const adminClient = createAdminClient();
+
+        if (await isCatalogMode(adminClient)) {
+            return NextResponse.json(
+                { error: 'Downloads are temporarily disabled while the website is in catalog mode.' },
+                { status: 403 }
+            );
+        }
 
         // Check if user has valid license for this product
         // Use order + limit to get latest license if user has multiple
@@ -348,6 +370,13 @@ export async function POST(
         }
 
         const adminClient = createAdminClient();
+
+        if (await isCatalogMode(adminClient)) {
+            return NextResponse.json(
+                { error: 'Downloads are temporarily disabled while the website is in catalog mode.' },
+                { status: 403 }
+            );
+        }
 
         // Check license
         const { data: license } = await adminClient
