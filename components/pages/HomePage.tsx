@@ -2460,15 +2460,15 @@ const HomePage = ({
                 </h3>
                 <p className="text-sm md:text-base text-slate-800 font-medium leading-relaxed mb-6 md:mb-8 max-w-xl">
                   {isCatalogMode
-                    ? 'Tham gia chương trình affiliate của Web Giá Rẻ - Portfolio, chia sẻ link giới thiệu và nhận ghi nhận khi khách để lại nhu cầu tư vấn giao diện website, landing page hoặc dự án web.'
-                    : 'Tham gia chương trình affiliate của Web Giá Rẻ - Portfolio, chia sẻ link giới thiệu và nhận ghi nhận khi khách để lại nhu cầu tư vấn giao diện website, landing page hoặc dự án web.'}
+                    ? 'Tham gia kênh đối tác giới thiệu của Web Giá Rẻ - Portfolio, chia sẻ link demo và ghi nhận khi khách để lại nhu cầu tư vấn giao diện website, landing page hoặc dự án web.'
+                    : 'Tham gia kênh đối tác giới thiệu của Web Giá Rẻ - Portfolio, chia sẻ link demo và ghi nhận khi khách để lại nhu cầu tư vấn giao diện website, landing page hoặc dự án web.'}
                 </p>
               </div>
               <Link
                 href="/affiliate"
                 className="self-start inline-flex items-center justify-center px-6 py-3 md:px-8 md:py-3.5 rounded-full border-2 border-[#0b0f19] text-[#0b0f19] hover:bg-[#0b0f19] hover:text-white font-semibold text-sm transition-all duration-300 select-none bg-transparent"
               >
-                Tham gia affiliate
+                Trở thành đối tác
               </Link>
             </div>
 

@@ -85,7 +85,7 @@ export const SettingsView = ({ user }: SettingsViewProps) => {
         }
 
         if (amount < 100000) {
-            addToast('Số tiền rút tối thiểu là 100.000₫', 'error');
+            addToast('Giá trị đối soát tối thiểu là 100.000₫', 'error');
             return;
         }
 
@@ -99,7 +99,7 @@ export const SettingsView = ({ user }: SettingsViewProps) => {
                 account_info: accountInfo
             });
 
-            addToast('Yêu cầu rút tiền đã được gửi thành công!', 'success');
+            addToast('Yêu cầu đối soát đã được gửi thành công!', 'success');
             setShowWithdrawModal(false);
             setWithdrawAmount('');
             loadData();
@@ -126,22 +126,23 @@ export const SettingsView = ({ user }: SettingsViewProps) => {
     return (
         <div className="space-y-6">
             {/* Balance & Withdraw Card */}
-            <div className="bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl p-6 text-white">
+            <div className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 rounded-[1.5rem] p-6 text-white shadow-xl shadow-slate-900/10">
+                <div className="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-orange-500/20 blur-3xl" />
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                    <div>
-                        <p className="text-orange-100 text-sm mb-1">Số dư khả dụng</p>
+                    <div className="relative">
+                        <p className="text-orange-200 text-sm font-bold mb-1">Số dư khả dụng</p>
                         <p className="text-3xl font-black">{availableBalance.toLocaleString('vi-VN')}₫</p>
                     </div>
                     <button
                         onClick={() => setShowWithdrawModal(true)}
                         disabled={availableBalance < 100000}
-                        className="flex items-center justify-center gap-2 bg-white text-orange-600 px-6 py-3 rounded-xl font-bold hover:bg-orange-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="relative flex items-center justify-center gap-2 bg-white text-slate-950 px-6 py-3 rounded-2xl font-black hover:-translate-y-0.5 hover:bg-orange-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        <Wallet size={18} /> Rút tiền
+                        <Wallet size={18} /> Gửi đối soát
                     </button>
                 </div>
                 {availableBalance < 100000 && (
-                    <p className="mt-3 text-orange-100 text-sm">⚠️ Số dư tối thiểu để rút tiền là 100.000₫</p>
+                    <p className="relative mt-3 text-slate-300 text-sm">Giá trị tối thiểu để đối soát là 100.000₫</p>
                 )}
             </div>
 
@@ -151,7 +152,7 @@ export const SettingsView = ({ user }: SettingsViewProps) => {
                     <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl">
                         <h3 className="text-xl font-black text-slate-900 mb-4 flex items-center gap-2">
                             <Wallet className="text-orange-600" size={22} />
-                            Yêu cầu rút tiền
+                            Yêu cầu đối soát
                         </h3>
                         <form onSubmit={handleWithdraw} className="space-y-4">
                             <div>
@@ -190,10 +191,10 @@ export const SettingsView = ({ user }: SettingsViewProps) => {
             )}
 
             {/* Withdrawal History */}
-            <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+            <div className="bg-white rounded-[1.5rem] border border-slate-200 overflow-hidden shadow-sm">
                 <div className="p-5 border-b border-slate-100 flex items-center gap-2">
                     <CreditCard className="text-orange-600" size={18} />
-                    <h2 className="font-bold text-slate-900">Lịch sử rút tiền</h2>
+                    <h2 className="font-bold text-slate-900">Lịch sử đối soát</h2>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
@@ -221,7 +222,7 @@ export const SettingsView = ({ user }: SettingsViewProps) => {
                                 <tr>
                                     <td colSpan={4} className="px-5 py-10 text-center text-slate-400 text-sm">
                                         <CreditCard size={32} className="mx-auto mb-2 text-slate-200" />
-                                        Chưa có lịch sử rút tiền
+                                        Chưa có lịch sử đối soát
                                     </td>
                                 </tr>
                             )}
@@ -231,15 +232,15 @@ export const SettingsView = ({ user }: SettingsViewProps) => {
             </div>
 
             {/* Bank Info Settings */}
-            <div className="bg-white rounded-2xl border border-slate-100 p-6">
+            <div className="bg-white rounded-[1.5rem] border border-slate-200 p-6 shadow-sm">
                 <h2 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
                     <Building2 size={18} className="text-orange-600" />
                     Thông tin xác nhận tư vấn
                 </h2>
 
-                <div className="flex items-center gap-3 mb-6 p-4 bg-orange-50 rounded-xl border border-orange-100 text-orange-800 text-sm">
+                <div className="flex items-center gap-3 mb-6 p-4 bg-orange-50 rounded-2xl border border-orange-100 text-orange-800 text-sm">
                     <Lock size={18} />
-                    <p>Thông tin xác nhận tư vấn được bảo mật và chỉ dùng để chuyển khoản hoa hồng.</p>
+                    <p>Thông tin xác nhận tư vấn được bảo mật và chỉ dùng để đối soát quyền lợi đối tác.</p>
                 </div>
 
                 <form onSubmit={handleSave} className="space-y-4">
@@ -297,7 +298,7 @@ export const SettingsView = ({ user }: SettingsViewProps) => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="bg-orange-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-orange-600 transition-colors shadow-lg shadow-orange-500/20 flex items-center gap-2 disabled:opacity-70"
+                            className="bg-orange-500 text-white px-6 py-3 rounded-2xl font-bold hover:-translate-y-0.5 hover:bg-orange-600 transition shadow-lg shadow-orange-500/20 flex items-center gap-2 disabled:opacity-70"
                         >
                             {loading ? 'Đang lưu...' : <><Save size={18} /> Lưu thay đổi</>}
                         </button>
@@ -306,17 +307,17 @@ export const SettingsView = ({ user }: SettingsViewProps) => {
             </div>
 
             {/* Notification Settings */}
-            <div className="bg-white rounded-2xl border border-slate-100 p-6">
+            <div className="bg-white rounded-[1.5rem] border border-slate-200 p-6 shadow-sm">
                 <h2 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
                     <Bell size={18} className="text-orange-600" />
                     Cấu hình thông báo
                 </h2>
                 <div className="space-y-3">
-                    <label className="flex items-center justify-between cursor-pointer p-3 hover:bg-slate-50 rounded-xl transition-colors">
+                    <label className="flex items-center justify-between cursor-pointer p-4 hover:bg-slate-50 rounded-2xl transition-colors border border-transparent hover:border-slate-100">
                         <div className="flex items-center gap-3">
                             <div className="p-2.5 bg-orange-100 text-orange-600 rounded-xl"><DollarSign size={18} /></div>
                             <div>
-                                <p className="font-bold text-slate-900 text-sm">Thông báo hoa hồng mới</p>
+                                <p className="font-bold text-slate-900 text-sm">Thông báo quyền lợi mới</p>
                                 <p className="text-xs text-slate-500">Nhận email khi có yêu cầu thành công</p>
                             </div>
                         </div>
@@ -325,7 +326,7 @@ export const SettingsView = ({ user }: SettingsViewProps) => {
                             <div className="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:bg-orange-500 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5 shadow-inner"></div>
                         </div>
                     </label>
-                    <label className="flex items-center justify-between cursor-pointer p-3 hover:bg-slate-50 rounded-xl transition-colors">
+                    <label className="flex items-center justify-between cursor-pointer p-4 hover:bg-slate-50 rounded-2xl transition-colors border border-transparent hover:border-slate-100">
                         <div className="flex items-center gap-3">
                             <div className="p-2.5 bg-blue-100 text-blue-600 rounded-xl"><Bell size={18} /></div>
                             <div>

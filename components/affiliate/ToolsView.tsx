@@ -23,7 +23,7 @@ export const ToolsView = ({ user }: ToolsViewProps) => {
         if (!genLink) return;
         let cleanLink = genLink.split('?')[0];
         setResultLink(`${cleanLink}?ref=${user.affiliateCode}`);
-        addToast('Đã tạo link affiliate thành công!', 'success');
+        addToast('Đã tạo link giới thiệu thành công!', 'success');
     };
 
     const handleCopy = (text: string, id?: string) => {
@@ -45,15 +45,16 @@ export const ToolsView = ({ user }: ToolsViewProps) => {
     return (
         <div className="space-y-6">
             {/* Link Generator */}
-            <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
-                <div className="bg-gradient-to-r from-orange-500 to-amber-500 p-5 text-white">
+            <div className="bg-white rounded-[1.5rem] border border-slate-200 overflow-hidden shadow-sm">
+                <div className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 text-white">
+                    <div className="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-orange-500/20 blur-3xl" />
                     <div className="flex items-center gap-3">
-                        <div className="w-11 h-11 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center">
+                        <div className="w-12 h-12 bg-white/10 border border-white/10 backdrop-blur rounded-2xl flex items-center justify-center">
                             <LinkIcon size={22} />
                         </div>
                         <div>
-                            <h2 className="text-xl font-black">Tạo Link Affiliate</h2>
-                            <p className="text-orange-100 text-sm">Dán link bất kỳ để gắn mã giới thiệu của bạn</p>
+                            <h2 className="text-2xl font-black">Tạo Link Giới Thiệu</h2>
+                            <p className="text-slate-300 text-sm">Dán link bất kỳ để gắn mã giới thiệu của bạn</p>
                         </div>
                     </div>
                 </div>
@@ -63,14 +64,14 @@ export const ToolsView = ({ user }: ToolsViewProps) => {
                         <input
                             type="url"
                             placeholder="Ví dụ: https://webgiare.id.vn/product/giao-dien-website"
-                            className="flex-1 border-2 border-slate-200 rounded-xl px-4 py-3 focus:border-orange-500 outline-none transition-colors"
+                            className="flex-1 border-2 border-slate-200 rounded-2xl px-4 py-3.5 focus:border-orange-500 outline-none transition-colors"
                             value={genLink}
                             onChange={(e) => setGenLink(e.target.value)}
                             required
                         />
                         <button
                             type="submit"
-                            className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-6 py-3 rounded-xl transition-colors shadow-lg shadow-orange-500/20 flex items-center justify-center gap-2"
+                            className="bg-orange-500 hover:bg-orange-600 text-white font-black px-6 py-3 rounded-2xl transition hover:-translate-y-0.5 shadow-lg shadow-orange-500/20 flex items-center justify-center gap-2"
                         >
                             <LinkIcon size={18} />
                             Tạo Link
@@ -78,15 +79,15 @@ export const ToolsView = ({ user }: ToolsViewProps) => {
                     </form>
 
                     {resultLink && (
-                        <div className="bg-orange-50 border-2 border-orange-200 rounded-xl p-4">
-                            <p className="text-xs font-bold text-orange-600 uppercase tracking-wider mb-2">Link Affiliate của bạn:</p>
+                        <div className="bg-orange-50 border-2 border-orange-200 rounded-2xl p-4">
+                            <p className="text-xs font-bold text-orange-600 uppercase tracking-wider mb-2">Link giới thiệu của bạn:</p>
                             <div className="flex flex-col sm:flex-row items-stretch gap-3">
                                 <div className="flex-1 bg-white border border-orange-200 p-3 rounded-lg font-mono text-sm text-slate-600 break-all">
                                     {resultLink}
                                 </div>
                                 <button
                                     onClick={() => handleCopy(resultLink)}
-                                    className="flex items-center justify-center gap-2 bg-orange-500 text-white px-5 py-3 rounded-lg font-bold hover:bg-orange-600 transition-colors"
+                                    className="flex items-center justify-center gap-2 bg-orange-500 text-white px-5 py-3 rounded-xl font-bold hover:bg-orange-600 transition-colors"
                                 >
                                     <Copy size={16} /> Copy
                                 </button>
@@ -97,7 +98,7 @@ export const ToolsView = ({ user }: ToolsViewProps) => {
             </div>
 
             {/* Quick Links */}
-            <div className="bg-white rounded-2xl border border-slate-100 p-6">
+            <div className="bg-white rounded-[1.5rem] border border-slate-200 p-6 shadow-sm">
                 <h2 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
                     <Share2 size={18} className="text-orange-600" />
                     Link nhanh
@@ -110,7 +111,7 @@ export const ToolsView = ({ user }: ToolsViewProps) => {
                         return (
                             <div
                                 key={item.id}
-                                className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100 hover:border-orange-200 hover:bg-orange-50/50 transition-all group"
+                                className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:-translate-y-0.5 hover:border-orange-200 hover:bg-orange-50/50 hover:shadow-lg hover:shadow-orange-500/5 transition-all group"
                             >
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center group-hover:bg-orange-500 transition-colors">
@@ -135,13 +136,13 @@ export const ToolsView = ({ user }: ToolsViewProps) => {
             </div>
 
             {/* Banner Downloads */}
-            <div className="bg-white rounded-2xl border border-slate-100 p-6">
+            <div className="bg-white rounded-[1.5rem] border border-slate-200 p-6 shadow-sm">
                 <h2 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
                     <ExternalLink size={18} className="text-orange-600" />
                     Banner quảng cáo
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="border-2 border-slate-200 border-dashed rounded-xl p-4 bg-slate-50 hover:border-orange-300 hover:bg-orange-50/30 transition-all">
+                    <div className="border-2 border-slate-200 border-dashed rounded-2xl p-4 bg-slate-50 hover:-translate-y-1 hover:border-orange-300 hover:bg-orange-50/30 hover:shadow-xl transition-all">
                         <div className="aspect-[2/1] bg-gradient-to-r from-orange-500 to-amber-500 rounded-lg mb-4 flex items-center justify-center text-white font-bold">
                             Banner 600x300
                         </div>
@@ -156,7 +157,7 @@ export const ToolsView = ({ user }: ToolsViewProps) => {
                             </button>
                         </div>
                     </div>
-                    <div className="border-2 border-slate-200 border-dashed rounded-xl p-4 bg-slate-50 hover:border-orange-300 hover:bg-orange-50/30 transition-all">
+                    <div className="border-2 border-slate-200 border-dashed rounded-2xl p-4 bg-slate-50 hover:-translate-y-1 hover:border-orange-300 hover:bg-orange-50/30 hover:shadow-xl transition-all">
                         <div className="aspect-square max-h-40 mx-auto bg-gradient-to-br from-orange-500 to-amber-500 rounded-lg mb-4 flex items-center justify-center text-white font-bold">
                             300x300
                         </div>

@@ -106,18 +106,18 @@ export default function AffiliateDashboardPage() {
     const handleCopy = () => {
         navigator.clipboard.writeText(affiliateLink);
         setCopied(true);
-        addToast('Đã sao chép link affiliate', 'success');
+        addToast('Đã sao chép link giới thiệu', 'success');
         setTimeout(() => setCopied(false), 2000);
     };
 
     const handleWithdraw = async () => {
         const amount = parseInt(withdrawAmount);
         if (!user?.id || isNaN(amount) || amount < 500000) {
-            addToast('Số tiền tối thiểu để rút là 500.000₫', 'error');
+            addToast('Giá trị đối soát tối thiểu là 500.000₫', 'error');
             return;
         }
         if (amount > stats.availableBalance) {
-            addToast('Số dư không đủ', 'error');
+            addToast('Giá trị khả dụng không đủ', 'error');
             return;
         }
 
@@ -127,7 +127,7 @@ export default function AffiliateDashboardPage() {
                 user_id: user.id,
                 amount,
             });
-            addToast('Yêu cầu rút tiền đã được gửi!', 'success');
+            addToast('Yêu cầu đối soát đã được gửi!', 'success');
             setShowWithdrawModal(false);
             setWithdrawAmount('');
             loadData();
@@ -164,10 +164,10 @@ export default function AffiliateDashboardPage() {
     // Sidebar menu items - minimal
     const menuItems = [
         { id: 'dashboard', label: 'Tổng quan', icon: BarChart3 },
-        { id: 'campaigns', label: 'Chiến dịch', icon: Megaphone },
+        { id: 'campaigns', label: 'Mẫu giới thiệu', icon: Megaphone },
         { id: 'referrals', label: 'Giới thiệu', icon: Users },
-        { id: 'withdrawals', label: 'Rút tiền', icon: Wallet },
-        { id: 'tools', label: 'Công cụ', icon: Link2 },
+        { id: 'withdrawals', label: 'Đối soát', icon: Wallet },
+        { id: 'tools', label: 'Công cụ link', icon: Link2 },
         { id: 'settings', label: 'Cài đặt', icon: Settings },
     ];
 
@@ -183,51 +183,79 @@ export default function AffiliateDashboardPage() {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50">
-            {/* Desktop Sidebar - Dark Premium Theme */}
-            <aside className="hidden lg:flex lg:w-20 lg:flex-col lg:fixed lg:inset-y-0 bg-slate-900 border-r border-slate-800">
-                <div className="flex flex-col h-full items-center py-4">
+        <div className="min-h-screen bg-[#f5f7fb]">
+            {/* Desktop Sidebar - Partner Portal Theme */}
+            <aside className="hidden lg:flex lg:w-72 lg:flex-col lg:fixed lg:inset-y-0 bg-slate-950 border-r border-white/10">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(249,115,22,0.18),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(14,165,233,0.12),transparent_30%)]" />
+                <div className="relative flex flex-col h-full p-4">
                     {/* Logo */}
-                    <Link href="/" className="w-12 h-12 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl flex items-center justify-center mb-6 hover:scale-105 transition-transform shadow-lg shadow-orange-500/30">
-                        <Gift size={24} className="text-white" />
+                    <Link href="/" className="mb-6 flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3 hover:bg-white/10 transition">
+                        <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-amber-500 rounded-2xl flex items-center justify-center shadow-lg shadow-orange-500/30">
+                            <Gift size={24} className="text-white" />
+                        </div>
+                        <div>
+                            <p className="text-white font-black leading-tight">Partner Portal</p>
+                            <p className="text-xs font-bold text-slate-400">Web Giá Rẻ Portfolio</p>
+                        </div>
                     </Link>
 
-                    {/* Navigation - Icon only */}
-                    <nav className="flex-1 flex flex-col items-center space-y-2">
+                    {/* Navigation */}
+                    <nav className="flex-1 space-y-2">
                         {menuItems.map(item => (
                             <button
                                 key={item.id}
                                 onClick={() => setActiveTab(item.id as TabType)}
                                 title={item.label}
-                                className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all group relative ${activeTab === item.id
-                                    ? 'bg-gradient-to-br from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/30'
-                                    : 'text-slate-400 hover:bg-slate-800 hover:text-orange-400'
+                                className={`w-full rounded-2xl flex items-center gap-3 px-4 py-3 transition-all group relative ${activeTab === item.id
+                                    ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/25'
+                                    : 'text-slate-400 hover:bg-white/10 hover:text-white'
                                     }`}
                             >
-                                <item.icon size={22} />
-                                {/* Tooltip */}
-                                <span className="absolute left-full ml-3 px-3 py-1.5 bg-slate-800 text-white text-xs font-medium rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap transition-opacity border border-slate-700">
-                                    {item.label}
+                                <span className={`flex h-10 w-10 items-center justify-center rounded-xl ${activeTab === item.id ? 'bg-white/15' : 'bg-white/5 group-hover:bg-white/10'}`}>
+                                    <item.icon size={20} />
                                 </span>
+                                <span className="text-sm font-black">{item.label}</span>
+                                {activeTab === item.id && <span className="ml-auto h-2 w-2 rounded-full bg-white" />}
                             </button>
                         ))}
                     </nav>
 
+                    <div className="mb-4 rounded-2xl border border-white/10 bg-white/5 p-4">
+                        <div className="flex items-center gap-3">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-500/15 text-orange-300">
+                                <Sparkles size={20} />
+                            </div>
+                            <div>
+                                <p className="text-sm font-black text-white">Mã đối tác</p>
+                                <p className="text-xs font-mono font-bold text-orange-300">{stats.affiliateCode || 'SHOPWEBRE'}</p>
+                            </div>
+                        </div>
+                        <button
+                            onClick={handleCopy}
+                            className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-black text-slate-950 transition hover:-translate-y-0.5 hover:bg-orange-50"
+                        >
+                            {copied ? <CheckCircle size={16} className="text-emerald-500" /> : <Copy size={16} />}
+                            {copied ? 'Đã copy link' : 'Copy link'}
+                        </button>
+                    </div>
+
                     {/* Bottom Actions */}
-                    <div className="flex flex-col items-center space-y-2 pt-4 border-t border-slate-800">
+                    <div className="space-y-2 pt-4 border-t border-white/10">
                         <Link
                             href="/"
                             title="Về trang chủ"
-                            className="w-12 h-12 rounded-xl flex items-center justify-center text-slate-400 hover:bg-slate-800 hover:text-orange-400 transition-all"
+                            className="flex items-center gap-3 rounded-2xl px-4 py-3 text-slate-400 hover:bg-white/10 hover:text-white transition-all"
                         >
-                            <Home size={22} />
+                            <Home size={20} />
+                            <span className="text-sm font-bold">Về trang chủ</span>
                         </Link>
                         <button
                             onClick={() => signOut()}
                             title="Đăng xuất"
-                            className="w-12 h-12 rounded-xl flex items-center justify-center text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition-all"
+                            className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-slate-400 hover:bg-red-500/10 hover:text-red-300 transition-all"
                         >
-                            <LogOut size={22} />
+                            <LogOut size={20} />
+                            <span className="text-sm font-bold">Đăng xuất</span>
                         </button>
                     </div>
                 </div>
@@ -292,10 +320,10 @@ export default function AffiliateDashboardPage() {
             )}
 
             {/* Main Content Area */}
-            <div className="lg:pl-20 min-h-screen flex flex-col">
+            <div className="lg:pl-72 min-h-screen flex flex-col">
                 {/* Top Header with User Info & Stats */}
-                <header className="bg-white border-b border-slate-200 sticky top-0 z-30">
-                    <div className="flex items-center justify-between px-4 sm:px-6 py-3">
+                <header className="bg-white/85 border-b border-slate-200 sticky top-0 z-30 backdrop-blur-xl">
+                    <div className="flex items-center justify-between px-4 sm:px-6 py-4">
                         {/* Left - Menu & Title */}
                         <div className="flex items-center gap-3">
                             <button
@@ -305,7 +333,8 @@ export default function AffiliateDashboardPage() {
                                 <Menu size={20} />
                             </button>
                             <div>
-                                <h1 className="font-black text-slate-900 text-lg">
+                                <p className="hidden sm:block text-xs font-black uppercase tracking-widest text-orange-500">Đối tác giới thiệu</p>
+                                <h1 className="font-black text-slate-950 text-xl">
                                     {menuItems.find(m => m.id === activeTab)?.label || 'Dashboard'}
                                 </h1>
                             </div>
@@ -316,7 +345,7 @@ export default function AffiliateDashboardPage() {
                             {/* Balance - Desktop */}
                             <button
                                 onClick={() => setShowWithdrawModal(true)}
-                                className="hidden sm:flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-4 py-2 rounded-xl font-bold text-sm hover:shadow-lg transition-all"
+                                className="hidden sm:flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-4 py-2.5 rounded-2xl font-black text-sm shadow-lg shadow-orange-500/20 transition hover:-translate-y-0.5 hover:shadow-orange-500/30"
                             >
                                 <Wallet size={16} />
                                 <span>{stats.availableBalance.toLocaleString('vi-VN')}₫</span>
@@ -325,9 +354,9 @@ export default function AffiliateDashboardPage() {
                             {/* Copy Link */}
                             <button
                                 onClick={handleCopy}
-                                className={`hidden md:flex items-center gap-2 px-3 py-2 rounded-xl font-bold text-sm transition-all ${copied
+                                className={`hidden md:flex items-center gap-2 px-4 py-2.5 rounded-2xl font-black text-sm transition-all ${copied
                                     ? 'bg-green-500 text-white'
-                                    : 'bg-slate-100 text-slate-600 hover:bg-orange-100 hover:text-orange-600'
+                                    : 'bg-slate-100 text-slate-600 hover:-translate-y-0.5 hover:bg-orange-100 hover:text-orange-600'
                                     }`}
                             >
                                 {copied ? <CheckCircle size={16} /> : <Copy size={16} />}
@@ -337,22 +366,22 @@ export default function AffiliateDashboardPage() {
                             <button
                                 type="button"
                                 onClick={() => setActiveTab('withdrawals')}
-                                className="p-2 bg-slate-100 hover:bg-slate-200 rounded-xl relative"
-                                aria-label="Xem lịch sử rút tiền"
-                                title="Xem lịch sử rút tiền"
+                                className="p-2.5 bg-slate-100 hover:bg-slate-200 rounded-2xl relative transition hover:-translate-y-0.5"
+                                aria-label="Xem lịch sử đối soát"
+                                title="Xem lịch sử đối soát"
                             >
                                 <Bell size={18} className="text-slate-600" />
                                 <span className="absolute top-1 right-1 w-2 h-2 bg-orange-500 rounded-full"></span>
                             </button>
 
-                            <button onClick={loadData} className="p-2 bg-slate-100 hover:bg-slate-200 rounded-xl">
+                            <button onClick={loadData} className="p-2.5 bg-slate-100 hover:bg-slate-200 rounded-2xl transition hover:-translate-y-0.5">
                                 <RefreshCw size={18} className={`text-slate-600 ${loading ? 'animate-spin' : ''}`} />
                             </button>
 
                             {/* User Avatar with Dropdown */}
                             <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
                                 <div className="hidden sm:block text-right">
-                                    <p className="text-sm font-bold text-slate-900 leading-tight">{profile?.name || 'Affiliate'}</p>
+                                    <p className="text-sm font-bold text-slate-900 leading-tight">{profile?.name || 'Đối tác'}</p>
                                     <p className="text-xs text-orange-600 font-mono">{stats.affiliateCode}</p>
                                 </div>
                                 <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-orange-500/20">
@@ -363,9 +392,9 @@ export default function AffiliateDashboardPage() {
                     </div>
 
                     {/* Affiliate Link Bar - Compact */}
-                    <div className="px-4 sm:px-6 pb-3">
-                        <div className="flex items-center gap-2 bg-slate-50 rounded-xl p-1.5 border border-slate-200">
-                            <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <div className="px-4 sm:px-6 pb-4">
+                        <div className="flex items-center gap-2 bg-slate-50 rounded-2xl p-2 border border-slate-200 shadow-sm">
+                            <div className="w-9 h-9 bg-orange-100 rounded-xl flex items-center justify-center flex-shrink-0">
                                 <Link2 size={14} className="text-orange-600" />
                             </div>
                             <input
@@ -376,7 +405,7 @@ export default function AffiliateDashboardPage() {
                             />
                             <button
                                 onClick={handleCopy}
-                                className={`flex-shrink-0 px-3 py-1.5 rounded-lg font-bold text-xs transition-all ${copied ? 'bg-green-500 text-white' : 'bg-orange-500 text-white hover:bg-orange-600'
+                                className={`flex-shrink-0 px-4 py-2 rounded-xl font-black text-xs transition-all ${copied ? 'bg-green-500 text-white' : 'bg-orange-500 text-white hover:bg-orange-600'
                                     }`}
                             >
                                 {copied ? '✓' : 'Copy'}
@@ -386,12 +415,12 @@ export default function AffiliateDashboardPage() {
                 </header>
 
                 {/* Content Area */}
-                <main className="flex-1 p-4 sm:p-6 pb-24 lg:pb-6">
+                <main className="flex-1 p-4 sm:p-6 pb-24 lg:pb-8">
                     {activeTab === 'dashboard' ? (
                         <DashboardOverview
                             user={{
                                 id: user?.id || '',
-                                name: profile?.name || 'Affiliate',
+                                name: profile?.name || 'Đối tác',
                                 affiliateCode: stats.affiliateCode
                             }}
                             handleCopyLink={handleCopy}
@@ -407,38 +436,38 @@ export default function AffiliateDashboardPage() {
                         <div className="space-y-6">
                             {/* Stats Row */}
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                                <div className="bg-white rounded-xl p-4 border border-slate-100">
+                                <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg">
                                     <div className="flex items-center gap-2 mb-1">
                                         <Users size={16} className="text-orange-600" />
                                         <span className="text-xs text-slate-500">Tổng</span>
                                     </div>
                                     <p className="text-2xl font-black text-slate-900">{referrals.length}</p>
                                 </div>
-                                <div className="bg-white rounded-xl p-4 border border-slate-100">
+                                <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg">
                                     <div className="flex items-center gap-2 mb-1">
                                         <CheckCircle size={16} className="text-green-600" />
                                         <span className="text-xs text-slate-500">Duyệt</span>
                                     </div>
                                     <p className="text-2xl font-black text-slate-900">{referrals.filter(r => r.status === 'approved' || r.status === 'paid').length}</p>
                                 </div>
-                                <div className="bg-white rounded-xl p-4 border border-slate-100">
+                                <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg">
                                     <div className="flex items-center gap-2 mb-1">
                                         <Clock size={16} className="text-amber-600" />
                                         <span className="text-xs text-slate-500">Chờ</span>
                                     </div>
                                     <p className="text-2xl font-black text-slate-900">{referrals.filter(r => r.status === 'pending').length}</p>
                                 </div>
-                                <div className="bg-white rounded-xl p-4 border border-slate-100">
+                                <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg">
                                     <div className="flex items-center gap-2 mb-1">
                                         <DollarSign size={16} className="text-blue-600" />
-                                        <span className="text-xs text-slate-500">Hoa hồng</span>
+                                        <span className="text-xs text-slate-500">Quyền lợi</span>
                                     </div>
                                     <p className="text-2xl font-black text-slate-900">{(stats.totalCommission / 1000).toFixed(0)}K</p>
                                 </div>
                             </div>
 
                             {/* Referrals List */}
-                            <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+                            <div className="bg-white rounded-[1.5rem] border border-slate-200 overflow-hidden shadow-sm">
                                 <div className="p-4 border-b border-slate-100 flex items-center justify-between">
                                     <h3 className="font-bold text-slate-900">Danh sách giới thiệu</h3>
                                     <span className="bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full text-xs font-bold">
@@ -454,7 +483,7 @@ export default function AffiliateDashboardPage() {
                                     ) : (
                                         <div className="space-y-2">
                                             {referrals.map(ref => (
-                                                <div key={ref.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-xl hover:bg-orange-50 transition-colors">
+                                                <div key={ref.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl hover:bg-orange-50 transition-colors">
                                                     <div className="flex items-center gap-3">
                                                         <div className="w-9 h-9 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 font-bold text-sm">
                                                             {ref.referred?.name?.charAt(0) || '?'}
@@ -480,7 +509,7 @@ export default function AffiliateDashboardPage() {
                             {/* Balance & Quick Stats */}
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 {/* Main Balance Card */}
-                                <div className="md:col-span-2 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-2xl p-6 text-white relative overflow-hidden">
+                                <div className="md:col-span-2 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 rounded-[1.5rem] p-6 text-white relative overflow-hidden shadow-xl shadow-slate-900/10">
                                     <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:30px_30px]" />
                                     <div className="absolute -top-20 -right-20 w-64 h-64 bg-orange-500/20 rounded-full blur-3xl" />
                                     <div className="relative z-10">
@@ -494,14 +523,14 @@ export default function AffiliateDashboardPage() {
                                         <div className="flex flex-wrap gap-3">
                                             <button
                                                 onClick={() => setShowWithdrawModal(true)}
-                                                className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-6 py-3 rounded-xl font-bold hover:shadow-lg hover:shadow-orange-500/30 transition-all"
+                                                className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-6 py-3 rounded-2xl font-bold hover:-translate-y-0.5 hover:shadow-lg hover:shadow-orange-500/30 transition-all"
                                             >
                                                 <ArrowUpRight size={18} />
-                                                Rút tiền
+                                                Gửi đối soát
                                             </button>
                                             <button
                                                 onClick={() => setShowAddPaymentModal(true)}
-                                                className="flex items-center gap-2 bg-white/10 border border-white/20 text-white px-6 py-3 rounded-xl font-bold hover:bg-white/20 transition-all"
+                                                className="flex items-center gap-2 bg-white/10 border border-white/20 text-white px-6 py-3 rounded-2xl font-bold hover:-translate-y-0.5 hover:bg-white/20 transition-all"
                                             >
                                                 <Plus size={18} />
                                                 Thêm tài khoản
@@ -512,18 +541,18 @@ export default function AffiliateDashboardPage() {
 
                                 {/* Quick Stats */}
                                 <div className="space-y-4">
-                                    <div className="bg-white rounded-xl p-4 border border-slate-100">
+                                    <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
                                         <div className="flex items-center gap-3 mb-2">
                                             <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
                                                 <CheckCircle size={20} className="text-green-600" />
                                             </div>
                                             <div>
-                                                <p className="text-xs text-slate-500">Đã rút</p>
+                                                <p className="text-xs text-slate-500">Đã đối soát</p>
                                                 <p className="text-lg font-black text-slate-900">{stats.paidOut.toLocaleString('vi-VN')}₫</p>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="bg-white rounded-xl p-4 border border-slate-100">
+                                    <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
                                         <div className="flex items-center gap-3 mb-2">
                                             <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
                                                 <Clock size={20} className="text-amber-600" />
@@ -538,7 +567,7 @@ export default function AffiliateDashboardPage() {
                             </div>
 
                             {/* Payment Methods */}
-                            <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+                            <div className="bg-white rounded-[1.5rem] border border-slate-200 overflow-hidden shadow-sm">
                                 <div className="p-4 border-b border-slate-100 flex items-center justify-between">
                                     <h3 className="font-bold text-slate-900 flex items-center gap-2">
                                         <CreditCard size={18} className="text-orange-600" />
@@ -559,7 +588,7 @@ export default function AffiliateDashboardPage() {
                                                 <Building2 size={28} className="text-slate-300" />
                                             </div>
                                             <p className="text-slate-500 font-medium mb-2">Chưa có tài khoản xác nhận tư vấn</p>
-                                            <p className="text-slate-400 text-sm mb-4">Thêm tài khoản ngân hàng hoặc ví điện tử để rút tiền</p>
+                                            <p className="text-slate-400 text-sm mb-4">Thêm tài khoản ngân hàng hoặc ví điện tử để đối soát quyền lợi</p>
                                             <button
                                                 onClick={() => setShowAddPaymentModal(true)}
                                                 className="inline-flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-orange-600"
@@ -617,11 +646,11 @@ export default function AffiliateDashboardPage() {
                             </div>
 
                             {/* Withdrawal History */}
-                            <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+                            <div className="bg-white rounded-[1.5rem] border border-slate-200 overflow-hidden shadow-sm">
                                 <div className="p-4 border-b border-slate-100 flex items-center justify-between">
                                     <h3 className="font-bold text-slate-900 flex items-center gap-2">
                                         <Clock size={18} className="text-orange-600" />
-                                        Lịch sử rút tiền
+                                        Lịch sử đối soát
                                     </h3>
                                     <span className="text-xs font-bold text-slate-400">{withdrawals.length} giao dịch</span>
                                 </div>
@@ -631,13 +660,13 @@ export default function AffiliateDashboardPage() {
                                             <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                                                 <CreditCard size={28} className="text-slate-300" />
                                             </div>
-                                            <p className="text-slate-500 font-medium">Chưa có lịch sử rút tiền</p>
-                                            <p className="text-slate-400 text-sm">Tạo yêu cầu rút tiền đầu tiên của bạn</p>
+                                            <p className="text-slate-500 font-medium">Chưa có lịch sử đối soát</p>
+                                            <p className="text-slate-400 text-sm">Tạo yêu cầu đối soát đầu tiên của bạn</p>
                                         </div>
                                     ) : (
                                         <div className="space-y-3">
                                             {withdrawals.map(wd => (
-                                                <div key={wd.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                                                <div key={wd.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl hover:bg-orange-50/60 transition">
                                                     <div className="flex items-center gap-3">
                                                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${wd.status === 'completed' ? 'bg-green-100' :
                                                             wd.status === 'pending' ? 'bg-amber-100' :
@@ -701,7 +730,7 @@ export default function AffiliateDashboardPage() {
                             <div className="flex items-center justify-between mb-3">
                                 <h3 className="text-lg font-black flex items-center gap-2">
                                     <Wallet size={20} />
-                                    Rút tiền
+                                    Đối soát quyền lợi
                                 </h3>
                                 <button onClick={() => setShowWithdrawModal(false)} className="p-1.5 hover:bg-white/10 rounded-lg">
                                     <X size={18} />
@@ -750,7 +779,7 @@ export default function AffiliateDashboardPage() {
 
                             {/* Payment Method Selection */}
                             <div>
-                                <label className="text-sm font-bold text-slate-700 mb-2 block">Phương thức nhận tiền</label>
+                                <label className="text-sm font-bold text-slate-700 mb-2 block">Phương thức đối soát</label>
                                 {paymentMethods.length === 0 ? (
                                     <button
                                         onClick={() => {
@@ -760,7 +789,7 @@ export default function AffiliateDashboardPage() {
                                         className="w-full flex items-center justify-center gap-2 py-4 border-2 border-dashed border-slate-200 rounded-xl text-slate-500 hover:border-orange-500 hover:text-orange-600 transition-all"
                                     >
                                         <Plus size={18} />
-                                        Thêm tài khoản nhận tiền
+                                        Thêm tài khoản đối soát
                                     </button>
                                 ) : (
                                     <div className="space-y-2">
@@ -801,7 +830,7 @@ export default function AffiliateDashboardPage() {
                                 className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-5 py-4 rounded-xl font-bold disabled:opacity-50 hover:shadow-lg hover:shadow-orange-500/30 transition-all"
                             >
                                 {withdrawing ? <Loader2 size={18} className="animate-spin" /> : <ArrowUpRight size={18} />}
-                                Xác nhận rút tiền
+                                Xác nhận đối soát
                             </button>
 
                             <p className="text-xs text-slate-400 text-center">

@@ -1,335 +1,428 @@
 'use client';
 
-import React, { useState, Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
-    Gift, Users, DollarSign, Link2, Copy, Check,
-    Home, ChevronRight, ArrowRight, Loader2, Sparkles,
-    TrendingUp, Wallet, Star, Shield, Zap, Target,
-    Share2, BarChart3, Award, Clock
+    ArrowRight,
+    BarChart3,
+    Check,
+    CheckCircle2,
+    ChevronRight,
+    ClipboardCheck,
+    Copy,
+    FileText,
+    Globe2,
+    Handshake,
+    Home,
+    Layers3,
+    Link2,
+    Loader2,
+    Megaphone,
+    MessageCircle,
+    MousePointerClick,
+    PenTool,
+    Send,
+    ShieldCheck,
+    Sparkles,
+    Star,
+    Target,
+    TrendingUp,
+    Users,
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useSupabaseAuth } from '@/context/SupabaseAuthContext';
 import { useToast } from '@/context/ToastContext';
 
 function AffiliatePageContent() {
-    const { user, profile } = useSupabaseAuth();
+    const router = useRouter();
+    const { user, profile, registerAffiliate } = useSupabaseAuth();
     const { addToast } = useToast();
     const [copied, setCopied] = useState(false);
+    const [registering, setRegistering] = useState(false);
 
-    const affiliateCode = profile?.affiliate_code || 'SHOPWEBRE';
-    const affiliateLink = typeof window !== 'undefined'
-        ? `${window.location.origin}?ref=${affiliateCode}`
-        : `https://webgiare.id.vn?ref=${affiliateCode}`;
+    const partnerCode = profile?.affiliate_code || 'PARTNER';
+    const partnerLink = typeof window !== 'undefined'
+        ? `${window.location.origin}?ref=${partnerCode}`
+        : `https://webgiare.id.vn?ref=${partnerCode}`;
 
-    const handleCopy = () => {
-        navigator.clipboard.writeText(affiliateLink);
+    const handleCopy = async () => {
+        await navigator.clipboard.writeText(partnerLink);
         setCopied(true);
-        addToast('Đã sao chép link affiliate!', 'success');
-        setTimeout(() => setCopied(false), 2000);
+        addToast('Đã sao chép link giới thiệu', 'success');
+        window.setTimeout(() => setCopied(false), 1800);
     };
 
-    // Stats data
-    const stats = [
-        { label: 'Hoa hồng', value: '20%', icon: DollarSign, color: 'from-emerald-500 to-green-600' },
-        { label: 'Thời hạn cookie', value: '30 ngày', icon: Clock, color: 'from-blue-500 to-indigo-600' },
-        { label: 'Xác nhận tư vấn', value: 'Hàng tháng', icon: Wallet, color: 'from-purple-500 to-pink-600' },
-        { label: 'Mẫu demo', value: '500+', icon: Gift, color: 'from-amber-500 to-orange-600' },
+    const handleJoin = async () => {
+        if (!user) {
+            router.push('/login?redirect=/affiliate');
+            return;
+        }
+
+        if (profile?.is_affiliate) {
+            router.push('/affiliate/dashboard');
+            return;
+        }
+
+        setRegistering(true);
+        try {
+            const { error } = await registerAffiliate();
+            if (error) throw error;
+            addToast('Đã kích hoạt hồ sơ đối tác giới thiệu', 'success');
+            router.push('/affiliate/dashboard');
+        } catch (error: any) {
+            addToast(error?.message || 'Không thể kích hoạt đối tác lúc này', 'error');
+        } finally {
+            setRegistering(false);
+        }
+    };
+
+    const metrics = [
+        { label: 'Ghi nhận nguồn', value: '30 ngày', icon: MousePointerClick },
+        { label: 'Hình thức', value: 'Lead tư vấn', icon: MessageCircle },
+        { label: 'Đối soát', value: 'Thủ công', icon: ClipboardCheck },
+        { label: 'Phù hợp', value: 'Creator/Agency', icon: Users },
     ];
 
-    // How it works steps
     const steps = [
         {
+            icon: Handshake,
+            title: 'Đăng ký đối tác',
+            desc: 'Kích hoạt hồ sơ đối tác và nhận mã giới thiệu riêng để chia sẻ.',
+        },
+        {
             icon: Link2,
-            title: 'Đăng ký & Nhận link',
-            desc: 'Tạo tài khoản affiliate miễn phí và nhận link giới thiệu độc quyền của bạn',
-            color: 'bg-blue-500'
+            title: 'Chia sẻ link demo',
+            desc: 'Gửi link website, mẫu demo hoặc bài viết cho người đang cần làm web.',
         },
         {
-            icon: Share2,
-            title: 'Chia sẻ mẫu demo',
-            desc: 'Chia sẻ link với bạn bè, cộng đồng qua mạng xã hội, blog hoặc email',
-            color: 'bg-purple-500'
+            icon: Send,
+            title: 'Khách gửi yêu cầu',
+            desc: 'Khi khách để lại form tư vấn, nguồn giới thiệu sẽ được ghi nhận.',
         },
         {
-            icon: Users,
-            title: 'Khách hàng tham khảo demo',
-            desc: 'Khi ai đó click vào link và gửi yêu cầu, bạn sẽ được ghi nhận hoa hồng',
-            color: 'bg-emerald-500'
-        },
-        {
-            icon: Wallet,
-            title: 'Nhận tiền hoa hồng',
-            desc: 'Hoa hồng được xác nhận tư vấn hàng tháng qua chuyển khoản ngân hàng',
-            color: 'bg-amber-500'
+            icon: CheckCircle2,
+            title: 'Đối soát quyền lợi',
+            desc: 'Sau khi nhu cầu được xác nhận, quyền lợi đối tác được xử lý thủ công.',
         },
     ];
 
-    // Benefits
+    const partnerTypes = [
+        'Freelancer thiết kế, marketing, content',
+        'Agency nhỏ cần thêm mẫu demo để tư vấn khách',
+        'Creator/blogger chia sẻ kiến thức làm website',
+        'Bạn bè giới thiệu khách cần landing page, portfolio hoặc dashboard',
+    ];
+
     const benefits = [
-        { icon: TrendingUp, title: 'Hoa hồng cao nhất', desc: 'Lên đến 20% cho mỗi yêu cầu' },
-        { icon: Clock, title: 'Cookie 30 ngày', desc: 'Theo dõi trong 30 ngày sau click' },
-        { icon: BarChart3, title: 'Dashboard chi tiết', desc: 'Theo dõi hiệu quả real-time' },
-        { icon: Shield, title: 'Xác nhận tư vấn đúng hạn', desc: 'Xác nhận tư vấn vào ngày 15 hàng tháng' },
-        { icon: Award, title: 'Bonus thưởng', desc: 'Thưởng thêm cho top affiliates' },
-        { icon: Zap, title: 'Hỗ trợ 24/7', desc: 'Team hỗ trợ riêng cho affiliates' },
+        {
+            icon: Layers3,
+            title: 'Kho demo dễ tư vấn',
+            desc: 'Dùng các mẫu portfolio, landing page, dashboard và template để khách hình dung nhanh phương án triển khai.',
+        },
+        {
+            icon: Globe2,
+            title: 'Gắn mã theo mọi link',
+            desc: 'Chia sẻ trang chủ, trang mẫu demo, blog hoặc form liên hệ, hệ thống vẫn có thể ghi nhận nguồn ref.',
+        },
+        {
+            icon: TrendingUp,
+            title: 'Theo dõi lead rõ ràng',
+            desc: 'Dashboard hiển thị lượt giới thiệu, trạng thái xác nhận và quyền lợi đang chờ đối soát.',
+        },
+        {
+            icon: ShieldCheck,
+            title: 'Phù hợp catalogue',
+            desc: 'Không checkout, không giỏ hàng công khai. Mọi nhu cầu được xử lý qua tư vấn để giữ site đúng định hướng demo.',
+        },
+    ];
+
+    const toolkits = [
+        { icon: Link2, title: 'Link giới thiệu', desc: 'Tự động gắn mã ref vào trang demo hoặc bài viết.' },
+        { icon: Megaphone, title: 'Mẫu demo nổi bật', desc: 'Chọn nhanh giao diện dễ tư vấn cho từng nhóm khách.' },
+        { icon: PenTool, title: 'Nội dung gợi ý', desc: 'Dùng blog/case study để tăng độ tin cậy trước khi khách gửi form.' },
+    ];
+
+    const faqs = [
+        {
+            q: 'Chương trình này có phải bán hàng trực tiếp không?',
+            a: 'Không. Site đang ở chế độ portfolio/catalogue, đối tác chỉ giới thiệu khách có nhu cầu tư vấn triển khai website hoặc landing page.',
+        },
+        {
+            q: 'Link giới thiệu dùng ở đâu?',
+            a: 'Bạn có thể chia sẻ trang chủ, trang mẫu demo, bài blog hoặc form liên hệ kèm mã ref. Khi khách gửi yêu cầu, hệ thống sẽ ghi nhận nguồn.',
+        },
+        {
+            q: 'Quyền lợi đối tác được tính như thế nào?',
+            a: 'Quyền lợi được đối soát thủ công theo chất lượng lead và dự án đã xác nhận, tránh tự động hóa kiểu checkout/bán hàng.',
+        },
     ];
 
     return (
-        <div className="min-h-screen bg-slate-50">
-            {/* Navigation Bar */}
-            <nav className="bg-white/80 backdrop-blur-md border-b border-slate-100 sticky top-0 z-50">
-                <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-                    <Link href="/" className="flex items-center gap-2 text-slate-600 hover:text-orange-600 transition-colors">
-                        <Home size={18} />
-                        <span className="font-medium text-sm">Về trang chủ</span>
+        <main className="min-h-screen bg-[#f6f8fb] font-sans text-slate-900">
+            <nav className="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur">
+                <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
+                    <Link href="/" className="inline-flex items-center gap-2 text-sm font-bold text-slate-600 transition hover:text-orange-600">
+                        <Home size={17} />
+                        Trang chủ
                     </Link>
-                    <div className="flex items-center gap-2 text-sm text-slate-500">
-                        <Link href="/" className="hover:text-orange-600">Trang chủ</Link>
+                    <div className="hidden items-center gap-2 text-sm font-bold text-slate-400 sm:flex">
+                        <span>Portfolio</span>
                         <ChevronRight size={14} />
-                        <span className="text-slate-900 font-medium">Affiliate</span>
+                        <span className="text-slate-900">Đối tác giới thiệu</span>
                     </div>
-                    <Link
-                        href="/affiliate/dashboard"
-                        className="flex items-center gap-2 bg-orange-600 text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-orange-700 transition-colors"
+                    <button
+                        onClick={handleJoin}
+                        disabled={registering}
+                        className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-black text-white transition hover:bg-orange-600 disabled:opacity-60"
                     >
-                        <BarChart3 size={16} />
+                        {registering ? <Loader2 size={16} className="animate-spin" /> : <BarChart3 size={16} />}
                         Dashboard
-                    </Link>
+                    </button>
                 </div>
             </nav>
 
-            {/* Hero Section */}
-            <div className="relative bg-slate-900 overflow-hidden">
-                {/* Background Image */}
+            <section className="relative overflow-hidden bg-slate-950 text-white">
                 <div className="absolute inset-0">
                     <Image
-                        src="https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=1920&q=80"
-                        alt="Affiliate Background"
+                        src="https://images.unsplash.com/photo-1556761175-b413da4baf72?w=1800&q=80"
+                        alt="Đối tác trao đổi dự án website"
                         fill
-                        className="object-cover opacity-20"
                         priority
+                        sizes="100vw"
+                        className="object-cover opacity-[0.24]"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/95 to-slate-900/80" />
-                    <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px]" />
+                    <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/88 to-slate-950" />
                 </div>
 
-                {/* Decorative Blobs */}
-                <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-orange-500/20 rounded-full blur-3xl" />
-                <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl" />
+                <div className="absolute left-10 top-20 h-24 w-24 rounded-full border border-orange-400/20" />
+                <div className="absolute right-[18%] top-28 h-3 w-3 rounded-full bg-orange-400 shadow-[0_0_30px_rgba(249,115,22,0.8)]" />
+                <div className="absolute bottom-10 right-8 h-44 w-44 rounded-full bg-orange-500/10 blur-3xl" />
 
-                <div className="relative z-10 max-w-7xl mx-auto px-4 py-16 sm:py-20 lg:py-24">
+                <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[minmax(0,1fr)_440px] lg:px-8 lg:py-20">
                     <div className="max-w-3xl">
-                        {/* Badge */}
-                        <div className="inline-flex items-center gap-2 bg-orange-500/20 border border-orange-500/30 text-orange-400 px-4 py-2 rounded-full text-sm font-bold mb-6">
-                            <Sparkles size={16} /> CHƯƠNG TRÌNH ĐỐI TÁC
-                        </div>
-
-                        {/* Title */}
-                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-6 leading-tight">
-                            Kiếm tiền cùng{' '}
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-300">
-                                Web Giá Rẻ - Portfolio
-                            </span>
+                        <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-widest text-orange-300 backdrop-blur">
+                            <Sparkles size={14} />
+                            Kênh đối tác giới thiệu
+                        </span>
+                        <h1 className="mt-6 text-4xl font-black leading-tight sm:text-5xl lg:text-6xl">
+                            Biến mạng lưới của bạn thành nguồn lead tư vấn website chất lượng
                         </h1>
-
-                        <p className="text-slate-400 text-lg sm:text-xl mb-8 leading-relaxed max-w-2xl">
-                            Tham gia chương trình Affiliate và nhận hoa hồng lên đến <strong className="text-orange-400">20%</strong> cho mỗi yêu cầu thành công. Không giới hạn thu nhập!
+                        <p className="mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
+                            Chia sẻ thư viện portfolio/demo của Web Giá Rẻ tới khách có nhu cầu. Khi khách gửi yêu cầu tư vấn, nguồn giới thiệu của bạn được ghi nhận để đối soát quyền lợi.
                         </p>
 
-                        {/* CTA Buttons */}
-                        <div className="flex flex-wrap gap-4">
-                            <Link
-                                href="/affiliate/dashboard"
-                                className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:shadow-xl hover:shadow-orange-500/30 transition-all hover:-translate-y-1"
+                        <div className="mt-8 flex flex-wrap gap-3">
+                            <button
+                                onClick={handleJoin}
+                                disabled={registering}
+                                className="inline-flex items-center gap-2 rounded-2xl bg-orange-600 px-7 py-4 text-base font-black text-white shadow-lg shadow-orange-600/25 transition hover:-translate-y-0.5 hover:bg-orange-700 hover:shadow-orange-600/35 disabled:opacity-60"
                             >
-                                <Target size={22} />
-                                Bắt đầu ngay
-                                <ArrowRight size={20} />
+                                {registering ? <Loader2 size={20} className="animate-spin" /> : <Handshake size={20} />}
+                                {profile?.is_affiliate ? 'Vào dashboard đối tác' : 'Đăng ký đối tác'}
+                                <ArrowRight size={18} />
+                            </button>
+                            <Link
+                                href="/products"
+                                className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-7 py-4 text-base font-black text-white backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/15"
+                            >
+                                Xem thư viện demo
                             </Link>
-                            {user && (
-                                <button
-                                    onClick={handleCopy}
-                                    className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white px-6 py-4 rounded-2xl font-bold hover:bg-white/20 transition-all"
-                                >
-                                    {copied ? <Check size={20} /> : <Copy size={20} />}
-                                    {copied ? 'Đã copy link!' : 'Copy link giới thiệu'}
-                                </button>
-                            )}
                         </div>
-                    </div>
 
-                    {/* Stats Grid */}
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-12">
-                        {stats.map((stat, idx) => (
-                            <div key={idx} className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-2xl p-5 text-center hover:bg-white/15 transition-colors">
-                                <div className={`w-12 h-12 mx-auto mb-3 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center`}>
-                                    <stat.icon size={24} className="text-white" />
+                        <div className="mt-10 grid max-w-2xl grid-cols-3 gap-3">
+                            {[
+                                ['Không giỏ hàng', 'Catalogue mode'],
+                                ['Tư vấn thật', 'Lead form'],
+                                ['Đối soát rõ', 'Manual review'],
+                            ].map(([title, desc]) => (
+                                <div key={title} className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur">
+                                    <p className="text-sm font-black text-white">{title}</p>
+                                    <p className="mt-1 text-xs font-bold text-slate-400">{desc}</p>
                                 </div>
-                                <p className="text-2xl sm:text-3xl font-black text-white">{stat.value}</p>
-                                <p className="text-slate-400 text-sm font-medium">{stat.label}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-
-            {/* Main Content */}
-            <div className="max-w-7xl mx-auto px-4 py-12 sm:py-16">
-                {/* Affiliate Link Box */}
-                {user && (
-                    <div className="bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/50 p-6 sm:p-8 mb-12">
-                        <div className="flex items-center gap-3 mb-6">
-                            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl flex items-center justify-center">
-                                <Link2 size={24} className="text-white" />
-                            </div>
-                            <div>
-                                <h3 className="font-black text-slate-900 text-lg">Link giới thiệu của bạn</h3>
-                                <p className="text-slate-500 text-sm">Chia sẻ link này để nhận hoa hồng</p>
-                            </div>
+                            ))}
                         </div>
-                        <div className="flex flex-col sm:flex-row gap-3">
-                            <input
-                                type="text"
-                                value={affiliateLink}
-                                readOnly
-                                className="flex-1 px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl font-mono text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20"
-                            />
+                    </div>
+
+                    <aside className="rounded-[1.75rem] border border-white/10 bg-white/10 p-5 shadow-2xl shadow-black/20 backdrop-blur">
+                        <div className="rounded-2xl bg-white p-4 text-slate-950 shadow-xl">
+                            <p className="text-xs font-black uppercase tracking-widest text-orange-500">Link giới thiệu</p>
+                            <div className="mt-3 flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-3">
+                                <Link2 size={18} className="shrink-0 text-orange-500" />
+                                <input
+                                    value={partnerLink}
+                                    readOnly
+                                    className="min-w-0 flex-1 bg-transparent font-mono text-xs font-bold text-slate-700 outline-none"
+                                />
+                            </div>
                             <button
                                 onClick={handleCopy}
-                                className={`flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold transition-all ${copied
-                                    ? 'bg-emerald-500 text-white'
-                                    : 'bg-gradient-to-r from-orange-600 to-amber-600 text-white hover:shadow-lg hover:shadow-orange-500/30'
-                                    }`}
+                                className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 py-3 text-sm font-black text-white transition hover:-translate-y-0.5 hover:bg-orange-600"
                             >
-                                {copied ? <Check size={20} /> : <Copy size={20} />}
-                                {copied ? 'Đã copy!' : 'Copy link'}
+                                {copied ? <Check size={17} /> : <Copy size={17} />}
+                                {copied ? 'Đã sao chép' : 'Sao chép link'}
                             </button>
                         </div>
-                    </div>
-                )}
+                        <div className="mt-4 grid grid-cols-2 gap-3">
+                            {metrics.map(metric => (
+                                <div key={metric.label} className="rounded-2xl border border-white/10 bg-white/10 p-4 transition hover:-translate-y-0.5 hover:bg-white/15">
+                                    <metric.icon size={18} className="text-orange-300" />
+                                    <p className="mt-2 text-lg font-black text-white">{metric.value}</p>
+                                    <p className="text-xs font-bold text-slate-300">{metric.label}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </aside>
+                </div>
+            </section>
 
-                {/* How it works */}
-                <div className="mb-16">
-                    <div className="text-center mb-10">
-                        <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mb-4">
-                            Cách thức <span className="text-orange-600">hoạt động</span>
-                        </h2>
-                        <p className="text-slate-500 max-w-xl mx-auto">
-                            Chỉ 4 bước đơn giản để bắt đầu kiếm tiền với Web Giá Rẻ - Portfolio Affiliate
+            <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+                <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+                    {benefits.map(item => (
+                        <article key={item.title} className="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-orange-200 hover:shadow-xl hover:shadow-orange-500/10">
+                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-950 text-white transition group-hover:bg-orange-600">
+                                <item.icon size={22} />
+                            </div>
+                            <h3 className="mt-5 text-lg font-black text-slate-950">{item.title}</h3>
+                            <p className="mt-2 text-sm leading-6 text-slate-600">{item.desc}</p>
+                        </article>
+                    ))}
+                </div>
+            </section>
+
+            <section className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8 lg:pb-16">
+                <div className="mb-8 max-w-2xl">
+                    <p className="text-xs font-black uppercase tracking-widest text-orange-500">Quy trình</p>
+                    <h2 className="mt-2 text-3xl font-black text-slate-950">Từ chia sẻ link đến ghi nhận lead tư vấn</h2>
+                    <p className="mt-3 text-sm leading-7 text-slate-600">
+                        Mọi thứ được thiết kế phù hợp với mô hình catalogue/demo: không checkout, không giỏ hàng, tập trung vào nhu cầu tư vấn thật.
+                    </p>
+                </div>
+
+                <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+                    {steps.map((step, index) => (
+                        <article key={step.title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-orange-200 hover:shadow-xl hover:shadow-orange-500/10">
+                            <div className="flex items-center justify-between">
+                                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-orange-50 text-orange-600">
+                                    <step.icon size={22} />
+                                </span>
+                                <span className="text-3xl font-black text-slate-100">{index + 1}</span>
+                            </div>
+                            <h3 className="mt-5 text-lg font-black text-slate-950">{step.title}</h3>
+                            <p className="mt-2 text-sm leading-6 text-slate-600">{step.desc}</p>
+                        </article>
+                    ))}
+                </div>
+            </section>
+
+            <section className="border-y border-slate-200 bg-white">
+                <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8 lg:py-16">
+                    <div>
+                        <p className="text-xs font-black uppercase tracking-widest text-orange-500">Ai phù hợp?</p>
+                        <h2 className="mt-2 text-3xl font-black text-slate-950">Không cần bán hàng, chỉ cần giới thiệu đúng nhu cầu</h2>
+                        <p className="mt-4 text-sm leading-7 text-slate-600">
+                            Chương trình phù hợp với người có tệp khách cần website, landing page, dashboard, portfolio hoặc muốn tham khảo mẫu giao diện trước khi triển khai.
                         </p>
+                        <Link
+                            href="/contact"
+                            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-orange-600 px-5 py-3 text-sm font-black text-white transition hover:bg-orange-700"
+                        >
+                            Trao đổi hợp tác
+                            <MessageCircle size={17} />
+                        </Link>
                     </div>
 
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {steps.map((step, idx) => (
-                            <div key={idx} className="relative bg-white rounded-2xl border border-slate-100 p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 group">
-                                {/* Step Number */}
-                                <div className="absolute -top-3 -left-3 w-8 h-8 bg-slate-900 text-white rounded-full flex items-center justify-center font-black text-sm">
-                                    {idx + 1}
-                                </div>
-                                {/* Icon */}
-                                <div className={`w-14 h-14 ${step.color} rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                                    <step.icon size={28} className="text-white" />
-                                </div>
-                                <h3 className="font-bold text-slate-900 text-lg mb-2">{step.title}</h3>
-                                <p className="text-slate-500 text-sm leading-relaxed">{step.desc}</p>
-
-                                {/* Arrow connector */}
-                                {idx < steps.length - 1 && (
-                                    <div className="hidden lg:block absolute top-1/2 -right-3 transform -translate-y-1/2">
-                                        <ChevronRight size={24} className="text-slate-300" />
-                                    </div>
-                                )}
+                    <div className="grid gap-3">
+                        {partnerTypes.map(item => (
+                            <div key={item} className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                                <CheckCircle2 size={20} className="mt-0.5 shrink-0 text-emerald-500" />
+                                <p className="text-sm font-bold leading-6 text-slate-700">{item}</p>
                             </div>
                         ))}
                     </div>
                 </div>
+            </section>
 
-                {/* Benefits Grid */}
-                <div className="mb-16">
-                    <div className="text-center mb-10">
-                        <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mb-4">
-                            Tại sao chọn <span className="text-orange-600">chúng tôi?</span>
-                        </h2>
-                        <p className="text-slate-500 max-w-xl mx-auto">
-                            Chương trình affiliate hấp dẫn nhất thị trường giao diện website
-                        </p>
-                    </div>
-
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {benefits.map((benefit, idx) => (
-                            <div key={idx} className="bg-white rounded-2xl border border-slate-100 p-6 hover:border-orange-200 hover:shadow-lg transition-all group">
-                                <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-orange-500 transition-colors">
-                                    <benefit.icon size={24} className="text-orange-600 group-hover:text-white transition-colors" />
-                                </div>
-                                <h3 className="font-bold text-slate-900 mb-2">{benefit.title}</h3>
-                                <p className="text-slate-500 text-sm">{benefit.desc}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* CTA Section */}
-                <div className="bg-gradient-to-r from-orange-600 to-amber-500 rounded-3xl p-8 sm:p-12 text-center text-white relative overflow-hidden">
-                    {/* Background pattern */}
-                    <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[size:32px_32px]" />
-
-                    <div className="relative z-10">
-                        <Gift size={48} className="mx-auto mb-4 animate-bounce" />
-                        <h2 className="text-3xl sm:text-4xl font-black mb-4">
-                            Sẵn sàng kiếm tiền?
-                        </h2>
-                        <p className="text-orange-100 text-lg mb-8 max-w-xl mx-auto">
-                            Đăng ký ngay hôm nay và bắt đầu nhận hoa hồng từ những yêu cầu đầu tiên!
-                        </p>
-                        <div className="flex flex-wrap justify-center gap-4">
-                            <Link
-                                href="/affiliate/dashboard"
-                                className="inline-flex items-center gap-2 bg-white text-orange-600 px-8 py-4 rounded-2xl font-bold hover:bg-orange-50 transition-colors"
-                            >
-                                <BarChart3 size={20} />
-                                Đi tới Dashboard
-                                <ArrowRight size={18} />
-                            </Link>
-                            <Link
-                                href="/"
-                                className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white px-8 py-4 rounded-2xl font-bold hover:bg-white/30 transition-colors"
-                            >
-                                <Home size={20} />
-                                Về trang chủ
-                            </Link>
+            <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+                <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-stretch">
+                    <div className="relative overflow-hidden rounded-[1.75rem] bg-slate-950 p-7 text-white shadow-xl">
+                        <div className="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-orange-500/20 blur-3xl" />
+                        <div className="relative">
+                            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs font-black uppercase tracking-widest text-orange-300">
+                                <Star size={13} />
+                                Partner toolkit
+                            </span>
+                            <h2 className="mt-5 text-3xl font-black">Bộ công cụ hỗ trợ chia sẻ chuyên nghiệp</h2>
+                            <p className="mt-3 text-sm leading-7 text-slate-300">
+                                Dashboard cung cấp link nhanh, danh sách mẫu demo, lịch sử lead và trạng thái đối soát để bạn theo dõi trọn vòng giới thiệu.
+                            </p>
                         </div>
                     </div>
+                    <div className="grid gap-4 md:grid-cols-3">
+                        {toolkits.map(item => (
+                            <article key={item.title} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-orange-200 hover:shadow-xl">
+                                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-orange-50 text-orange-600">
+                                    <item.icon size={21} />
+                                </div>
+                                <h3 className="mt-4 text-base font-black text-slate-950">{item.title}</h3>
+                                <p className="mt-2 text-sm leading-6 text-slate-600">{item.desc}</p>
+                            </article>
+                        ))}
+                    </div>
                 </div>
+            </section>
 
-                {/* Trust badges */}
-                <div className="mt-12 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-slate-400 text-sm">
-                    <div className="flex items-center gap-2">
-                        <Shield size={18} className="text-emerald-500" />
-                        <span>Xác nhận tư vấn đảm bảo</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <Star size={18} className="text-amber-500" />
-                        <span>500+ đối tác tin tưởng</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <Zap size={18} className="text-purple-500" />
-                        <span>Hỗ trợ 24/7</span>
+            <section className="mx-auto grid max-w-7xl gap-6 px-4 py-12 sm:px-6 lg:grid-cols-3 lg:px-8 lg:py-16">
+                <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:col-span-1">
+                    <ShieldCheck size={28} className="text-orange-500" />
+                    <h2 className="mt-4 text-2xl font-black text-slate-950">Nguyên tắc rõ ràng</h2>
+                    <p className="mt-3 text-sm leading-7 text-slate-600">
+                        Ghi nhận referral dùng cho tư vấn triển khai. Các quyền lợi được đối soát thủ công, minh bạch theo chất lượng lead và dự án đã xác nhận.
+                    </p>
+                </div>
+                <div className="space-y-3 lg:col-span-2">
+                    {faqs.map(item => (
+                        <details key={item.q} className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-black text-slate-950">
+                                {item.q}
+                                <ChevronRight size={18} className="transition group-open:rotate-90" />
+                            </summary>
+                            <p className="mt-3 text-sm leading-7 text-slate-600">{item.a}</p>
+                        </details>
+                    ))}
+                </div>
+            </section>
+
+            <section className="mx-auto max-w-7xl px-4 pb-14 sm:px-6 lg:px-8">
+                <div className="overflow-hidden rounded-2xl bg-slate-950 p-8 text-white shadow-xl sm:p-10">
+                    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+                        <div>
+                            <p className="text-xs font-black uppercase tracking-widest text-orange-300">Sẵn sàng bắt đầu?</p>
+                            <h2 className="mt-2 text-3xl font-black">Kích hoạt hồ sơ đối tác và chia sẻ link demo ngay hôm nay</h2>
+                            <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-300">
+                                Bạn có thể bắt đầu bằng trang chủ, blog hoặc bất kỳ mẫu demo nào trong thư viện portfolio.
+                            </p>
+                        </div>
+                        <button
+                            onClick={handleJoin}
+                            disabled={registering}
+                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-orange-600 px-6 py-4 text-sm font-black text-white transition hover:bg-orange-700 disabled:opacity-60"
+                        >
+                            {registering ? <Loader2 size={18} className="animate-spin" /> : <Target size={18} />}
+                            {profile?.is_affiliate ? 'Mở dashboard' : 'Đăng ký đối tác'}
+                        </button>
                     </div>
                 </div>
-            </div>
-        </div>
+            </section>
+        </main>
     );
 }
 
 export default function AffiliatePage() {
     return (
         <Suspense fallback={
-            <div className="min-h-screen flex items-center justify-center bg-slate-50">
-                <div className="text-center">
-                    <Loader2 className="w-10 h-10 animate-spin text-orange-600 mx-auto mb-4" />
-                    <p className="text-slate-500 font-medium">Đang tải...</p>
-                </div>
+            <div className="flex min-h-screen items-center justify-center bg-slate-50">
+                <Loader2 className="h-9 w-9 animate-spin text-orange-600" />
             </div>
         }>
             <AffiliatePageContent />

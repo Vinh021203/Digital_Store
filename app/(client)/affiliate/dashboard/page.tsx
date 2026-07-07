@@ -1,13 +1,13 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import AffiliateDashboardPage from './DashboardContent';
 
 export const metadata: Metadata = {
-    title: 'Dashboard Affiliate',
-    description: 'Quản lý chương trình affiliate của bạn - Theo dõi hoa hồng, referrals và rút tiền',
+    title: 'Dashboard Đối Tác Giới Thiệu',
+    description: 'Quản lý kênh đối tác giới thiệu - theo dõi link, lead tư vấn, ghi nhận đối tác và lịch sử đối soát.',
     openGraph: {
-        title: 'Dashboard Affiliate | Web Giá Rẻ - Portfolio',
-        description: 'Quản lý chương trình affiliate của bạn - Theo dõi hoa hồng, referrals và rút tiền',
-    }
+        title: 'Dashboard Đối Tác Giới Thiệu | Web Giá Rẻ - Portfolio',
+        description: 'Theo dõi link giới thiệu, lead tư vấn và ghi nhận đối tác.',
+    },
 };
 
 export default function Page() {
