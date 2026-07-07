@@ -46,27 +46,27 @@ const GEMINI_MODELS = (process.env.GEMINI_MODEL || 'gemini-2.5-flash,gemini-2.5-
 
 const QUICK_REPLIES = {
     greeting: ['Tìm Landing Page', 'Xem Theme phổ biến', 'Nhận tư vấn'],
-    product: ['Xem thêm sản phẩm', 'Hỏi về license', 'Nhận báo giá'],
-    support: ['Tư vấn sản phẩm', 'Hỏi về license', 'Liên hệ hotline'],
+    product: ['Xem thêm mẫu demo', 'Hỏi về license', 'Nhận báo giá'],
+    support: ['Tư vấn mẫu demo', 'Hỏi về license', 'Liên hệ hotline'],
 };
 
 const FALLBACK_MESSAGES = {
-    default: `Mình có thể giúp bạn tìm themes, templates, landing pages, xem demo, hỏi license và nhận tư vấn theo nhu cầu. Bạn đang cần sản phẩm kiểu nào?`,
-    payment: `Website đang ưu tiên chế độ tư vấn/catalog. Bạn có thể gửi sản phẩm quan tâm, ngân sách và công nghệ mong muốn để mình hỗ trợ báo giá hoặc hướng dẫn bước tiếp theo.`,
-    download: `Hiện website đang ở chế độ catalog/tư vấn nên chưa mở tải file trực tiếp. Nếu bạn đã có đơn trước đó, hãy gửi mã đơn hoặc email để được kiểm tra quyền truy cập.`,
-    refund: `Chính sách hoàn tiền thường được xét theo từng đơn hàng, đặc biệt nếu sản phẩm chưa được tải xuống hoặc không đúng mô tả. Bạn nên gửi mã đơn hàng và lý do để được hỗ trợ nhanh hơn.`,
+    default: `Mình có thể giúp bạn tìm themes, templates, landing pages, xem demo, hỏi license và nhận tư vấn theo nhu cầu. Bạn đang cần mẫu demo kiểu nào?`,
+    payment: `Website đang ưu tiên chế độ portfolio/demo tư vấn. Bạn có thể gửi mẫu quan tâm, ngân sách và công nghệ mong muốn để mình hỗ trợ báo giá hoặc hướng dẫn bước tiếp theo.`,
+    download: `Hiện website đang ở chế độ portfolio/demo tư vấn nên chưa mở tải file trực tiếp. Nếu bạn đã có đơn trước đó, hãy gửi mã đơn hoặc email để được kiểm tra quyền truy cập.`,
+    refund: `Chính sách xử lý yêu cầu thường được xét theo từng yêu cầu, đặc biệt nếu mẫu demo chưa được tải xuống hoặc không đúng mô tả. Bạn nên gửi mã yêu cầu và lý do để được hỗ trợ nhanh hơn.`,
     license: `Regular License thường phù hợp cho một website/dự án. Extended License phù hợp khi cần dùng rộng hơn. Nếu bạn cho mình biết nhu cầu triển khai, mình sẽ gợi ý loại license hợp lý.`,
-    support: `Bạn có thể liên hệ hỗ trợ qua email hoặc chat này. Hãy gửi rõ mã đơn hàng, email mua hàng và vấn đề đang gặp để được xử lý nhanh hơn.`,
+    support: `Bạn có thể liên hệ hỗ trợ qua email hoặc chat này. Hãy gửi rõ mã yêu cầu, email gửi yêu cầu và vấn đề đang gặp để được xử lý nhanh hơn.`,
 };
 
 function matchIntent(message: string) {
     const lower = message.toLowerCase();
-    if (/(thanh toán|payment|trả tiền|momo|bank|chuyển khoản|qr)/i.test(lower)) return 'payment';
+    if (/(xác nhận tư vấn|payment|trả tiền|momo|bank|chuyển khoản|qr)/i.test(lower)) return 'payment';
     if (/(download|tải|file|nhận file)/i.test(lower)) return 'download';
-    if (/(hoàn tiền|refund|đổi trả)/i.test(lower)) return 'refund';
+    if (/(xử lý yêu cầu|refund|đổi trả)/i.test(lower)) return 'refund';
     if (/(license|bản quyền|giấy phép|key)/i.test(lower)) return 'license';
     if (/(hỗ trợ|support|liên hệ|contact|help)/i.test(lower)) return 'support';
-    if (/(theme|template|landing|dashboard|admin|shop|store|figma|html|css|javascript|react|next|vue|laravel|django|dotnet|portfolio|sản phẩm|giao diện|mẫu)/i.test(lower)) return 'product';
+    if (/(theme|template|landing|dashboard|admin|shop|store|figma|html|css|javascript|react|next|vue|laravel|django|dotnet|portfolio|mẫu demo|giao diện|mẫu)/i.test(lower)) return 'product';
     if (/(chào|hello|hi|xin chào|hey|alo)/i.test(lower)) return 'greeting';
     return 'default';
 }
@@ -218,21 +218,21 @@ function buildPrompt(userMessage: string, history: ChatHistoryMessage[], searchR
                 `${index + 1}. ${product.name} | ${product.format || 'Template'} | ${formatPrice(product.price)} | rating ${product.rating} | /product/${product.slug}`
             ))
             .join('\n')
-        : 'Không có sản phẩm nào khớp đúng điều kiện lọc của khách.';
+        : 'Không có mẫu demo nào khớp đúng điều kiện lọc của khách.';
 
     const filterText = [
         searchResult.maxPrice !== null ? `Giá tối đa: ${formatPrice(searchResult.maxPrice)}` : null,
-        searchResult.keywords.length > 0 ? `Từ khóa/loại sản phẩm: ${searchResult.keywords.join(', ')}` : null,
+        searchResult.keywords.length > 0 ? `Từ khóa/loại mẫu demo: ${searchResult.keywords.join(', ')}` : null,
     ].filter(Boolean).join('\n') || 'Không có bộ lọc rõ ràng.';
 
     return `
-Bạn là trợ lý AI của Shop Web rẻ, một website bán giao diện website như theme, template, landing page, dashboard và UI kit.
+Bạn là trợ lý AI của Web Giá Rẻ - Portfolio, một website portfolio/demo giao diện website như theme, template, landing page, dashboard và UI kit.
 
 Yêu cầu:
 - Trả lời bằng tiếng Việt, thân thiện, ngắn gọn, tự nhiên.
-- Chỉ tư vấn dựa trên thông tin website và danh sách sản phẩm bên dưới.
-- Nếu khách hỏi mua sản phẩm, hãy gợi ý 1-3 sản phẩm phù hợp và nói lý do ngắn.
-- Nếu danh sách sản phẩm bên dưới rỗng, phải nói rõ hiện chưa có sản phẩm khớp điều kiện. Không gợi ý sản phẩm ngoài điều kiện.
+- Chỉ tư vấn dựa trên thông tin website và danh sách mẫu demo bên dưới.
+- Nếu khách hỏi chọn mẫu demo, hãy gợi ý 1-3 mẫu phù hợp và nói lý do ngắn.
+- Nếu danh sách mẫu demo bên dưới rỗng, phải nói rõ hiện chưa có mẫu demo khớp điều kiện. Không gợi ý mẫu demo ngoài điều kiện.
 - Không bịa chính sách. Nếu không chắc, hướng dẫn khách liên hệ hỗ trợ hoặc vào trang tài khoản.
 - Không nhắc rằng bạn là Gemini hay mô hình AI.
 - Không dùng markdown phức tạp, chỉ dùng đoạn văn ngắn hoặc bullet đơn giản.
@@ -243,7 +243,7 @@ ${historyText || 'Chưa có.'}
 Bộ lọc hiểu được từ câu hỏi:
 ${filterText}
 
-Sản phẩm liên quan từ Supabase:
+Mẫu demo liên quan từ Supabase:
 ${productText}
 
 Câu hỏi của khách:
@@ -322,7 +322,7 @@ function toProductCards(products: ChatProduct[]) {
 function fallbackResponse(intent: string, searchResult: ProductSearchResult): ChatResponse {
     if (intent === 'product' && searchResult.products.length > 0) {
         return {
-            message: `Mình tìm thấy vài sản phẩm khá hợp với nhu cầu của bạn. Bạn xem nhanh các lựa chọn này nhé:`,
+            message: `Mình tìm thấy vài mẫu demo khá hợp với nhu cầu của bạn. Bạn xem nhanh các lựa chọn này nhé:`,
             products: toProductCards(searchResult.products),
             quickReplies: QUICK_REPLIES.product,
         };
@@ -330,8 +330,8 @@ function fallbackResponse(intent: string, searchResult: ProductSearchResult): Ch
 
     if (intent === 'product' && searchResult.hasHardFilters && !searchResult.hasExactMatches) {
         return {
-            message: `Hiện mình chưa thấy sản phẩm nào khớp đúng ${filterSummary(searchResult)} trong kho Shop Web rẻ. Bạn có thể nới ngân sách hoặc đổi loại sản phẩm để mình tìm tiếp nhé.`,
-            quickReplies: ['Nới ngân sách', 'Tìm loại khác', 'Xem sản phẩm phổ biến'],
+            message: `Hiện mình chưa thấy mẫu demo nào khớp đúng ${filterSummary(searchResult)} trong kho Web Giá Rẻ - Portfolio. Bạn có thể nới ngân sách hoặc đổi loại mẫu demo để mình tìm tiếp nhé.`,
+            quickReplies: ['Nới ngân sách', 'Tìm loại khác', 'Xem mẫu demo phổ biến'],
         };
     }
 

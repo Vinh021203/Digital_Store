@@ -9,8 +9,8 @@ interface CatalogModeNoticeProps {
 }
 
 export default function CatalogModeNotice({
-    title = 'Chức năng mua trực tiếp đang tạm dừng',
-    description = 'Shop Web rẻ hiện đang ở chế độ Catalog/Tư vấn. Bạn vẫn có thể xem sản phẩm, xem demo và gửi nhu cầu để nhận báo giá phù hợp.',
+    title = 'Website đang hoạt động ở chế độ portfolio/demo',
+    description = 'Web Giá Rẻ - Portfolio hiện ưu tiên tham khảo mẫu và tư vấn. Bạn có thể xem demo, lưu mẫu quan tâm và gửi nhu cầu để được phản hồi phù hợp.',
 }: CatalogModeNoticeProps) {
     return (
         <main className="min-h-screen bg-[#fffaf5] px-4 py-12 text-slate-950">
@@ -18,7 +18,7 @@ export default function CatalogModeNotice({
                 <div className="rounded-[30px] border border-orange-100 bg-white p-7 shadow-2xl shadow-orange-100/60 sm:p-10">
                     <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-orange-100 bg-orange-50 px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-orange-700">
                         <MessageSquareText size={15} />
-                        Catalog / Tư vấn
+                        Portfolio / Demo
                     </div>
                     <h1 className="text-3xl font-black tracking-tight sm:text-5xl">
                         {title}
@@ -40,7 +40,7 @@ export default function CatalogModeNotice({
                             className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-4 text-sm font-black text-slate-700 transition hover:-translate-y-0.5 hover:border-orange-200 hover:bg-orange-50 hover:text-orange-700"
                         >
                             <Eye size={18} />
-                            Xem catalog
+                            Xem mẫu demo
                         </Link>
                     </div>
                 </div>
@@ -49,9 +49,9 @@ export default function CatalogModeNotice({
                     <h2 className="text-xl font-black">Bạn vẫn có thể làm gì?</h2>
                     <div className="mt-6 space-y-3">
                         {[
-                            'Xem demo và ảnh preview sản phẩm.',
+                            'Xem demo và ảnh preview mẫu giao diện.',
                             'Gửi nhu cầu để nhận tư vấn công nghệ, chi phí và thời gian.',
-                            'Đặt lịch trao đổi trước khi website mở bán trực tiếp trở lại.',
+                            'Đặt lịch trao đổi trước khi chọn hướng triển khai phù hợp.',
                         ].map((item) => (
                             <div key={item} className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-4">
                                 <ShieldCheck className="mt-0.5 shrink-0 text-emerald-300" size={18} />

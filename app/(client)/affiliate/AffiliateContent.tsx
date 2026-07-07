@@ -33,8 +33,8 @@ function AffiliatePageContent() {
     const stats = [
         { label: 'Hoa hồng', value: '20%', icon: DollarSign, color: 'from-emerald-500 to-green-600' },
         { label: 'Thời hạn cookie', value: '30 ngày', icon: Clock, color: 'from-blue-500 to-indigo-600' },
-        { label: 'Thanh toán', value: 'Hàng tháng', icon: Wallet, color: 'from-purple-500 to-pink-600' },
-        { label: 'Sản phẩm', value: '500+', icon: Gift, color: 'from-amber-500 to-orange-600' },
+        { label: 'Xác nhận tư vấn', value: 'Hàng tháng', icon: Wallet, color: 'from-purple-500 to-pink-600' },
+        { label: 'Mẫu demo', value: '500+', icon: Gift, color: 'from-amber-500 to-orange-600' },
     ];
 
     // How it works steps
@@ -47,30 +47,30 @@ function AffiliatePageContent() {
         },
         {
             icon: Share2,
-            title: 'Chia sẻ sản phẩm',
+            title: 'Chia sẻ mẫu demo',
             desc: 'Chia sẻ link với bạn bè, cộng đồng qua mạng xã hội, blog hoặc email',
             color: 'bg-purple-500'
         },
         {
             icon: Users,
-            title: 'Khách hàng mua sắm',
-            desc: 'Khi ai đó click vào link và mua hàng, bạn sẽ được ghi nhận hoa hồng',
+            title: 'Khách hàng tham khảo demo',
+            desc: 'Khi ai đó click vào link và gửi yêu cầu, bạn sẽ được ghi nhận hoa hồng',
             color: 'bg-emerald-500'
         },
         {
             icon: Wallet,
             title: 'Nhận tiền hoa hồng',
-            desc: 'Hoa hồng được thanh toán hàng tháng qua chuyển khoản ngân hàng',
+            desc: 'Hoa hồng được xác nhận tư vấn hàng tháng qua chuyển khoản ngân hàng',
             color: 'bg-amber-500'
         },
     ];
 
     // Benefits
     const benefits = [
-        { icon: TrendingUp, title: 'Hoa hồng cao nhất', desc: 'Lên đến 20% cho mỗi đơn hàng' },
+        { icon: TrendingUp, title: 'Hoa hồng cao nhất', desc: 'Lên đến 20% cho mỗi yêu cầu' },
         { icon: Clock, title: 'Cookie 30 ngày', desc: 'Theo dõi trong 30 ngày sau click' },
         { icon: BarChart3, title: 'Dashboard chi tiết', desc: 'Theo dõi hiệu quả real-time' },
-        { icon: Shield, title: 'Thanh toán đúng hạn', desc: 'Thanh toán vào ngày 15 hàng tháng' },
+        { icon: Shield, title: 'Xác nhận tư vấn đúng hạn', desc: 'Xác nhận tư vấn vào ngày 15 hàng tháng' },
         { icon: Award, title: 'Bonus thưởng', desc: 'Thưởng thêm cho top affiliates' },
         { icon: Zap, title: 'Hỗ trợ 24/7', desc: 'Team hỗ trợ riêng cho affiliates' },
     ];
@@ -129,12 +129,12 @@ function AffiliatePageContent() {
                         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-6 leading-tight">
                             Kiếm tiền cùng{' '}
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-300">
-                                Shop Web rẻ
+                                Web Giá Rẻ - Portfolio
                             </span>
                         </h1>
 
                         <p className="text-slate-400 text-lg sm:text-xl mb-8 leading-relaxed max-w-2xl">
-                            Tham gia chương trình Affiliate và nhận hoa hồng lên đến <strong className="text-orange-400">20%</strong> cho mỗi đơn hàng thành công. Không giới hạn thu nhập!
+                            Tham gia chương trình Affiliate và nhận hoa hồng lên đến <strong className="text-orange-400">20%</strong> cho mỗi yêu cầu thành công. Không giới hạn thu nhập!
                         </p>
 
                         {/* CTA Buttons */}
@@ -216,7 +216,7 @@ function AffiliatePageContent() {
                             Cách thức <span className="text-orange-600">hoạt động</span>
                         </h2>
                         <p className="text-slate-500 max-w-xl mx-auto">
-                            Chỉ 4 bước đơn giản để bắt đầu kiếm tiền với Shop Web rẻ Affiliate
+                            Chỉ 4 bước đơn giản để bắt đầu kiếm tiền với Web Giá Rẻ - Portfolio Affiliate
                         </p>
                     </div>
 
@@ -280,7 +280,7 @@ function AffiliatePageContent() {
                             Sẵn sàng kiếm tiền?
                         </h2>
                         <p className="text-orange-100 text-lg mb-8 max-w-xl mx-auto">
-                            Đăng ký ngay hôm nay và bắt đầu nhận hoa hồng từ những đơn hàng đầu tiên!
+                            Đăng ký ngay hôm nay và bắt đầu nhận hoa hồng từ những yêu cầu đầu tiên!
                         </p>
                         <div className="flex flex-wrap justify-center gap-4">
                             <Link
@@ -306,7 +306,7 @@ function AffiliatePageContent() {
                 <div className="mt-12 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-slate-400 text-sm">
                     <div className="flex items-center gap-2">
                         <Shield size={18} className="text-emerald-500" />
-                        <span>Thanh toán đảm bảo</span>
+                        <span>Xác nhận tư vấn đảm bảo</span>
                     </div>
                     <div className="flex items-center gap-2">
                         <Star size={18} className="text-amber-500" />

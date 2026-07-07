@@ -115,7 +115,7 @@ export default function LicensesPage() {
             <div className="flex items-center justify-center py-20">
                 <div className="text-center">
                     <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="text-slate-500 font-medium">Đang tải licenses...</p>
+	                    <p className="text-slate-500 font-medium">Đang tải quyền truy cập...</p>
                 </div>
             </div>
         );
@@ -129,7 +129,7 @@ export default function LicensesPage() {
                         <Key size={32} className="text-slate-300" />
                     </div>
                     <h2 className="text-xl font-bold text-slate-900 mb-2">Vui lòng đăng nhập</h2>
-                    <p className="text-slate-500 mb-4">Bạn cần đăng nhập để xem licenses</p>
+	                    <p className="text-slate-500 mb-4">Bạn cần đăng nhập để xem quyền truy cập</p>
                     <Link href="/login" className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-6 py-3 rounded-xl font-bold hover:shadow-lg hover:shadow-orange-500/30 transition-all">
                         Đăng nhập
                     </Link>
@@ -156,7 +156,7 @@ export default function LicensesPage() {
                         <ChevronRight size={14} />
                         <Link href="/profile" className="hover:text-white transition-colors">Profile</Link>
                         <ChevronRight size={14} />
-                        <span className="text-white font-medium">Licenses</span>
+	                        <span className="text-white font-medium">Quyền truy cập</span>
                     </div>
 
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -166,10 +166,10 @@ export default function LicensesPage() {
                             </div>
                             <div>
                                 <span className="bg-violet-500/20 text-violet-300 px-2.5 py-0.5 rounded-full text-xs font-bold mb-2 inline-block">
-                                    <Sparkles size={10} className="inline mr-1" /> License Manager
+	                                    <Sparkles size={10} className="inline mr-1" /> Access Manager
                                 </span>
-                                <h1 className="text-2xl md:text-3xl font-black">License Keys</h1>
-                                <p className="text-slate-400 text-sm">{licenses.length} licenses đã sở hữu</p>
+	                                <h1 className="text-2xl md:text-3xl font-black">Quyền truy cập mẫu</h1>
+	                                <p className="text-slate-400 text-sm">{licenses.length} quyền truy cập đã được cấp</p>
                             </div>
                         </div>
 
@@ -199,7 +199,7 @@ export default function LicensesPage() {
                         </div>
                         <div>
                             <p className="text-2xl font-black text-slate-900">{stats.total}</p>
-                            <p className="text-xs text-slate-500 font-medium">Tổng licenses</p>
+	                            <p className="text-xs text-slate-500 font-medium">Tổng quyền truy cập</p>
                         </div>
                     </div>
                 </div>
@@ -233,7 +233,7 @@ export default function LicensesPage() {
                     <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                     <input
                         type="text"
-                        placeholder="Tìm theo sản phẩm hoặc key..."
+                        placeholder="Tìm theo mẫu demo hoặc key..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 outline-none transition-all"
@@ -411,13 +411,13 @@ export default function LicensesPage() {
                         {searchQuery || statusFilter !== 'all' ? 'Không tìm thấy license' : 'Chưa có license nào'}
                     </h3>
                     <p className="text-slate-500 mb-6">
-                        {searchQuery ? 'Thử với từ khóa khác' : 'Mua sản phẩm để nhận license key'}
+                        {searchQuery ? 'Thử với từ khóa khác' : 'Chọn mẫu demo để nhận license key'}
                     </p>
                     <Link
                         href="/products"
                         className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-6 py-3 rounded-xl font-bold hover:shadow-lg hover:shadow-orange-500/30 transition-all"
                     >
-                        Khám phá sản phẩm
+                        Khám phá mẫu demo
                         <ChevronRight size={18} />
                     </Link>
                 </div>
@@ -430,11 +430,11 @@ export default function LicensesPage() {
                         <AlertCircle size={20} className="text-violet-600" />
                     </div>
                     <div className="text-sm">
-                        <p className="font-bold text-violet-900 mb-2">Cách hiểu License</p>
+	                        <p className="font-bold text-violet-900 mb-2">Cách hiểu quyền truy cập</p>
                         <ul className="text-violet-700 space-y-1">
-                            <li className="flex items-start gap-2"><span className="mt-2 w-1.5 h-1.5 bg-violet-400 rounded-full"></span> <strong>Còn hiệu lực:</strong> license hợp lệ, bạn có thể tải file trong mục Downloads.</li>
-                            <li className="flex items-start gap-2"><span className="mt-2 w-1.5 h-1.5 bg-violet-400 rounded-full"></span> <strong>Gắn dự án:</strong> liên kết license với một website/dự án cụ thể để quản lý bản quyền.</li>
-                            <li className="flex items-start gap-2"><span className="mt-2 w-1.5 h-1.5 bg-violet-400 rounded-full"></span> <strong>Hết hạn/Thu hồi:</strong> license không còn quyền sử dụng hoặc tải bản cập nhật.</li>
+	                            <li className="flex items-start gap-2"><span className="mt-2 w-1.5 h-1.5 bg-violet-400 rounded-full"></span> <strong>Còn hiệu lực:</strong> quyền truy cập hợp lệ, bạn có thể nhận file trong mục Mẫu đã cấp quyền.</li>
+	                            <li className="flex items-start gap-2"><span className="mt-2 w-1.5 h-1.5 bg-violet-400 rounded-full"></span> <strong>Gắn dự án:</strong> liên kết quyền truy cập với một website/dự án cụ thể để quản lý phạm vi sử dụng.</li>
+	                            <li className="flex items-start gap-2"><span className="mt-2 w-1.5 h-1.5 bg-violet-400 rounded-full"></span> <strong>Hết hạn/Thu hồi:</strong> quyền truy cập không còn hiệu lực hoặc không còn nhận bản cập nhật.</li>
                         </ul>
                     </div>
                 </div>

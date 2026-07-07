@@ -86,7 +86,7 @@ export default function MaintenanceGuard({ children }: MaintenanceGuardProps) {
 
                         <p className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full border border-orange-100 bg-orange-50 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-orange-700 shadow-sm">
                             <Sparkles size={14} aria-hidden="true" />
-                            Shop Web rẻ
+                            Web Giá Rẻ - Portfolio
                         </p>
 
                         <h1 className="text-3xl font-black tracking-tight text-slate-950 sm:text-5xl">

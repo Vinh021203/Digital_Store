@@ -327,7 +327,7 @@ export default function SupportPage() {
                         <ChevronRight size={14} />
                         <Link href="/profile" className="hover:text-white transition-colors">Profile</Link>
                         <ChevronRight size={14} />
-                        <span className="text-white font-medium">Hỗ trợ</span>
+	                        <span className="text-white font-medium">Tư vấn hỗ trợ</span>
                     </div>
 
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -337,10 +337,10 @@ export default function SupportPage() {
                             </div>
                             <div>
                                 <span className="bg-teal-500/20 text-teal-300 px-2.5 py-0.5 rounded-full text-xs font-bold mb-2 inline-block">
-                                    <Sparkles size={10} className="inline mr-1" /> Support Center
+	                                    <Sparkles size={10} className="inline mr-1" /> Support Desk
                                 </span>
-                                <h1 className="text-2xl md:text-3xl font-black">Hỗ trợ</h1>
-                                <p className="text-slate-400 text-sm">Liên hệ với đội ngũ hỗ trợ</p>
+	                                <h1 className="text-2xl md:text-3xl font-black">Tư vấn hỗ trợ</h1>
+	                                <p className="text-slate-400 text-sm">Gửi câu hỏi về mẫu demo, quyền truy cập hoặc triển khai</p>
                             </div>
                         </div>
 
@@ -354,7 +354,7 @@ export default function SupportPage() {
                                 className="flex items-center gap-2 bg-gradient-to-r from-teal-500 to-cyan-500 text-white px-4 py-2.5 rounded-xl font-bold hover:shadow-lg hover:shadow-teal-500/30 transition-all"
                             >
                                 <Plus size={18} />
-                                Tạo ticket
+	                                Gửi yêu cầu
                             </button>
                         </div>
                     </div>
@@ -410,7 +410,7 @@ export default function SupportPage() {
                         </div>
                         <div>
                             <p className="text-2xl font-black text-slate-900">{stats.total}</p>
-                            <p className="text-xs text-slate-500 font-medium">Tổng tickets</p>
+	                            <p className="text-xs text-slate-500 font-medium">Tổng yêu cầu hỗ trợ</p>
                         </div>
                     </div>
                 </div>
@@ -545,16 +545,16 @@ export default function SupportPage() {
                     <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                         <Headphones size={32} className="text-slate-300" />
                     </div>
-                    <h3 className="text-xl font-bold text-slate-900 mb-2">Chưa có ticket nào</h3>
+	                    <h3 className="text-xl font-bold text-slate-900 mb-2">Chưa có yêu cầu hỗ trợ nào</h3>
                     <p className="text-slate-500 mb-6 max-w-md mx-auto">
-                        Tạo ticket để nhận hỗ trợ từ đội ngũ của chúng tôi
+	                        Gửi yêu cầu để nhận tư vấn hỗ trợ từ đội ngũ của chúng tôi
                     </p>
                     <button
                         onClick={() => setShowNewTicket(true)}
                         className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-500 to-cyan-500 text-white font-bold px-6 py-3 rounded-xl hover:shadow-lg hover:shadow-teal-500/30 transition-all"
                     >
                         <Plus size={18} />
-                        Tạo ticket đầu tiên
+	                        Gửi yêu cầu đầu tiên
                     </button>
                 </div>
             ) : (

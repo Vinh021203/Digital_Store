@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -37,18 +37,18 @@ const POLICIES: Record<string, Policy> = {
         shortTitle: 'Bảo mật',
         eyebrow: 'Quyền riêng tư và dữ liệu',
         icon: ShieldCheck,
-        description: 'Cách Shop Web rẻ thu thập, sử dụng và bảo vệ thông tin trong quá trình bạn sử dụng website.',
-        summary: 'Mình chỉ thu thập dữ liệu cần thiết để vận hành tài khoản, xử lý đơn hàng và hỗ trợ khách hàng.',
+        description: 'Cách Web Giá Rẻ - Portfolio thu thập, sử dụng và bảo vệ thông tin trong quá trình bạn sử dụng website.',
+        summary: 'Mình chỉ thu thập dữ liệu cần thiết để vận hành tài khoản, xử lý yêu cầu và hỗ trợ khách hàng.',
         sections: [
             {
                 title: 'Thông tin được thu thập',
                 icon: Database,
                 paragraphs: [
-                    'Khi bạn đăng ký tài khoản, đặt hàng hoặc gửi yêu cầu hỗ trợ, Shop Web rẻ có thể tiếp nhận một số thông tin cần thiết để cung cấp dịch vụ.',
+                    'Khi bạn đăng ký tài khoản, gửi yêu cầu tư vấn hoặc yêu cầu hỗ trợ, Web Giá Rẻ - Portfolio có thể tiếp nhận một số thông tin cần thiết để cung cấp dịch vụ.',
                 ],
                 bullets: [
                     'Họ tên, địa chỉ email và số điện thoại do bạn cung cấp.',
-                    'Thông tin đơn hàng, sản phẩm, giấy phép và lịch sử tải xuống.',
+                    'Thông tin yêu cầu, mẫu demo, quyền truy cập và lịch sử truy cập tài nguyên.',
                     'Dữ liệu kỹ thuật cơ bản như thiết bị, trình duyệt và nhật ký truy cập phục vụ bảo mật.',
                 ],
             },
@@ -60,8 +60,8 @@ const POLICIES: Record<string, Policy> = {
                 ],
                 bullets: [
                     'Xác thực tài khoản và quản lý quyền truy cập.',
-                    'Xử lý thanh toán, cấp quyền tải file và giấy phép sản phẩm.',
-                    'Gửi thông báo quan trọng liên quan đến đơn hàng hoặc bảo mật.',
+                    'Xử lý xác nhận tư vấn, cấp quyền truy cập tài nguyên tham khảo và quyền truy cập mẫu demo.',
+                    'Gửi thông báo quan trọng liên quan đến yêu cầu hoặc bảo mật.',
                     'Tiếp nhận yêu cầu hỗ trợ và cải thiện trải nghiệm website.',
                 ],
             },
@@ -69,7 +69,7 @@ const POLICIES: Record<string, Policy> = {
                 title: 'Lưu trữ và bảo vệ',
                 icon: LockKeyhole,
                 paragraphs: [
-                    'Shop Web rẻ sử dụng các dịch vụ hạ tầng và thanh toán phù hợp để lưu trữ, xử lý dữ liệu. Quyền truy cập quản trị được giới hạn theo vai trò và mục đích sử dụng.',
+                    'Web Giá Rẻ - Portfolio sử dụng các dịch vụ hạ tầng và xác nhận tư vấn phù hợp để lưu trữ, xử lý dữ liệu. Quyền truy cập quản trị được giới hạn theo vai trò và mục đích sử dụng.',
                     'Không có hệ thống trực tuyến nào bảo đảm an toàn tuyệt đối. Khi phát hiện dấu hiệu bất thường, bạn nên đổi mật khẩu và liên hệ ngay để được kiểm tra.',
                 ],
             },
@@ -77,8 +77,8 @@ const POLICIES: Record<string, Policy> = {
                 title: 'Chia sẻ với bên cung cấp dịch vụ',
                 icon: UsersRound,
                 paragraphs: [
-                    'Dữ liệu có thể được xử lý bởi các nhà cung cấp hạ tầng, xác thực, lưu trữ file, email hoặc thanh toán khi cần thiết để hoàn thành dịch vụ.',
-                    'Shop Web rẻ không bán thông tin cá nhân. Thông tin chỉ được cung cấp khi có căn cứ hợp pháp, yêu cầu từ cơ quan có thẩm quyền hoặc để bảo vệ quyền lợi chính đáng.',
+                    'Dữ liệu có thể được xử lý bởi các nhà cung cấp hạ tầng, xác thực, lưu trữ file, email hoặc xác nhận tư vấn khi cần thiết để hoàn thành dịch vụ.',
+                    'Web Giá Rẻ - Portfolio không chia sẻ thông tin cá nhân cho mục đích thương mại. Thông tin chỉ được cung cấp khi có căn cứ hợp pháp, yêu cầu từ cơ quan có thẩm quyền hoặc để bảo vệ quyền lợi chính đáng.',
                 ],
             },
             {
@@ -96,14 +96,14 @@ const POLICIES: Record<string, Policy> = {
         shortTitle: 'Điều khoản',
         eyebrow: 'Quy định sử dụng dịch vụ',
         icon: Scale,
-        description: 'Các nguyên tắc áp dụng khi truy cập website, tạo tài khoản và mua sản phẩm số tại Shop Web rẻ.',
+        description: 'Các nguyên tắc áp dụng khi truy cập website, tạo tài khoản và chọn mẫu demo số tại Web Giá Rẻ - Portfolio.',
         summary: 'Việc sử dụng website đồng nghĩa với việc bạn đồng ý tuân thủ các quy định được công bố tại đây.',
         sections: [
             {
                 title: 'Phạm vi áp dụng',
                 icon: FileCheck2,
                 paragraphs: [
-                    'Điều khoản này áp dụng cho người truy cập, thành viên và khách hàng sử dụng các chức năng, nội dung hoặc sản phẩm được cung cấp trên Shop Web rẻ.',
+                    'Điều khoản này áp dụng cho người truy cập, thành viên và khách hàng sử dụng các chức năng, nội dung hoặc mẫu demo được cung cấp trên Web Giá Rẻ - Portfolio.',
                     'Nếu không đồng ý với một nội dung trong điều khoản, bạn nên ngừng sử dụng phần dịch vụ có liên quan và liên hệ để được giải thích.',
                 ],
             },
@@ -114,58 +114,58 @@ const POLICIES: Record<string, Policy> = {
                     'Bạn chịu trách nhiệm cung cấp thông tin chính xác, giữ bí mật thông tin đăng nhập và kiểm soát hoạt động phát sinh từ tài khoản của mình.',
                 ],
                 bullets: [
-                    'Không chia sẻ tài khoản hoặc quyền tải file cho người không có quyền.',
-                    'Không giả mạo danh tính hoặc sử dụng thông tin thanh toán trái phép.',
+                    'Không chia sẻ tài khoản hoặc quyền truy cập tài nguyên tham khảo cho người không có quyền.',
+                    'Không giả mạo danh tính hoặc sử dụng thông tin xác nhận tư vấn trái phép.',
                     'Thông báo ngay khi nghi ngờ tài khoản bị truy cập ngoài ý muốn.',
                 ],
             },
             {
-                title: 'Đặt hàng và thanh toán',
+                title: 'Đặt hàng và xác nhận tư vấn',
                 icon: CreditCard,
                 paragraphs: [
-                    'Đơn hàng chỉ được xác nhận sau khi hệ thống ghi nhận giao dịch hợp lệ. Giá, ưu đãi và phạm vi giấy phép được hiển thị tại thời điểm đặt hàng.',
+                    'Yêu cầu chỉ được xác nhận sau khi hệ thống ghi nhận thông tin hợp lệ. Giá tham khảo, ưu đãi và phạm vi quyền truy cập được hiển thị tại thời điểm gửi yêu cầu.',
                     'Trong trường hợp giao dịch bị chậm đối soát, khách hàng nên giữ lại biên nhận và mã đơn để được kiểm tra.',
                 ],
             },
             {
-                title: 'Sử dụng sản phẩm số',
+                title: 'Sử dụng mẫu demo số',
                 icon: Download,
                 paragraphs: [
-                    'Sản phẩm được sử dụng theo loại giấy phép đi kèm đơn hàng. Việc mua sản phẩm không đồng nghĩa với việc chuyển giao quyền tác giả hoặc quyền phân phối file gốc.',
+                    'Mẫu demo được sử dụng theo loại quyền truy cập đi kèm yêu cầu. Việc chọn mẫu demo không đồng nghĩa với việc chuyển giao quyền tác giả hoặc quyền phân phối tài nguyên gốc.',
                 ],
                 bullets: [
-                    'Không đăng tải công khai, chia sẻ, bán lại hoặc phân phối file gốc.',
-                    'Không sử dụng sản phẩm vào hoạt động vi phạm pháp luật.',
-                    'Không can thiệp trái phép vào hệ thống tải file, thanh toán hoặc cấp license.',
+                    'Không đăng tải công khai, chia sẻ hoặc phân phối lại tài nguyên gốc.',
+                    'Không sử dụng mẫu demo vào hoạt động vi phạm pháp luật.',
+                    'Không can thiệp trái phép vào hệ thống truy cập tài nguyên tham khảo, xác nhận tư vấn hoặc cấp quyền truy cập.',
                 ],
             },
             {
                 title: 'Tạm ngừng quyền truy cập',
                 icon: AlertTriangle,
                 paragraphs: [
-                    'Shop Web rẻ có thể tạm khóa tài khoản, quyền tải hoặc license khi có dấu hiệu gian lận, chia sẻ trái phép, tấn công hệ thống hoặc vi phạm nghiêm trọng điều khoản.',
+                    'Web Giá Rẻ - Portfolio có thể tạm khóa tài khoản, quyền tải hoặc quyền truy cập khi có dấu hiệu gian lận, chia sẻ trái phép, tấn công hệ thống hoặc vi phạm nghiêm trọng điều khoản.',
                 ],
                 note: 'Trước khi áp dụng biện pháp lâu dài, thông tin liên quan sẽ được kiểm tra trên dữ liệu giao dịch hiện có.',
             },
         ],
     },
     refund: {
-        title: 'Chính sách hoàn tiền',
-        shortTitle: 'Hoàn tiền',
-        eyebrow: 'Xử lý giao dịch sản phẩm số',
+        title: 'Chính sách xử lý yêu cầu',
+        shortTitle: 'Xử lý yêu cầu',
+        eyebrow: 'Xử lý giao dịch mẫu demo số',
         icon: RefreshCcw,
-        description: 'Điều kiện và quy trình tiếp nhận yêu cầu hoàn tiền đối với giao diện, template và mã nguồn số.',
-        summary: 'Do sản phẩm có thể được tải xuống ngay, yêu cầu hoàn tiền được xem xét dựa trên lỗi thực tế và lịch sử tải file.',
+        description: 'Điều kiện và quy trình tiếp nhận yêu cầu xử lý yêu cầu đối với giao diện, template và mã nguồn số.',
+        summary: 'Do mẫu demo có thể được truy cập tài nguyên ngay, yêu cầu xử lý yêu cầu được xem xét dựa trên lỗi thực tế và lịch sử truy cập tài nguyên tham khảo.',
         sections: [
             {
                 title: 'Trường hợp được xem xét',
                 icon: CheckCircle2,
                 paragraphs: [
-                    'Bạn có thể gửi yêu cầu trong vòng 7 ngày kể từ thời điểm thanh toán khi sản phẩm có vấn đề nghiêm trọng thuộc trách nhiệm của bên cung cấp.',
+                    'Bạn có thể gửi yêu cầu trong vòng 7 ngày kể từ thời điểm xác nhận tư vấn khi mẫu demo có vấn đề nghiêm trọng thuộc trách nhiệm của bên cung cấp.',
                 ],
                 bullets: [
-                    'File không thể tải xuống hoặc bị hỏng và không thể thay thế.',
-                    'Sản phẩm khác đáng kể so với nội dung mô tả tại thời điểm mua.',
+                    'File không thể truy cập tài nguyên hoặc bị hỏng và không thể thay thế.',
+                    'Mẫu demo khác đáng kể so với nội dung mô tả tại thời điểm được tư vấn.',
                     'Lỗi kỹ thuật cốt lõi đã được xác minh nhưng không có phương án khắc phục hợp lý.',
                     'Giao dịch bị ghi nhận trùng do lỗi hệ thống.',
                 ],
@@ -174,12 +174,12 @@ const POLICIES: Record<string, Policy> = {
                 title: 'Trường hợp không áp dụng',
                 icon: XCircle,
                 paragraphs: [
-                    'Yêu cầu có thể bị từ chối khi sản phẩm vẫn hoạt động đúng mô tả hoặc vấn đề phát sinh ngoài phạm vi của sản phẩm.',
+                    'Yêu cầu có thể bị từ chối khi mẫu demo vẫn hoạt động đúng mô tả hoặc vấn đề phát sinh ngoài phạm vi của mẫu demo.',
                 ],
                 bullets: [
-                    'Thay đổi ý định, mua nhầm hoặc không còn nhu cầu sử dụng.',
-                    'Thiếu kiến thức, phần mềm hoặc môi trường cần thiết để chỉnh sửa sản phẩm.',
-                    'Sản phẩm đã được sử dụng, sao chép hoặc triển khai nhưng không có lỗi được xác minh.',
+                    'Thay đổi ý định, chọn nhầm hoặc không còn nhu cầu sử dụng.',
+                    'Thiếu kiến thức, phần mềm hoặc môi trường cần thiết để chỉnh sửa mẫu demo.',
+                    'Mẫu demo đã được sử dụng, sao chép hoặc triển khai nhưng không có lỗi được xác minh.',
                     'Yêu cầu được gửi sau thời hạn hoặc tài khoản vi phạm điều khoản sử dụng.',
                 ],
             },
@@ -187,11 +187,11 @@ const POLICIES: Record<string, Policy> = {
                 title: 'Cách gửi yêu cầu',
                 icon: Mail,
                 paragraphs: [
-                    'Gửi email tới veutong961@gmail.com với tiêu đề “Yêu cầu hoàn tiền” để việc kiểm tra được nhanh và chính xác.',
+                    'Gửi email tới veutong961@gmail.com với tiêu đề “Yêu cầu xử lý yêu cầu” để việc kiểm tra được nhanh và chính xác.',
                 ],
                 bullets: [
-                    'Mã đơn hàng và email dùng khi mua.',
-                    'Tên sản phẩm và mô tả cụ thể vấn đề.',
+                    'Mã yêu cầu và email dùng khi gửi nhu cầu.',
+                    'Tên mẫu demo và mô tả cụ thể vấn đề.',
                     'Ảnh chụp, video hoặc thông báo lỗi nếu có.',
                     'Các bước bạn đã thử để xử lý vấn đề.',
                 ],
@@ -200,45 +200,45 @@ const POLICIES: Record<string, Policy> = {
                 title: 'Thời gian xử lý',
                 icon: Clock3,
                 paragraphs: [
-                    'Yêu cầu hợp lệ thường được phản hồi ban đầu trong 1-2 ngày làm việc. Nếu được chấp thuận, thời gian tiền về phụ thuộc vào ngân hàng hoặc phương thức thanh toán ban đầu.',
-                    'Quyền tải file và license của đơn hàng được hoàn tiền có thể bị thu hồi sau khi yêu cầu hoàn tất.',
+                    'Yêu cầu hợp lệ thường được phản hồi ban đầu trong 1-2 ngày làm việc. Nếu được chấp thuận, thời gian tiền về phụ thuộc vào ngân hàng hoặc phương thức xác nhận tư vấn ban đầu.',
+                    'Quyền truy cập tài nguyên tham khảo và quyền truy cập của yêu cầu được xử lý yêu cầu có thể bị thu hồi sau khi yêu cầu hoàn tất.',
                 ],
             },
         ],
     },
     license: {
-        title: 'Điều khoản giấy phép',
-        shortTitle: 'Giấy phép',
-        eyebrow: 'Quyền sử dụng sản phẩm',
+        title: 'Điều khoản quyền truy cập',
+        shortTitle: 'Quyền truy cập',
+        eyebrow: 'Quyền sử dụng mẫu demo',
         icon: KeyRound,
-        description: 'Phạm vi sử dụng, chỉnh sửa và các giới hạn áp dụng cho sản phẩm số được mua tại Shop Web rẻ.',
-        summary: 'Giấy phép cho phép bạn sử dụng sản phẩm theo phạm vi đơn hàng, nhưng không chuyển giao quyền sở hữu file gốc.',
+        description: 'Phạm vi sử dụng, chỉnh sửa và các giới hạn áp dụng cho mẫu demo số tại Web Giá Rẻ - Portfolio.',
+        summary: 'Quyền truy cập cho phép bạn sử dụng mẫu demo theo phạm vi yêu cầu, nhưng không chuyển giao quyền sở hữu tài nguyên gốc.',
         sections: [
             {
-                title: 'Giấy phép Regular',
+                title: 'Quyền truy cập Regular',
                 icon: KeyRound,
                 paragraphs: [
-                    'Regular License áp dụng cho một sản phẩm cuối hoặc một dự án của chính người mua hay một khách hàng cụ thể, trừ khi trang sản phẩm có quy định khác.',
+                    'Quyền truy cập cơ bản áp dụng cho một mẫu demo cuối hoặc một dự án của người được cấp quyền hay một khách hàng cụ thể, trừ khi trang mẫu demo có quy định khác.',
                 ],
                 bullets: [
                     'Được chỉnh sửa giao diện và mã nguồn cho dự án được cấp phép.',
                     'Được sử dụng trong dự án cá nhân hoặc thương mại phù hợp.',
-                    'Được bàn giao sản phẩm cuối cho khách hàng của dự án đó.',
+                    'Được bàn giao mẫu demo cuối cho khách hàng của dự án đó.',
                 ],
             },
             {
-                title: 'Giấy phép mở rộng',
+                title: 'Quyền truy cập mở rộng',
                 icon: BadgeCheck,
                 paragraphs: [
-                    'Nếu một sản phẩm có tùy chọn giấy phép mở rộng, phạm vi cụ thể sẽ được ghi tại trang sản phẩm hoặc đơn hàng. Không mặc định mọi giấy phép mở rộng đều cho phép sử dụng không giới hạn.',
+                    'Nếu một mẫu demo có tùy chọn quyền truy cập mở rộng, phạm vi cụ thể sẽ được ghi tại trang mẫu demo hoặc yêu cầu. Không mặc định mọi quyền truy cập mở rộng đều cho phép sử dụng không giới hạn.',
                 ],
-                note: 'Hãy liên hệ trước khi sử dụng nếu bạn cần dùng cho SaaS, nhiều khách hàng hoặc sản phẩm bán lại.',
+                note: 'Hãy liên hệ trước khi sử dụng nếu bạn cần dùng cho SaaS hoặc nhiều khách hàng.',
             },
             {
                 title: 'Quyền chỉnh sửa',
                 icon: FileText,
                 paragraphs: [
-                    'Bạn có thể chỉnh sửa nội dung, màu sắc, bố cục và mã nguồn để phù hợp với dự án trong phạm vi giấy phép.',
+                    'Bạn có thể chỉnh sửa nội dung, màu sắc, bố cục và mã nguồn để phù hợp với dự án trong phạm vi quyền truy cập.',
                     'Các phần mềm, thư viện, font hoặc tài nguyên bên thứ ba đi kèm có thể chịu điều khoản riêng của nhà cung cấp tương ứng.',
                 ],
             },
@@ -246,20 +246,20 @@ const POLICIES: Record<string, Policy> = {
                 title: 'Hành vi không được phép',
                 icon: AlertTriangle,
                 paragraphs: [
-                    'Dù đã chỉnh sửa một phần hay toàn bộ, bạn vẫn không được thực hiện các hành vi làm lộ hoặc cạnh tranh trực tiếp bằng file nguồn của sản phẩm.',
+                    'Dù đã chỉnh sửa một phần hay toàn bộ, bạn vẫn không được thực hiện các hành vi làm lộ hoặc cạnh tranh trực tiếp bằng tài nguyên nguồn của mẫu demo.',
                 ],
                 bullets: [
-                    'Bán lại, chia sẻ hoặc phân phối file nguồn dưới mọi hình thức.',
+                    'Chia sẻ hoặc phân phối lại tài nguyên nguồn dưới mọi hình thức.',
                     'Đưa file lên kho tải công khai, nhóm chia sẻ hoặc dịch vụ lưu trữ dùng chung.',
-                    'Chuyển nhượng license độc lập với dự án được cấp phép.',
-                    'Tuyên bố mình là tác giả của toàn bộ sản phẩm gốc.',
+                    'Chuyển nhượng quyền truy cập độc lập với dự án được cấp phép.',
+                    'Tuyên bố mình là tác giả của toàn bộ mẫu demo gốc.',
                 ],
             },
             {
-                title: 'Thu hồi giấy phép',
+                title: 'Thu hồi quyền truy cập',
                 icon: LockKeyhole,
                 paragraphs: [
-                    'Giấy phép có thể bị tạm ngừng hoặc thu hồi nếu đơn hàng được hoàn tiền, giao dịch bị hủy hoặc phát hiện hành vi vi phạm phạm vi sử dụng.',
+                    'Quyền truy cập có thể bị tạm ngừng hoặc thu hồi nếu yêu cầu được xử lý yêu cầu, giao dịch bị hủy hoặc phát hiện hành vi vi phạm phạm vi sử dụng.',
                 ],
             },
         ],
@@ -390,7 +390,7 @@ export default function PolicyContent({ type }: { type: string }) {
                     <div className="rounded-lg bg-slate-950 p-5 text-white">
                         <Headphones size={20} className="text-orange-400" />
                         <p className="mt-4 text-sm font-black">Cần làm rõ nội dung?</p>
-                        <p className="mt-2 text-xs font-medium leading-5 text-slate-400">Trao đổi trực tiếp trước khi chọn hoặc sử dụng sản phẩm.</p>
+                        <p className="mt-2 text-xs font-medium leading-5 text-slate-400">Trao đổi trực tiếp trước khi chọn hoặc sử dụng mẫu demo.</p>
                         <Link href="/contact" className="mt-4 inline-flex items-center gap-2 text-xs font-bold text-orange-300 hover:text-orange-200">
                             Liên hệ hỗ trợ <ArrowRight size={14} />
                         </Link>
@@ -407,7 +407,7 @@ export default function PolicyContent({ type }: { type: string }) {
                         <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-semibold text-slate-500">
                             <span className="inline-flex items-center gap-1.5"><FileText size={14} /> Tài liệu chính thức</span>
                             <span className="inline-flex items-center gap-1.5"><Clock3 size={14} /> Cập nhật {UPDATED_AT}</span>
-                            <span className="inline-flex items-center gap-1.5"><BadgeCheck size={14} /> Áp dụng tại Shop Web rẻ</span>
+                            <span className="inline-flex items-center gap-1.5"><BadgeCheck size={14} /> Áp dụng tại Web Giá Rẻ - Portfolio</span>
                         </div>
                     </div>
 

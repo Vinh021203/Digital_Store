@@ -107,6 +107,7 @@ const ZaloIcon = ({ className = '' }: { className?: string }) => (
 const FloatingWidgets = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [hideNearFooter, setHideNearFooter] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [inputMsg, setInputMsg] = useState('');
   const [currentQuickReplies, setCurrentQuickReplies] = useState<string[]>([]);
@@ -114,7 +115,7 @@ const FloatingWidgets = () => {
     {
       id: 1,
       sender: 'bot',
-      text: 'Chào bạn! Mình là trợ lý AI của Shop Web rẻ. Mình có thể giúp bạn tìm giao diện, template hoặc giải đáp thắc mắc. Bạn cần tư vấn gì hôm nay?',
+      text: 'Chào bạn! Mình là trợ lý AI của Web Giá Rẻ - Portfolio. Mình có thể giúp bạn tìm giao diện, template hoặc giải đáp thắc mắc. Bạn cần tư vấn gì hôm nay?',
     },
   ]);
 
@@ -128,6 +129,39 @@ const FloatingWidgets = () => {
   }, []);
 
   const throttledScroll = useThrottle(checkScroll, 160);
+
+  useEffect(() => {
+    const footer = document.querySelector('footer');
+    if (!footer || typeof IntersectionObserver === 'undefined') return;
+
+    const desktopQuery = window.matchMedia('(min-width: 768px)');
+    const syncFooterState = (isIntersecting: boolean) => {
+      setHideNearFooter(desktopQuery.matches && isIntersecting);
+    };
+
+    let footerIntersecting = false;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        footerIntersecting = entry.isIntersecting;
+        syncFooterState(footerIntersecting);
+      },
+      {
+        root: null,
+        rootMargin: '0px 0px -8% 0px',
+        threshold: 0.02,
+      },
+    );
+
+    const handleMediaChange = () => syncFooterState(footerIntersecting);
+
+    observer.observe(footer);
+    desktopQuery.addEventListener('change', handleMediaChange);
+
+    return () => {
+      observer.disconnect();
+      desktopQuery.removeEventListener('change', handleMediaChange);
+    };
+  }, []);
 
   useEffect(() => {
     checkScroll();
@@ -205,7 +239,7 @@ const FloatingWidgets = () => {
 
   const quickSuggestions = [
     'Landing page cho startup',
-    'Template Next.js bán hàng',
+    'Template Next.js giới thiệu/demo',
     'Template React đẹp',
   ];
 
@@ -216,7 +250,7 @@ const FloatingWidgets = () => {
 
   return (
     <>
-      <div className="fixed bottom-20 left-3 z-[70] flex flex-col items-center gap-2 rounded-3xl border border-slate-200/80 bg-white/92 p-1.5 font-sans shadow-[0_18px_45px_rgba(15,23,42,0.13)] backdrop-blur-xl animate-widget-dock-in md:bottom-6 md:left-6 md:p-2">
+      <div className={`fixed bottom-20 left-3 z-[70] flex flex-col items-center gap-2 rounded-3xl border border-slate-200/80 bg-white/92 p-1.5 font-sans shadow-[0_18px_45px_rgba(15,23,42,0.13)] backdrop-blur-xl transition-all duration-300 md:bottom-6 md:left-6 md:p-2 ${hideNearFooter ? 'pointer-events-none translate-y-6 opacity-0' : 'animate-widget-dock-in opacity-100'}`}>
         <a href={PHONE_LINK} className="group relative flex items-center" aria-label={`Gọi ${DISPLAY_PHONE}`}>
           <div className="widget-action flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 ring-1 ring-blue-100 transition-all duration-200 hover:-translate-y-0.5 hover:bg-blue-600 hover:text-white hover:shadow-lg hover:shadow-blue-200 md:h-11 md:w-11">
             <Phone size={19} strokeWidth={2.35} />
@@ -245,11 +279,11 @@ const FloatingWidgets = () => {
         </a>
       </div>
 
-      <div className="fixed bottom-20 right-3 z-[70] flex flex-col items-end gap-3 font-sans pointer-events-none md:bottom-6 md:right-6">
+      <div className={`fixed bottom-20 right-3 z-[70] flex flex-col items-end gap-3 font-sans pointer-events-none transition-all duration-300 md:bottom-6 md:right-6 ${hideNearFooter ? 'translate-y-6 opacity-0' : 'opacity-100'}`}>
         <div
           className={`pointer-events-auto flex w-[calc(100vw-32px)] origin-bottom-right transform flex-col overflow-hidden rounded-2xl border border-orange-100 bg-white shadow-2xl transition-all duration-400 sm:w-[350px] ${
             isChatOpen
-              ? 'mb-2 h-[min(390px,calc(100vh-14rem))] min-h-[min(330px,calc(100vh-14rem))] translate-y-0 scale-100 opacity-100 sm:h-[min(430px,calc(100vh-12rem))]'
+              ? 'mb-2 h-[min(560px,calc(100dvh-8.5rem))] min-h-[min(440px,calc(100dvh-8.5rem))] translate-y-0 scale-100 opacity-100 sm:h-[min(520px,calc(100dvh-10rem))]'
               : 'pointer-events-none mb-0 h-0 translate-y-10 scale-75 opacity-0'
           }`}
         >
@@ -262,7 +296,7 @@ const FloatingWidgets = () => {
                 <span className="absolute bottom-0 right-0 h-3 w-3 animate-pulse rounded-full border-2 border-orange-600 bg-green-400" />
               </div>
               <div>
-                <h3 className="text-sm font-bold">Trợ lý Shop Web rẻ</h3>
+                <h3 className="text-sm font-bold">Trợ lý Web Giá Rẻ - Portfolio</h3>
                 <p className="flex items-center gap-1 text-[10px] text-orange-100 opacity-90">
                   <CheckCircle2 size={10} /> Sẵn sàng hỗ trợ 24/7
                 </p>
@@ -359,7 +393,7 @@ const FloatingWidgets = () => {
                 type="text"
                 value={inputMsg}
                 onChange={(e) => setInputMsg(e.target.value)}
-                placeholder="Hỏi về sản phẩm, tư vấn..."
+                placeholder="Hỏi về mẫu demo, tư vấn..."
                 className="flex-1 rounded-xl border-none bg-orange-50/50 px-3.5 py-2 text-sm outline-none transition-all placeholder:text-slate-400 focus:ring-2 focus:ring-orange-500"
                 maxLength={500}
                 disabled={isTyping}
@@ -398,7 +432,7 @@ const FloatingWidgets = () => {
           )}
         </button>
 
-        {showScrollTop && (
+        {showScrollTop && !isChatOpen && (
           <button
             onClick={scrollToTop}
             className="pointer-events-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-xl shadow-slate-200/80 transition-all animate-scroll-pop hover:-translate-y-1 hover:bg-slate-950 hover:text-white active:scale-95"

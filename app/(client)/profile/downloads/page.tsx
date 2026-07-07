@@ -150,7 +150,7 @@ export default function DownloadsPage() {
                         <Download size={32} className="text-slate-300" />
                     </div>
                     <h2 className="text-xl font-bold text-slate-900 mb-2">Vui lòng đăng nhập</h2>
-                    <p className="text-slate-500 mb-4">Bạn cần đăng nhập để xem các sản phẩm đã mua</p>
+                    <p className="text-slate-500 mb-4">Bạn cần đăng nhập để xem các mẫu đã được cấp quyền</p>
                     <Link href="/login" className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-6 py-3 rounded-xl font-bold hover:shadow-lg hover:shadow-orange-500/30 transition-all">
                         Đăng nhập
                     </Link>
@@ -177,7 +177,7 @@ export default function DownloadsPage() {
                         <ChevronRight size={14} />
                         <Link href="/profile" className="hover:text-white transition-colors">Profile</Link>
                         <ChevronRight size={14} />
-                        <span className="text-white font-medium">Downloads</span>
+	                        <span className="text-white font-medium">Mẫu đã cấp quyền</span>
                     </div>
 
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -187,10 +187,10 @@ export default function DownloadsPage() {
                             </div>
                             <div>
                                 <span className="bg-green-500/20 text-green-300 px-2.5 py-0.5 rounded-full text-xs font-bold mb-2 inline-block">
-                                    <Sparkles size={10} className="inline mr-1" /> My Products
+	                                    <Sparkles size={10} className="inline mr-1" /> Demo Access
                                 </span>
-                                <h1 className="text-2xl md:text-3xl font-black">Sản phẩm đã mua</h1>
-                                <p className="text-slate-400 text-sm">{downloads.length} sản phẩm có thể tải xuống</p>
+                                <h1 className="text-2xl md:text-3xl font-black">Mẫu đã được cấp quyền</h1>
+	                            <p className="text-slate-400 text-sm">{downloads.length} mẫu demo đã được mở quyền truy cập</p>
                             </div>
                         </div>
 
@@ -211,7 +211,7 @@ export default function DownloadsPage() {
                         </div>
                         <div>
                             <p className="text-2xl font-black text-slate-900">{downloads.length}</p>
-                            <p className="text-xs text-slate-500 font-medium">Tổng sản phẩm</p>
+                            <p className="text-xs text-slate-500 font-medium">Tổng mẫu demo</p>
                         </div>
                     </div>
                 </div>
@@ -245,7 +245,7 @@ export default function DownloadsPage() {
                     <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                     <input
                         type="text"
-                        placeholder="Tìm kiếm sản phẩm..."
+                        placeholder="Tìm kiếm mẫu demo..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-500/20 outline-none transition-all"
@@ -297,7 +297,7 @@ export default function DownloadsPage() {
                                                 <div className="min-w-0">
                                                     <div className="flex items-center gap-2 mb-1">
                                                         <span className="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5">
-                                                            <CheckCircle size={10} /> Đã thanh toán
+                                                            <CheckCircle size={10} /> Đã xác nhận tư vấn
                                                         </span>
                                                     </div>
                                                     <h3 className="font-bold text-lg text-slate-900 hover:text-green-600 transition-colors line-clamp-2">
@@ -315,11 +315,11 @@ export default function DownloadsPage() {
                                             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500 mb-4">
                                                 <span className="flex items-center gap-1">
                                                     <Calendar size={12} className="text-green-400" />
-                                                    Mua ngày {new Date(item.purchased_at).toLocaleDateString('vi-VN')}
+                                                    Cấp quyền ngày {new Date(item.purchased_at).toLocaleDateString('vi-VN')}
                                                 </span>
                                                 <span className="flex items-center gap-1">
                                                     <ShoppingBag size={12} className="text-blue-400" />
-                                                    {item.order_id ? `Đơn hàng #${item.order_id}` : 'License trực tiếp'}
+                                                    {item.order_id ? `Yêu cầu #${item.order_id}` : 'License trực tiếp'}
                                                 </span>
                                                 {item.currentVersion && (
                                                     <span className="flex items-center gap-1 text-orange-600 font-medium">
@@ -407,7 +407,7 @@ export default function DownloadsPage() {
                                                         className="flex min-w-[132px] items-center justify-center gap-2 px-5 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl font-bold hover:shadow-lg hover:shadow-green-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                                                     >
                                                         <Download size={18} />
-                                                        Tải xuống
+	                                                        Nhận file demo
                                                     </button>
                                                 </div>
                                             </div>
@@ -424,16 +424,16 @@ export default function DownloadsPage() {
                         <Package size={32} className="text-slate-300" />
                     </div>
                     <h3 className="font-bold text-xl text-slate-900 mb-2">
-                        {searchQuery ? 'Không tìm thấy sản phẩm' : 'Chưa có sản phẩm nào'}
+                        {searchQuery ? 'Không tìm thấy mẫu demo' : 'Chưa có mẫu demo nào'}
                     </h3>
                     <p className="text-slate-500 mb-6">
-                        {searchQuery ? 'Thử tìm với từ khóa khác' : 'Các sản phẩm bạn mua sẽ xuất hiện ở đây'}
+                        {searchQuery ? 'Thử tìm với từ khóa khác' : 'Các mẫu demo được cấp quyền sẽ xuất hiện ở đây'}
                     </p>
                     <Link
                         href="/products"
                         className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-6 py-3 rounded-xl font-bold hover:shadow-lg hover:shadow-orange-500/30 transition-all"
                     >
-                        Khám phá sản phẩm
+                        Khám phá mẫu demo
                         <ChevronRight size={18} />
                     </Link>
                 </div>

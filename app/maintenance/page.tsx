@@ -106,7 +106,7 @@ export default function MaintenancePage() {
 
                 {/* Site name */}
                 <p className="mt-8 text-slate-500 text-sm">
-                    © {new Date().getFullYear()} {settings.siteName || 'Shop Web rẻ'}
+                    © {new Date().getFullYear()} {settings.siteName || 'Web Giá Rẻ - Portfolio'}
                 </p>
             </div>
         </div>

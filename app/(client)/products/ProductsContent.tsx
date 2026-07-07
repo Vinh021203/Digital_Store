@@ -6,16 +6,16 @@ import Link from 'next/link';
 import Image from 'next/image';
 import {
     Search, Filter, Grid, List, ChevronDown, Star, Eye, Package,
-    Heart, ShoppingCart, Home, ChevronRight, Loader2, X, SlidersHorizontal,
+    Heart, Home, ChevronRight, Loader2, X, SlidersHorizontal,
     Check, ArrowUpDown, Tag, Zap, LayoutGrid, Headphones, Send
 } from 'lucide-react';
 import type { DbCategory } from '@/lib/categories';
 import { ProductCard } from '@/components/product';
 import { ProductGridSkeleton } from '@/components/ui/Skeleton';
-import { useCart } from '@/context/CartContext';
 import QuickViewModal from '@/components/product/QuickViewModal';
 import { useCallback } from 'react';
 import type { Product } from '@/types';
+import { useSiteMode } from '@/hooks/useSiteSettings';
 
 function useDebouncedValue<T>(value: T, delay = 300) {
     const [debouncedValue, setDebouncedValue] = useState(value);
@@ -78,7 +78,8 @@ const FilterSidebar = ({
     setFormat,
     products,
     isOpen,
-    onClose
+    onClose,
+    isCatalogMode
 }: {
     categories: any[];
     selectedCategory: string;
@@ -92,6 +93,7 @@ const FilterSidebar = ({
     products: any[];
     isOpen: boolean;
     onClose: () => void;
+    isCatalogMode: boolean;
 }) => {
     const [showAllCategories, setShowAllCategories] = useState(false);
     const [showAllFormats, setShowAllFormats] = useState(false);
@@ -199,7 +201,7 @@ const FilterSidebar = ({
                 </section>
 
                 <section className="border-t border-slate-100 pt-4">
-                    <h3 className="mb-2 text-[12px] font-extrabold text-slate-900">Loại sản phẩm</h3>
+                    <h3 className="mb-2 text-[12px] font-extrabold text-slate-900">Loại mẫu demo</h3>
                     <div className="space-y-0.5">
                         {visibleFormats.map((item) => (
                             <CheckboxRow
@@ -239,6 +241,7 @@ const FilterSidebar = ({
                     </div>
                 </section>
 
+                {!isCatalogMode && (
                 <section className="border-t border-slate-100 pt-4">
                     <h3 className="mb-3 text-[12px] font-extrabold text-slate-900">Khoảng giá</h3>
                     <input
@@ -255,6 +258,7 @@ const FilterSidebar = ({
                         <div className="rounded-lg border border-slate-200 px-3 py-2 text-[12px] font-semibold text-slate-500">{priceRange[1].toLocaleString('vi-VN')}đ</div>
                     </div>
                 </section>
+                )}
 
                 <section className="border-t border-slate-100 pt-4">
                     <h3 className="mb-2 text-[12px] font-extrabold text-slate-900">Đánh giá</h3>
@@ -304,7 +308,7 @@ interface ProductsPageContentProps {
 function ProductsPageContent({ initialProducts, initialCategories }: ProductsPageContentProps) {
     const searchParams = useSearchParams();
     const router = useRouter();
-    const { addToCart } = useCart();
+    const { isCatalogMode } = useSiteMode();
     const didMountFiltersRef = useRef(false);
 
     const [products] = useState<Product[]>(initialProducts);
@@ -402,14 +406,16 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
             result = result.filter(p => (p.rating || 0) >= ratingFilter);
         }
 
-        result = result.filter(p => p.price >= priceRange[0] && (priceRange[1] >= 5000000 ? true : p.price <= priceRange[1]));
+        if (!isCatalogMode) {
+            result = result.filter(p => p.price >= priceRange[0] && (priceRange[1] >= 5000000 ? true : p.price <= priceRange[1]));
+        }
 
         switch (sortBy) {
             case 'price-asc':
-                result.sort((a, b) => a.price - b.price);
+                if (!isCatalogMode) result.sort((a, b) => a.price - b.price);
                 break;
             case 'price-desc':
-                result.sort((a, b) => b.price - a.price);
+                if (!isCatalogMode) result.sort((a, b) => b.price - a.price);
                 break;
             case 'popular':
                 result.sort((a, b) => (b.downloads_count || 0) - (a.downloads_count || 0));
@@ -422,7 +428,7 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
         }
 
         return result;
-    }, [products, debouncedSearchTerm, selectedCategory, sortBy, priceRange, ratingFilter, formatFilter]);
+    }, [products, debouncedSearchTerm, selectedCategory, sortBy, priceRange, ratingFilter, formatFilter, isCatalogMode]);
 
     // Pagination logic
     const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
@@ -454,12 +460,14 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
     ];
 
     const sortOptions = [
-        { value: 'newest', label: 'Mới nhất' },
-        { value: 'popular', label: 'Phổ biến' },
-        { value: 'price-asc', label: 'Giá ↑' },
-        { value: 'price-desc', label: 'Giá ↓' },
+        { value: 'newest', label: 'Moi nhat' },
+        { value: 'popular', label: 'Pho bien' },
+        ...(!isCatalogMode ? [
+            { value: 'price-asc', label: 'Gia tang' },
+            { value: 'price-desc', label: 'Gia giam' },
+        ] : []),
     ];
-    const currentSortLabel = sortOptions.find((option) => option.value === sortBy)?.label || 'Mới nhất';
+    const currentSortLabel = sortOptions.find((option) => option.value === sortBy)?.label || 'Moi nhat';
 
     return (
         <div className="min-h-screen bg-slate-50">
@@ -522,7 +530,7 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
                 <div className="lg:hidden sticky top-14 sm:top-16 z-30 bg-slate-50 -mx-3 sm:-mx-4 px-3 sm:px-4 py-2 sm:py-3 mb-3 sm:mb-4">
                     {/* Results Count */}
                     <div className="text-xs text-slate-500 mb-2">
-                        <span className="font-bold text-slate-900">{filteredProducts.length}</span> sản phẩm
+                        <span className="font-bold text-slate-900">{filteredProducts.length}</span> mẫu demo
                         {selectedCategory && <span> trong <span className="text-orange-600 font-semibold">{categories.find(c => c.slug === selectedCategory)?.name}</span></span>}
                     </div>
 
@@ -582,6 +590,7 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
 	                        setFormat={setFormatFilter}
 	                        products={products}
 	                        isOpen={showSidebar}
+                                isCatalogMode={isCatalogMode}
                         onClose={() => setShowSidebar(false)}
                     />
 
@@ -614,8 +623,12 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
                                         className="bg-transparent text-sm font-bold text-slate-900 outline-none cursor-pointer"
                                     >
                                         <option value="newest">Mặc định</option>
-                                        <option value="price-asc">Giá: Thấp đến Cao</option>
-                                        <option value="price-desc">Giá: Cao đến Thấp</option>
+                                        {!isCatalogMode && (
+                                            <>
+                                                <option value="price-asc">Gia: thap den cao</option>
+                                                <option value="price-desc">Gia: cao den thap</option>
+                                            </>
+                                        )}
                                     </select>
                                 </div>
                                 <div className="flex bg-slate-100 p-1 rounded-lg">
@@ -643,7 +656,7 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
                                 <div className="w-16 sm:w-20 md:w-24 h-16 sm:h-20 md:h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
                                     <Search size={24} className="text-slate-300 sm:w-8 sm:h-8" />
                                 </div>
-                                <h3 className="text-base sm:text-lg md:text-xl font-bold text-slate-900 mb-2">Không tìm thấy sản phẩm</h3>
+                                <h3 className="text-base sm:text-lg md:text-xl font-bold text-slate-900 mb-2">Không tìm thấy mẫu demo</h3>
                                 <p className="text-slate-500 text-xs sm:text-sm md:text-base mb-4 sm:mb-6 max-w-md mx-auto">
                                     Hãy thử điều chỉnh lại từ khóa hoặc bộ lọc.
                                 </p>
@@ -730,7 +743,7 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
 	                <div className="mt-6 space-y-5">
 		                    <div className="grid grid-cols-2 gap-2 rounded-2xl border border-orange-100 bg-gradient-to-r from-orange-50 via-white to-orange-50 p-2.5 shadow-sm md:grid-cols-4 md:gap-3 md:p-4">
                         {[
-                            { icon: Package, title: 'Sản phẩm chất lượng', desc: 'Đã được kiểm duyệt kỹ lưỡng' },
+                            { icon: Package, title: 'Mẫu demo chất lượng', desc: 'Đã được kiểm duyệt kỹ lưỡng' },
                             { icon: Eye, title: 'Xem demo trước', desc: 'Đánh giá giao diện rõ ràng' },
                             { icon: Send, title: 'Nhận tư vấn nhanh', desc: 'Gợi ý theo nhu cầu thực tế' },
                             { icon: Headphones, title: 'Hỗ trợ tận tâm 24/7', desc: 'Giải đáp mọi thắc mắc' },

@@ -23,7 +23,7 @@ type FAQItem = {
 
 const categories: { id: CategoryId; name: string; icon: LucideIcon }[] = [
     { id: 'all', name: 'Tất cả', icon: Sparkles },
-    { id: 'product', name: 'Sản phẩm', icon: PackageCheck },
+    { id: 'product', name: 'Mẫu demo', icon: PackageCheck },
     { id: 'payment', name: 'Tư vấn', icon: CreditCard },
     { id: 'download', name: 'Quyền truy cập', icon: Download },
     { id: 'license', name: 'Giấy phép', icon: KeyRound },
@@ -34,80 +34,80 @@ const faqs: FAQItem[] = [
     {
         category: 'product',
         question: 'Tôi có thể xem demo trước khi quyết định không?',
-        answer: 'Nếu sản phẩm có bản demo, nút xem demo sẽ xuất hiện tại trang chi tiết. Bạn nên kiểm tra giao diện, tính năng, công nghệ và khả năng responsive trước khi gửi nhu cầu tư vấn.',
+        answer: 'Nếu mẫu demo có bản demo, nút xem demo sẽ xuất hiện tại trang chi tiết. Bạn nên kiểm tra giao diện, tính năng, công nghệ và khả năng responsive trước khi gửi nhu cầu tư vấn.',
         featured: true,
     },
     {
         category: 'product',
-        question: 'Một sản phẩm thường gồm những nội dung gì?',
-        answer: 'Nội dung phụ thuộc từng sản phẩm, có thể gồm HTML, CSS, JavaScript, React, Next.js, Figma hoặc tài nguyên liên quan. Hãy xem mục định dạng file và thông tin kỹ thuật trên trang sản phẩm.',
+        question: 'Một mẫu demo thường gồm những nội dung gì?',
+        answer: 'Nội dung phụ thuộc từng mẫu demo, có thể gồm HTML, CSS, JavaScript, React, Next.js, Figma hoặc tài nguyên liên quan. Hãy xem mục định dạng file và thông tin kỹ thuật trên trang mẫu demo.',
     },
     {
         category: 'product',
-        question: 'Sản phẩm có tài liệu hướng dẫn không?',
-        answer: 'Tài liệu và mức độ hướng dẫn tùy từng sản phẩm. Thông tin này được ghi tại trang chi tiết hoặc trong phần mô tả kỹ thuật. Bạn có thể liên hệ trước nếu cần xác nhận.',
+        question: 'Mẫu demo có tài liệu hướng dẫn không?',
+        answer: 'Tài liệu và mức độ hướng dẫn tùy từng mẫu demo. Thông tin này được ghi tại trang chi tiết hoặc trong phần mô tả kỹ thuật. Bạn có thể liên hệ trước nếu cần xác nhận.',
     },
     {
         category: 'product',
-        question: 'Sản phẩm có được cập nhật miễn phí không?',
-        answer: 'Quyền nhận bản cập nhật phụ thuộc vào từng sản phẩm và loại giấy phép. Nếu có bản mới được mở cho tài khoản của bạn, thông tin sẽ hiển thị trong khu vực hồ sơ.',
+        question: 'Mẫu demo có được cập nhật miễn phí không?',
+        answer: 'Quyền nhận bản cập nhật phụ thuộc vào từng mẫu demo và loại giấy phép. Nếu có bản mới được mở cho tài khoản của bạn, thông tin sẽ hiển thị trong khu vực hồ sơ.',
     },
     {
         category: 'payment',
-        question: 'Shop Web rẻ tư vấn theo quy trình nào?',
-        answer: 'Bạn có thể xem demo, gửi tên sản phẩm quan tâm, công nghệ mong muốn và ngân sách dự kiến. Mình sẽ kiểm tra mẫu phù hợp rồi phản hồi hướng triển khai rõ ràng trước khi mở bước mua bán trực tiếp.',
+        question: 'Web Giá Rẻ - Portfolio tư vấn theo quy trình nào?',
+        answer: 'Bạn có thể xem demo, gửi tên mẫu quan tâm, công nghệ mong muốn và ngân sách dự kiến. Mình sẽ kiểm tra mẫu phù hợp rồi phản hồi hướng triển khai rõ ràng theo chế độ portfolio/demo tư vấn.',
         featured: true,
     },
     {
         category: 'payment',
         question: 'Tôi nên gửi thông tin gì để được tư vấn nhanh?',
-        answer: 'Hãy gửi tên sản phẩm, link demo nếu có, loại công nghệ cần dùng, ngân sách dự kiến và thời gian mong muốn. Nếu bạn đã có mã đơn cũ, có thể gửi kèm để kiểm tra lịch sử hỗ trợ.',
+        answer: 'Hãy gửi tên mẫu demo, link demo nếu có, loại công nghệ cần dùng, ngân sách dự kiến và thời gian mong muốn. Nếu bạn đã có mã đơn cũ, có thể gửi kèm để kiểm tra lịch sử hỗ trợ.',
         link: { label: 'Gửi yêu cầu tư vấn', href: '/contact' },
     },
     {
         category: 'payment',
-        question: 'Khi nào chính sách hoàn tiền được áp dụng?',
-        answer: 'Chính sách hoàn tiền chỉ áp dụng khi website mở luồng mua bán trực tiếp và đơn hàng đủ điều kiện theo quy định. Với chế độ tư vấn/catalog, bạn nên xem demo và xác nhận nhu cầu trước.',
-        link: { label: 'Xem chính sách hoàn tiền', href: '/policy/refund' },
+        question: 'Khi nào chính sách xử lý yêu cầu được áp dụng?',
+        answer: 'Chính sách xử lý yêu cầu được áp dụng theo từng trường hợp đủ điều kiện. Với chế độ portfolio/demo tư vấn, bạn nên xem demo và xác nhận nhu cầu trước.',
+        link: { label: 'Xem chính sách xử lý yêu cầu', href: '/policy/refund' },
     },
     {
         category: 'download',
         question: 'Khi nào tài khoản có quyền truy cập file?',
-        answer: 'Quyền truy cập file chỉ được mở khi sản phẩm hoặc đơn hàng đủ điều kiện. Khi có quyền, bạn đăng nhập đúng tài khoản và mở khu vực hồ sơ để xem thông tin liên quan.',
+        answer: 'Quyền truy cập file chỉ được mở khi mẫu demo hoặc yêu cầu đủ điều kiện. Khi có quyền, bạn đăng nhập đúng tài khoản và mở khu vực hồ sơ để xem thông tin liên quan.',
         featured: true,
     },
     {
         category: 'download',
         question: 'Tại sao tôi chưa thấy file trong hồ sơ?',
-        answer: 'Có thể tài khoản chưa được mở quyền, sản phẩm chưa gắn file hoặc website đang ở chế độ catalog/tư vấn. Hãy gửi tên sản phẩm hoặc mã đơn cũ để mình kiểm tra quyền truy cập.',
+        answer: 'Có thể tài khoản chưa được mở quyền, mẫu demo chưa gắn file hoặc website đang ở chế độ portfolio/demo tư vấn. Hãy gửi tên mẫu demo hoặc mã đơn cũ để mình kiểm tra quyền truy cập.',
     },
     {
         category: 'download',
         question: 'Nếu file tải xuống bị lỗi thì làm gì?',
-        answer: 'Không chỉnh sửa file lỗi. Hãy chụp thông báo, ghi lại tên sản phẩm và mã đơn nếu có rồi gửi qua trang liên hệ. File sẽ được kiểm tra và thay thế nếu lỗi nằm ở gói bàn giao.',
+        answer: 'Không chỉnh sửa file lỗi. Hãy chụp thông báo, ghi lại tên mẫu demo và mã đơn nếu có rồi gửi qua trang liên hệ. File sẽ được kiểm tra và thay thế nếu lỗi nằm ở gói bàn giao.',
         link: { label: 'Gửi yêu cầu hỗ trợ', href: '/contact' },
     },
     {
         category: 'license',
         question: 'Regular License được dùng cho bao nhiêu dự án?',
-        answer: 'Regular License thường áp dụng cho một sản phẩm cuối hoặc một dự án cụ thể. Phạm vi chính xác vẫn ưu tiên theo thông tin tại trang sản phẩm và giấy phép đi kèm đơn hàng.',
+        answer: 'Regular License thường áp dụng cho một mẫu demo cuối hoặc một dự án cụ thể. Phạm vi chính xác vẫn ưu tiên theo thông tin tại trang mẫu demo và giấy phép đi kèm yêu cầu.',
         featured: true,
     },
     {
         category: 'license',
         question: 'Giấy phép mở rộng có dùng không giới hạn không?',
-        answer: 'Không mặc định. Phạm vi của giấy phép mở rộng phải được ghi rõ tại sản phẩm hoặc xác nhận trước khi sử dụng, đặc biệt với SaaS, nhiều khách hàng hoặc sản phẩm bán lại.',
+        answer: 'Không mặc định. Phạm vi của giấy phép mở rộng phải được ghi rõ tại mẫu demo hoặc xác nhận trước khi sử dụng, đặc biệt với SaaS hoặc nhiều khách hàng.',
         link: { label: 'Xem điều khoản giấy phép', href: '/policy/license' },
     },
     {
         category: 'license',
-        question: 'Tôi có được chia sẻ hoặc bán lại file nguồn không?',
-        answer: 'Không. Việc mua sản phẩm cho phép sử dụng trong phạm vi giấy phép, không chuyển giao quyền phân phối file gốc. Bạn không được đăng công khai, chia sẻ hoặc bán lại gói nguồn.',
+        question: 'Tôi có được chia sẻ hoặc phân phối lại file nguồn không?',
+        answer: 'Không. Việc chọn mẫu demo cho phép sử dụng trong phạm vi giấy phép, không chuyển giao quyền phân phối file gốc. Bạn không được đăng công khai hoặc chia sẻ lại gói nguồn.',
     },
     {
         category: 'support',
         question: 'Tôi có thể liên hệ hỗ trợ bằng cách nào?',
-        answer: 'Bạn có thể gửi email tới veutong961@gmail.com, gọi 0971 386 588 hoặc dùng trang Liên hệ. Hãy gửi kèm mã đơn, tên sản phẩm và ảnh lỗi để được kiểm tra nhanh hơn.',
+        answer: 'Bạn có thể gửi email tới veutong961@gmail.com, gọi 0971 386 588 hoặc dùng trang Liên hệ. Hãy gửi kèm mã đơn, tên mẫu demo và ảnh lỗi để được kiểm tra nhanh hơn.',
         link: { label: 'Mở trang liên hệ', href: '/contact' },
         featured: true,
     },
@@ -192,7 +192,7 @@ export default function FAQContent() {
                                 Tìm câu trả lời <span className="text-orange-600">nhanh hơn.</span>
                             </h1>
                             <p className="mt-4 max-w-2xl text-sm font-medium leading-7 text-slate-600 sm:text-base sm:leading-8">
-                                Tra cứu thông tin về sản phẩm, demo, quyền truy cập, giấy phép và quy trình hỗ trợ tại Shop Web rẻ.
+                                Tra cứu thông tin về mẫu demo, demo, quyền truy cập, giấy phép và quy trình hỗ trợ tại Web Giá Rẻ - Portfolio.
                             </p>
 
                             <label className="relative mt-7 block max-w-2xl">
@@ -344,7 +344,7 @@ export default function FAQContent() {
                     <div className="rounded-lg bg-slate-950 p-5 text-white sm:p-6">
                         <MessageCircle size={22} className="text-orange-400" />
                         <h2 className="mt-4 text-xl font-black">Vẫn chưa tìm thấy?</h2>
-                        <p className="mt-2 text-sm font-medium leading-6 text-slate-400">Gửi tên sản phẩm, mã đơn và ảnh lỗi để mình kiểm tra trực tiếp.</p>
+                        <p className="mt-2 text-sm font-medium leading-6 text-slate-400">Gửi tên mẫu demo, mã đơn và ảnh lỗi để mình kiểm tra trực tiếp.</p>
                         <Link href="/contact" className="mt-5 inline-flex h-11 w-full items-center justify-center gap-2 rounded-md bg-orange-600 px-4 text-sm font-bold text-white transition hover:bg-orange-500">
                             Liên hệ hỗ trợ <ArrowRight size={16} />
                         </Link>
@@ -359,7 +359,7 @@ export default function FAQContent() {
                         <div className="mt-4 space-y-3">
                             {[
                                 ['Điều khoản sử dụng', '/policy/terms'],
-                                ['Chính sách hoàn tiền', '/policy/refund'],
+                                ['Chính sách xử lý yêu cầu', '/policy/refund'],
                                 ['Điều khoản giấy phép', '/policy/license'],
                             ].map(([label, href]) => (
                                 <Link key={href} href={href} className="flex items-center justify-between border-b border-slate-100 pb-3 text-sm font-bold text-slate-600 transition last:border-0 last:pb-0 hover:text-orange-600">
@@ -373,7 +373,7 @@ export default function FAQContent() {
                         <div className="flex items-start gap-3">
                             <ShieldCheck size={20} className="mt-0.5 shrink-0 text-emerald-600" />
                             <div>
-                                <p className="text-sm font-black">Mua đúng nhu cầu</p>
+                                <p className="text-sm font-black">Chọn đúng nhu cầu</p>
                                 <p className="mt-1 text-xs font-medium leading-5 text-slate-600">Nên kiểm tra demo, định dạng file và công nghệ trước khi gửi nhu cầu.</p>
                             </div>
                         </div>

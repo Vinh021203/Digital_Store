@@ -10,7 +10,7 @@ interface TrustBadgesProps {
 
 const BADGES = [
     { icon: Shield, label: 'Bảo mật SSL', color: 'text-green-600 bg-green-100' },
-    { icon: Clock, label: 'Hoàn tiền 7 ngày', color: 'text-blue-600 bg-blue-100' },
+    { icon: Clock, label: 'Xử lý yêu cầu 7 ngày', color: 'text-blue-600 bg-blue-100' },
     { icon: RefreshCw, label: 'Cập nhật miễn phí', color: 'text-purple-600 bg-purple-100' },
     { icon: Headphones, label: '6 tháng hỗ trợ', color: 'text-orange-600 bg-orange-100' },
 ];
@@ -21,7 +21,7 @@ const EXTENDED_BADGES = [
     { icon: RefreshCw, label: 'Cập nhật miễn phí', desc: 'Trọn đời', color: 'text-purple-600 bg-purple-100' },
     { icon: Headphones, label: '6 tháng hỗ trợ', desc: '24/7 Support', color: 'text-orange-600 bg-orange-100' },
     { icon: Zap, label: 'Xem demo trước', desc: 'Dễ đánh giá', color: 'text-amber-600 bg-amber-100' },
-    { icon: Award, label: 'License rõ ràng', desc: 'Theo từng sản phẩm', color: 'text-rose-600 bg-rose-100' },
+    { icon: Award, label: 'Quyền truy cập rõ ràng', desc: 'Theo từng mẫu demo', color: 'text-rose-600 bg-rose-100' },
 ];
 
 export default function TrustBadges({ variant = 'horizontal', className = '' }: TrustBadgesProps) {
@@ -63,14 +63,14 @@ export default function TrustBadges({ variant = 'horizontal', className = '' }: 
     );
 }
 
-// Compact version for product cards or checkout
+// Compact version for product cards or yêu cầu tư vấn
 export function TrustBadgesCompact({ className = '' }: { className?: string }) {
     return (
         <div className={`flex items-center gap-3 text-xs text-slate-500 ${className}`}>
             {[
                 { icon: Lock, label: 'SSL' },
                 { icon: Shield, label: 'Đảm bảo' },
-                { icon: Clock, label: 'Hoàn tiền' },
+                { icon: Clock, label: 'Xử lý yêu cầu' },
             ].map((badge, idx) => (
                 <div key={idx} className="flex items-center gap-1">
                     <badge.icon size={12} className="text-green-600" />

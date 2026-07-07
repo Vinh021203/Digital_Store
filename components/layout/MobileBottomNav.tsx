@@ -78,7 +78,7 @@ const MobileBottomNav = () => {
   // Navigation items
   const navItems = useMemo(() => [
     { to: '/', icon: Home, label: 'Trang chủ' },
-    { to: '/products', icon: Package, label: 'Sản phẩm' },
+    { to: '/products', icon: Package, label: 'Mẫu demo' },
     { to: '/community', icon: Users, label: 'Cộng đồng' },
     { to: '/wishlist', icon: Heart, label: 'Yêu thích', badge: wishlist.length },
     { to: '/profile', icon: User, label: 'Cá nhân' },

@@ -139,7 +139,7 @@ export default function ReviewsSection({ productId }: ReviewsSectionProps) {
         } catch (error: any) {
             console.error('Submit error:', error);
             if (error.message?.includes('duplicate')) {
-                addToast('Bạn đã đánh giá sản phẩm này rồi', 'error');
+                addToast('Bạn đã đánh giá mẫu demo này rồi', 'error');
             } else {
                 addToast(error.message || 'Không thể gửi đánh giá', 'error');
             }
@@ -168,7 +168,7 @@ export default function ReviewsSection({ productId }: ReviewsSectionProps) {
         <section className="mt-12 pt-8 border-t border-slate-100">
             <h2 className="text-2xl font-black text-slate-900 mb-6 flex items-center gap-2">
                 <MessageSquare className="text-orange-500" />
-                Đánh giá sản phẩm ({stats.total})
+                Đánh giá mẫu demo ({stats.total})
             </h2>
 
             {/* Rating Summary */}
@@ -223,7 +223,7 @@ export default function ReviewsSection({ productId }: ReviewsSectionProps) {
                             <textarea
                                 value={comment}
                                 onChange={e => setComment(e.target.value)}
-                                placeholder="Chia sẻ trải nghiệm của bạn với sản phẩm..."
+                                placeholder="Chia sẻ trải nghiệm của bạn với mẫu demo..."
                                 rows={4}
                                 className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none resize-none"
                             />
@@ -246,7 +246,7 @@ export default function ReviewsSection({ productId }: ReviewsSectionProps) {
             ) : user && userHasReviewed ? (
                 <div className="bg-green-50 rounded-xl p-4 mb-8 flex items-center gap-3">
                     <CheckCircle className="text-green-600" />
-                    <span className="text-green-700">Bạn đã đánh giá sản phẩm này</span>
+                    <span className="text-green-700">Bạn đã đánh giá mẫu demo này</span>
                 </div>
             ) : (
                 <div className="bg-slate-50 rounded-xl p-4 mb-8 flex items-center gap-3">
@@ -296,7 +296,7 @@ export default function ReviewsSection({ productId }: ReviewsSectionProps) {
                                             <span className="font-bold text-slate-900">{review.user?.name || 'Người dùng'}</span>
                                             {review.is_verified_purchase && (
                                                 <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full flex items-center gap-1">
-                                                    <CheckCircle size={10} /> Đã mua
+                                                    <CheckCircle size={10} /> Đã xác minh
                                                 </span>
                                             )}
                                         </div>

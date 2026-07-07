@@ -47,6 +47,7 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, isOpen, onClos
     if (!product?.originalPrice) return 0;
     return Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
   }, [product?.originalPrice, product?.price]);
+  const priceLabel = isCatalogMode || !product ? 'Liên hệ tư vấn' : `${product.price.toLocaleString('vi-VN')}₫`;
 
   // Format badge style
   const getFormatStyle = (format: string) => {
@@ -86,7 +87,7 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, isOpen, onClos
     }
     addToCart(product);
     setIsAdded(true);
-    addToast(`Đã thêm "${product.name}" vào giỏ hàng`, 'success');
+    addToast(`Đã thêm "${product.name}" vào danh sách quan tâm`, 'success');
     setTimeout(() => {
       setIsAdded(false);
       onClose();
@@ -109,7 +110,7 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, isOpen, onClos
     if (!product) return;
     navigator.clipboard.writeText(`${window.location.origin}/product/${(product as any).slug || product.id}`);
     setCopiedLink(true);
-    addToast('Đã sao chép link sản phẩm', 'success');
+    addToast('Đã sao chép link mẫu demo', 'success');
     setTimeout(() => setCopiedLink(false), 2000);
   }, [product, addToast]);
 
@@ -155,7 +156,7 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, isOpen, onClos
                 {product.format}
               </span>
             )}
-            {discount > 0 && (
+            {!isCatalogMode && discount > 0 && (
               <span className="bg-rose-500 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow-md">
                 -{discount}%
               </span>
@@ -235,36 +236,36 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, isOpen, onClos
               <div className="flex items-center justify-between">
                 <div>
                   <div className="text-2xl md:text-3xl font-black text-orange-600">
-                    {product.price.toLocaleString('vi-VN')}₫
+                    {priceLabel}
                   </div>
-                  {product.originalPrice && (
+                  {!isCatalogMode && product.originalPrice && (
                     <div className="flex items-center gap-2 mt-1">
                       <span className="text-sm text-slate-400 line-through">
-                        {product.originalPrice.toLocaleString('vi-VN')}₫
+                        {product.originalPrice.toLocaleString('vi-VN')} VND
                       </span>
                       <span className="text-xs font-bold text-rose-500 bg-rose-100 px-1.5 py-0.5 rounded">
-                        Tiết kiệm {discount}%
+                        Save {discount}%
                       </span>
                     </div>
                   )}
                 </div>
                 <div className="text-right">
-                  <span className="text-xs text-slate-500">License</span>
-                  <p className="text-sm font-bold text-slate-700">{(product as any).licenseType || 'Regular'}</p>
+                  <span className="text-xs text-slate-500">Quyen truy cap</span>
+                  <p className="text-sm font-bold text-slate-700">Demo</p>
                 </div>
               </div>
             </div>
 
-	            {/* Description */}
-	            <p className="text-sm text-slate-600 leading-relaxed mb-4 line-clamp-3">
-	              {stripHtml(product.description) || 'Premium digital product with modern design, clean code, and full documentation. Perfect for your next project.'}
-	            </p>
+            {/* Description */}
+            <p className="text-sm text-slate-600 leading-relaxed mb-4 line-clamp-3">
+              {stripHtml(product.description) || 'Premium digital product with modern design, clean code, and full documentation. Perfect for your next project.'}
+            </p>
 
             {/* Features Grid */}
             <div className="grid grid-cols-2 gap-2 mb-4">
-              <FeatureItem icon={isCatalogMode ? Eye : Download} text={isCatalogMode ? 'Xem demo trước' : 'Instant Download'} />
-              <FeatureItem icon={Key} text="License Key" />
-              <FeatureItem icon={ShieldCheck} text="6 tháng hỗ trợ" />
+              <FeatureItem icon={Eye} text={isCatalogMode ? 'Xem demo truoc' : 'Instant Download'} />
+              <FeatureItem icon={Key} text={isCatalogMode ? 'Quyen truy cap' : 'License Key'} />
+              <FeatureItem icon={ShieldCheck} text="6 thang ho tro" />
               <FeatureItem icon={FileCode} text={(product as any).fileType || 'Source Code'} />
             </div>
 
@@ -272,7 +273,7 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, isOpen, onClos
             <div className="flex items-center gap-3 text-xs text-slate-600 mb-4 pb-4 border-b border-slate-100">
               <div className="flex items-center gap-1">
                 <Users size={12} className="text-orange-600" />
-                <span className="font-semibold">{(product as any).sold || '1.2K'}+ downloads</span>
+                <span className="font-semibold">{(product as any).sold || '1.2K'}+ luot quan tam</span>
               </div>
               <div className="w-px h-3 bg-slate-200"></div>
               <div className="flex items-center gap-1">
@@ -296,9 +297,9 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, isOpen, onClos
                   {isCatalogMode ? (
                     <><MessageCircle size={18} strokeWidth={2} /> Nhận tư vấn</>
                   ) : isAdded ? (
-                    <><Check size={18} strokeWidth={2.5} /> Đã thêm vào giỏ</>
+                    <><Check size={18} strokeWidth={2.5} /> Đã thêm vào danh sách</>
                   ) : (
-                    <><ShoppingCart size={18} strokeWidth={2} /> Thêm vào giỏ</>
+                    <><ShoppingCart size={18} strokeWidth={2} /> Thêm vào danh sách</>
                   )}
                 </button>
               </div>

@@ -128,25 +128,25 @@ export default function ProfileLayout({
 
   const tabs = [
     { id: '/profile', icon: TrendingUp, label: 'Tổng Quan', badge: null },
-    {
-      id: '/profile/downloads',
-      icon: BookOpen,
-      label: 'Downloads',
-      badge: stats.downloads > 0 ? stats.downloads : null,
-    },
-    {
-      id: '/profile/licenses',
-      icon: Award,
-      label: 'Licenses',
-      badge: stats.licenses > 0 ? stats.licenses : null,
-    },
+	    {
+	      id: '/profile/downloads',
+	      icon: BookOpen,
+	      label: 'Mẫu đã cấp quyền',
+	      badge: stats.downloads > 0 ? stats.downloads : null,
+	    },
+	    {
+	      id: '/profile/licenses',
+	      icon: Award,
+	      label: 'Quyền truy cập',
+	      badge: stats.licenses > 0 ? stats.licenses : null,
+	    },
     { id: '/profile/community', icon: Bell, label: 'Bài Viết', badge: null },
     {
-      id: '/profile/support',
-      icon: Trophy,
-      label: 'Hỗ Trợ',
-      badge: stats.supportTickets > 0 ? stats.supportTickets : null,
-    },
+	      id: '/profile/support',
+	      icon: Trophy,
+	      label: 'Tư Vấn',
+	      badge: stats.supportTickets > 0 ? stats.supportTickets : null,
+	    },
     ...(user.isAffiliate
       ? [
         {
@@ -157,7 +157,7 @@ export default function ProfileLayout({
         },
       ]
       : []),
-    { id: '/profile/orders', icon: CreditCard, label: 'Đơn Hàng', badge: null },
+	    { id: '/profile/orders', icon: CreditCard, label: 'Yêu Cầu Tư Vấn', badge: null },
     { id: '/profile/settings', icon: Settings, label: 'Cài Đặt', badge: null },
   ];
 
@@ -171,8 +171,8 @@ export default function ProfileLayout({
     if (navigator.share) {
       navigator
         .share({
-          title: `${user.name} - Shop Web rẻ Profile`,
-          text: `Xem hồ sơ học tập của ${user.name} trên Shop Web rẻ`,
+          title: `${user.name} - Web Giá Rẻ - Portfolio Profile`,
+          text: `Xem hồ sơ học tập của ${user.name} trên Web Giá Rẻ - Portfolio`,
           url: window.location.href,
         })
         .catch(() => { });
@@ -414,37 +414,37 @@ export default function ProfileLayout({
                 {[
                   {
                     icon: BookOpen,
-                    label: 'Downloads',
+	                    label: 'Mẫu đã cấp',
                     value: stats.downloads,
                     bgColor: 'bg-orange-500',
                   },
                   {
                     icon: Award,
-                    label: 'Licenses',
+	                    label: 'Quyền truy cập',
                     value: stats.licenses,
                     bgColor: 'bg-amber-500',
                   },
                   {
                     icon: Zap,
-                    label: 'Sản phẩm',
+                    label: 'Mẫu demo',
                     value: stats.activeProducts,
                     bgColor: 'bg-cyan-500',
                   },
                   {
                     icon: Target,
-                    label: 'Wishlist',
+	                    label: 'Mẫu đã lưu',
                     value: stats.wishlistItems,
                     bgColor: 'bg-pink-500',
                   },
                   {
                     icon: Trophy,
-                    label: 'Reviews',
+	                    label: 'Phản hồi',
                     value: stats.reviewsGiven,
                     bgColor: 'bg-rose-500',
                   },
                   {
                     icon: Star,
-                    label: 'Tickets',
+	                    label: 'Tư vấn',
                     value: stats.supportTickets,
                     bgColor: 'bg-amber-400',
                   },
@@ -477,10 +477,10 @@ export default function ProfileLayout({
           {/* Mobile Stats */}
           <div className="md:hidden grid grid-cols-4 border-t border-slate-200 bg-white mt-4">
             {[
-              { icon: BookOpen, value: stats.downloads, label: 'Downloads', color: 'text-blue-600' },
-              { icon: Award, value: stats.licenses, label: 'Licenses', color: 'text-amber-600' },
+              { icon: BookOpen, value: stats.downloads, label: 'Mẫu đã cấp', color: 'text-blue-600' },
+              { icon: Award, value: stats.licenses, label: 'Quyền truy cập', color: 'text-amber-600' },
               { icon: Zap, value: stats.activeProducts, label: 'Products', color: 'text-cyan-600' },
-              { icon: Trophy, value: stats.wishlistItems, label: 'Wishlist', color: 'text-pink-600' },
+              { icon: Trophy, value: stats.wishlistItems, label: 'Mẫu đã lưu', color: 'text-pink-600' },
             ].map((stat, idx) => (
               <div
                 key={idx}

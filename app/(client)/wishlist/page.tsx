@@ -2,15 +2,15 @@ import { Metadata } from 'next';
 import WishlistPage from './WishlistContent';
 
 export const metadata: Metadata = {
-    title: 'Sản phẩm yêu thích',
-    description: 'Danh sách sản phẩm yêu thích của bạn - Lưu giữ những tài nguyên tuyệt vời',
+    title: 'Mẫu yêu thích',
+    description: 'Danh sách mẫu giao diện bạn đã lưu để tham khảo demo và gửi nhu cầu tư vấn khi cần.',
     robots: {
         index: false,
         follow: false,
     },
     openGraph: {
-        title: 'Sản phẩm yêu thích | Shop Web rẻ',
-        description: 'Danh sách sản phẩm yêu thích của bạn - Lưu giữ những tài nguyên tuyệt vời',
+        title: 'Mẫu yêu thích | Web Giá Rẻ - Portfolio',
+        description: 'Danh sách mẫu giao diện bạn đã lưu để tham khảo demo và gửi nhu cầu tư vấn khi cần.',
     }
 };
 

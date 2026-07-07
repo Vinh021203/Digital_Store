@@ -45,8 +45,8 @@ function CartPageContent() {
     if (isCatalogMode) {
         return (
             <CatalogModeNotice
-                title="Giỏ hàng đang tạm tắt"
-                description="Website hiện chỉ mở ở chế độ Catalog/Tư vấn. Bạn vẫn có thể xem demo, chọn mẫu phù hợp và gửi yêu cầu để được báo giá trước khi đặt mua."
+                title="Danh sách quan tâm đang tạm tắt"
+                description="Website hiện chỉ mở ở chế độ portfolio/demo tư vấn. Bạn vẫn có thể xem demo, chọn mẫu phù hợp và gửi yêu cầu để được tư vấn hướng triển khai."
             />
         );
     }
@@ -67,10 +67,10 @@ function CartPageContent() {
                     </div>
 
                     <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-4 bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600">
-                        Giỏ hàng trống
+                        Danh sách quan tâm trống
                     </h1>
                     <p className="text-slate-500 text-lg mb-8 leading-relaxed">
-                        Bạn chưa chọn sản phẩm nào. Hãy khám phá kho tài nguyên chất lượng cao ngay!
+                        Bạn chưa chọn mẫu demo nào. Hãy khám phá kho tài nguyên chất lượng cao ngay!
                     </p>
 
                     <Link
@@ -96,15 +96,15 @@ function CartPageContent() {
                             <Home size={14} /> Home
                         </Link>
                         <ChevronRight size={14} className="text-slate-300" />
-                        <span className="text-slate-900 font-bold">Giỏ hàng</span>
+                        <span className="text-slate-900 font-bold">Danh sách quan tâm</span>
                     </div>
 
                     <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-2">
-                        Giỏ hàng của bạn
+                        Danh sách quan tâm của bạn
                     </h1>
                     <p className="text-slate-500 text-lg flex items-center gap-2">
                         <ShieldCheck size={18} className="text-emerald-500" />
-                        Thanh toán an toàn & Bảo mật thông tin
+                        Xác nhận tư vấn an toàn & Bảo mật thông tin
                     </p>
                 </div>
             </div>
@@ -114,7 +114,7 @@ function CartPageContent() {
                     {/* Cart Items List - Left Column */}
                     <div className="lg:col-span-8 space-y-6">
                         <div className="flex items-center justify-between">
-                            <h2 className="font-bold text-slate-900 text-lg">{safeCart.length} Sản phẩm</h2>
+                            <h2 className="font-bold text-slate-900 text-lg">{safeCart.length} Mẫu demo</h2>
                             <button
                                 onClick={clearCart}
                                 className="text-sm font-medium text-rose-500 hover:text-rose-600 hover:bg-rose-50 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
@@ -190,7 +190,7 @@ function CartPageContent() {
                     {/* Checkbox Summary - Right Column */}
                     <div className="lg:col-span-4">
                         <div className="bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/50 p-6 sticky top-24">
-                            <h3 className="font-black text-xl text-slate-900 mb-6">Tổng đơn hàng</h3>
+                            <h3 className="font-black text-xl text-slate-900 mb-6">Tổng yêu cầu</h3>
 
                             <div className="space-y-4 mb-8">
                                 <div className="flex justify-between text-slate-600">
@@ -206,7 +206,7 @@ function CartPageContent() {
                                     <span className="text-slate-400 text-sm">Đã bao gồm</span>
                                 </div>
                                 <div className="pt-4 border-t border-slate-100 flex justify-between items-center">
-                                    <span className="font-black text-lg text-slate-900">Tổng thanh toán</span>
+                                    <span className="font-black text-lg text-slate-900">Tổng xác nhận tư vấn</span>
                                     <span className="font-black text-2xl text-blue-600">{totalPrice.toLocaleString()}₫</span>
                                 </div>
                             </div>
@@ -216,16 +216,16 @@ function CartPageContent() {
                                 className="w-full flex items-center justify-center gap-2 bg-slate-900 text-white py-4 rounded-2xl font-bold hover:bg-blue-600 transition-all shadow-lg shadow-slate-900/20 hover:shadow-blue-500/30 hover:-translate-y-0.5 group"
                             >
                                 <Lock size={18} className="text-slate-400 group-hover:text-blue-200 transition-colors" />
-                                Thanh toán ngay
+                                Xác nhận tư vấn ngay
                                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                             </Link>
 
                             <p className="text-center text-xs text-slate-400 mt-4">
-                                Bằng việc thanh toán, bạn đồng ý với <Link href="/policy/terms" className="underline hover:text-slate-600">Điều khoản dịch vụ</Link>
+                                Bằng việc xác nhận tư vấn, bạn đồng ý với <Link href="/policy/terms" className="underline hover:text-slate-600">Điều khoản dịch vụ</Link>
                             </p>
 
                             <div className="mt-8 pt-6 border-t border-slate-100">
-                                <p className="text-center text-xs font-medium text-slate-400 mb-3 uppercase tracking-wider">Phương thức thanh toán</p>
+                                <p className="text-center text-xs font-medium text-slate-400 mb-3 uppercase tracking-wider">Phương thức xác nhận tư vấn</p>
                                 <div className="flex items-center justify-center gap-3">
                                     <div className="flex items-center gap-1.5 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100 transition-transform hover:-translate-y-0.5" title="Banking">
                                         <Landmark size={16} className="text-blue-600" />

@@ -32,12 +32,12 @@ const principles = [
     {
         icon: Code2,
         title: 'Thông tin minh bạch',
-        description: 'Công nghệ, định dạng file và khả năng tương thích được trình bày rõ ràng trước khi khách hàng mua.',
+        description: 'Công nghệ, định dạng file và khả năng tương thích được trình bày rõ ràng trước khi khách hàng chọn mẫu.',
     },
     {
         icon: ShieldCheck,
         title: 'Hỗ trợ có trách nhiệm',
-        description: 'Mọi trao đổi đều do mình trực tiếp tiếp nhận, theo dõi và phản hồi trong phạm vi hỗ trợ của sản phẩm.',
+        description: 'Mọi trao đổi đều do mình trực tiếp tiếp nhận, theo dõi và phản hồi trong phạm vi hỗ trợ của mẫu demo.',
     },
 ];
 
@@ -78,17 +78,17 @@ const milestones = [
     {
         year: '2025',
         title: 'Đặt những viên gạch đầu tiên',
-        description: 'Bắt đầu nghiên cứu thị trường giao diện website, xây nền tảng kỹ thuật và định hình cách chọn lọc sản phẩm.',
+        description: 'Bắt đầu nghiên cứu thị trường giao diện website, xây nền tảng kỹ thuật và định hình cách chọn lọc mẫu demo.',
     },
     {
         year: '2026',
-        title: 'Hoàn thiện Shop Web rẻ',
+        title: 'Hoàn thiện Web Giá Rẻ - Portfolio',
         description: 'Phát triển kho giao diện, quy trình tư vấn, quản lý phiên bản và nội dung hỗ trợ dành cho người Việt.',
     },
     {
         year: 'Tiếp theo',
         title: 'Phát triển bền vững',
-        description: 'Tiếp tục bổ sung sản phẩm phù hợp, chia sẻ kiến thức qua blog và cải thiện dựa trên phản hồi thực tế.',
+        description: 'Tiếp tục bổ sung mẫu phù hợp, chia sẻ kiến thức qua blog và cải thiện dựa trên phản hồi thực tế.',
     },
 ];
 
@@ -124,17 +124,17 @@ export default function AboutPage() {
                                 <Sparkles size={15} /> Thương hiệu cá nhân từ năm 2025
                             </motion.div>
                             <motion.h1 variants={reveal} className="max-w-3xl text-3xl font-black leading-tight text-slate-950 sm:text-4xl md:text-5xl lg:text-6xl">
-                                Mình xây Shop Web rẻ để việc chọn giao diện website
+                                Mình xây Web Giá Rẻ - Portfolio để việc chọn giao diện website
                                 <span className="text-orange-600"> đơn giản hơn.</span>
                             </motion.h1>
                             <motion.p variants={reveal} className="mt-5 max-w-2xl text-sm font-medium leading-7 text-slate-600 sm:text-base sm:leading-8 md:mt-6 md:text-lg">
-                                Shop Web rẻ là dự án cá nhân do <strong className="text-slate-900">Lương Thế Vinh</strong> xây dựng.
+                                Web Giá Rẻ - Portfolio là dự án cá nhân do <strong className="text-slate-900">Lương Thế Vinh</strong> xây dựng.
                                 Mình tập trung chọn lọc giao diện, template và mã nguồn phù hợp với người dùng Việt Nam,
                                 trình bày thông tin rõ ràng và hỗ trợ trực tiếp khi khách hàng cần.
                             </motion.p>
                             <motion.div variants={reveal} className="mt-7 grid grid-cols-2 gap-2 sm:mt-8 sm:flex sm:gap-3">
                                 <Link href="/products" className="inline-flex min-w-0 items-center justify-center gap-1.5 rounded-lg bg-orange-600 px-2.5 py-3 text-center text-[11px] font-bold text-white shadow-lg shadow-orange-200 transition hover:bg-orange-700 sm:px-6 sm:py-3.5 sm:text-sm">
-                                    <span className="truncate">Khám phá sản phẩm</span> <ArrowRight size={15} className="shrink-0 sm:h-[17px] sm:w-[17px]" />
+                                    <span className="truncate">Khám phá mẫu demo</span> <ArrowRight size={15} className="shrink-0 sm:h-[17px] sm:w-[17px]" />
                                 </Link>
                                 <a href="https://blog.webgiare.id.vn/" target="_blank" rel="noopener noreferrer" className="inline-flex min-w-0 items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-3 text-center text-[11px] font-bold text-slate-700 transition hover:border-orange-200 hover:text-orange-700 sm:px-6 sm:py-3.5 sm:text-sm">
                                     <span className="truncate">Đọc blog chia sẻ</span> <ExternalLink size={14} className="shrink-0 sm:h-4 sm:w-4" />
@@ -157,11 +157,11 @@ export default function AboutPage() {
                                     </div>
                                     <div className="min-w-0">
                                         <p className="text-lg font-extrabold leading-tight sm:text-xl">Lương Thế Vinh</p>
-                                        <p className="mt-1 text-xs font-semibold leading-5 text-orange-300 sm:text-sm">Người xây dựng Shop Web rẻ</p>
+                                        <p className="mt-1 text-xs font-semibold leading-5 text-orange-300 sm:text-sm">Người xây dựng Web Giá Rẻ - Portfolio</p>
                                     </div>
                                 </div>
                                 <p className="mt-5 text-sm font-medium leading-7 text-slate-300 sm:mt-6">
-                                    Mình trực tiếp phát triển website, quản lý nội dung sản phẩm và hỗ trợ khách hàng.
+                                    Mình trực tiếp phát triển website, quản lý nội dung mẫu demo và hỗ trợ khách hàng.
                                     Không phải một đội ngũ lớn, nhưng mỗi phần của dự án đều được làm với sự chỉn chu và trách nhiệm.
                                 </p>
                                 <div className="mt-5 space-y-3 sm:mt-6">
@@ -192,7 +192,7 @@ export default function AboutPage() {
                     {[
                         ['2025', 'Bắt đầu xây nền móng'],
                         ['01', 'Người trực tiếp vận hành'],
-                        ['04', 'Nhóm sản phẩm trọng tâm'],
+                        ['04', 'Nhóm mẫu demo trọng tâm'],
                         ['Việt Nam', 'Thị trường phục vụ'],
                     ].map(([value, label]) => (
                         <motion.div key={label} variants={reveal} className="border-b border-r border-slate-100 px-2 py-6 text-center even:border-r-0 md:border-b-0 md:border-r md:px-3 md:py-9 md:last:border-r-0">
@@ -209,12 +209,12 @@ export default function AboutPage() {
                         <p className="text-xs font-extrabold uppercase text-orange-600">Câu chuyện bắt đầu</p>
                         <h2 className="mt-3 text-3xl font-black leading-tight md:text-4xl">Từ một nhu cầu rất thực tế</h2>
                         <p className="mt-5 text-base font-medium leading-8 text-slate-600">
-                            Khi tìm một giao diện phù hợp, người mua thường phải xem qua nhiều nguồn, khó biết file gồm những gì,
+                            Khi tìm một giao diện phù hợp, người xem thường phải xem qua nhiều nguồn, khó biết file gồm những gì,
                             dùng công nghệ nào và có phù hợp với dự án hay không. Từ năm 2025, mình bắt đầu dựng nền móng cho một
-                            nơi tập trung các sản phẩm số với thông tin dễ đọc và quy trình mua hàng rõ ràng hơn.
+                            nơi tập trung các mẫu demo số với thông tin dễ đọc và quy trình gửi yêu cầu rõ ràng hơn.
                         </p>
                         <p className="mt-4 text-base font-medium leading-8 text-slate-600">
-                            Shop Web rẻ không đặt mục tiêu trở thành một kho khổng lồ bằng mọi giá. Mình ưu tiên sản phẩm có tính
+                            Web Giá Rẻ - Portfolio không đặt mục tiêu trở thành một kho khổng lồ bằng mọi giá. Mình ưu tiên mẫu demo có tính
                             ứng dụng, mức giá hợp lý và đủ thông tin để khách hàng đưa ra quyết định phù hợp.
                         </p>
                     </div>
@@ -288,7 +288,7 @@ export default function AboutPage() {
                         <h2 className="mt-3 text-3xl font-black md:text-4xl">Xây chậm, làm chắc</h2>
                         <p className="mt-5 text-base font-medium leading-8 text-slate-600">
                             Mốc 2025 là thời điểm dự án được dựng móng. Mỗi giai đoạn sau đó tập trung hoàn thiện một phần cụ thể,
-                            từ nền tảng kỹ thuật đến trải nghiệm mua và sử dụng sản phẩm.
+                            từ nền tảng kỹ thuật đến trải nghiệm xem demo và sử dụng mẫu.
                         </p>
                     </div>
                     <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={stagger} className="border-l border-orange-200">
@@ -323,7 +323,7 @@ export default function AboutPage() {
                         <div>
                             <h2 className="text-2xl font-black md:text-3xl">Blog Web Giá Rẻ</h2>
                             <p className="mt-2 max-w-2xl text-sm font-medium leading-7 text-slate-600">
-                                Nơi mình chia sẻ kinh nghiệm về giao diện website, SEO, hiệu năng và quá trình xây dựng sản phẩm số.
+                                Nơi mình chia sẻ kinh nghiệm về giao diện website, SEO, hiệu năng và quá trình xây dựng mẫu demo số.
                             </p>
                         </div>
                     </div>
@@ -346,7 +346,7 @@ export default function AboutPage() {
                             <div className="inline-flex items-center gap-2 text-xs font-bold uppercase text-orange-300"><MessageCircle size={16} /> Trao đổi trực tiếp</div>
                             <h2 className="mt-3 text-2xl font-black leading-tight sm:text-3xl">Bạn đang cần tìm một giao diện phù hợp?</h2>
                             <p className="mt-3 max-w-2xl text-sm font-medium leading-7 text-slate-300">
-                                Gửi cho mình nhu cầu, công nghệ và mức ngân sách dự kiến. Mình sẽ phản hồi dựa trên những sản phẩm thực sự có trong kho.
+                                Gửi cho mình nhu cầu, công nghệ và mức ngân sách dự kiến. Mình sẽ phản hồi dựa trên những mẫu demo thực sự có trong kho.
                             </p>
                         </div>
                         <div className="grid grid-cols-2 gap-2.5 sm:flex sm:flex-row sm:gap-3 md:flex-col">

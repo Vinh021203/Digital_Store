@@ -166,7 +166,7 @@ export default function CommunityPage() {
                             </div>
                             <h1 className="text-4xl md:text-5xl font-black mb-4 leading-tight">
                                 Cộng Đồng
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-orange-300"> Shop Web rẻ</span>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-orange-300"> Web Giá Rẻ - Portfolio</span>
                             </h1>
                             <p className="text-lg text-purple-100">
                                 Nơi chia sẻ kiến thức, kết nối và học hỏi cùng cộng đồng developer & designer

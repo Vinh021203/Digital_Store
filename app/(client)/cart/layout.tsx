@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Giỏ hàng',
-    description: 'Xem giỏ hàng và thanh toán các giao diện website đã chọn. An toàn, nhanh chóng với nhiều phương thức thanh toán.',
+    title: 'Danh sách mẫu quan tâm',
+    description: 'Xem các giao diện website đã chọn để tham khảo demo hoặc gửi nhu cầu tư vấn.',
     openGraph: {
-        title: 'Giỏ hàng | Shop Web rẻ',
-        description: 'Hoàn tất đơn hàng của bạn',
+        title: 'Danh sách mẫu quan tâm | Web Giá Rẻ - Portfolio',
+        description: 'Hoàn tất yêu cầu tư vấn của bạn',
     },
     robots: {
         index: false, // Don't index cart page

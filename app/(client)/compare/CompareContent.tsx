@@ -42,7 +42,7 @@ export default function ComparePage() {
             return;
         }
         addToCart(item);
-        addToast(`Đã thêm "${item.name}" vào giỏ hàng`, 'success');
+        addToast(`Đã thêm "${item.name}" vào danh sách quan tâm`, 'success');
     };
 
     if (compareList.length === 0) {
@@ -61,10 +61,10 @@ export default function ComparePage() {
                     </div>
 
                     <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-4 bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600">
-                        So sánh sản phẩm
+                        So sánh mẫu demo
                     </h1>
                     <p className="text-slate-500 text-lg mb-8 leading-relaxed">
-                        Chưa có sản phẩm nào trong danh sách so sánh. Thêm ít nhất 2 sản phẩm để thấy sự khác biệt.
+                        Chưa có mẫu demo nào trong danh sách so sánh. Thêm ít nhất 2 mẫu demo để thấy sự khác biệt.
                     </p>
 
                     <Link
@@ -72,7 +72,7 @@ export default function ComparePage() {
                         className="inline-flex items-center gap-2 bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold hover:bg-blue-600 transition-all shadow-xl hover:shadow-blue-500/20 hover:-translate-y-1"
                     >
                         <Package size={20} />
-                        Khám phá sản phẩm
+                        Khám phá mẫu demo
                     </Link>
                 </div>
             </div>
@@ -99,12 +99,12 @@ export default function ComparePage() {
                                 So sánh tính năng
                             </h1>
                             <p className="text-slate-500 text-lg">
-                                Phân tích chi tiết và tìm ra sản phẩm phù hợp nhất với nhu cầu của bạn.
+                                Phân tích chi tiết và tìm ra mẫu phù hợp nhất với nhu cầu của bạn.
                             </p>
                         </div>
                         <div className="flex items-center gap-3">
                             <span className="px-4 py-2 bg-blue-50 text-blue-700 rounded-xl font-bold text-sm">
-                                {compareList.length} / 3 Sản phẩm
+                                {compareList.length} / 3 Mẫu demo
                             </span>
                             <button
                                 onClick={clearCompare}
@@ -264,7 +264,7 @@ export default function ComparePage() {
                                         className="w-full flex items-center justify-center gap-2 bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-blue-600 transition-all"
                                     >
                                         {isCatalogMode ? <MessageCircle size={18} /> : <ShoppingCart size={18} />}
-                                        {isCatalogMode ? 'Nhận tư vấn' : 'Thêm vào giỏ'}
+                                        {isCatalogMode ? 'Nhận tư vấn' : 'Thêm vào danh sách'}
                                     </button>
                                 </div>
 
@@ -284,7 +284,7 @@ export default function ComparePage() {
                                 <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center">
                                     <Plus size={32} className="text-slate-400" />
                                 </div>
-                                <span className="text-slate-500 font-bold">Thêm sản phẩm</span>
+                                <span className="text-slate-500 font-bold">Thêm mẫu demo</span>
                             </Link>
                         )}
                     </div>
@@ -300,7 +300,7 @@ export default function ComparePage() {
                             <thead>
                                 <tr className="border-b border-slate-100">
                                     <th className="p-4 md:p-6 text-left w-24 md:w-64 bg-slate-50 sticky left-0 z-20 border-r border-slate-100 hidden md:table-cell">
-                                        <div className="text-sm font-bold text-slate-400 uppercase tracking-wider">Sản phẩm</div>
+                                        <div className="text-sm font-bold text-slate-400 uppercase tracking-wider">Mẫu demo</div>
                                     </th>
                                     {compareList.map(item => (
                                         <th key={item.id} className="p-4 md:p-6 w-56 md:w-80 align-top relative group">
@@ -342,7 +342,7 @@ export default function ComparePage() {
                                                 <div className="w-16 h-16 bg-white rounded-full shadow-sm flex items-center justify-center group-hover:scale-110 transition-transform">
                                                     <Plus size={32} className="text-slate-300 group-hover:text-blue-500" />
                                                 </div>
-                                                <span className="text-slate-500 font-bold group-hover:text-blue-600">Thêm sản phẩm</span>
+                                                <span className="text-slate-500 font-bold group-hover:text-blue-600">Thêm mẫu demo</span>
                                             </Link>
                                         </th>
                                     )}
@@ -439,7 +439,7 @@ export default function ComparePage() {
                                                 className="w-full flex items-center justify-center gap-2 bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-blue-600 transition-all shadow-lg shadow-slate-200 hover:shadow-blue-200"
                                             >
                                                 {isCatalogMode ? <MessageCircle size={18} /> : <ShoppingCart size={18} />}
-                                                {isCatalogMode ? 'Nhận tư vấn' : 'Thêm vào giỏ'}
+                                                {isCatalogMode ? 'Nhận tư vấn' : 'Thêm vào danh sách'}
                                             </button>
                                         </td>
                                     ))}

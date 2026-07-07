@@ -133,11 +133,11 @@ const generateReasoning = (answers: AIAnswers): string => {
 
     let advice = '';
     if (answers.budget === 'low') {
-        advice = 'Với ngân sách tiết kiệm, AI đã chọn lọc những sản phẩm có giá trị tốt nhất trong tầm giá. ';
+        advice = 'Với ngân sách tiết kiệm, AI đã chọn lọc những mẫu demo có giá trị tốt nhất trong tầm giá. ';
     } else if (answers.budget === 'high') {
-        advice = 'Với ngân sách premium, chúng tôi đề xuất những sản phẩm cao cấp nhất với đầy đủ tính năng. ';
+        advice = 'Với ngân sách premium, chúng tôi đề xuất những mẫu demo cao cấp nhất với đầy đủ tính năng. ';
     } else {
-        advice = 'Chúng tôi đã cân nhắc cả chất lượng và giá thành để đề xuất sản phẩm phù hợp nhất. ';
+        advice = 'Chúng tôi đã cân nhắc cả chất lượng và giá thành để đề xuất mẫu phù hợp nhất. ';
     }
 
     return `${intro}${advice}`;
@@ -240,7 +240,7 @@ const AIProductCard = memo(({
             return;
         }
         addToCart(product);
-        addToast('Đã thêm vào giỏ hàng', 'success');
+        addToast('Đã thêm vào danh sách quan tâm', 'success');
     }, [product, addToCart, addToast, router, isCatalogMode]);
 
     const handleToggleWishlist = useCallback((e: React.MouseEvent) => {
@@ -364,8 +364,8 @@ export default function AIRecommendationPage() {
 
     const handleShareResults = useCallback(async () => {
         const shareData = {
-            title: 'Gợi ý giao diện từ Shop Web rẻ',
-            text: reasoning || 'Xem công cụ AI tư vấn giao diện phù hợp tại Shop Web rẻ.',
+            title: 'Gợi ý giao diện từ Web Giá Rẻ - Portfolio',
+            text: reasoning || 'Xem công cụ AI tư vấn giao diện phù hợp tại Web Giá Rẻ - Portfolio.',
             url: window.location.href,
         };
 
@@ -498,7 +498,7 @@ export default function AIRecommendationPage() {
 
     const handleBuyBundle = useCallback(() => {
         if (results.length === 0) {
-            addToast(isCatalogMode ? 'Chưa có sản phẩm phù hợp để tư vấn' : 'Chưa có sản phẩm phù hợp để thêm vào giỏ hàng', 'warning');
+            addToast(isCatalogMode ? 'Chưa có mẫu phù hợp để tư vấn' : 'Chưa có mẫu phù hợp để thêm vào danh sách quan tâm', 'warning');
             return;
         }
         if (isCatalogMode) {
@@ -508,7 +508,7 @@ export default function AIRecommendationPage() {
             return;
         }
         results.forEach(p => addToCart(p));
-        addToast('Đã thêm trọn bộ lộ trình vào giỏ hàng!', 'success');
+        addToast('Đã thêm trọn bộ lộ trình vào danh sách quan tâm!', 'success');
         router.push('/cart');
     }, [results, addToCart, addToast, router, isCatalogMode]);
 
@@ -576,7 +576,7 @@ export default function AIRecommendationPage() {
 
                             {/* Title with gradient */}
                             <h1 className="text-2xl md:text-4xl font-black text-center mb-3 bg-gradient-to-r from-white via-orange-100 to-red-100 bg-clip-text text-transparent leading-tight">
-                                Shop Web rẻ AI
+                                Web Giá Rẻ - Portfolio AI
                             </h1>
 
                             {/* Badge */}
@@ -799,7 +799,7 @@ export default function AIRecommendationPage() {
                                                 <p className="text-amber-400 text-xs font-bold uppercase tracking-wider mb-1">
                                                     Ưu Đãi Đặc Biệt
                                                 </p>
-                                                <h3 className="text-lg md:text-xl font-bold">{isCatalogMode ? 'Tư vấn trọn bộ lộ trình' : 'Mua Trọn Bộ Lộ Trình'}</h3>
+                                                <h3 className="text-lg md:text-xl font-bold">{isCatalogMode ? 'Tư vấn trọn bộ lộ trình' : 'Tư Vấn Trọn Bộ Lộ Trình'}</h3>
                                             </div>
                                             <div className="bg-white/10 p-2 rounded-lg">
                                             {isCatalogMode ? <MessageCircle size={20} className="text-white" /> : <ShoppingCart size={20} className="text-white" />}
@@ -847,7 +847,7 @@ export default function AIRecommendationPage() {
                             ) : (
                                 <div className="bg-white rounded-2xl border border-slate-100 p-8 md:p-10 text-center shadow-sm">
                                     <Target size={44} className="mx-auto text-slate-300 mb-4" />
-                                    <h4 className="text-xl font-black text-slate-900 mb-2">Chưa tìm thấy sản phẩm đúng tiêu chí</h4>
+                                    <h4 className="text-xl font-black text-slate-900 mb-2">Chưa tìm thấy mẫu demo đúng tiêu chí</h4>
                                     <p className="text-slate-500 max-w-lg mx-auto mb-6">
                                         Bạn có thể quay lại và nới ngân sách, chọn nền tảng linh hoạt hơn hoặc đổi phong cách thiết kế để AI tìm thêm lựa chọn.
                                     </p>

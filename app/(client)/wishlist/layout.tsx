@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Wishlist - Sản phẩm yêu thích',
-    description: 'Danh sách giao diện website yêu thích của bạn. Lưu và theo dõi các sản phẩm quan tâm để mua sau.',
+    title: 'Wishlist - Mẫu yêu thích',
+    description: 'Danh sách giao diện website yêu thích của bạn. Lưu và theo dõi các mẫu quan tâm để tham khảo sau.',
     keywords: ['wishlist', 'yêu thích', 'saved products', 'favorites'],
     openGraph: {
-        title: 'Wishlist - Sản phẩm yêu thích | Shop Web rẻ',
-        description: 'Danh sách sản phẩm yêu thích của bạn',
+        title: 'Wishlist - Mẫu yêu thích | Web Giá Rẻ - Portfolio',
+        description: 'Danh sách mẫu yêu thích của bạn',
     },
     robots: {
         index: false,

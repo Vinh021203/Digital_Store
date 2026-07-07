@@ -47,7 +47,7 @@ function OrderSuccessContent() {
                 .single();
 
             if (error || !data) {
-                addToast('Không tìm thấy đơn hàng', 'error');
+                addToast('Không tìm thấy yêu cầu', 'error');
                 router.push('/');
                 return;
             }
@@ -93,7 +93,7 @@ function OrderSuccessContent() {
                             <Package size={24} className="text-emerald-600" />
                         </div>
                     </div>
-                    <p className="mt-4 text-slate-600 font-medium">Đang tải đơn hàng...</p>
+                    <p className="mt-4 text-slate-600 font-medium">Đang tải yêu cầu...</p>
                 </div>
             </div>
         );
@@ -143,11 +143,11 @@ function OrderSuccessContent() {
                     <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 mb-3">
                         <span className="inline-flex items-center gap-2">
                             <PartyPopper className="text-amber-500 animate-wiggle" size={36} />
-                            Đặt hàng thành công!
+                            Yêu cầu tư vấn đã được ghi nhận!
                         </span>
                     </h1>
                     <p className="text-slate-500 text-lg sm:text-xl max-w-md mx-auto">
-                        Cảm ơn bạn đã tin tưởng mua sắm. Đơn hàng của bạn đã được xác nhận.
+                        Cảm ơn bạn đã tin tưởng tham khảo demo. Yêu cầu của bạn đã được xác nhận.
                     </p>
                 </div>
 
@@ -157,11 +157,11 @@ function OrderSuccessContent() {
                     <div className="bg-gradient-to-r from-emerald-500 to-green-600 text-white p-5 sm:p-6">
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                             <div>
-                                <p className="text-emerald-100 text-sm font-medium mb-1">Mã đơn hàng</p>
+                                <p className="text-emerald-100 text-sm font-medium mb-1">Mã yêu cầu</p>
                                 <h2 className="text-2xl sm:text-3xl font-black flex items-center gap-2">
                                     #{orderId}
                                     <span className="text-xs font-bold bg-white/20 px-2 py-1 rounded-full uppercase">
-                                        {order?.status === 'paid' ? 'Đã thanh toán' : order?.status === 'pending' ? 'Chờ thanh toán' : order?.status}
+                                        {order?.status === 'paid' ? 'Đã xác nhận tư vấn' : order?.status === 'pending' ? 'Chờ xác nhận tư vấn' : order?.status}
                                     </span>
                                 </h2>
                             </div>
@@ -189,7 +189,7 @@ function OrderSuccessContent() {
                                 <CreditCard size={20} className="text-slate-600" />
                             </div>
                             <div>
-                                <p className="text-xs text-slate-500 uppercase font-bold tracking-wider mb-1">Thanh toán</p>
+                                <p className="text-xs text-slate-500 uppercase font-bold tracking-wider mb-1">Xác nhận tư vấn</p>
                                 <p className="font-bold text-slate-900">
                                     {order?.payment_method === 'sepay' ? 'Chuyển khoản QR' :
                                         order?.payment_method === 'momo' ? 'Ví MoMo' :
@@ -206,7 +206,7 @@ function OrderSuccessContent() {
                     <div className="p-5 sm:p-6">
                         <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
                             <Package size={18} className="text-emerald-600" />
-                            Sản phẩm đã mua ({order?.order_items?.length || 0})
+                            Mẫu đã được cấp quyền ({order?.order_items?.length || 0})
                         </h3>
                         <div className="space-y-4">
                             {order?.order_items?.map((item: any) => (
@@ -221,7 +221,7 @@ function OrderSuccessContent() {
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <h4 className="font-bold text-slate-900 line-clamp-1 group-hover:text-emerald-600 transition-colors">
-                                            {item.product?.name || item.product_name || 'Sản phẩm'}
+                                            {item.product?.name || item.product_name || 'Mẫu demo'}
                                         </h4>
                                         <p className="text-sm text-slate-500 mt-1">
                                             License: <span className="font-medium text-slate-700">{item.license_type || 'Regular'}</span>
@@ -255,7 +255,7 @@ function OrderSuccessContent() {
                                 </div>
                             )}
                             <div className="flex justify-between items-center pt-3 border-t border-slate-200">
-                                <span className="text-lg font-black text-slate-900">Tổng thanh toán</span>
+                                <span className="text-lg font-black text-slate-900">Tổng xác nhận tư vấn</span>
                                 <span className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">
                                     {order?.total?.toLocaleString()}₫
                                 </span>
@@ -278,13 +278,13 @@ function OrderSuccessContent() {
                                 <Mail size={24} className="text-amber-600" />
                             </div>
                             <h4 className="font-bold text-slate-900 mb-1">Kiểm tra Email</h4>
-                            <p className="text-sm text-slate-500">Thông tin đơn hàng và hóa đơn đã được gửi qua email</p>
+                            <p className="text-sm text-slate-500">Thông tin yêu cầu và hóa đơn đã được gửi qua email</p>
                         </div>
                         <div className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow group">
                             <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                                 <Download size={24} className="text-emerald-600" />
                             </div>
-                            <h4 className="font-bold text-slate-900 mb-1">Tải sản phẩm</h4>
+                            <h4 className="font-bold text-slate-900 mb-1">Tải mẫu demo</h4>
                             <p className="text-sm text-slate-500">Truy cập trang Downloads trong Profile để tải về</p>
                         </div>
                         <div className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow group">
@@ -312,7 +312,7 @@ function OrderSuccessContent() {
                         className="flex items-center justify-center gap-3 bg-white border-2 border-slate-200 text-slate-700 py-4 px-6 rounded-2xl font-bold hover:bg-slate-50 hover:border-slate-300 transition-all group"
                     >
                         <Package size={20} />
-                        Tiếp tục mua sắm
+                        Tiếp tục tham khảo demo
                     </Link>
                 </div>
 
@@ -375,7 +375,7 @@ export default function OrderSuccessPage() {
             <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50/30 flex items-center justify-center">
                 <div className="text-center">
                     <Loader2 className="w-10 h-10 animate-spin text-emerald-600 mx-auto mb-4" />
-                    <p className="text-slate-500 font-medium">Đang tải thông tin đơn hàng...</p>
+                    <p className="text-slate-500 font-medium">Đang tải thông tin yêu cầu...</p>
                 </div>
             </div>
         }>

@@ -256,7 +256,7 @@ export async function deleteCategory(id: number): Promise<boolean> {
         .eq('category_id', id);
 
     if (count && count > 0) {
-        throw new Error(`Không thể xóa danh mục này vì có ${count} sản phẩm đang sử dụng.`);
+        throw new Error(`Không thể xóa danh mục này vì có ${count} mẫu demo đang sử dụng.`);
     }
 
     const { error } = await supabase

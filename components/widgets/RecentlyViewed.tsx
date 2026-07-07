@@ -107,7 +107,7 @@ interface RecentlyViewedSectionProps {
 }
 
 export const RecentlyViewedSection = memo(({
-    title = 'Sản phẩm đã xem',
+    title = 'Mẫu demo đã xem',
     maxItems = 6,
     showClear = true,
 }: RecentlyViewedSectionProps) => {
@@ -129,7 +129,7 @@ export const RecentlyViewedSection = memo(({
             return;
         }
         addToCart(product);
-        addToast('Đã thêm vào giỏ hàng!', 'success');
+        addToast('Đã thêm vào danh sách quan tâm!', 'success');
     };
 
     return (
@@ -181,7 +181,7 @@ export const RecentlyViewedSection = memo(({
                             <button
                                 onClick={(e) => handleAddToCart(product, e)}
                                 className="absolute bottom-2 right-2 w-8 h-8 bg-orange-600 hover:bg-orange-700 text-white rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-lg"
-                                aria-label={isCatalogMode ? 'Nhận tư vấn' : 'Thêm vào giỏ hàng'}
+                                aria-label={isCatalogMode ? 'Nhận tư vấn' : 'Thêm vào danh sách quan tâm'}
                             >
                                 {isCatalogMode ? <MessageCircle size={14} /> : <ShoppingCart size={14} />}
                             </button>
@@ -211,7 +211,7 @@ export const RecentlyViewedSection = memo(({
                         href="/products"
                         className="inline-flex items-center gap-2 text-orange-600 hover:text-orange-700 font-bold"
                     >
-                        Xem thêm {items.length - maxItems} sản phẩm
+                        Xem thêm {items.length - maxItems} mẫu demo
                         <ChevronRight size={16} />
                     </Link>
                 </div>

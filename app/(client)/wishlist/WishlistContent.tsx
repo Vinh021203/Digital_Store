@@ -75,7 +75,7 @@ export default function WishlistPage() {
                         Danh sách trống
                     </h1>
                     <p className="text-slate-500 text-lg mb-8 leading-relaxed">
-                        Bạn chưa lưu sản phẩm nào cả. Hãy dạo một vòng cửa hàng và "thả tim" những món đồ công nghệ xịn xò nhé!
+                        Bạn chưa lưu mẫu demo nào cả. Hãy dạo một vòng cửa hàng và "thả tim" những món đồ công nghệ xịn xò nhé!
                     </p>
 
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -84,7 +84,7 @@ export default function WishlistPage() {
                             className="w-full sm:w-auto px-8 py-4 bg-slate-900 text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-orange-600 transition-all shadow-xl hover:shadow-orange-500/20 hover:-translate-y-1"
                         >
                             <Package size={20} />
-                            Khám phá sản phẩm
+                            Khám phá mẫu demo
                         </Link>
                         <Link
                             href="/"
@@ -128,7 +128,7 @@ export default function WishlistPage() {
                                 </span>
                             </div>
                             <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">
-                                Sản phẩm yêu thích
+                                Mẫu yêu thích
                             </h1>
                             <p className="text-slate-500 text-lg max-w-xl">
                                 Nơi lưu giữ những ý tưởng và tài nguyên tuyệt vời cho dự án tiếp theo của bạn.
@@ -220,7 +220,7 @@ export default function WishlistPage() {
                             {filteredItems.length > 0 && (
                                 <button
                                     onClick={() => {
-                                        if (window.confirm('Xóa tất cả sản phẩm?')) {
+                                        if (window.confirm('Xóa tất cả mẫu demo?')) {
                                             wishlist.forEach(i => removeFromWishlist(i.id));
                                         }
                                     }}
@@ -253,7 +253,7 @@ export default function WishlistPage() {
                         <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
                             <Search size={32} />
                         </div>
-                        <h3 className="font-bold text-slate-900 text-lg">Không tìm thấy sản phẩm</h3>
+                        <h3 className="font-bold text-slate-900 text-lg">Không tìm thấy mẫu demo</h3>
                         <p className="text-slate-500">Thử thay đổi từ khóa hoặc bộ lọc của bạn xem sao.</p>
                         <button
                             onClick={() => { setSearchQuery(''); setActiveFilter('all'); }}

@@ -49,9 +49,9 @@ export interface SiteSettings {
 }
 
 const defaultSettings: SiteSettings = {
-    site_name: 'Shop Web rẻ',
-    site_tagline: 'Kho giao diện website đẹp, dễ dùng, giá hợp lý',
-    site_description: 'Kho giao diện website, template, landing page, UI kit, dashboard và source code chất lượng cao tại Shop Web rẻ. Xem demo và nhận tư vấn triển khai.',
+    site_name: 'Web Giá Rẻ - Portfolio',
+    site_tagline: 'Portfolio giao diện website, landing page và dự án web chuyên nghiệp',
+    site_description: 'Portfolio giao diện website, template, landing page, UI kit, dashboard và dự án web chất lượng cao. Xem demo và nhận tư vấn triển khai.',
     contact_email: 'veutong961@gmail.com',
     contact_phone: '0971 386 588',
     contact_address: 'Hạ Long, Quảng Ninh, Việt Nam',
@@ -59,7 +59,7 @@ const defaultSettings: SiteSettings = {
     site_favicon: '',
     maintenance_mode: false,
     maintenance_message: 'Website đang được nâng cấp. Vui lòng quay lại sau!',
-    site_mode: 'sales',
+    site_mode: 'catalog',
     payment_vnpay_enabled: true,
     payment_momo_enabled: true,
     payment_bank_transfer_enabled: true,

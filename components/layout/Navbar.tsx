@@ -148,7 +148,7 @@ const AnnouncementBar = memo(() => {
   const msg =
     isCatalogMode
       ? "🎉 Bộ sưu tập mới — Xem demo và nhận tư vấn giao diện phù hợp tuần này!"
-      : "🎉 Flash Sale — Giảm đến 50% toàn bộ Themes & Templates tuần này!";
+      : "Bộ sưu tập demo mới — Xem mẫu giao diện phù hợp tuần này!";
 
   return (
     <div
@@ -163,7 +163,7 @@ const AnnouncementBar = memo(() => {
             {isCatalogMode ? (
               <>🎉 Bộ sưu tập mới — Xem demo và nhận tư vấn giao diện phù hợp tuần này!</>
             ) : (
-              <>🎉 Flash Sale — Giảm đến <strong>50%</strong> toàn bộ Themes &amp; Templates tuần này!</>
+              <>Bộ sưu tập demo mới — Xem mẫu giao diện phù hợp tuần này!</>
             )}
           </span>
           <Link
@@ -599,14 +599,14 @@ const MobileMenu = memo<MobileMenuProps>(
             {/* Quick stats */}
             <div className="relative mt-4 grid grid-cols-3 gap-2">
               {[
-                { label: "Đơn hàng", value: "12", href: "/profile?tab=orders" },
+                { label: "Yêu cầu", value: "12", href: "/profile?tab=orders" },
                 {
                   label: "Yêu thích",
                   value: wishlistCount.toString(),
                   href: "/wishlist",
                 },
                 {
-                  label: "Giỏ hàng",
+                  label: "Danh sách quan tâm",
                   value: totalItems.toString(),
                   href: "/cart",
                 },
@@ -739,13 +739,13 @@ const MobileMenu = memo<MobileMenuProps>(
                   color: "text-orange-500",
                   bg: "bg-orange-50",
                 },
-                {
-                  href: "/profile/downloads",
-                  icon: Download,
-                  label: "Downloads",
-                  color: "text-emerald-500",
-                  bg: "bg-emerald-50",
-                },
+	                {
+	                  href: "/profile/downloads",
+	                  icon: Download,
+	                  label: "Mẫu đã cấp",
+	                  color: "text-emerald-500",
+	                  bg: "bg-emerald-50",
+	                },
               ].map((item) => (
                 <Link
                   key={item.href}
@@ -794,7 +794,7 @@ const MobileMenu = memo<MobileMenuProps>(
                 {
                   href: "/profile/orders",
                   icon: ShoppingBag,
-                  label: "Đơn hàng",
+                  label: "Yêu cầu",
                   color: "text-slate-600",
                   bg: "bg-slate-50",
                 },
@@ -982,12 +982,12 @@ const UserDropdown = memo<UserDropdownProps>(
             )}
             {[
               { href: "/profile", icon: UserIcon, label: t("nav.profile") },
-              { href: "/profile/orders", icon: ShoppingBag, label: "Đơn hàng" },
-              {
-                href: "/profile/downloads",
-                icon: Download,
-                label: "Downloads",
-              },
+              { href: "/profile/orders", icon: ShoppingBag, label: "Yêu cầu" },
+	              {
+	                href: "/profile/downloads",
+	                icon: Download,
+	                label: "Mẫu đã cấp quyền",
+	              },
               { href: "/profile/settings", icon: Settings, label: "Cài đặt" },
             ].map((item) => (
               <Link
@@ -1156,7 +1156,7 @@ const Navbar = () => {
         },
       ],
       cta: {
-        label: "🔥 Xem tất cả sản phẩm →",
+        label: "Xem tất cả mẫu demo →",
         href: "/products",
         gradient: "from-orange-500/90 to-red-500/90",
       },
@@ -1176,7 +1176,7 @@ const Navbar = () => {
       },
       {
         href: "/products",
-        label: "Sản Phẩm",
+        label: "Mẫu Demo",
         icon: Package,
         gradient: "from-red-600 to-rose-600",
         bg: "red",
@@ -1272,11 +1272,11 @@ const Navbar = () => {
               href="/"
               className="group relative h-10 w-[150px] flex-shrink-0 sm:h-11 sm:w-[180px] lg:h-12 lg:w-[205px]"
               prefetch={true}
-              aria-label="Shop Web rẻ - Trang chủ"
+              aria-label="Web Giá Rẻ - Portfolio - Trang chủ"
             >
               <img
                 src="/logo_webgiare_display.webp"
-                alt="Shop Web rẻ"
+                alt="Web Giá Rẻ - Portfolio"
                 className="h-full w-full object-contain object-left transition-transform duration-300 group-hover:scale-[1.02]"
               />
             </Link>
@@ -1350,7 +1350,7 @@ const Navbar = () => {
               <Link
                 href="/cart"
                 className={`${isCatalogMode ? 'hidden' : 'hidden lg:flex'} relative p-2.5 text-slate-500 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-all duration-200`}
-                aria-label={`Giỏ hàng (${totalItems})`}
+                aria-label={`Danh sách quan tâm (${totalItems})`}
               >
                 <ShoppingCart size={20} />
                 <Badge

@@ -150,7 +150,7 @@ export default function AffiliateDashboardPage() {
             completed: { color: 'bg-green-100 text-green-700', label: 'Hoàn thành' },
             failed: { color: 'bg-red-100 text-red-700', label: 'Thất bại' },
             approved: { color: 'bg-green-100 text-green-700', label: 'Đã duyệt' },
-            paid: { color: 'bg-emerald-100 text-emerald-700', label: 'Đã thanh toán' },
+            paid: { color: 'bg-emerald-100 text-emerald-700', label: 'Đã xác nhận tư vấn' },
             rejected: { color: 'bg-red-100 text-red-700', label: 'Từ chối' },
         };
         const badge = badges[status] || { color: 'bg-slate-100 text-slate-600', label: status };
@@ -245,7 +245,7 @@ export default function AffiliateDashboardPage() {
                                     <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/20">
                                         <Gift size={20} className="text-white" />
                                     </div>
-                                    <span className="font-black text-white">Shop Web rẻ</span>
+                                    <span className="font-black text-white">Web Giá Rẻ - Portfolio</span>
                                 </div>
                                 <button
                                     onClick={() => setMobileMenuOpen(false)}
@@ -542,7 +542,7 @@ export default function AffiliateDashboardPage() {
                                 <div className="p-4 border-b border-slate-100 flex items-center justify-between">
                                     <h3 className="font-bold text-slate-900 flex items-center gap-2">
                                         <CreditCard size={18} className="text-orange-600" />
-                                        Phương thức thanh toán
+                                        Phương thức xác nhận tư vấn
                                     </h3>
                                     <button
                                         onClick={() => setShowAddPaymentModal(true)}
@@ -558,7 +558,7 @@ export default function AffiliateDashboardPage() {
                                             <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                                                 <Building2 size={28} className="text-slate-300" />
                                             </div>
-                                            <p className="text-slate-500 font-medium mb-2">Chưa có tài khoản thanh toán</p>
+                                            <p className="text-slate-500 font-medium mb-2">Chưa có tài khoản xác nhận tư vấn</p>
                                             <p className="text-slate-400 text-sm mb-4">Thêm tài khoản ngân hàng hoặc ví điện tử để rút tiền</p>
                                             <button
                                                 onClick={() => setShowAddPaymentModal(true)}
@@ -601,11 +601,11 @@ export default function AffiliateDashboardPage() {
                                                         type="button"
                                                         onClick={() => {
                                                             setPaymentMethods(current => current.filter(item => item.id !== method.id));
-                                                            addToast('Đã xóa phương thức thanh toán', 'success');
+                                                            addToast('Đã xóa phương thức xác nhận tư vấn', 'success');
                                                         }}
                                                         className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                                                        aria-label={`Xóa phương thức thanh toán ${method.name}`}
-                                                        title="Xóa phương thức thanh toán"
+                                                        aria-label={`Xóa phương thức xác nhận tư vấn ${method.name}`}
+                                                        title="Xóa phương thức xác nhận tư vấn"
                                                     >
                                                         <Trash2 size={16} />
                                                     </button>

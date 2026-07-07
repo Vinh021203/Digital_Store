@@ -145,11 +145,11 @@ export default function LoginPage() {
             href="/"
             className="group relative h-11 w-[180px]"
             prefetch={true}
-            aria-label="Shop Web rẻ - Trang chủ"
+            aria-label="Web Giá Rẻ - Portfolio - Trang chủ"
           >
             <img
               src="/logo_webgiare_display.webp"
-              alt="Shop Web rẻ logo"
+              alt="Web Giá Rẻ - Portfolio logo"
               className="h-full w-full object-contain object-left transition-transform duration-300 group-hover:scale-[1.02]"
             />
           </Link>

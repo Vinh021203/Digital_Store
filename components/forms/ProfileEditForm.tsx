@@ -124,7 +124,7 @@ export function ProfileEditForm({
             <div className="w-20 h-20 md:w-24 md:h-24 bg-white rounded-2xl flex items-center justify-center mb-4 shadow-lg">
               <img
                 src="/logo_webgiare_display.webp"
-                alt="Shop Web rẻ"
+                alt="Web Giá Rẻ - Portfolio"
                 className="w-12 h-12 md:w-14 md:h-14 object-contain"
               />
             </div>

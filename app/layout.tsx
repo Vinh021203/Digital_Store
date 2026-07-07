@@ -15,7 +15,7 @@ const organizationSchema = [
   {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'Shop Web rẻ',
+    name: 'Web Giá Rẻ - Portfolio',
     url: siteUrl,
     logo: `${siteUrl}/logo_webgiare_display.webp`,
     email: 'mailto:veutong961@gmail.com',
@@ -36,7 +36,7 @@ const organizationSchema = [
   {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Shop Web rẻ',
+    name: 'Web Giá Rẻ - Portfolio',
     url: siteUrl,
     inLanguage: 'vi-VN',
     potentialAction: {
@@ -49,15 +49,15 @@ const organizationSchema = [
 
 export const metadata: Metadata = {
   title: {
-    default: 'Shop Web rẻ - Kho giao diện website, template và landing page',
-    template: '%s | Shop Web rẻ',
+    default: 'Web Giá Rẻ - Portfolio giao diện website, landing page và dự án web chuyên nghiệp',
+    template: '%s | Web Giá Rẻ - Portfolio',
   },
   description:
-    'Kho giao diện website, template, landing page, UI kit và dashboard chất lượng cao. Xem demo, tham khảo mẫu phù hợp và nhận tư vấn triển khai.',
+    'Portfolio giao diện website, landing page, template, UI kit và dự án web chuyên nghiệp. Xem demo, tham khảo mẫu phù hợp và nhận tư vấn triển khai.',
   keywords: seoKeywords.home,
   authors: [{ name: 'Lương Thế Vinh' }],
-  creator: 'Shop Web rẻ',
-  publisher: 'Shop Web rẻ',
+  creator: 'Web Giá Rẻ - Portfolio',
+  publisher: 'Web Giá Rẻ - Portfolio',
   formatDetection: {
     email: false,
     address: false,
@@ -71,24 +71,24 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'vi_VN',
     url: siteUrl,
-    siteName: 'Shop Web rẻ',
-    title: 'Shop Web rẻ - Kho giao diện website, template và landing page',
+    siteName: 'Web Giá Rẻ - Portfolio',
+    title: 'Web Giá Rẻ - Portfolio giao diện website, landing page và dự án web chuyên nghiệp',
     description:
-      'Kho giao diện website, template, landing page, UI kit và dashboard chất lượng cao cho thị trường Việt Nam. Xem demo và nhận tư vấn theo nhu cầu.',
+      'Portfolio giao diện website, landing page, template, UI kit và dự án web cho thị trường Việt Nam. Xem demo và nhận tư vấn theo nhu cầu.',
     images: [
       {
         url: socialImageUrl,
         width: 1200,
         height: 630,
-        alt: 'Shop Web rẻ - Kho giao diện website, template và landing page',
+        alt: 'Web Giá Rẻ - Portfolio giao diện website, landing page và dự án web chuyên nghiệp',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Shop Web rẻ - Kho giao diện website, template và landing page',
+    title: 'Web Giá Rẻ - Portfolio giao diện website, landing page và dự án web chuyên nghiệp',
     description:
-      'Tham khảo giao diện website, template, landing page và UI kit chất lượng cao. Xem demo và nhận tư vấn triển khai.',
+      'Tham khảo portfolio giao diện website, landing page, template và UI kit chuyên nghiệp. Xem demo và nhận tư vấn triển khai.',
     images: [socialImageUrl],
   },
   robots: {
@@ -117,7 +117,7 @@ function LoadingFallback() {
         <div className="relative h-16 w-16 animate-spin rounded-full border-b-4 border-t-4 border-orange-600" />
       </div>
       <p className="mt-6 animate-pulse bg-gradient-to-r from-orange-600 via-red-600 to-amber-600 bg-clip-text text-lg font-bold text-transparent">
-        Shop Web rẻ
+        Web Giá Rẻ - Portfolio
       </p>
     </div>
   );

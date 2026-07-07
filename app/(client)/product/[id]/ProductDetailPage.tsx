@@ -25,10 +25,10 @@ import type { Product } from '@/types';
 
 // FAQ data
 const FAQ_DATA = [
-    { q: 'Sản phẩm có được cập nhật miễn phí không?', a: 'Có, bạn sẽ nhận được tất cả các bản cập nhật miễn phí trong tương lai.' },
-    { q: 'Tôi có thể sử dụng cho dự án thương mại không?', a: 'Có, license Regular cho phép sử dụng cho 1 dự án thương mại. License Extended cho không giới hạn dự án.' },
-    { q: 'Có hỗ trợ kỹ thuật không?', a: 'Có, Shop Web rẻ hỗ trợ qua email theo phạm vi từng sản phẩm và giấy phép.' },
-    { q: 'Khi nào có thể nhận file sản phẩm?', a: 'Khi sản phẩm được mở quyền truy cập, bạn có thể nhận hướng dẫn qua email hoặc xem trong khu vực hồ sơ tài khoản.' },
+    { q: 'Mẫu demo có được cập nhật miễn phí không?', a: 'Có, bạn sẽ nhận được tất cả các bản cập nhật miễn phí trong tương lai.' },
+    { q: 'Tôi có thể dùng mẫu demo cho dự án thương mại không?', a: 'Có thể tư vấn theo phạm vi dự án. Quyền truy cập mẫu demo và tài nguyên tham khảo sẽ được xác nhận theo từng nhu cầu triển khai.' },
+    { q: 'Có hỗ trợ kỹ thuật không?', a: 'Có, Web Giá Rẻ - Portfolio hỗ trợ qua email theo phạm vi mẫu demo và nhu cầu triển khai.' },
+    { q: 'Khi nào có thể nhận file mẫu demo?', a: 'Khi mẫu demo được mở quyền truy cập, bạn có thể nhận hướng dẫn qua email hoặc xem trong khu vực hồ sơ tài khoản.' },
 ];
 
 const stripHtml = (value?: string | null) =>
@@ -277,7 +277,7 @@ export default function ProductDetailPage() {
                 return;
             }
             addToCart(product);
-            addToast(`Đã thêm "${product.name}" vào giỏ hàng`, 'success');
+            addToast(`Đã thêm "${product.name}" vào danh sách quan tâm`, 'success');
         }
     }, [product, addToCart, addToast, isCatalogMode, router]);
 
@@ -294,7 +294,7 @@ export default function ProductDetailPage() {
     const handleToggleCompare = useCallback(() => {
         if (product) {
             if (compareList.length >= 3 && !isInCompare(product.id)) {
-                addToast('Chỉ có thể so sánh tối đa 3 sản phẩm', 'error');
+                addToast('Chỉ có thể so sánh tối đa 3 mẫu demo', 'error');
                 return;
             }
             addToCompare(product);
@@ -318,7 +318,7 @@ export default function ProductDetailPage() {
             <div className="min-h-screen flex items-center justify-center bg-slate-50">
                 <div className="flex flex-col items-center gap-4">
                     <Loader2 className="w-10 h-10 animate-spin text-orange-600" />
-                    <p className="text-slate-500 font-medium">Đang tải thông tin sản phẩm...</p>
+                    <p className="text-slate-500 font-medium">Đang tải thông tin mẫu demo...</p>
                 </div>
             </div>
         );
@@ -330,8 +330,8 @@ export default function ProductDetailPage() {
                 <div className="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mb-6">
                     <Package size={40} className="text-slate-400" />
                 </div>
-                <h2 className="text-2xl font-bold text-slate-900 mb-2">Sản phẩm không tồn tại</h2>
-                <p className="text-slate-500 mb-8 max-w-md text-center">Sản phẩm này có thể đã bị xóa hoặc đường dẫn không chính xác. Vui lòng kiểm tra lại.</p>
+                <h2 className="text-2xl font-bold text-slate-900 mb-2">Mẫu demo không tồn tại</h2>
+                <p className="text-slate-500 mb-8 max-w-md text-center">Mẫu này có thể đã bị xóa hoặc đường dẫn không chính xác. Vui lòng kiểm tra lại.</p>
                 <Link href="/products" className="bg-slate-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-orange-600 transition-colors shadow-lg">
                     Khám phá cửa hàng
                 </Link>
@@ -414,6 +414,8 @@ const ModernProductDetailLayout = ({
     const reviewCount = product.reviews || product.review_count || 56;
     const soldCount = product.students || product.downloads_count || product.sales || 128;
     const formatPrice = (value: number) => `${Number(value || 0).toLocaleString('vi-VN')}đ`;
+    const consultationPriceLabel = 'Liên hệ tư vấn';
+    const displayPrice = isCatalogMode ? consultationPriceLabel : formatPrice(product.price);
     const featureList = (product.features?.length ? product.features : [
         '30+ màn hình được thiết kế sẵn',
         'Dễ dàng tùy biến và mở rộng',
@@ -434,7 +436,7 @@ const ModernProductDetailLayout = ({
             ? `${plainDescription.slice(0, 190)}${plainDescription.length > 190 ? '...' : ''}`
             : 'Bộ giao diện website hiện đại, dễ tùy biến, giúp bạn triển khai website nhanh chóng và chuyên nghiệp.'
     );
-    const shouldCompactDesktopQuickBuy = quickBuyCollapsed || isFooterVisible;
+    const shouldCompactDesktopQuickBuy = quickBuyCollapsed;
 
     useEffect(() => {
         const footer = document.querySelector('footer');
@@ -452,16 +454,16 @@ const ModernProductDetailLayout = ({
         return () => observer.disconnect();
     }, []);
     const tabs = [
-        ['description', 'Mô tả sản phẩm'],
+        ['description', 'Mô tả mẫu demo'],
         ['features', 'Tính năng nổi bật'],
         ['screenshots', 'Screenshots'],
-        ['package', 'Bộ sản phẩm'],
+        ['package', 'Bộ tài nguyên'],
         ['workflow', 'Quy trình & Ứng dụng'],
-        ['license', 'So sánh & Giấy phép'],
+        ['license', 'So sánh & Quyền truy cập'],
         ['reviews', 'Đánh giá'],
     ];
     const overviewCards = [
-        { icon: Monitor, title: 'Hiện đại & chuyên nghiệp', stat: 'UI chuẩn bán hàng', tag: 'Layout ready', text: 'Bố cục rõ ràng, hình ảnh lớn và nhịp nội dung phù hợp để giới thiệu giao diện website.' },
+        { icon: Monitor, title: 'Hiện đại & chuyên nghiệp', stat: 'UI chuẩn demo', tag: 'Layout ready', text: 'Bố cục rõ ràng, hình ảnh lớn và nhịp nội dung phù hợp để giới thiệu giao diện website.' },
         { icon: Zap, title: 'Tối ưu hiệu suất', stat: 'Tải nhanh hơn', tag: 'Clean structure', text: 'Cấu trúc gọn, dễ mở rộng, giúp rút ngắn thời gian triển khai và bàn giao dự án.' },
         { icon: Layers, title: 'Dễ dàng tùy biến', stat: 'Component linh hoạt', tag: 'Design system', text: 'Các khối giao diện được tách lớp hợp lý, thuận tiện chỉnh màu, nội dung và branding.' },
         { icon: Smartphone, title: 'Responsive-ready', stat: 'Mobile first', tag: 'Đủ breakpoint', text: 'Tương thích tốt trên desktop, laptop, tablet và mobile với bố cục dễ kiểm soát.' },
@@ -482,7 +484,7 @@ const ModernProductDetailLayout = ({
         { name: 'Lê Hoàng Nam', role: 'Founder', text: 'Demo sát thực tế, responsive ổn và phù hợp để triển khai MVP trong thời gian ngắn.' },
         { name: 'Phạm Gia Bảo', role: 'Frontend Developer', text: 'Component sạch, bố cục dễ đọc, phần gallery và tài liệu giúp bàn giao thuận tiện hơn.' },
         { name: 'Đỗ Minh Anh', role: 'UI Designer', text: 'Thiết kế có hệ thống, màu sắc dễ thay đổi và dùng tốt cho nhiều nhóm giao diện website.' },
-        { name: 'Hoàng Khánh Linh', role: 'Agency Owner', text: 'Khách duyệt nhanh hơn vì preview rõ ràng, các section đủ để trình bày sản phẩm chuyên nghiệp.' },
+        { name: 'Hoàng Khánh Linh', role: 'Agency Owner', text: 'Khách duyệt nhanh hơn vì preview rõ ràng, các section đủ để trình bày mẫu demo chuyên nghiệp.' },
     ];
 
     const goToTab = (id: string) => {
@@ -530,7 +532,7 @@ const ModernProductDetailLayout = ({
                 <section className="grid items-start gap-8 lg:grid-cols-[0.84fr_1.16fr] xl:gap-10">
                     <div>
                         <span className="inline-flex rounded-full border border-orange-100 bg-orange-50 px-4 py-2 text-xs font-bold uppercase tracking-wide text-orange-700">
-                            Bán chạy
+                            Mẫu được quan tâm
                         </span>
                         <h1 className="mt-5 max-w-2xl text-3xl font-extrabold leading-[1.2] tracking-normal text-slate-950 md:text-4xl xl:text-[44px]">
                             {product.name}
@@ -545,13 +547,13 @@ const ModernProductDetailLayout = ({
                             </div>
                             <span className="h-4 w-px bg-slate-200" />
                             <span className="inline-flex items-center gap-1.5">
-                                <ShoppingCart size={16} /> {soldCount} {isCatalogMode ? 'lượt quan tâm' : 'lượt bán'}
+                                <Eye size={16} /> {soldCount} lượt quan tâm
                             </span>
                         </div>
                         <div className="mt-6 flex items-end gap-3">
-                            <span className="text-4xl font-extrabold text-orange-600 md:text-5xl">{formatPrice(product.price)}</span>
-                            {originalPrice && <span className="mb-1 text-xl font-semibold text-slate-400 line-through">{formatPrice(originalPrice)}</span>}
-                            {discountPercent > 0 && <span className="mb-2 rounded-full bg-rose-100 px-3 py-1 text-sm font-bold text-rose-600">-{discountPercent}%</span>}
+                            <span className="text-4xl font-extrabold text-orange-600 md:text-5xl">{displayPrice}</span>
+                            {!isCatalogMode && originalPrice && <span className="mb-1 text-xl font-semibold text-slate-400 line-through">{formatPrice(originalPrice)}</span>}
+                            {!isCatalogMode && discountPercent > 0 && <span className="mb-2 rounded-full bg-rose-100 px-3 py-1 text-sm font-bold text-rose-600">-{discountPercent}%</span>}
                         </div>
                         <p className="mt-5 max-w-xl text-base font-medium leading-8 text-slate-600">
                             {shortDescription}
@@ -579,7 +581,7 @@ const ModernProductDetailLayout = ({
                         </div>
                         <div className={`mt-7 grid gap-3 sm:flex sm:flex-wrap ${demoUrl ? 'grid-cols-2' : 'grid-cols-1'}`}>
                             <button onClick={handleAddToCart} className="inline-flex min-w-0 items-center justify-center gap-2 rounded-xl bg-orange-600 px-3 py-3 text-xs font-bold text-white shadow-xl shadow-orange-200 transition hover:bg-orange-700 sm:px-7 sm:py-4 sm:text-sm">
-                                <ShoppingCart size={18} /> {isCatalogMode ? 'Nhận tư vấn' : 'Thêm vào giỏ'}
+                                {isCatalogMode ? <MessageCircle size={18} /> : <ShoppingCart size={18} />} {isCatalogMode ? 'Nhận tư vấn' : 'Thêm vào danh sách'}
                             </button>
                             {demoUrl && (
                                 <button onClick={() => setShowDemoModal(true)} className="inline-flex min-w-0 items-center justify-center gap-2 rounded-xl border border-orange-200 bg-white px-3 py-3 text-xs font-bold text-orange-700 transition hover:bg-orange-50 sm:px-7 sm:py-4 sm:text-sm">
@@ -626,7 +628,7 @@ const ModernProductDetailLayout = ({
                         <div className="mt-4 grid grid-cols-3 gap-2 md:mt-5 md:gap-3">
                             {[
                                 { icon: Eye, title: 'Preview rõ ràng', desc: 'Xem trước từng màn hình' },
-                                { icon: isCatalogMode ? Eye : Download, title: isCatalogMode ? 'Xem demo rõ ràng' : 'Tải file nhanh', desc: isCatalogMode ? 'Đánh giá trước khi tư vấn' : 'Nhận ngay sau thanh toán' },
+                                { icon: Eye, title: 'Xem demo rõ ràng', desc: 'Đánh giá trước khi tư vấn' },
                                 { icon: MessageCircle, title: 'Hỗ trợ triển khai', desc: 'Tư vấn chỉnh sửa cơ bản' },
                             ].map((item) => (
                                 <div key={item.title} className="flex min-w-0 flex-col items-center gap-1.5 rounded-2xl border border-orange-100 bg-white/80 p-2 text-center shadow-sm backdrop-blur md:flex-row md:gap-3 md:p-3 md:text-left">
@@ -689,13 +691,13 @@ const ModernProductDetailLayout = ({
                 </div>
 
                 <section id="description" className="mt-8 scroll-mt-24">
-                    <h2 className="mb-5 text-xl font-bold text-slate-950">1. Mô tả sản phẩm</h2>
+                    <h2 className="mb-5 text-xl font-bold text-slate-950">1. Mô tả mẫu demo</h2>
                     <div className="mb-6 rounded-2xl border border-orange-100 bg-white/95 p-4 shadow-sm md:p-6">
 	                        <div className={`relative max-w-none text-sm font-medium leading-7 text-slate-600 md:text-base md:leading-8 ${showFullDescription ? '' : 'max-h-[340px] overflow-hidden md:max-h-none'}`}>
 	                            <SafeHTML
 	                                html={product.description || ''}
 	                                className="product-rich-content"
-	                                fallback="<p>Sản phẩm được thiết kế để giúp bạn triển khai website nhanh hơn, đẹp hơn và dễ tùy biến theo từng nhu cầu thực tế.</p>"
+	                                fallback="<p>Mẫu demo được thiết kế để giúp bạn hình dung website nhanh hơn, đẹp hơn và dễ tùy biến theo từng nhu cầu thực tế.</p>"
 	                            />
 	                            {!showFullDescription && (
 	                                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white via-white/90 to-transparent md:hidden" />
@@ -717,7 +719,7 @@ const ModernProductDetailLayout = ({
 		                            </div>
 	                        )}
                     </div>
-                    <h3 id="features" className="mb-5 scroll-mt-24 text-xl font-bold text-slate-950">Tổng quan sản phẩm</h3>
+                    <h3 id="features" className="mb-5 scroll-mt-24 text-xl font-bold text-slate-950">Tổng quan mẫu demo</h3>
                     <div className="mb-5 grid gap-2 sm:grid-cols-2">
                         {featureList.map((feature: string, index: number) => (
                             <div key={`${feature}-${index}`} className="flex items-start gap-2 rounded-xl border border-orange-100 bg-orange-50/60 px-3 py-2.5 text-sm font-semibold text-slate-700">
@@ -771,7 +773,7 @@ const ModernProductDetailLayout = ({
 
 	                <div className="mt-6 grid gap-6 md:mt-8 lg:grid-cols-[0.95fr_1.05fr]">
 	                    <section id="package" className="scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:p-6">
-	                        <h2 className="mb-3 text-lg font-bold text-slate-950 md:mb-5 md:text-xl">3. Bộ sản phẩm bao gồm</h2>
+	                        <h2 className="mb-3 text-lg font-bold text-slate-950 md:mb-5 md:text-xl">3. Bộ tài nguyên bao gồm</h2>
 	                        <div className="grid gap-4 md:grid-cols-[0.9fr_1fr] md:gap-5">
 	                            <div className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-orange-50 md:aspect-square">
 	                                {product.image && <Image src={product.image} alt="" fill className="object-cover" />}
@@ -828,8 +830,8 @@ const ModernProductDetailLayout = ({
                                         ['Responsive Ready', 'âœ“', 'âœ“', 'âœ“'],
                                         ['Hỗ trợ', 'Email', 'Ưu tiên', '24/7'],
                                         ['Cập nhật miễn phí', '6 tháng', 'Trọn đời', 'Trọn đời'],
-                                        ['Giấy phép', '1 dự án', '1 dự án thương mại', 'Không giới hạn'],
-                                        ['Giá', formatPrice(Math.max(product.price * 0.65, 0)), formatPrice(product.price), formatPrice(product.price * 2.6)],
+                                        ['Quyền truy cập', 'Demo tham khảo', 'Tư vấn triển khai', 'Theo nhu cầu'],
+                                        ['Chi phí', isCatalogMode ? 'Liên hệ tư vấn' : formatPrice(Math.max(product.price * 0.65, 0)), isCatalogMode ? 'Liên hệ tư vấn' : formatPrice(product.price), isCatalogMode ? 'Theo dự án' : formatPrice(product.price * 2.6)],
                                     ].map((row) => (
                                         <tr key={row[0]} className="text-slate-700">
                                             {row.map((cell, index) => (
@@ -843,17 +845,17 @@ const ModernProductDetailLayout = ({
                     </section>
 
 	                    <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:p-6">
-	                        <h2 className="mb-3 text-lg font-bold text-slate-950 md:mb-5 md:text-xl">6. Giấy phép sử dụng</h2>
+		                        <h2 className="mb-3 text-lg font-bold text-slate-950 md:mb-5 md:text-xl">6. Quyền truy cập mẫu demo</h2>
 	                        <div className="mb-4 flex h-16 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-50 to-sky-50 text-orange-600 md:mb-5 md:h-28">
 	                            <ShieldCheck size={42} className="md:h-[70px] md:w-[70px]" />
 	                        </div>
 	                        <div className="space-y-2 md:space-y-3">
-	                            {['Sử dụng cho 1 dự án cuối cùng', 'Không giới hạn người dùng nội bộ', 'Không được bán lại hoặc phân phối lại', 'Cập nhật miễn phí trọn đời', 'Hỗ trợ kỹ thuật ưu tiên'].map((item) => (
+		                            {['Truy cập mẫu demo để tham khảo', 'Tư vấn triển khai theo nhu cầu', 'Không phân phối lại tài nguyên gốc', 'Cập nhật theo phạm vi từng mẫu', 'Hỗ trợ kỹ thuật theo nhu cầu'].map((item) => (
 	                                <div key={item} className="flex items-center gap-2.5 text-xs font-semibold leading-5 text-slate-700 md:gap-3 md:text-sm"><Check size={16} className="shrink-0 text-orange-600 md:h-[18px] md:w-[18px]" /> {item}</div>
 	                            ))}
 	                        </div>
 	                        <div className="mt-4 rounded-xl border border-orange-100 bg-orange-50 p-3 text-xs leading-5 text-slate-600 md:mt-6 md:p-4 md:text-sm md:leading-6">
-                            <b className="text-orange-700">Lưu ý quan trọng:</b> Giấy phép không thể chuyển nhượng và áp dụng cho dự án của bạn.
+	                            <b className="text-orange-700">Lưu ý quan trọng:</b> Quyền truy cập mẫu demo dùng để tham khảo và tư vấn triển khai theo nhu cầu dự án.
                         </div>
                     </section>
                 </div>
@@ -893,18 +895,18 @@ const ModernProductDetailLayout = ({
                             <div className="border-b border-orange-50 bg-gradient-to-r from-white to-orange-50/80 p-3">
                                 <div className="flex items-start gap-3">
                                     <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-950 text-white shadow-lg shadow-slate-200">
-                                        <ShoppingBag size={19} strokeWidth={2.4} />
+                                        {isCatalogMode ? <MessageCircle size={19} strokeWidth={2.4} /> : <ShoppingBag size={19} strokeWidth={2.4} />}
                                         <span className="absolute -right-1 -top-1 h-3 w-3 rounded-full border-2 border-white bg-orange-500" />
                                     </div>
                                     <div className="min-w-0 flex-1">
-                                        <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-orange-600">{isCatalogMode ? 'Tư vấn nhanh' : 'Mua nhanh'}</p>
+                                        <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-orange-600">Tư vấn nhanh</p>
                                         <p className="truncate text-sm font-bold leading-5 text-slate-950">{product.name}</p>
                                     </div>
                                     <button
                                         type="button"
                                         onClick={() => setMobileQuickBuyOpen(false)}
                                         className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-400 transition active:scale-95 hover:bg-orange-50 hover:text-orange-600"
-                                        aria-label={isCatalogMode ? 'Thu gọn tư vấn nhanh' : 'Thu gọn mua nhanh'}
+                                        aria-label="Thu gọn tư vấn nhanh"
                                     >
                                         <ChevronRight size={18} />
                                     </button>
@@ -914,15 +916,15 @@ const ModernProductDetailLayout = ({
                                 <div className="flex items-end justify-between gap-3">
                                     <div className="min-w-0">
                                         <p className="text-xs font-semibold text-slate-500">{isCatalogMode ? 'Giá tham khảo' : 'Giá hiện tại'}</p>
-                                        <p className="truncate text-2xl font-extrabold leading-none text-orange-600">{formatPrice(product.price)}</p>
+	                                        <p className="truncate text-2xl font-extrabold leading-none text-orange-600">{displayPrice}</p>
                                     </div>
-                                    {discountPercent > 0 && (
+	                                    {!isCatalogMode && discountPercent > 0 && (
                                         <span className="shrink-0 rounded-full bg-rose-50 px-2.5 py-1 text-xs font-bold text-rose-600">-{discountPercent}%</span>
                                     )}
                                 </div>
                                 <div className="mt-3 grid grid-cols-[1fr_auto] gap-2">
                                     <button onClick={handleAddToCart} className="flex min-w-0 items-center justify-center gap-2 rounded-xl bg-orange-600 px-3 py-3 text-sm font-bold text-white shadow-lg shadow-orange-100 transition active:scale-[0.98]">
-                                        <ShoppingCart size={18} /> {isCatalogMode ? 'Nhận tư vấn' : 'Thêm vào giỏ'}
+	                                        {isCatalogMode ? <MessageCircle size={18} /> : <ShoppingCart size={18} />} {isCatalogMode ? 'Nhận tư vấn' : 'Thêm vào danh sách'}
                                     </button>
                                     {demoUrl && (
                                         <button onClick={() => setShowDemoModal(true)} className="flex h-11 w-11 items-center justify-center rounded-xl border border-orange-100 bg-white text-orange-700 transition active:scale-[0.98]" aria-label="Xem demo">
@@ -937,29 +939,29 @@ const ModernProductDetailLayout = ({
                             type="button"
                             onClick={() => setMobileQuickBuyOpen(true)}
                             className="group flex h-16 w-12 flex-col items-center justify-center gap-1 rounded-l-2xl border border-r-0 border-orange-100 bg-slate-950 text-white shadow-[0_12px_32px_rgba(15,23,42,0.24)] transition active:scale-95"
-                            aria-label={isCatalogMode ? 'Mở tư vấn nhanh' : 'Mở mua nhanh'}
+                            aria-label="Mở tư vấn nhanh"
                             aria-expanded={mobileQuickBuyOpen}
                         >
-                            <ShoppingCart size={19} strokeWidth={2.4} />
+	                            {isCatalogMode ? <MessageCircle size={19} strokeWidth={2.4} /> : <ShoppingCart size={19} strokeWidth={2.4} />}
                             <ChevronRight size={15} className="rotate-180 text-orange-300 transition group-active:-translate-x-0.5" />
                         </button>
                     )}
                 </div>
 
-                <div className={`fixed left-1/2 hidden -translate-x-1/2 xl:block ${isFooterVisible ? 'bottom-5 z-[25]' : 'bottom-7 z-[35]'}`}>
+                {!isFooterVisible && <div className="fixed bottom-7 left-1/2 z-[35] hidden -translate-x-1/2 xl:block">
                     {shouldCompactDesktopQuickBuy ? (
                         <button
                             type="button"
                             onClick={() => setQuickBuyCollapsed(false)}
                             className="group flex items-center gap-3 rounded-2xl border border-orange-100 bg-white/95 px-4 py-3 text-slate-950 shadow-[0_18px_45px_rgba(15,23,42,0.14)] backdrop-blur-xl transition hover:-translate-y-0.5 hover:border-orange-200 hover:shadow-[0_22px_55px_rgba(249,115,22,0.18)]"
-                            aria-label={isCatalogMode ? 'Mở tư vấn nhanh' : (isFooterVisible ? 'Mua nhanh đã thu gọn khi xem footer' : 'Mở mua nhanh')}
+                            aria-label="Mở tư vấn nhanh"
                         >
                             <span className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-orange-600 text-white shadow-lg shadow-orange-200 transition group-hover:bg-slate-950">
                                 {isCatalogMode ? <MessageCircle size={20} strokeWidth={2.4} /> : <ShoppingBag size={20} strokeWidth={2.4} />}
                                 <span className="absolute -right-1 -top-1 h-3.5 w-3.5 rounded-full border-2 border-white bg-emerald-400" />
                             </span>
                             <span className="min-w-0 text-left">
-                                <span className="block text-[10px] font-black uppercase tracking-[0.16em] text-orange-600">{isCatalogMode ? 'Tư vấn nhanh' : 'Mua nhanh'}</span>
+                                <span className="block text-[10px] font-black uppercase tracking-[0.16em] text-orange-600">Tư vấn nhanh</span>
                                 <span className="block max-w-[220px] truncate text-sm font-extrabold text-slate-950">{product.name}</span>
                             </span>
                             <ChevronRight size={18} className="text-slate-400 transition group-hover:translate-x-0.5 group-hover:text-orange-600" />
@@ -974,14 +976,14 @@ const ModernProductDetailLayout = ({
                                     </div>
                                     <div className="min-w-0">
                                         <div className="flex items-center gap-2">
-                                            <p className="text-[11px] font-black uppercase tracking-[0.16em] text-orange-600">{isCatalogMode ? 'Tư vấn nhanh' : 'Mua nhanh'}</p>
-                                            {discountPercent > 0 && (
+                                            <p className="text-[11px] font-black uppercase tracking-[0.16em] text-orange-600">Tư vấn nhanh</p>
+	                                            {!isCatalogMode && discountPercent > 0 && (
                                                 <span className="rounded-full bg-rose-50 px-2 py-0.5 text-[11px] font-black text-rose-600">-{discountPercent}%</span>
                                             )}
                                         </div>
                                         <p className="mt-0.5 truncate text-base font-extrabold leading-5 text-slate-950">{product.name}</p>
                                         <p className="mt-1 line-clamp-1 text-xs font-semibold text-slate-500">
-                                            {isCatalogMode ? 'Gửi nhu cầu để nhận tư vấn mẫu phù hợp.' : 'Thêm nhanh sản phẩm vào giỏ hàng.'}
+                                            Gửi nhu cầu để nhận tư vấn mẫu phù hợp.
                                         </p>
                                     </div>
                                 </div>
@@ -989,12 +991,12 @@ const ModernProductDetailLayout = ({
                                 <div className="flex shrink-0 items-center gap-2">
                                     <div className="mr-1 text-right">
                                         <p className="text-[11px] font-bold text-slate-500">{isCatalogMode ? 'Giá tham khảo' : 'Giá hiện tại'}</p>
-                                        <p className="text-xl font-black leading-none text-orange-600">{formatPrice(product.price)}</p>
+	                                        <p className="text-xl font-black leading-none text-orange-600">{displayPrice}</p>
                                     </div>
 
                                     <button onClick={handleAddToCart} className="flex h-12 items-center justify-center gap-2 rounded-2xl bg-orange-600 px-5 text-sm font-extrabold text-white shadow-lg shadow-orange-100 transition hover:-translate-y-0.5 hover:bg-orange-700 active:scale-[0.98]">
                                         {isCatalogMode ? <MessageCircle size={18} strokeWidth={2.4} /> : <ShoppingBag size={18} strokeWidth={2.4} />}
-                                        {isCatalogMode ? 'Nhận tư vấn' : 'Thêm vào giỏ'}
+                                        {isCatalogMode ? 'Nhận tư vấn' : 'Thêm vào danh sách'}
                                     </button>
                                     {demoUrl && (
                                         <button onClick={() => setShowDemoModal(true)} className="flex h-12 w-12 items-center justify-center rounded-2xl border border-orange-100 bg-white text-orange-700 transition hover:-translate-y-0.5 hover:bg-orange-50" aria-label="Xem demo">
@@ -1005,7 +1007,7 @@ const ModernProductDetailLayout = ({
                                         type="button"
                                         onClick={() => setQuickBuyCollapsed(true)}
                                         className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-400 transition hover:-translate-y-0.5 hover:border-orange-100 hover:bg-orange-50 hover:text-orange-600"
-                                        aria-label={isCatalogMode ? 'Thu gọn tư vấn nhanh' : 'Thu gọn mua nhanh'}
+                                        aria-label="Thu gọn tư vấn nhanh"
                                     >
                                         <ChevronDown size={19} />
                                     </button>
@@ -1013,7 +1015,7 @@ const ModernProductDetailLayout = ({
                             </div>
                         </div>
                     )}
-                </div>
+                </div>}
 
                 <ImageLightbox
                     isOpen={showLightbox}

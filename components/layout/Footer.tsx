@@ -541,14 +541,14 @@ const Footer = () => {
               <div className="group relative h-14 w-[230px]">
                 <img
                   src="/logo_webgiare_footer.webp"
-                  alt="Shop Web rẻ"
+                  alt="Web Giá Rẻ - Portfolio"
                   className="h-full w-full object-contain object-left transition-transform duration-300 group-hover:scale-[1.02]"
                 />
               </div>
 
               <p className="hidden lg:block text-sm leading-relaxed text-slate-400">
-                Shop Web rẻ là kho giao diện website, template, landing page và UI kit
-                chất lượng cao dành cho cá nhân, doanh nghiệp và agency tại Việt Nam.
+                Web Giá Rẻ - Portfolio là thư viện giao diện website, template, landing page và UI kit
+                dạng portfolio/demo dành cho cá nhân, doanh nghiệp và agency tại Việt Nam.
               </p>
 
               <div className="grid grid-cols-2 lg:grid-cols-1 gap-x-4 gap-y-2 text-sm text-slate-400">
@@ -597,11 +597,11 @@ const Footer = () => {
                 titleGradient="from-orange-400 to-red-400"
               >
                 <FooterLink href="/about">Về Chúng Tôi</FooterLink>
-                <FooterLink href="/products">Sản Phẩm Số</FooterLink>
+                <FooterLink href="/products">Mẫu Demo</FooterLink>
                 <FooterLink href="/blog">Blog</FooterLink>
                 <FooterLink href="/community">Cộng Đồng</FooterLink>
                 <AffiliateLink />
-                <FooterLink href="/tracking">Tra Cứu Đơn Hàng</FooterLink>
+                <FooterLink href="/tracking">Tra Cứu Yêu Cầu</FooterLink>
                 <FooterLink href="/policy/terms">
                   Chính Sách & Điều Khoản
                 </FooterLink>
@@ -612,7 +612,7 @@ const Footer = () => {
 
               {/* ── Danh Mục — logo thật ── */}
               <AccordionSection
-                title="Danh Mục Sản Phẩm"
+                title="Danh Mục Demo"
                 titleGradient="from-red-400 to-amber-400"
               >
                 {CATEGORY_ITEMS.map((cat) => (
@@ -653,8 +653,8 @@ const Footer = () => {
                   </h4>
                 </div>
                 <p className="text-xs text-slate-400 mb-3 leading-relaxed">
-                  Nhận thông báo về sản phẩm mới, ưu đãi đặc biệt và tài nguyên
-                  miễn phí.
+                  Nhận thông báo về mẫu demo mới, tài nguyên hữu ích và gợi ý
+                  triển khai.
                 </p>
                 <NewsletterForm />
               </div>
@@ -669,7 +669,7 @@ const Footer = () => {
               >
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="text-xs lg:text-sm font-bold text-orange-400">
-                    Phương Thức Thanh Toán
+                    Kênh Tư Vấn & Bảo Mật
                   </h4>
                   <div className="flex items-center gap-1 text-[10px] text-slate-500">
                     <Shield size={9} />
@@ -721,7 +721,7 @@ const Footer = () => {
           <div className="border-t border-slate-800/50 pt-5 mt-2 lg:mt-0">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-slate-500">
               <p className="flex flex-wrap items-center justify-center sm:justify-start gap-x-2 gap-y-0.5">
-                <span>&copy; {new Date().getFullYear()} Shop Web rẻ.</span>
+                <span>&copy; {new Date().getFullYear()} Web Giá Rẻ - Portfolio.</span>
                 <span className="opacity-40">•</span>
                 <span className="flex items-center gap-1">
                   Made with{" "}
@@ -738,8 +738,8 @@ const Footer = () => {
                 {[
                   { href: "/policy/privacy", label: "Bảo mật" },
                   { href: "/policy/terms", label: "Điều khoản" },
-                  { href: "/policy/refund", label: "Hoàn tiền" },
-                  { href: "/policy/license", label: "Giấy phép" },
+                  { href: "/policy/refund", label: "Xử lý yêu cầu" },
+                  { href: "/policy/license", label: "Quyen truy cap" },
                   { href: "/contact", label: "Liên hệ" },
                   { href: "/sitemap.xml", label: "Sitemap" },
                 ].map((link) => (

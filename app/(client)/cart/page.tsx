@@ -2,15 +2,15 @@ import { Metadata } from 'next';
 import CartPage from './CartContent';
 
 export const metadata: Metadata = {
-    title: 'Giỏ hàng',
-    description: 'Giỏ hàng của bạn - Xem và quản lý sản phẩm trước khi thanh toán',
+    title: 'Danh sách mẫu quan tâm',
+    description: 'Xem và quản lý các mẫu giao diện bạn đang quan tâm trong chế độ portfolio/demo',
     robots: {
         index: false,
         follow: false,
     },
     openGraph: {
-        title: 'Giỏ hàng | Shop Web rẻ',
-        description: 'Giỏ hàng của bạn - Xem và quản lý sản phẩm trước khi thanh toán',
+        title: 'Danh sách mẫu quan tâm | Web Giá Rẻ - Portfolio',
+        description: 'Xem và quản lý các mẫu giao diện bạn đang quan tâm trong chế độ portfolio/demo',
     }
 };
 

@@ -39,7 +39,7 @@ export default function ReferralProgram({
     };
 
     const handleShare = (platform: string) => {
-        const message = `🎁 Nhận voucher ${(reward / 1000).toFixed(0)}K khi mua hàng trên Shop Web rẻ! Dùng mã: ${referralCode} hoặc link: ${referralLink}`;
+        const message = `🎁 Nhận voucher ${(reward / 1000).toFixed(0)}K khi gửi yêu cầu trên Web Giá Rẻ - Portfolio! Dùng mã: ${referralCode} hoặc link: ${referralLink}`;
         let shareUrl = '';
 
         switch (platform) {
@@ -53,7 +53,7 @@ export default function ReferralProgram({
                 shareUrl = `https://www.facebook.com/dialog/send?link=${encodeURIComponent(referralLink)}&app_id=123456789`;
                 break;
             case 'email':
-                shareUrl = `mailto:?subject=Tặng bạn voucher ${(reward / 1000).toFixed(0)}K từ Shop Web rẻ&body=${encodeURIComponent(message)}`;
+                shareUrl = `mailto:?subject=Tặng bạn voucher ${(reward / 1000).toFixed(0)}K từ Web Giá Rẻ - Portfolio&body=${encodeURIComponent(message)}`;
                 break;
         }
         if (shareUrl) window.open(shareUrl, '_blank', 'width=600,height=400');
@@ -66,7 +66,7 @@ export default function ReferralProgram({
                 <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-8 -mt-8" />
                 <Gift className="mb-3" size={28} />
                 <h3 className="font-black text-lg mb-1">Giới thiệu bạn bè</h3>
-                <p className="text-purple-100 text-sm mb-4">Nhận {(reward / 1000).toFixed(0)}K cho mỗi đơn hàng thành công</p>
+                <p className="text-purple-100 text-sm mb-4">Nhận {(reward / 1000).toFixed(0)}K cho mỗi yêu cầu thành công</p>
                 <button
                     onClick={() => handleCopy(referralCode, 'mã giới thiệu')}
                     className="w-full bg-white text-purple-600 font-bold py-2.5 rounded-xl hover:bg-purple-50 transition-colors flex items-center justify-center gap-2"
@@ -129,7 +129,7 @@ export default function ReferralProgram({
                         Giới thiệu bạn bè, nhận <span className="text-yellow-300">{(reward / 1000).toFixed(0)}K</span> mỗi đơn
                     </h2>
                     <p className="text-lg text-purple-100 mb-6">
-                        Chia sẻ mã giới thiệu của bạn. Khi bạn bè mua hàng, cả hai đều nhận voucher!
+                        Chia sẻ mã giới thiệu của bạn. Khi bạn bè gửi yêu cầu, cả hai đều nhận voucher!
                     </p>
 
                     {/* Referral Code Box */}
@@ -193,7 +193,7 @@ export default function ReferralProgram({
                 <div className="grid md:grid-cols-3 gap-6">
                     {[
                         { step: 1, title: 'Chia sẻ mã', desc: 'Gửi mã giới thiệu hoặc link cho bạn bè' },
-                        { step: 2, title: 'Bạn bè mua hàng', desc: 'Họ dùng mã để được giảm giá khi mua' },
+                        { step: 2, title: 'Bạn bè gửi yêu cầu', desc: 'Họ dùng mã để được ghi nhận ưu đãi tư vấn' },
                         { step: 3, title: 'Nhận thưởng', desc: `Bạn nhận ${(reward / 1000).toFixed(0)}K khi đơn hoàn tất` },
                     ].map(item => (
                         <div key={item.step} className="flex gap-4">

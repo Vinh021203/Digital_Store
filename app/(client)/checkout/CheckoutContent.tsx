@@ -22,14 +22,14 @@ import CatalogModeNotice from '@/components/common/CatalogModeNotice';
 // Step configuration - 3 steps
 const STEPS = [
     { id: 1, title: 'Thông tin', icon: User, shortTitle: 'Info' },
-    { id: 2, title: 'Thanh toán', icon: CreditCard, shortTitle: 'Pay' },
+    { id: 2, title: 'Xác nhận tư vấn', icon: CreditCard, shortTitle: 'Pay' },
     { id: 3, title: 'Xác nhận', icon: CheckCircle2, shortTitle: 'Done' },
 ];
 
 // Payment methods
 const PAYMENT_METHODS = [
     { id: 'sepay', name: 'VietQR tự động', brand: 'VietQR', icon: QrCode, description: 'Quét mã bằng app ngân hàng, hệ thống tự xác nhận.', color: 'blue', badge: 'Khuyên dùng' },
-    { id: 'momo', name: 'Ví MoMo', brand: 'MoMo', icon: Wallet, description: 'Thanh toán qua ví điện tử, đang chuẩn bị tích hợp.', color: 'rose', badge: 'Sắp có' },
+    { id: 'momo', name: 'Ví MoMo', brand: 'MoMo', icon: Wallet, description: 'Xác nhận tư vấn qua ví điện tử, đang chuẩn bị tích hợp.', color: 'rose', badge: 'Sắp có' },
     { id: 'banking', name: 'Chuyển khoản thủ công', brand: 'BANK', icon: Building2, description: 'Chuyển khoản theo thông tin tài khoản và chờ đối soát.', color: 'slate', badge: null },
 ];
 
@@ -144,7 +144,7 @@ function CheckoutPageContent() {
                     clearInterval(pollingRef.current);
                     pollingRef.current = null;
                 }
-                addToast('Thanh toán thành công!', 'success');
+                addToast('Xác nhận tư vấn thành công!', 'success');
                 // Navigate to success after brief delay
                 setTimeout(() => {
                     clearCart();
@@ -183,7 +183,7 @@ function CheckoutPageContent() {
     const applyCoupon = async () => {
         const code = couponCode.trim().toUpperCase();
         if (!code) {
-            addToast('Vui lòng nhập mã giảm giá', 'warning');
+            addToast('Vui lòng nhập mã ưu đãi tham khảo', 'warning');
             return;
         }
 
@@ -192,7 +192,7 @@ function CheckoutPageContent() {
             const result = await validateCouponForUser(code, totalPrice, user?.id, productIds);
             if (!result.valid || !result.couponId) {
                 setAppliedCoupon(null);
-                addToast(result.error || 'Mã giảm giá không hợp lệ', 'error');
+                addToast(result.error || 'Mã ưu đãi tham khảo không hợp lệ', 'error');
                 return;
             }
 
@@ -201,7 +201,7 @@ function CheckoutPageContent() {
             addToast(`Đã áp dụng mã ${code}`, 'success');
         } catch (error) {
             console.error('Apply coupon error:', error);
-            addToast('Không thể kiểm tra mã giảm giá', 'error');
+            addToast('Không thể kiểm tra mã ưu đãi tham khảo', 'error');
         } finally {
             setApplyingCoupon(false);
         }
@@ -210,18 +210,18 @@ function CheckoutPageContent() {
     const removeCoupon = () => {
         setAppliedCoupon(null);
         setCouponCode('');
-        addToast('Đã bỏ mã giảm giá', 'info');
+        addToast('Đã bỏ mã ưu đãi tham khảo', 'info');
     };
 
     // Process payment (create order and show QR if sepay)
     const handlePayment = async () => {
         if (!user) {
-            addToast('Vui lòng đăng nhập để thanh toán', 'error');
+            addToast('Vui lòng đăng nhập để xác nhận tư vấn', 'error');
             router.push('/login?redirect=/checkout');
             return;
         }
         if (safeCart.length === 0) {
-            addToast('Giỏ hàng trống', 'error');
+            addToast('Danh sách quan tâm trống', 'error');
             return;
         }
 
@@ -279,12 +279,12 @@ function CheckoutPageContent() {
             } else {
                 // For other payment methods, redirect to success (simulate)
                 clearCart();
-                addToast('Đặt hàng thành công!', 'success');
+                addToast('Yêu cầu tư vấn đã được ghi nhận!', 'success');
                 router.push(`/order-success?orderId=${order.id}`);
             }
 
         } catch (error) {
-            console.error('Checkout error:', error);
+            console.error('Yêu cầu tư vấn error:', error);
             addToast('Có lỗi xảy ra, vui lòng thử lại', 'error');
         } finally {
             setLoading(false);
@@ -334,8 +334,8 @@ function CheckoutPageContent() {
     if (isCatalogMode) {
         return (
             <CatalogModeNotice
-                title="Checkout đang tạm dừng"
-                description="Shop Web rẻ đang ở chế độ Catalog/Tư vấn nên chưa nhận thanh toán trực tiếp. Hãy gửi nhu cầu, sản phẩm quan tâm và ngân sách để được tư vấn trước."
+                title="Yêu cầu tư vấn đang tạm dừng"
+                description="Web Giá Rẻ - Portfolio đang ở chế độ portfolio/demo tư vấn nên chưa nhận xác nhận trực tiếp. Hãy gửi nhu cầu, mẫu quan tâm và ngân sách để được tư vấn trước."
             />
         );
     }
@@ -352,10 +352,10 @@ function CheckoutPageContent() {
                     <div className="w-28 h-28 bg-white rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-blue-500/10 border border-white/50 rotate-3 hover:rotate-6 transition-transform">
                         <ShoppingBag size={56} className="text-blue-600" />
                     </div>
-                    <h1 className="text-3xl sm:text-4xl font-black text-slate-900 mb-4">Giỏ hàng trống</h1>
-                    <p className="text-slate-500 mb-8 text-lg">Thêm sản phẩm vào giỏ hàng để tiến hành thanh toán</p>
+                    <h1 className="text-3xl sm:text-4xl font-black text-slate-900 mb-4">Danh sách quan tâm trống</h1>
+                    <p className="text-slate-500 mb-8 text-lg">Thêm mẫu demo vào danh sách quan tâm để tiến hành xác nhận tư vấn</p>
                     <Link href="/products" className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-4 rounded-2xl font-bold hover:shadow-xl hover:shadow-blue-500/25 transition-all hover:-translate-y-1">
-                        <Package size={22} /> Khám phá sản phẩm
+                        <Package size={22} /> Khám phá mẫu demo
                     </Link>
                 </div>
             </div>
@@ -373,9 +373,9 @@ function CheckoutPageContent() {
                             <Home size={14} /> Home
                         </Link>
                         <ChevronRight size={14} className="text-slate-300" />
-                        <Link href="/cart" className="hover:text-blue-600 transition-colors">Giỏ hàng</Link>
+                        <Link href="/cart" className="hover:text-blue-600 transition-colors">Danh sách quan tâm</Link>
                         <ChevronRight size={14} className="text-slate-300" />
-                        <span className="text-slate-900 font-semibold">Thanh toán</span>
+                        <span className="text-slate-900 font-semibold">Xác nhận tư vấn</span>
                     </div>
 
                     {/* Step Indicator */}
@@ -437,7 +437,7 @@ function CheckoutPageContent() {
                                         </div>
                                         <div>
                                             <h2 className="text-xl sm:text-2xl font-black text-slate-900">Thông tin khách hàng</h2>
-                                            <p className="text-slate-500 text-sm mt-1">Điền thông tin để nhận sản phẩm</p>
+                                            <p className="text-slate-500 text-sm mt-1">Điền thông tin để nhận mẫu demo</p>
                                         </div>
                                     </div>
 
@@ -480,7 +480,7 @@ function CheckoutPageContent() {
 
                                         <div className="bg-blue-50 rounded-xl p-4 flex gap-3 text-blue-800 text-sm border border-blue-100">
                                             <ShieldCheck size={20} className="flex-shrink-0 mt-0.5" />
-                                            <p>Thông tin của bạn được bảo mật tuyệt đối. Giao diện website sẽ được gửi qua email sau khi thanh toán thành công.</p>
+                                            <p>Thông tin của bạn được bảo mật tuyệt đối. Giao diện website sẽ được gửi qua email sau khi xác nhận tư vấn thành công.</p>
                                         </div>
                                     </div>
 
@@ -508,8 +508,8 @@ function CheckoutPageContent() {
                                             <CreditCard size={24} />
                                         </div>
                                         <div>
-                                            <h2 className="text-xl sm:text-2xl font-black text-slate-900">Phương thức thanh toán</h2>
-                                            <p className="text-slate-500 text-sm mt-1">Chọn cách bạn muốn thanh toán</p>
+                                            <h2 className="text-xl sm:text-2xl font-black text-slate-900">Phương thức xác nhận tư vấn</h2>
+                                            <p className="text-slate-500 text-sm mt-1">Chọn cách bạn muốn xác nhận tư vấn</p>
                                         </div>
                                     </div>
 
@@ -602,7 +602,7 @@ function CheckoutPageContent() {
                                                 </>
                                             ) : (
                                                 <>
-                                                    Thanh toán {payableTotal.toLocaleString()}₫ <ArrowRight size={18} />
+                                                    Xác nhận tư vấn {payableTotal.toLocaleString()}₫ <ArrowRight size={18} />
                                                 </>
                                             )}
                                         </button>
@@ -618,8 +618,8 @@ function CheckoutPageContent() {
                                             <QrCode size={24} />
                                         </div>
                                         <div className="flex-1">
-                                            <h2 className="text-xl sm:text-2xl font-black text-slate-900">Quét mã QR để thanh toán</h2>
-                                            <p className="text-slate-500 text-sm mt-1">Mã đơn hàng: <span className="font-bold text-blue-600">DM{orderId}</span></p>
+                                            <h2 className="text-xl sm:text-2xl font-black text-slate-900">Quét mã QR để xác nhận tư vấn</h2>
+                                            <p className="text-slate-500 text-sm mt-1">Mã yêu cầu: <span className="font-bold text-blue-600">DM{orderId}</span></p>
                                         </div>
                                     </div>
 
@@ -628,7 +628,7 @@ function CheckoutPageContent() {
                                         <div className="mb-6 p-4 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl text-white flex items-center gap-3">
                                             <CheckCircle size={28} />
                                             <div>
-                                                <p className="font-bold text-lg">Thanh toán thành công!</p>
+                                                <p className="font-bold text-lg">Xác nhận tư vấn thành công!</p>
                                                 <p className="text-emerald-100 text-sm">Đang chuyển hướng đến trang xác nhận...</p>
                                             </div>
                                         </div>
@@ -735,7 +735,7 @@ function CheckoutPageContent() {
                                                             <div className="w-3 h-3 bg-emerald-400 rounded-full animate-ping absolute" />
                                                             <div className="w-3 h-3 bg-emerald-400 rounded-full relative" />
                                                         </div>
-                                                        <p className="text-sm text-slate-200">Đang chờ thanh toán... Hệ thống sẽ tự động xác nhận sau khi tiền vào.</p>
+                                                        <p className="text-sm text-slate-200">Đang chờ xác nhận tư vấn... Hệ thống sẽ tự động xác nhận sau khi tiền vào.</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -743,12 +743,12 @@ function CheckoutPageContent() {
                                             {/* Instructions */}
                                             <div className="mt-6 p-4 bg-slate-50 rounded-xl border border-slate-100">
                                                 <h4 className="font-bold text-slate-900 mb-3 flex items-center gap-2">
-                                                    <Smartphone size={18} /> Hướng dẫn thanh toán
+                                                    <Smartphone size={18} /> Hướng dẫn xác nhận tư vấn
                                                 </h4>
                                                 <ol className="space-y-2 text-sm text-slate-600">
                                                     <li className="flex gap-2"><span className="font-bold text-blue-600">1.</span> Mở ứng dụng ngân hàng có hỗ trợ VietQR</li>
                                                     <li className="flex gap-2"><span className="font-bold text-blue-600">2.</span> Chọn "Quét mã QR" và quét mã bên trên</li>
-                                                    <li className="flex gap-2"><span className="font-bold text-blue-600">3.</span> Kiểm tra thông tin và xác nhận thanh toán</li>
+                                                    <li className="flex gap-2"><span className="font-bold text-blue-600">3.</span> Kiểm tra thông tin và xác nhận xác nhận tư vấn</li>
                                                     <li className="flex gap-2"><span className="font-bold text-blue-600">4.</span> Chờ hệ thống tự động xác nhận (thường dưới 1 phút)</li>
                                                 </ol>
                                             </div>
@@ -771,7 +771,7 @@ function CheckoutPageContent() {
                                                 onClick={checkPaymentStatus}
                                                 className="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-6 py-3 rounded-xl font-bold transition-colors"
                                             >
-                                                <RefreshCw size={18} /> Kiểm tra thanh toán
+                                                <RefreshCw size={18} /> Kiểm tra xác nhận tư vấn
                                             </button>
                                         </div>
                                     )}
@@ -789,11 +789,11 @@ function CheckoutPageContent() {
                                     <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-600 text-white shadow-lg shadow-orange-200">
                                         <ReceiptText size={20} />
                                     </span>
-                                    Đơn hàng
+                                    Yêu cầu
                                 </span>
-                                <span className="text-sm font-medium bg-blue-100 text-blue-700 px-3 py-1 rounded-full">{safeCart.length} sản phẩm</span>
+                                <span className="text-sm font-medium bg-blue-100 text-blue-700 px-3 py-1 rounded-full">{safeCart.length} mẫu demo</span>
                                 </h2>
-                                <p className="mt-3 text-sm font-medium text-slate-500">Kiểm tra sản phẩm, áp mã ưu đãi và hoàn tất thanh toán.</p>
+                                <p className="mt-3 text-sm font-medium text-slate-500">Kiểm tra mẫu demo, áp mã ưu đãi và hoàn tất xác nhận tư vấn.</p>
                             </div>
 
                             <div className="p-5 sm:p-6">
@@ -825,7 +825,7 @@ function CheckoutPageContent() {
                                     <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-white text-orange-600 shadow-sm">
                                         <Tag size={16} />
                                     </span>
-                                    Mã giảm giá
+                                    Mã ưu đãi tham khảo
                                 </div>
 
                                 {appliedCoupon ? (
@@ -885,7 +885,7 @@ function CheckoutPageContent() {
                                     </div>
                                 )}
                                 <div className="pt-4 mt-2 border-t border-dashed border-slate-200 flex justify-between items-center">
-                                    <span className="font-black text-slate-900">Tổng thanh toán</span>
+                                    <span className="font-black text-slate-900">Tổng xác nhận tư vấn</span>
                                     <span className="font-black text-2xl text-blue-600">{payableTotal.toLocaleString()}₫</span>
                                 </div>
                             </div>
@@ -922,7 +922,7 @@ export default function CheckoutPage() {
             <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30 flex items-center justify-center">
                 <div className="text-center">
                     <Loader2 className="w-12 h-12 animate-spin text-blue-600 mx-auto mb-4" />
-                    <p className="text-slate-500 font-medium">Đang tải trang thanh toán...</p>
+                    <p className="text-slate-500 font-medium">Đang tải trang xác nhận tư vấn...</p>
                 </div>
             </div>
         }>

@@ -30,7 +30,7 @@ const MOCK_REVIEWS: Review[] = [
         user: 'Nguyễn Văn A',
         rating: 5,
         date: '2024-12-10',
-        comment: 'Sản phẩm rất chất lượng, code clean và dễ customize. Support rất nhanh và nhiệt tình. Highly recommended!',
+        comment: 'Mẫu demo rất chất lượng, code clean và dễ customize. Support rất nhanh và nhiệt tình. Highly recommended!',
         verified: true,
         helpful: 24,
         images: ['https://images.unsplash.com/photo-1551650975-87deedd944c3?w=200']
@@ -49,7 +49,7 @@ const MOCK_REVIEWS: Review[] = [
         user: 'Lê Văn C',
         rating: 5,
         date: '2024-12-05',
-        comment: 'Đáng đồng tiền bát gạo! Mua về dùng luôn không cần chỉnh sửa gì nhiều.',
+        comment: 'Đáng để tham khảo! Mẫu dùng nhanh, không cần chỉnh sửa gì nhiều.',
         verified: false,
         helpful: 12
     },
@@ -58,7 +58,7 @@ const MOCK_REVIEWS: Review[] = [
         user: 'Phạm Thị D',
         rating: 3,
         date: '2024-12-01',
-        comment: 'Sản phẩm ổn, documentation có thể chi tiết hơn. Nhưng support team rất helpful.',
+        comment: 'Mẫu demo ổn, documentation có thể chi tiết hơn. Nhưng support team rất helpful.',
         verified: true,
         helpful: 8
     },
@@ -230,7 +230,7 @@ export default function ProductReviews({ productId, reviews = MOCK_REVIEWS }: Pr
                             <textarea
                                 value={comment}
                                 onChange={(e) => setComment(e.target.value)}
-                                placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..."
+                                placeholder="Chia sẻ trải nghiệm của bạn về mẫu demo này..."
                                 className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none resize-none h-32"
                             />
                         </div>
@@ -295,7 +295,7 @@ export default function ProductReviews({ productId, reviews = MOCK_REVIEWS }: Pr
                                     <span className="font-bold text-slate-900">{review.user}</span>
                                     {review.verified && (
                                         <span className="flex items-center gap-1 text-xs font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full">
-                                            <CheckCircle size={12} /> Đã mua
+                                            <CheckCircle size={12} /> Đã xác minh
                                         </span>
                                     )}
                                     <span className="text-xs text-slate-400">{review.date}</span>

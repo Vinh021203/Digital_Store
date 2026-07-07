@@ -3,13 +3,13 @@ import { getSocialImageUrl } from './site-url';
 
 export const seoKeywords = {
   home: [
-    'shop web rẻ',
-    'giao diện website giá rẻ',
+    'Web Giá Rẻ - Portfolio',
+    'portfolio giao diện website',
+    'giao diện website chuyên nghiệp',
     'tham khảo giao diện website',
-    'kho giao diện website',
-    'template website giá rẻ',
-    'landing page giá rẻ',
-    'source code website',
+    'template website có demo',
+    'landing page chuyên nghiệp',
+    'dự án web mẫu',
     'mẫu website đẹp',
   ],
   products: [
@@ -20,7 +20,7 @@ export const seoKeywords = {
     'template nextjs',
     'dashboard template',
     'figma ui kit',
-    'source code landing page',
+    'dự án landing page',
   ],
   aiRecommendation: [
     'ai tư vấn giao diện website',
@@ -38,7 +38,7 @@ export const seoKeywords = {
     'hướng dẫn làm website',
   ],
   about: [
-    'giới thiệu Shop Web rẻ',
+    'giới thiệu Web Giá Rẻ - Portfolio',
     'Lương Thế Vinh',
     'giao diện website Việt Nam',
     'kho template Việt Nam',
@@ -49,7 +49,7 @@ export const seoKeywords = {
     'tư vấn template website',
     'hỗ trợ giao diện website',
     'dịch vụ chỉnh sửa landing page',
-    'Shop Web rẻ Hạ Long',
+    'Web Giá Rẻ - Portfolio Hạ Long',
   ],
   faq: [
     'câu hỏi chọn template website',
@@ -67,7 +67,7 @@ export const seoKeywords = {
   ],
   affiliate: [
     'affiliate template website',
-    'kiếm tiền bán giao diện website',
+    'giới thiệu giao diện website',
     'tiếp thị liên kết template',
     'hoa hồng giới thiệu website',
   ],
@@ -78,10 +78,10 @@ export const seoKeywords = {
     'hỏi đáp lập trình website',
   ],
   policy: [
-    'chính sách sản phẩm số',
+    'chính sách mẫu demo số',
     'điều khoản tư vấn template',
     'license template website',
-    'chính sách hoàn tiền sản phẩm số',
+    'chính sách xử lý yêu cầu mẫu demo số',
   ],
 };
 
@@ -108,7 +108,7 @@ export function buildProductSeoKeywords(product: ProductSeoKeywordInput) {
     ...(product.techStack || []),
     'tham khảo giao diện website',
     'template website',
-    'source code website',
+    'dự án web mẫu',
     'giao diện website có demo',
     'xem demo template website',
   ].filter(Boolean) as string[];
@@ -117,7 +117,7 @@ export function buildProductSeoKeywords(product: ProductSeoKeywordInput) {
   const intentKeywords: string[] = [];
 
   if (haystack.includes('landing')) {
-    intentKeywords.push('landing page bán hàng', 'template landing page', 'source code landing page');
+    intentKeywords.push('landing page giới thiệu/demo', 'template landing page', 'dự án landing page');
   }
 
   if (haystack.includes('dashboard') || haystack.includes('admin')) {
@@ -125,23 +125,23 @@ export function buildProductSeoKeywords(product: ProductSeoKeywordInput) {
   }
 
   if (haystack.includes('react')) {
-    intentKeywords.push('template React', 'source code React', 'giao diện React');
+    intentKeywords.push('template React', 'dự án React', 'giao diện React');
   }
 
   if (haystack.includes('next')) {
-    intentKeywords.push('template Next.js', 'source code Next.js', 'giao diện Next.js');
+    intentKeywords.push('template Next.js', 'dự án Next.js', 'giao diện Next.js');
   }
 
   if (haystack.includes('html') || haystack.includes('css') || haystack.includes('javascript')) {
-    intentKeywords.push('template HTML CSS JS', 'source code HTML CSS JS', 'mẫu website HTML');
+    intentKeywords.push('template HTML CSS JS', 'dự án HTML CSS JS', 'mẫu website HTML');
   }
 
   if (haystack.includes('figma')) {
     intentKeywords.push('Figma UI kit', 'template Figma', 'thiết kế UI Figma');
   }
 
-  if (haystack.includes('shop') || haystack.includes('ecommerce') || haystack.includes('bán hàng')) {
-    intentKeywords.push('giao diện website bán hàng', 'template ecommerce', 'website bán hàng mẫu');
+  if (haystack.includes('shop') || haystack.includes('ecommerce') || haystack.includes('giới thiệu/demo')) {
+    intentKeywords.push('giao diện website giới thiệu/demo', 'template ecommerce', 'website giới thiệu/demo mẫu');
   }
 
   return Array.from(new Set([...baseKeywords, ...intentKeywords]));

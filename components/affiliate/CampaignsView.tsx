@@ -115,7 +115,7 @@ export const CampaignsView = ({ user }: CampaignsViewProps) => {
             <div className="flex items-center justify-center py-20">
                 <div className="text-center">
                     <Loader2 className="w-10 h-10 animate-spin text-orange-500 mx-auto mb-3" />
-                    <p className="text-slate-500">Đang tải sản phẩm...</p>
+                    <p className="text-slate-500">Đang tải mẫu demo...</p>
                 </div>
             </div>
         );
@@ -135,8 +135,8 @@ export const CampaignsView = ({ user }: CampaignsViewProps) => {
                             <Zap size={18} className="text-amber-200" />
                             <span className="text-orange-100 text-sm font-medium">Chiến dịch hot</span>
                         </div>
-                        <h2 className="text-xl font-black">Tất cả sản phẩm ({allProducts.length})</h2>
-                        <p className="text-orange-100 text-sm mt-0.5">Chọn sản phẩm và copy link để kiếm hoa hồng</p>
+                        <h2 className="text-xl font-black">Tất cả mẫu demo ({allProducts.length})</h2>
+                        <p className="text-orange-100 text-sm mt-0.5">Chọn mẫu demo và copy link để kiếm hoa hồng</p>
                     </div>
                     <div className="flex items-center gap-3">
                         <div className="flex items-center gap-2 bg-white/20 backdrop-blur px-3 py-1.5 rounded-lg text-sm">
@@ -154,14 +154,14 @@ export const CampaignsView = ({ user }: CampaignsViewProps) => {
                         <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                         <input
                             type="text"
-                            placeholder="Tìm kiếm sản phẩm..."
+                            placeholder="Tìm kiếm mẫu demo..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg focus:border-orange-500 outline-none transition-colors"
                         />
                     </div>
                     <div className="flex items-center gap-2 text-sm text-slate-500">
-                        <span>Hiển thị {paginatedProducts.length} / {products.length} sản phẩm</span>
+                        <span>Hiển thị {paginatedProducts.length} / {products.length} mẫu demo</span>
                     </div>
                 </div>
             </div>
@@ -211,7 +211,7 @@ export const CampaignsView = ({ user }: CampaignsViewProps) => {
 
                                     <div className="flex items-center justify-between mb-3 py-2 px-3 bg-slate-50 rounded-lg text-sm">
                                         <div>
-                                            <p className="text-[10px] text-slate-400">Giá bán</p>
+                                            <p className="text-[10px] text-slate-400">Giá tham khảo</p>
                                             <p className="font-bold text-slate-900">{product.price.toLocaleString('vi-VN')}₫</p>
                                         </div>
                                         <div className="text-right">
@@ -247,7 +247,7 @@ export const CampaignsView = ({ user }: CampaignsViewProps) => {
             ) : (
                 <div className="text-center py-16 bg-white rounded-2xl border border-slate-100">
                     <Gift size={48} className="mx-auto text-slate-200 mb-4" />
-                    <h4 className="font-bold text-slate-900 mb-2">Không tìm thấy sản phẩm</h4>
+                    <h4 className="font-bold text-slate-900 mb-2">Không tìm thấy mẫu demo</h4>
                     <p className="text-slate-500 text-sm">Thử tìm kiếm với từ khóa khác</p>
                 </div>
             )}
@@ -257,7 +257,7 @@ export const CampaignsView = ({ user }: CampaignsViewProps) => {
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-xl border border-slate-200 p-4">
                     <p className="text-sm text-slate-500">
                         Trang <span className="font-bold text-slate-900">{currentPage}</span> / {totalPages}
-                        <span className="hidden sm:inline"> • {products.length} sản phẩm</span>
+                        <span className="hidden sm:inline"> • {products.length} mẫu demo</span>
                     </p>
 
                     <div className="flex items-center gap-1">

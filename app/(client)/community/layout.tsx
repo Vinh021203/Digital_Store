@@ -8,7 +8,7 @@ export const metadata: Metadata = {
         canonical: '/community',
     },
     openGraph: {
-        title: 'Cộng đồng Developer & Designer | Shop Web rẻ',
+        title: 'Cộng đồng Developer & Designer | Web Giá Rẻ - Portfolio',
         description: 'Nơi kết nối và chia sẻ kiến thức của cộng đồng developer & designer',
         url: '/community',
         images: ['/thumbnail.jpg'],
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'Cộng đồng Developer & Designer | Shop Web rẻ',
+        title: 'Cộng đồng Developer & Designer | Web Giá Rẻ - Portfolio',
         description: 'Nơi kết nối và chia sẻ kiến thức',
         images: ['/thumbnail.jpg'],
     },

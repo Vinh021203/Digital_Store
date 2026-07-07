@@ -215,7 +215,7 @@ export async function fetchUserDownloads(userId: string): Promise<UserDownload[]
             downloadsByProduct.set(license.product_id, {
                 id: -license.id,
                 product_id: license.product_id,
-                product_name: product?.name || 'Sản phẩm đã mua',
+                product_name: product?.name || 'Mẫu đã được cấp quyền',
                 product_image: product?.image || null,
                 license_type: license.type || 'Regular',
                 price: Number(product?.price || 0),
@@ -299,8 +299,8 @@ export async function createOrder(payload: OrderPayload): Promise<DbOrder | null
         action: 'Create',
         entity: 'order',
         entity_id: data.id.toString(),
-        entity_name: `Đơn hàng #${data.id}`,
-        details: `Tạo đơn hàng ${data.total.toLocaleString('vi-VN')}đ - ${payload.payment_method || 'momo'}`,
+        entity_name: `Yêu cầu #${data.id}`,
+        details: `Tạo yêu cầu ${data.total.toLocaleString('vi-VN')}đ - ${payload.payment_method || 'momo'}`,
         severity: 'success',
     });
 

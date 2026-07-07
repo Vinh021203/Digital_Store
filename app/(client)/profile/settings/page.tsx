@@ -405,9 +405,9 @@ export default function SettingsPage() {
 
           <div className="space-y-4">
             {[
-              { id: 'email_orders', label: 'Thông báo đơn hàng', desc: 'Nhận email khi có cập nhật đơn hàng', enabled: true, color: 'from-blue-500 to-cyan-500' },
-              { id: 'email_promo', label: 'Khuyến mãi', desc: 'Nhận thông tin về ưu đãi và giảm giá', enabled: true, color: 'from-orange-500 to-amber-500' },
-              { id: 'email_news', label: 'Bản tin', desc: 'Cập nhật sản phẩm mới và tin tức', enabled: false, color: 'from-purple-500 to-violet-500' },
+              { id: 'email_orders', label: 'Thông báo yêu cầu', desc: 'Nhận email khi có cập nhật yêu cầu', enabled: true, color: 'from-blue-500 to-cyan-500' },
+              { id: 'email_promo', label: 'Gợi ý nổi bật', desc: 'Nhận thông tin về ưu đãi và giảm giá', enabled: true, color: 'from-orange-500 to-amber-500' },
+              { id: 'email_news', label: 'Bản tin', desc: 'Cập nhật mẫu demo mới và tin tức', enabled: false, color: 'from-purple-500 to-violet-500' },
               { id: 'push_orders', label: 'Push notification', desc: 'Thông báo trên trình duyệt', enabled: true, color: 'from-emerald-500 to-green-500' },
             ].map(item => (
               <div key={item.id} className="flex items-center justify-between py-4 border-b border-slate-100 last:border-0">

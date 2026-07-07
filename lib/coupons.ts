@@ -100,41 +100,41 @@ export async function validateCoupon(
     const coupon = await getCouponByCode(code);
 
     if (!coupon) {
-        return { valid: false, discount: 0, error: 'Mã giảm giá không tồn tại' };
+        return { valid: false, discount: 0, error: 'Mã ưu đãi tham khảo không tồn tại' };
     }
 
     // Check if expired
     if (coupon.end_date && new Date(coupon.end_date) < new Date()) {
-        return { valid: false, discount: 0, error: 'Mã giảm giá đã hết hạn' };
+        return { valid: false, discount: 0, error: 'Mã ưu đãi tham khảo đã hết hạn' };
     }
 
     // Check if not started
     if (new Date(coupon.start_date) > new Date()) {
-        return { valid: false, discount: 0, error: 'Mã giảm giá chưa có hiệu lực' };
+        return { valid: false, discount: 0, error: 'Mã ưu đãi tham khảo chưa có hiệu lực' };
     }
 
     // Check usage limit
     if (coupon.used_count >= coupon.usage_limit) {
-        return { valid: false, discount: 0, error: 'Mã giảm giá đã hết lượt sử dụng' };
+        return { valid: false, discount: 0, error: 'Mã ưu đãi tham khảo đã hết lượt sử dụng' };
     }
 
     // Check minimum order
     if (orderTotal < coupon.min_order) {
-        return { valid: false, discount: 0, error: `Đơn hàng tối thiểu ${coupon.min_order.toLocaleString()}₫` };
+        return { valid: false, discount: 0, error: `Yêu cầu tối thiểu ${coupon.min_order.toLocaleString()}₫` };
     }
 
     // Check applicable products/categories
     if (coupon.applicable_to === 'product' && productIds) {
         const hasProduct = productIds.some(id => coupon.product_ids.includes(id));
         if (!hasProduct) {
-            return { valid: false, discount: 0, error: 'Mã giảm giá không áp dụng cho sản phẩm này' };
+            return { valid: false, discount: 0, error: 'Mã ưu đãi tham khảo không áp dụng cho mẫu demo này' };
         }
     }
 
     if (coupon.applicable_to === 'category' && categoryIds) {
         const hasCategory = categoryIds.some(id => coupon.category_ids.includes(id));
         if (!hasCategory) {
-            return { valid: false, discount: 0, error: 'Mã giảm giá không áp dụng cho danh mục này' };
+            return { valid: false, discount: 0, error: 'Mã ưu đãi tham khảo không áp dụng cho danh mục này' };
         }
     }
 
@@ -326,7 +326,7 @@ export async function validateCouponForUser(
     const coupon = await getCouponByCode(code);
 
     if (!coupon) {
-        return { valid: false, discount: 0, error: 'Mã giảm giá không tồn tại' };
+        return { valid: false, discount: 0, error: 'Mã ưu đãi tham khảo không tồn tại' };
     }
 
     // Check if user already used this coupon
@@ -339,36 +339,36 @@ export async function validateCouponForUser(
 
     // Check if expired
     if (coupon.end_date && new Date(coupon.end_date) < new Date()) {
-        return { valid: false, discount: 0, error: 'Mã giảm giá đã hết hạn' };
+        return { valid: false, discount: 0, error: 'Mã ưu đãi tham khảo đã hết hạn' };
     }
 
     // Check if not started
     if (new Date(coupon.start_date) > new Date()) {
-        return { valid: false, discount: 0, error: 'Mã giảm giá chưa có hiệu lực' };
+        return { valid: false, discount: 0, error: 'Mã ưu đãi tham khảo chưa có hiệu lực' };
     }
 
     // Check global usage limit
     if (coupon.used_count >= coupon.usage_limit) {
-        return { valid: false, discount: 0, error: 'Mã giảm giá đã hết lượt sử dụng' };
+        return { valid: false, discount: 0, error: 'Mã ưu đãi tham khảo đã hết lượt sử dụng' };
     }
 
     // Check minimum order
     if (orderTotal < coupon.min_order) {
-        return { valid: false, discount: 0, error: `Đơn hàng tối thiểu ${coupon.min_order.toLocaleString()}₫` };
+        return { valid: false, discount: 0, error: `Yêu cầu tối thiểu ${coupon.min_order.toLocaleString()}₫` };
     }
 
     // Check applicable products/categories
     if (coupon.applicable_to === 'product' && productIds) {
         const hasProduct = productIds.some(id => coupon.product_ids.includes(id));
         if (!hasProduct) {
-            return { valid: false, discount: 0, error: 'Mã giảm giá không áp dụng cho sản phẩm này' };
+            return { valid: false, discount: 0, error: 'Mã ưu đãi tham khảo không áp dụng cho mẫu demo này' };
         }
     }
 
     if (coupon.applicable_to === 'category' && categoryIds) {
         const hasCategory = categoryIds.some(id => coupon.category_ids.includes(id));
         if (!hasCategory) {
-            return { valid: false, discount: 0, error: 'Mã giảm giá không áp dụng cho danh mục này' };
+            return { valid: false, discount: 0, error: 'Mã ưu đãi tham khảo không áp dụng cho danh mục này' };
         }
     }
 

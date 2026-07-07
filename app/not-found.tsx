@@ -64,7 +64,7 @@ export default function NotFound() {
                         className="group inline-flex items-center justify-center gap-2 bg-white/10 backdrop-blur-sm text-white px-8 py-4 rounded-2xl font-bold text-lg border border-white/20 hover:bg-white/20 transition-all hover:scale-105"
                     >
                         <ShoppingBag size={20} />
-                        Khám phá sản phẩm
+                        Khám phá mẫu demo
                     </Link>
                 </div>
 

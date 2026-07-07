@@ -243,7 +243,7 @@ export async function createWelcomeNotification(userId: string, userName?: strin
         {
             user_id: userId,
             type: 'welcome',
-            title: '🎉 Chào mừng bạn đến với Shop Web rẻ!',
+            title: '🎉 Chào mừng bạn đến với Web Giá Rẻ - Portfolio!',
             message: `Xin chào${userName ? ` ${userName}` : ''}! Cảm ơn bạn đã đăng ký. Khám phá hàng ngàn giao diện website chất lượng cao ngay bây giờ!`,
             link: '/products',
         },
@@ -251,14 +251,14 @@ export async function createWelcomeNotification(userId: string, userName?: strin
             user_id: userId,
             type: 'promotion',
             title: '🎁 Ưu đãi đặc biệt dành cho bạn!',
-            message: 'Nhận ngay mã giảm giá 10% cho đơn hàng đầu tiên. Sử dụng mã: WELCOME10',
+            message: 'Nhận ngay mã ưu đãi tham khảo 10% cho yêu cầu đầu tiên. Sử dụng mã: WELCOME10',
             link: '/products',
         },
         {
             user_id: userId,
             type: 'system',
             title: '📚 Hướng dẫn sử dụng',
-            message: 'Tìm hiểu cách tải sản phẩm, quản lý license và nhận hỗ trợ kỹ thuật tại trang trợ giúp.',
+            message: 'Tìm hiểu cách tải mẫu demo, quản lý license và nhận hỗ trợ kỹ thuật tại trang trợ giúp.',
             link: '/help',
         },
     ];

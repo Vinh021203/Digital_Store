@@ -41,8 +41,8 @@ const fadeUp = {
 
 const trustItems = [
     { icon: ShieldCheck, title: 'Bảo mật dữ liệu', detail: 'Chỉ hiển thị đơn thuộc tài khoản' },
-    { icon: RefreshCw, title: 'Cập nhật tức thì', detail: 'Đồng bộ trạng thái thanh toán' },
-    { icon: Download, title: 'Sản phẩm số', detail: 'Tải ngay sau khi xác nhận' },
+    { icon: RefreshCw, title: 'Cập nhật tức thì', detail: 'Đồng bộ trạng thái xác nhận tư vấn' },
+    { icon: Download, title: 'Mẫu demo số', detail: 'Tải ngay sau khi xác nhận' },
 ];
 
 const statusConfig: Record<string, {
@@ -52,32 +52,32 @@ const statusConfig: Record<string, {
     icon: typeof Clock3;
 }> = {
     pending: {
-        label: 'Chờ thanh toán',
-        description: 'Đơn hàng đã được tạo và đang chờ giao dịch.',
+        label: 'Chờ xác nhận tư vấn',
+        description: 'Yêu cầu đã được tạo và đang chờ giao dịch.',
         classes: 'border-amber-200 bg-amber-50 text-amber-700',
         icon: Clock3,
     },
     paid: {
-        label: 'Đã thanh toán',
-        description: 'Thanh toán thành công, quyền tải đang được cấp.',
+        label: 'Đã xác nhận tư vấn',
+        description: 'Xác nhận tư vấn thành công, quyền tải đang được cấp.',
         classes: 'border-sky-200 bg-sky-50 text-sky-700',
         icon: CreditCard,
     },
     completed: {
         label: 'Hoàn thành',
-        description: 'Sản phẩm đã sẵn sàng trong khu vực tải xuống.',
+        description: 'Mẫu demo đã sẵn sàng trong khu vực tải xuống.',
         classes: 'border-emerald-200 bg-emerald-50 text-emerald-700',
         icon: CheckCircle2,
     },
     refunded: {
-        label: 'Đã hoàn tiền',
+        label: 'Đã xử lý yêu cầu',
         description: 'Giao dịch đã được hoàn lại theo yêu cầu.',
         classes: 'border-slate-200 bg-slate-100 text-slate-700',
         icon: RefreshCw,
     },
     cancelled: {
         label: 'Đã hủy',
-        description: 'Đơn hàng đã bị hủy và không còn hiệu lực.',
+        description: 'Yêu cầu đã bị hủy và không còn hiệu lực.',
         classes: 'border-rose-200 bg-rose-50 text-rose-700',
         icon: XCircle,
     },
@@ -85,7 +85,7 @@ const statusConfig: Record<string, {
 
 const normalSteps = [
     { id: 'created', label: 'Tạo đơn', detail: 'Đã ghi nhận', icon: ReceiptText },
-    { id: 'pending', label: 'Thanh toán', detail: 'Chờ xác nhận', icon: CreditCard },
+    { id: 'pending', label: 'Xác nhận tư vấn', detail: 'Chờ xác nhận', icon: CreditCard },
     { id: 'paid', label: 'Cấp quyền', detail: 'Tạo giấy phép', icon: KeyRound },
     { id: 'completed', label: 'Sẵn sàng tải', detail: 'Trong tài khoản', icon: Download },
 ];
@@ -171,13 +171,13 @@ export default function TrackingContent() {
                 payment_id: data.payment_id,
                 billing_email: data.billing_email,
                 items: (data.order_items || []).map((item: any) => ({
-                    name: item.product_name || 'Sản phẩm số',
+                    name: item.product_name || 'Mẫu demo số',
                     image: item.product_image,
                     price: Number(item.price || 0),
                     licenseType: item.license_type || 'Regular',
                 })),
             });
-            addToast('Đã tìm thấy đơn hàng', 'success');
+            addToast('Đã tìm thấy yêu cầu', 'success');
         } catch (error) {
             console.error('Tracking lookup error:', error);
             setNotFound(true);
@@ -189,7 +189,7 @@ export default function TrackingContent() {
     const copyOrderCode = async () => {
         if (!order) return;
         await navigator.clipboard.writeText(`#${order.id}`);
-        addToast('Đã sao chép mã đơn hàng', 'success');
+        addToast('Đã sao chép mã yêu cầu', 'success');
     };
 
     return (
@@ -202,7 +202,7 @@ export default function TrackingContent() {
                             <Home size={15} /> Trang chủ
                         </Link>
                         <ChevronRight size={14} />
-                        <span className="text-slate-900">Tra cứu đơn hàng</span>
+                        <span className="text-slate-900">Tra cứu yêu cầu</span>
                     </nav>
 
                     <div className="grid items-center gap-9 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
@@ -213,22 +213,22 @@ export default function TrackingContent() {
                                 </div>
                                 <div>
                                     <div className="flex items-center gap-2">
-                                        <p className="text-sm font-extrabold text-slate-950">Trung tâm đơn hàng</p>
+                                        <p className="text-sm font-extrabold text-slate-950">Trung tâm yêu cầu</p>
                                         <span className="h-2 w-2 rounded-full bg-emerald-500 ring-4 ring-emerald-50" />
                                     </div>
                                     <p className="mt-0.5 text-xs font-medium text-slate-500">Tra cứu bảo mật, cập nhật theo thời gian thực</p>
                                 </div>
                             </div>
                             <div className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-white px-3.5 py-2 text-[10px] font-extrabold uppercase text-orange-700 shadow-sm sm:text-xs">
-                                <Sparkles size={15} /> Tra cứu giao dịch sản phẩm số
+                                <Sparkles size={15} /> Tra cứu giao dịch mẫu demo số
                             </div>
                             <h1 className="mt-5 max-w-2xl text-3xl font-black leading-tight sm:text-4xl md:text-5xl">
-                                Kiểm tra đơn hàng <span className="text-orange-600">nhanh và rõ ràng.</span>
+                                Kiểm tra yêu cầu <span className="text-orange-600">nhanh và rõ ràng.</span>
                             </h1>
                             <p className="mt-4 max-w-xl text-sm font-medium leading-7 text-slate-600 sm:text-base sm:leading-8">
                                 {isCatalogMode
-                                    ? 'Nhập mã tư vấn hoặc mã đơn cũ để kiểm tra thông tin hỗ trợ, sản phẩm quan tâm và quyền truy cập trong tài khoản của bạn.'
-                                    : 'Nhập mã đơn để xem trạng thái thanh toán, sản phẩm đã mua và quyền tải xuống trong tài khoản của bạn.'}
+                                    ? 'Nhập mã tư vấn hoặc mã đơn cũ để kiểm tra thông tin hỗ trợ, mẫu quan tâm và quyền truy cập trong tài khoản của bạn.'
+                                    : 'Nhập mã đơn để xem trạng thái xác nhận tư vấn, mẫu đã được cấp quyền và quyền tải xuống trong tài khoản của bạn.'}
                             </p>
 
                             <form onSubmit={handleSearch} className="mt-7 max-w-xl">
@@ -246,7 +246,7 @@ export default function TrackingContent() {
                                 </div>
                                 <p className="mt-2.5 flex items-center gap-1.5 text-xs font-medium text-slate-500">
                                     <LockKeyhole size={13} className="text-emerald-600" />
-                                    Đơn hàng chỉ hiển thị khi tài khoản của bạn có quyền truy cập.
+                                    Yêu cầu chỉ hiển thị khi tài khoản của bạn có quyền truy cập.
                                 </p>
                             </form>
                         </motion.div>
@@ -255,15 +255,15 @@ export default function TrackingContent() {
                             <div className="flex items-center justify-between border-b border-white/10 pb-5">
                                 <div>
                                     <p className="text-[10px] font-bold uppercase text-orange-300">Quy trình tự động</p>
-                                    <h2 className="mt-1 text-xl font-black">{isCatalogMode ? 'Quy trình tư vấn rõ ràng' : 'Nhận file sau thanh toán'}</h2>
+                                    <h2 className="mt-1 text-xl font-black">{isCatalogMode ? 'Quy trình tư vấn rõ ràng' : 'Nhận file sau xác nhận tư vấn'}</h2>
                                 </div>
                                 <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-orange-600"><PackageCheck size={22} /></div>
                             </div>
                             <div className="mt-5 grid grid-cols-2 gap-3">
                                 {[
-                                    { icon: Banknote, label: isCatalogMode ? 'Nhu cầu' : 'Thanh toán', value: isCatalogMode ? 'Gửi mẫu quan tâm' : 'SePay / Ngân hàng' },
+                                    { icon: Banknote, label: isCatalogMode ? 'Nhu cầu' : 'Xác nhận tư vấn', value: isCatalogMode ? 'Gửi mẫu quan tâm' : 'SePay / Ngân hàng' },
                                     { icon: BadgeCheck, label: 'Xác nhận', value: isCatalogMode ? 'Tư vấn phù hợp' : 'Tự động đối soát' },
-                                    { icon: KeyRound, label: 'Giấy phép', value: 'Cấp theo đơn hàng' },
+                                    { icon: KeyRound, label: 'Giấy phép', value: 'Cấp theo yêu cầu' },
                                     { icon: FileArchive, label: 'Bàn giao', value: 'Tải file trong hồ sơ' },
                                 ].map((item, index) => (
                                     <motion.div key={item.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 + index * 0.07 }} className="rounded-lg border border-white/10 bg-white/5 p-3.5">
@@ -309,7 +309,7 @@ export default function TrackingContent() {
                                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-slate-950 text-white"><ShoppingBag size={22} /></div>
                                     <div>
                                         <button onClick={copyOrderCode} className="group inline-flex items-center gap-2 text-left">
-                                            <h2 className="text-xl font-black sm:text-2xl">Đơn hàng #{order.id}</h2>
+                                            <h2 className="text-xl font-black sm:text-2xl">Yêu cầu #{order.id}</h2>
                                             <Copy size={15} className="text-slate-400 transition group-hover:text-orange-600" />
                                         </button>
                                         <p className="mt-1 flex items-center gap-1.5 text-xs font-medium text-slate-500 sm:text-sm"><CalendarDays size={14} /> {formatDate(order.created_at)}</p>
@@ -349,7 +349,7 @@ export default function TrackingContent() {
 
                             <div className="grid lg:grid-cols-[1fr_300px]">
                                 <div className="border-b border-slate-200 p-5 sm:p-7 lg:border-b-0 lg:border-r">
-                                    <h3 className="flex items-center gap-2 font-bold"><FileArchive size={18} className="text-orange-600" />Sản phẩm trong đơn</h3>
+                                    <h3 className="flex items-center gap-2 font-bold"><FileArchive size={18} className="text-orange-600" />Mẫu demo trong đơn</h3>
                                     <div className="mt-4 space-y-3">
                                         {order.items.length > 0 ? order.items.map((item, index) => (
                                             <div key={`${item.name}-${index}`} className="flex items-center gap-3 rounded-lg border border-slate-100 bg-slate-50 p-3">
@@ -359,11 +359,11 @@ export default function TrackingContent() {
                                                 <div className="min-w-0 flex-1"><p className="truncate text-sm font-bold">{item.name}</p><p className="mt-1 text-xs font-medium text-slate-500">License {item.licenseType}</p></div>
                                                 <p className="shrink-0 text-sm font-black">{formatMoney(item.price)}</p>
                                             </div>
-                                        )) : <div className="rounded-lg border border-dashed border-slate-200 p-5 text-center text-sm text-slate-500">Không có dữ liệu chi tiết sản phẩm.</div>}
+                                        )) : <div className="rounded-lg border border-dashed border-slate-200 p-5 text-center text-sm text-slate-500">Không có dữ liệu chi tiết mẫu demo.</div>}
                                     </div>
                                 </div>
                                 <aside className="bg-slate-50/70 p-5 sm:p-7">
-                                    <h3 className="font-bold">Thông tin thanh toán</h3>
+                                    <h3 className="font-bold">Thông tin xác nhận tư vấn</h3>
                                     <dl className="mt-4 space-y-3 text-sm">
                                         <div className="flex items-center justify-between gap-3"><dt className="text-slate-500">Phương thức</dt><dd className="font-bold uppercase">{order.payment_method || 'Chuyển khoản'}</dd></div>
                                         <div className="flex items-center justify-between gap-3"><dt className="text-slate-500">Email</dt><dd className="max-w-[150px] truncate font-semibold">{maskEmail(order.billing_email)}</dd></div>
@@ -377,7 +377,7 @@ export default function TrackingContent() {
 
                         {(order.status === 'paid' || order.status === 'completed') && (
                             <div className="grid grid-cols-2 gap-3">
-                                <Link href={isCatalogMode ? '/profile' : '/profile/downloads'} className="inline-flex min-w-0 items-center justify-center gap-2 rounded-lg bg-orange-600 px-3 py-3.5 text-xs font-bold text-white shadow-lg shadow-orange-100 transition hover:bg-orange-700 sm:text-sm"><Download size={17} /><span className="truncate">{isCatalogMode ? 'Xem hồ sơ' : 'Tải sản phẩm'}</span></Link>
+                                <Link href={isCatalogMode ? '/profile' : '/profile/downloads'} className="inline-flex min-w-0 items-center justify-center gap-2 rounded-lg bg-orange-600 px-3 py-3.5 text-xs font-bold text-white shadow-lg shadow-orange-100 transition hover:bg-orange-700 sm:text-sm"><Download size={17} /><span className="truncate">{isCatalogMode ? 'Xem hồ sơ' : 'Tải mẫu demo'}</span></Link>
                                 <Link href="/profile/licenses" className="inline-flex min-w-0 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-3.5 text-xs font-bold text-slate-700 transition hover:border-orange-200 hover:text-orange-700 sm:text-sm"><KeyRound size={17} /><span className="truncate">Xem giấy phép</span></Link>
                             </div>
                         )}
@@ -387,8 +387,8 @@ export default function TrackingContent() {
                 {notFound && !order && (
                     <motion.div initial="hidden" animate="visible" variants={fadeUp} className="rounded-lg border border-slate-200 bg-white p-6 text-center shadow-[0_18px_45px_rgba(15,23,42,0.06)] sm:p-10">
                         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-rose-50 text-rose-600"><AlertCircle size={30} /></div>
-                        <h2 className="mt-5 text-2xl font-black">Không tìm thấy đơn hàng</h2>
-                        <p className="mx-auto mt-2 max-w-lg text-sm font-medium leading-7 text-slate-500">Hãy kiểm tra lại mã đơn hoặc đăng nhập bằng đúng tài khoản đã mua hàng. Bạn cũng có thể xem mã đơn trong email xác nhận.</p>
+                        <h2 className="mt-5 text-2xl font-black">Không tìm thấy yêu cầu</h2>
+                        <p className="mx-auto mt-2 max-w-lg text-sm font-medium leading-7 text-slate-500">Hãy kiểm tra lại mã đơn hoặc đăng nhập bằng đúng tài khoản đã gửi yêu cầu. Bạn cũng có thể xem mã đơn trong email xác nhận.</p>
                         <div className="mt-6 grid grid-cols-2 gap-3 sm:mx-auto sm:max-w-md">
                             <button onClick={() => { setNotFound(false); setOrderCode(''); }} className="inline-flex items-center justify-center gap-2 rounded-lg bg-orange-600 px-3 py-3 text-xs font-bold text-white sm:text-sm"><Search size={16} /> Thử lại</button>
                             <Link href="/contact" className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 py-3 text-xs font-bold text-slate-700 sm:text-sm"><Headphones size={16} /> Hỗ trợ</Link>
@@ -402,7 +402,7 @@ export default function TrackingContent() {
                             <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-orange-50 text-orange-600"><ReceiptText size={23} /></div>
                             <h2 className="mt-5 text-2xl font-black">Mã đơn nằm ở đâu?</h2>
                             <div className="mt-5 space-y-3">
-                                {['Email xác nhận sau khi đặt hàng', 'Trang Hồ sơ → Đơn hàng của tôi', 'Nội dung chuyển khoản hoặc biên nhận'].map((item) => (
+                                {['Email xác nhận sau khi gửi yêu cầu', 'Trang Hồ sơ → Yêu cầu của tôi', 'Nội dung chuyển khoản hoặc biên nhận'].map((item) => (
                                     <div key={item} className="flex items-start gap-2.5 text-sm font-medium text-slate-600"><CheckCircle2 size={17} className="mt-0.5 shrink-0 text-emerald-600" />{item}</div>
                                 ))}
                             </div>
@@ -410,7 +410,7 @@ export default function TrackingContent() {
                         <aside className="rounded-lg bg-slate-950 p-6 text-white sm:p-8">
                             <Mail size={24} className="text-orange-400" />
                             <h2 className="mt-5 text-xl font-black">Cần hỗ trợ tra cứu?</h2>
-                            <p className="mt-2 text-sm font-medium leading-7 text-slate-400">Gửi mã đơn và email mua hàng để mình kiểm tra trực tiếp.</p>
+                            <p className="mt-2 text-sm font-medium leading-7 text-slate-400">Gửi mã đơn và email gửi yêu cầu để mình kiểm tra trực tiếp.</p>
                             <a href="mailto:veutong961@gmail.com" className="mt-6 inline-flex items-center gap-2 rounded-lg bg-white px-4 py-3 text-sm font-bold text-slate-950 transition hover:bg-orange-50">Gửi email hỗ trợ <ArrowRight size={16} /></a>
                         </aside>
                     </div>

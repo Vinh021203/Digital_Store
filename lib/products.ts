@@ -294,7 +294,7 @@ export async function createProduct(payload: ProductPayload): Promise<DbProduct 
       images: payload.images || [],
       format: payload.format || 'Template',
       category_id: payload.category_id || null,
-      author: payload.author || 'Shop Web rẻ',
+      author: payload.author || 'Web Giá Rẻ - Portfolio',
       is_new: payload.is_new ?? true,
       is_featured: payload.is_featured ?? false,
       is_bestseller: payload.is_bestseller ?? false,
@@ -570,7 +570,7 @@ export async function fetchAIProducts(
   if (criteria.goal) {
     const goalKeywords: Record<string, string[]> = {
       business: ['business', 'doanh nghiệp', 'company', 'corp', 'agency'],
-      ecommerce: ['shop', 'store', 'e-commerce', 'bán hàng', 'fashion'],
+      ecommerce: ['shop', 'store', 'e-commerce', 'giới thiệu/demo', 'fashion'],
       portfolio: ['portfolio', 'cá nhân', 'blog', 'profile', 'cv'],
       app: ['app', 'dashboard', 'admin', 'mobile', 'saas']
     };

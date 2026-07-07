@@ -70,7 +70,7 @@ export default function ProfileAffiliatePage() {
                         Chương trình <span className="text-violet-200">Affiliate</span>
                     </h1>
                     <p className="text-violet-100 text-lg sm:text-xl max-w-2xl mx-auto mb-8">
-                        Kiếm hoa hồng lên đến <strong className="text-white">20%</strong> cho mỗi đơn hàng từ người bạn giới thiệu
+                        Kiếm hoa hồng lên đến <strong className="text-white">20%</strong> cho mỗi yêu cầu từ người bạn giới thiệu
                     </p>
                     <Link
                         href="/affiliate"
@@ -94,7 +94,7 @@ export default function ProfileAffiliatePage() {
                             <DollarSign size={28} className="text-violet-600" />
                         </div>
                         <h3 className="font-bold text-slate-900 mb-2">20% Hoa hồng</h3>
-                        <p className="text-sm text-slate-500">Cho mỗi đơn hàng thành công từ link của bạn</p>
+                        <p className="text-sm text-slate-500">Cho mỗi yêu cầu thành công từ link của bạn</p>
                     </div>
                     <div className="bg-white rounded-2xl border border-slate-100 p-6 text-center hover:shadow-lg transition-shadow">
                         <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
@@ -108,7 +108,7 @@ export default function ProfileAffiliatePage() {
                             <Wallet size={28} className="text-green-600" />
                         </div>
                         <h3 className="font-bold text-slate-900 mb-2">Rút tiền dễ dàng</h3>
-                        <p className="text-sm text-slate-500">Tối thiểu 500.000₫, thanh toán hàng tháng</p>
+                        <p className="text-sm text-slate-500">Tối thiểu 500.000₫, xác nhận tư vấn hàng tháng</p>
                     </div>
                 </div>
             </div>
@@ -124,7 +124,7 @@ export default function ProfileAffiliatePage() {
                             { step: 1, icon: Sparkles, title: 'Đăng ký', desc: 'Tạo tài khoản affiliate miễn phí' },
                             { step: 2, icon: Link2, title: 'Nhận link', desc: 'Lấy link giới thiệu độc quyền của bạn' },
                             { step: 3, icon: Share2, title: 'Chia sẻ', desc: 'Chia sẻ link với bạn bè, cộng đồng' },
-                            { step: 4, icon: Wallet, title: 'Nhận tiền', desc: 'Nhận 20% hoa hồng mỗi đơn hàng' },
+                            { step: 4, icon: Wallet, title: 'Nhận tiền', desc: 'Nhận 20% hoa hồng mỗi yêu cầu' },
                         ].map(item => (
                             <div key={item.step} className="text-center relative">
                                 <div className="w-16 h-16 bg-violet-100 rounded-2xl flex items-center justify-center mx-auto mb-4 relative">

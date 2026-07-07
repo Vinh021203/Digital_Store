@@ -19,7 +19,7 @@ end $$;
 insert into public.site_settings (key, value, type, group_name, description)
 values (
   'site_mode',
-  'sales',
+  'catalog',
   'string',
   'general',
   'Website mode: catalog disables direct sales; sales enables checkout and downloads.'

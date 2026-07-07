@@ -167,7 +167,7 @@ export async function logProductCreate(userId: string, productId: number, produc
         entity: 'product',
         entity_id: productId.toString(),
         entity_name: productName,
-        details: `Tạo sản phẩm mới: ${productName}`,
+        details: `Tạo mẫu demo mới: ${productName}`,
         severity: 'success',
     });
 }
@@ -179,7 +179,7 @@ export async function logProductUpdate(userId: string, productId: number, produc
         entity: 'product',
         entity_id: productId.toString(),
         entity_name: productName,
-        details: changes || `Cập nhật sản phẩm: ${productName}`,
+        details: changes || `Cập nhật mẫu demo: ${productName}`,
         severity: 'info',
     });
 }
@@ -191,7 +191,7 @@ export async function logProductDelete(userId: string, productId: number, produc
         entity: 'product',
         entity_id: productId.toString(),
         entity_name: productName,
-        details: `Xóa sản phẩm: ${productName}`,
+        details: `Xóa mẫu demo: ${productName}`,
         severity: 'warning',
     });
 }
@@ -203,7 +203,7 @@ export async function logOrderStatusChange(userId: string, orderId: number, oldS
         action: 'Update',
         entity: 'order',
         entity_id: orderId.toString(),
-        entity_name: `Đơn hàng #${orderId}`,
+        entity_name: `Yêu cầu #${orderId}`,
         details: `Thay đổi trạng thái: ${oldStatus} → ${newStatus}`,
         severity: 'info',
     });
@@ -249,7 +249,7 @@ export async function logCouponCreate(userId: string, couponCode: string) {
         action: 'Create',
         entity: 'coupon',
         entity_name: couponCode,
-        details: `Tạo mã giảm giá: ${couponCode}`,
+        details: `Tạo mã ưu đãi tham khảo: ${couponCode}`,
         severity: 'success',
     });
 }

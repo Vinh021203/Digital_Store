@@ -79,20 +79,20 @@ export default function ProfilePage() {
 
     // Stat cards with refined colors
     const statCards = [
-        {
-            href: '/profile/downloads',
-            icon: Download,
-            label: 'Downloads',
-            value: stats.downloads,
+	        {
+	            href: '/profile/downloads',
+	            icon: Download,
+	            label: 'Mẫu đã cấp',
+	            value: stats.downloads,
             gradient: 'from-orange-500 to-amber-500',
             shadow: 'shadow-orange-500/20',
             hoverBorder: 'hover:border-orange-200'
         },
-        {
-            href: '/profile/licenses',
-            icon: Key,
-            label: 'Licenses',
-            value: stats.licenses,
+	        {
+	            href: '/profile/licenses',
+	            icon: Key,
+	            label: 'Quyền truy cập',
+	            value: stats.licenses,
             gradient: 'from-violet-500 to-purple-500',
             shadow: 'shadow-violet-500/20',
             hoverBorder: 'hover:border-violet-200'
@@ -100,35 +100,35 @@ export default function ProfilePage() {
         {
             href: '/profile/orders',
             icon: Package,
-            label: 'Sản phẩm',
+            label: 'Mẫu demo',
             value: stats.activeProducts,
             gradient: 'from-cyan-500 to-blue-500',
             shadow: 'shadow-cyan-500/20',
             hoverBorder: 'hover:border-cyan-200'
         },
-        {
-            href: '/wishlist',
-            icon: Heart,
-            label: 'Wishlist',
-            value: stats.wishlistItems,
+	        {
+	            href: '/wishlist',
+	            icon: Heart,
+	            label: 'Mẫu đã lưu',
+	            value: stats.wishlistItems,
             gradient: 'from-pink-500 to-rose-500',
             shadow: 'shadow-pink-500/20',
             hoverBorder: 'hover:border-pink-200'
         },
-        {
-            href: '/products?sort=rating',
-            icon: Star,
-            label: 'Reviews',
-            value: stats.reviewsGiven,
+	        {
+	            href: '/products?sort=rating',
+	            icon: Star,
+	            label: 'Phản hồi',
+	            value: stats.reviewsGiven,
             gradient: 'from-amber-500 to-yellow-500',
             shadow: 'shadow-amber-500/20',
             hoverBorder: 'hover:border-amber-200'
         },
-        {
-            href: '/profile/support',
-            icon: LifeBuoy,
-            label: 'Tickets',
-            value: stats.supportTickets,
+	        {
+	            href: '/profile/support',
+	            icon: LifeBuoy,
+	            label: 'Tư vấn',
+	            value: stats.supportTickets,
             gradient: 'from-emerald-500 to-green-500',
             shadow: 'shadow-emerald-500/20',
             hoverBorder: 'hover:border-emerald-200'
@@ -140,32 +140,32 @@ export default function ProfilePage() {
         {
             href: '/profile/orders',
             icon: ShoppingBag,
-            label: 'Đơn hàng của tôi',
-            desc: 'Xem lịch sử mua hàng',
+            label: 'Yêu cầu của tôi',
+            desc: 'Xem lịch sử gửi yêu cầu',
             iconBg: 'bg-blue-100',
             iconColor: 'text-blue-600'
         },
-        {
-            href: '/profile/downloads',
-            icon: Download,
-            label: 'Tải xuống',
-            desc: 'Quản lý file đã mua',
+	        {
+	            href: '/profile/downloads',
+	            icon: Download,
+	            label: 'Mẫu đã cấp quyền',
+	            desc: 'Quản lý file demo đã được mở quyền',
             iconBg: 'bg-green-100',
             iconColor: 'text-green-600'
         },
-        {
-            href: '/profile/licenses',
-            icon: Key,
-            label: 'Giấy phép',
-            desc: 'Quản lý license keys',
+	        {
+	            href: '/profile/licenses',
+	            icon: Key,
+	            label: 'Quyền truy cập',
+	            desc: 'Quản lý mã quyền và phạm vi sử dụng',
             iconBg: 'bg-purple-100',
             iconColor: 'text-purple-600'
         },
-        {
-            href: '/profile/support',
-            icon: LifeBuoy,
-            label: 'Hỗ trợ',
-            desc: 'Tạo ticket hỗ trợ',
+	        {
+	            href: '/profile/support',
+	            icon: LifeBuoy,
+	            label: 'Tư vấn hỗ trợ',
+	            desc: 'Gửi câu hỏi hoặc yêu cầu hỗ trợ',
             iconBg: 'bg-orange-100',
             iconColor: 'text-orange-600'
         },
@@ -173,8 +173,8 @@ export default function ProfilePage() {
 
     // Recent activity with real icons
     const recentActivities = [
-        { icon: Download, text: 'Tải xuống Premium Theme v2.0', time: '2 giờ trước', iconBg: 'bg-green-100', iconColor: 'text-green-600' },
-        { icon: CreditCard, text: 'Thanh toán đơn hàng #12345', time: '1 ngày trước', iconBg: 'bg-blue-100', iconColor: 'text-blue-600' },
+	        { icon: Download, text: 'Mở quyền xem Premium Theme v2.0', time: '2 giờ trước', iconBg: 'bg-green-100', iconColor: 'text-green-600' },
+        { icon: CreditCard, text: 'Xác nhận tư vấn yêu cầu #12345', time: '1 ngày trước', iconBg: 'bg-blue-100', iconColor: 'text-blue-600' },
         { icon: Star, text: 'Đánh giá 5 sao cho Landing Page Kit', time: '3 ngày trước', iconBg: 'bg-amber-100', iconColor: 'text-amber-600' },
     ];
 
@@ -205,7 +205,7 @@ export default function ProfilePage() {
                     <div>
                         <div className="flex items-center gap-2 mb-3">
                             <span className="bg-gradient-to-r from-orange-500 to-amber-500 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-lg shadow-orange-500/20">
-                                <Sparkles size={12} /> Shop Web rẻ Member
+                                <Sparkles size={12} /> Web Giá Rẻ - Portfolio Member
                             </span>
                         </div>
                         <h1 className="text-2xl md:text-3xl font-black mb-2 flex items-center gap-3">
@@ -213,7 +213,7 @@ export default function ProfilePage() {
                             <Hand size={28} className="text-amber-400 animate-pulse" />
                         </h1>
                         <p className="text-slate-400 text-sm md:text-base mb-4">
-                            Chào mừng bạn trở lại với Shop Web rẻ
+                            Chào mừng bạn trở lại với Web Giá Rẻ - Portfolio
                         </p>
                         <div className="flex flex-wrap items-center gap-2 text-sm">
                             <span className="inline-flex items-center gap-1.5 bg-white/10 border border-white/10 px-3 py-1.5 rounded-full">
@@ -324,7 +324,7 @@ export default function ProfilePage() {
                                 <Package size={28} className="text-slate-300" />
                             </div>
                             <p className="font-medium text-slate-500">Chưa có hoạt động nào</p>
-                            <p className="text-sm text-slate-400 mt-1">Bắt đầu mua sắm để thấy hoạt động của bạn!</p>
+                            <p className="text-sm text-slate-400 mt-1">Bắt đầu tham khảo demo để thấy hoạt động của bạn!</p>
                         </div>
                     )}
                 </div>
@@ -340,15 +340,15 @@ export default function ProfilePage() {
 
                     <div className="space-y-3">
                         <div className="flex justify-between items-center p-3 bg-slate-50 rounded-xl">
-                            <span className="text-sm text-slate-600">Tổng đơn hàng</span>
+	                            <span className="text-sm text-slate-600">Yêu cầu tư vấn</span>
                             <span className="font-bold text-slate-900">{stats.totalOrders}</span>
                         </div>
                         <div className="flex justify-between items-center p-3 bg-slate-50 rounded-xl">
-                            <span className="text-sm text-slate-600">Sản phẩm sở hữu</span>
+	                            <span className="text-sm text-slate-600">Mẫu đã cấp quyền</span>
                             <span className="font-bold text-slate-900">{stats.activeProducts}</span>
                         </div>
                         <div className="flex justify-between items-center p-3 bg-slate-50 rounded-xl">
-                            <span className="text-sm text-slate-600">Đã chi tiêu</span>
+	                            <span className="text-sm text-slate-600">Giá trị tham khảo</span>
                             <span className="font-bold text-green-600">
                                 {stats.totalSpent.toLocaleString('vi-VN')}đ
                             </span>

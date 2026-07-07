@@ -66,7 +66,7 @@ export const SettingsView = ({ user }: SettingsViewProps) => {
         setLoading(true);
         setTimeout(() => {
             setLoading(false);
-            addToast('Đã lưu thông tin thanh toán thành công!', 'success');
+            addToast('Đã lưu thông tin xác nhận tư vấn thành công!', 'success');
         }, 1000);
     };
 
@@ -234,12 +234,12 @@ export const SettingsView = ({ user }: SettingsViewProps) => {
             <div className="bg-white rounded-2xl border border-slate-100 p-6">
                 <h2 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
                     <Building2 size={18} className="text-orange-600" />
-                    Thông tin thanh toán
+                    Thông tin xác nhận tư vấn
                 </h2>
 
                 <div className="flex items-center gap-3 mb-6 p-4 bg-orange-50 rounded-xl border border-orange-100 text-orange-800 text-sm">
                     <Lock size={18} />
-                    <p>Thông tin thanh toán được bảo mật và chỉ dùng để chuyển khoản hoa hồng.</p>
+                    <p>Thông tin xác nhận tư vấn được bảo mật và chỉ dùng để chuyển khoản hoa hồng.</p>
                 </div>
 
                 <form onSubmit={handleSave} className="space-y-4">
@@ -317,7 +317,7 @@ export const SettingsView = ({ user }: SettingsViewProps) => {
                             <div className="p-2.5 bg-orange-100 text-orange-600 rounded-xl"><DollarSign size={18} /></div>
                             <div>
                                 <p className="font-bold text-slate-900 text-sm">Thông báo hoa hồng mới</p>
-                                <p className="text-xs text-slate-500">Nhận email khi có đơn hàng thành công</p>
+                                <p className="text-xs text-slate-500">Nhận email khi có yêu cầu thành công</p>
                             </div>
                         </div>
                         <div className="relative inline-flex items-center">

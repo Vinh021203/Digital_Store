@@ -4,10 +4,10 @@ import { buildSeoMetadata, seoKeywords } from '@/lib/seo';
 
 export const metadata: Metadata = buildSeoMetadata({
     title: 'Cộng đồng thiết kế website và developer Việt Nam',
-    description: 'Tham gia cộng đồng Shop Web rẻ để chia sẻ template website, hỏi đáp lập trình, UI/UX và kinh nghiệm triển khai website.',
+    description: 'Tham gia cộng đồng Web Giá Rẻ - Portfolio để chia sẻ template website, hỏi đáp lập trình, UI/UX và kinh nghiệm triển khai dự án web.',
     path: '/community',
     keywords: seoKeywords.community,
-    ogTitle: 'Cộng đồng thiết kế website | Shop Web rẻ',
+    ogTitle: 'Cộng đồng thiết kế website | Web Giá Rẻ - Portfolio',
 });
 
 export default function Page() {

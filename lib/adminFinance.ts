@@ -112,7 +112,7 @@ export async function getTransactions(limit: number = 20): Promise<Transaction[]
         return (orders || []).map((order: any) => ({
             id: `TRX-${String(order.id).slice(-6).toUpperCase()}`,
             type: 'income' as TransactionType,
-            description: `Thanh toán đơn hàng #${String(order.id).slice(-8).toUpperCase()}`,
+            description: `Xác nhận tư vấn yêu cầu #${String(order.id).slice(-8).toUpperCase()}`,
             amount: Number(order.total) || 0,
             status: mapOrderStatus(order.status),
             method: order.payment_method || 'Online',

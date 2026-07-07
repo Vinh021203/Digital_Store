@@ -3,10 +3,11 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Star, ShoppingCart, Heart, ArrowRight } from 'lucide-react';
+import { Star, ShoppingCart, Heart, ArrowRight, MessageCircle } from 'lucide-react';
 import { Product } from '@/types';
 import { useCart } from '@/context/CartContext';
 import { useToast } from '@/context/ToastContext';
+import { useSiteMode } from '@/hooks/useSiteSettings';
 
 interface RelatedProductsProps {
     currentProduct: Product;
@@ -14,9 +15,10 @@ interface RelatedProductsProps {
     title?: string;
 }
 
-export default function RelatedProducts({ currentProduct, relatedProducts = [], title = "Sản phẩm liên quan" }: RelatedProductsProps) {
+export default function RelatedProducts({ currentProduct, relatedProducts = [], title = "Mẫu demo liên quan" }: RelatedProductsProps) {
     const { addToCart, addToWishlist } = useCart();
     const { addToast } = useToast();
+    const { isCatalogMode } = useSiteMode();
 
     // Use provided relatedProducts or empty array
     const products = relatedProducts.slice(0, 4);
@@ -24,6 +26,10 @@ export default function RelatedProducts({ currentProduct, relatedProducts = [], 
     const handleAddToCart = (product: Product, e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
+        if (isCatalogMode) {
+            window.location.href = `/contact?product=${encodeURIComponent(String((product as any).slug || product.id))}`;
+            return;
+        }
         addToCart(product);
         addToast(`Đã thêm "${product.name}" vào giỏ`, 'success');
     };
@@ -82,7 +88,7 @@ export default function RelatedProducts({ currentProduct, relatedProducts = [], 
                                     )}
                                 </div>
 
-                                {discount > 0 && (
+                                {!isCatalogMode && discount > 0 && (
                                     <span className="absolute top-2 right-2 bg-rose-500 text-white text-[9px] font-bold px-2 py-0.5 rounded">
                                         -{discount}%
                                     </span>
@@ -94,7 +100,7 @@ export default function RelatedProducts({ currentProduct, relatedProducts = [], 
                                         onClick={(e) => handleAddToCart(product, e)}
                                         className="p-2.5 bg-white rounded-xl text-slate-700 hover:bg-orange-500 hover:text-white transition-colors shadow-lg"
                                     >
-                                        <ShoppingCart size={16} />
+                                        {isCatalogMode ? <MessageCircle size={16} /> : <ShoppingCart size={16} />}
                                     </button>
                                     <button
                                         onClick={(e) => handleAddToWishlist(product, e)}
@@ -115,8 +121,8 @@ export default function RelatedProducts({ currentProduct, relatedProducts = [], 
                                     {product.name}
                                 </h4>
                                 <div className="flex items-center gap-2">
-                                    <span className="font-black text-orange-600">{product.price.toLocaleString('vi-VN')}₫</span>
-                                    {product.originalPrice && (
+                                    <span className="font-black text-orange-600">{isCatalogMode ? 'Lien he tu van' : `${product.price.toLocaleString('vi-VN')} VND`}</span>
+                                    {!isCatalogMode && product.originalPrice && (
                                         <span className="text-xs text-slate-400 line-through">{product.originalPrice.toLocaleString('vi-VN')}₫</span>
                                     )}
                                 </div>

@@ -37,8 +37,8 @@ export const ToolsView = ({ user }: ToolsViewProps) => {
 
     const quickLinks: { id: string; label: string; path: string; icon: LucideIcon }[] = [
         { id: 'home', label: 'Trang chủ', path: '/', icon: Home },
-        { id: 'products', label: 'Danh sách sản phẩm', path: '/products', icon: Package },
-        { id: 'featured', label: 'Sản phẩm nổi bật', path: '/products?featured=true', icon: Star },
+        { id: 'products', label: 'Danh sách mẫu demo', path: '/products', icon: Package },
+        { id: 'featured', label: 'Mẫu demo nổi bật', path: '/products?featured=true', icon: Star },
         { id: 'courses', label: 'Khóa học', path: '/products?category=courses', icon: BookOpen },
     ];
 

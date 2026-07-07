@@ -1,15 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
     ArrowRight, BookOpen, CheckCircle2, ChevronRight, Clock3,
     ExternalLink, Facebook, Headphones, Home, Mail, MapPin,
-    MessageCircle, Phone, Send, ShieldCheck, Sparkles, UserRound,
+    Loader2, MessageCircle, Phone, Send, ShieldCheck, Sparkles, UserRound,
 } from 'lucide-react';
 import { useToast } from '@/context/ToastContext';
+import { fetchActiveProducts } from '@/lib/products';
+import type { Product } from '@/types';
 
 const reveal = {
     hidden: { opacity: 0, y: 18 },
@@ -46,33 +48,129 @@ const contactMethods = [
 ];
 
 const supportSteps = [
-    { icon: MessageCircle, title: 'Gửi yêu cầu', detail: 'Mô tả nhu cầu, sản phẩm hoặc vấn đề bạn gặp.' },
+    { icon: MessageCircle, title: 'Gửi yêu cầu', detail: 'Mô tả nhu cầu, mẫu demo hoặc vấn đề bạn gặp.' },
     { icon: UserRound, title: 'Mình trực tiếp kiểm tra', detail: 'Không qua tổng đài hoặc bộ phận trung gian.' },
     { icon: CheckCircle2, title: 'Phản hồi rõ ràng', detail: 'Đề xuất hướng xử lý phù hợp và dễ thực hiện.' },
 ];
 
 export default function ContactContent() {
     const { addToast } = useToast();
+    const [products, setProducts] = useState<Product[]>([]);
+    const [productsLoading, setProductsLoading] = useState(true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
-        subject: '',
+        productKey: '__general__',
+        projectNeed: '',
+        techPreference: '',
+        budget: '',
+        timeline: '',
         message: '',
     });
 
-    const handleSubmit = (event: React.FormEvent) => {
+    useEffect(() => {
+        let mounted = true;
+
+        const loadProducts = async () => {
+            setProductsLoading(true);
+            try {
+                const data = await fetchActiveProducts();
+                if (!mounted) return;
+
+                setProducts(data);
+
+                const params = new URLSearchParams(window.location.search);
+                const productParam = params.get('product');
+                if (!productParam) return;
+
+                const selected = data.find((product) => {
+                    const slug = product.slug ? String(product.slug) : '';
+                    const id = String(product.id);
+                    return slug === productParam || id === productParam;
+                });
+
+                if (selected) {
+                    setFormData((current) => ({
+                        ...current,
+                        productKey: String(selected.slug || selected.id),
+                        message: current.message || `Mình cần tư vấn thêm về mẫu demo "${selected.name}".`,
+                    }));
+                }
+            } catch (error) {
+                console.error('Error loading contact products:', error);
+                addToast('Chưa tải được danh sách mẫu demo, bạn vẫn có thể gửi tư vấn chung.', 'warning');
+            } finally {
+                if (mounted) setProductsLoading(false);
+            }
+        };
+
+        loadProducts();
+
+        return () => {
+            mounted = false;
+        };
+    }, [addToast]);
+
+    const selectedProduct = useMemo(
+        () => products.find((product) => String(product.slug || product.id) === formData.productKey),
+        [products, formData.productKey]
+    );
+
+    const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
-        const body = [
-            `Họ tên: ${formData.name}`,
-            `Email phản hồi: ${formData.email}`,
-            '',
-            formData.message,
-        ].join('\n');
+        const subject = selectedProduct
+            ? `Cần tư vấn mẫu demo: ${selectedProduct.name}`
+            : 'Cần tư vấn giao diện website / landing page';
 
-        const mailto = `mailto:veutong961@gmail.com?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(body)}`;
-        addToast('Đang mở ứng dụng email với nội dung đã điền sẵn', 'success');
-        window.location.href = mailto;
+        const productUrl = selectedProduct
+            ? `${window.location.origin}/product/${selectedProduct.slug || selectedProduct.id}`
+            : '';
+
+        setIsSubmitting(true);
+        try {
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: formData.name,
+                    email: formData.email,
+                    subject,
+                    message: formData.message,
+                    projectNeed: formData.projectNeed,
+                    techPreference: formData.techPreference,
+                    budget: formData.budget,
+                    timeline: formData.timeline,
+                    productName: selectedProduct?.name || '',
+                    productUrl,
+                    productImage: selectedProduct?.image || '',
+                    productFormat: selectedProduct?.format || '',
+                }),
+            });
+
+            if (!response.ok) {
+                const data = await response.json().catch(() => null);
+                throw new Error(data?.message || 'Contact API failed');
+            }
+
+            addToast('Đã gửi yêu cầu tư vấn. Mình sẽ phản hồi qua email sớm nhất.', 'success');
+            setFormData({
+                name: '',
+                email: '',
+                productKey: selectedProduct ? String(selectedProduct.slug || selectedProduct.id) : '__general__',
+                projectNeed: '',
+                techPreference: '',
+                budget: '',
+                timeline: '',
+                message: '',
+            });
+        } catch (error) {
+            console.error('Contact submit error:', error);
+            addToast(error instanceof Error ? error.message : 'Chưa gửi được yêu cầu, vui lòng thử lại.', 'error');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -113,7 +211,7 @@ export default function ContactContent() {
                             </motion.h1>
 
                             <motion.p variants={reveal} className="mt-5 max-w-2xl text-sm font-medium leading-7 text-slate-600 sm:text-base sm:leading-8">
-                                Hãy gửi nhu cầu, công nghệ đang sử dụng hoặc mã đơn hàng. Mình sẽ trực tiếp kiểm tra và phản hồi trong phạm vi hỗ trợ của sản phẩm.
+                                Hãy gửi nhu cầu, công nghệ đang sử dụng hoặc mã yêu cầu. Mình sẽ trực tiếp kiểm tra và phản hồi trong phạm vi hỗ trợ của mẫu demo.
                             </motion.p>
 
                             <motion.div variants={reveal} className="mt-7 grid grid-cols-2 gap-3 sm:flex">
@@ -138,7 +236,7 @@ export default function ContactContent() {
                                 </div>
                                 <div>
                                     <p className="text-lg font-extrabold">Lương Thế Vinh</p>
-                                    <p className="mt-1 text-xs font-semibold text-orange-300 sm:text-sm">Người xây dựng Shop Web rẻ</p>
+                                    <p className="mt-1 text-xs font-semibold text-orange-300 sm:text-sm">Người xây dựng Web Giá Rẻ - Portfolio</p>
                                 </div>
                             </div>
 
@@ -206,7 +304,7 @@ export default function ContactContent() {
                             </div>
                             <div>
                                 <h2 className="text-xl font-black sm:text-2xl">Gửi nội dung cần hỗ trợ</h2>
-                                <p className="mt-1 text-xs font-medium text-slate-500 sm:text-sm">Form sẽ mở ứng dụng email với nội dung đã điền sẵn.</p>
+                                <p className="mt-1 text-xs font-medium text-slate-500 sm:text-sm">Form sẽ gửi trực tiếp về email tư vấn của Web Giá Rẻ - Portfolio.</p>
                             </div>
                         </div>
                     </header>
@@ -240,23 +338,83 @@ export default function ContactContent() {
                         </div>
 
                         <label className="block">
-                            <span className="mb-2 block text-sm font-bold text-slate-700">Chủ đề <span className="text-orange-600">*</span></span>
-                            <input
-                                type="text"
+                            <span className="mb-2 block text-sm font-bold text-slate-700">Chủ đề / mẫu demo <span className="text-orange-600">*</span></span>
+                            <select
                                 required
-                                placeholder="Ví dụ: Cần tư vấn giao diện bán hàng"
-                                value={formData.subject}
-                                onChange={(event) => setFormData({ ...formData, subject: event.target.value })}
-                                className="h-12 w-full rounded-md border border-slate-300 bg-white px-4 text-sm font-medium shadow-sm outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-orange-500 focus:ring-4 focus:ring-orange-100"
-                            />
+                                value={formData.productKey}
+                                onChange={(event) => {
+                                    const productKey = event.target.value;
+                                    const nextProduct = products.find((product) => String(product.slug || product.id) === productKey);
+                                    setFormData((current) => ({
+                                        ...current,
+                                        productKey,
+                                        message: nextProduct && !current.message
+                                            ? `Mình cần tư vấn thêm về mẫu demo "${nextProduct.name}".`
+                                            : current.message,
+                                    }));
+                                }}
+                                className="h-12 w-full rounded-md border border-slate-300 bg-white px-4 text-sm font-medium shadow-sm outline-none transition hover:border-slate-400 focus:border-orange-500 focus:ring-4 focus:ring-orange-100"
+                            >
+                                <option value="__general__">
+                                    {productsLoading ? 'Đang tải danh sách mẫu demo...' : 'Tư vấn chung / chưa chọn mẫu cụ thể'}
+                                </option>
+                                {products.map((product) => (
+                                    <option key={product.id} value={String(product.slug || product.id)}>
+                                        {product.name}
+                                    </option>
+                                ))}
+                            </select>
                         </label>
 
+                        <div className="grid gap-5 sm:grid-cols-2">
+                            <label className="block">
+                                <span className="mb-2 block text-sm font-bold text-slate-700">Nhu cầu triển khai</span>
+                                <input
+                                    type="text"
+                                    placeholder="VD: website giới thiệu, landing page, dashboard..."
+                                    value={formData.projectNeed}
+                                    onChange={(event) => setFormData({ ...formData, projectNeed: event.target.value })}
+                                    className="h-12 w-full rounded-md border border-slate-300 bg-white px-4 text-sm font-medium shadow-sm outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-orange-500 focus:ring-4 focus:ring-orange-100"
+                                />
+                            </label>
+                            <label className="block">
+                                <span className="mb-2 block text-sm font-bold text-slate-700">Công nghệ mong muốn</span>
+                                <input
+                                    type="text"
+                                    placeholder="VD: Next.js, React, HTML/CSS, Figma..."
+                                    value={formData.techPreference}
+                                    onChange={(event) => setFormData({ ...formData, techPreference: event.target.value })}
+                                    className="h-12 w-full rounded-md border border-slate-300 bg-white px-4 text-sm font-medium shadow-sm outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-orange-500 focus:ring-4 focus:ring-orange-100"
+                                />
+                            </label>
+                            <label className="block">
+                                <span className="mb-2 block text-sm font-bold text-slate-700">Ngân sách dự kiến</span>
+                                <input
+                                    type="text"
+                                    placeholder="VD: 2-5 triệu, cần báo giá..."
+                                    value={formData.budget}
+                                    onChange={(event) => setFormData({ ...formData, budget: event.target.value })}
+                                    className="h-12 w-full rounded-md border border-slate-300 bg-white px-4 text-sm font-medium shadow-sm outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-orange-500 focus:ring-4 focus:ring-orange-100"
+                                />
+                            </label>
+                            <label className="block">
+                                <span className="mb-2 block text-sm font-bold text-slate-700">Thời gian cần hoàn thiện</span>
+                                <input
+                                    type="text"
+                                    placeholder="VD: trong tuần này, 2 tuần, càng sớm càng tốt..."
+                                    value={formData.timeline}
+                                    onChange={(event) => setFormData({ ...formData, timeline: event.target.value })}
+                                    className="h-12 w-full rounded-md border border-slate-300 bg-white px-4 text-sm font-medium shadow-sm outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-orange-500 focus:ring-4 focus:ring-orange-100"
+                                />
+                            </label>
+                        </div>
+
                         <label className="block">
-                            <span className="mb-2 block text-sm font-bold text-slate-700">Nội dung <span className="text-orange-600">*</span></span>
+                            <span className="mb-2 block text-sm font-bold text-slate-700">Ghi chú thêm <span className="text-orange-600">*</span></span>
                             <textarea
                                 rows={4}
                                 required
-                                placeholder="Mô tả nhu cầu, công nghệ, ngân sách dự kiến hoặc mã đơn hàng..."
+                                placeholder="Mô tả thêm về nội dung, phong cách, trang cần có hoặc mã yêu cầu..."
                                 value={formData.message}
                                 onChange={(event) => setFormData({ ...formData, message: event.target.value })}
                                 className="min-h-32 w-full resize-y rounded-md border border-slate-300 bg-white px-4 py-3.5 text-sm font-medium leading-6 shadow-sm outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-orange-500 focus:ring-4 focus:ring-orange-100"
@@ -267,8 +425,13 @@ export default function ContactContent() {
                             <p className="flex items-center gap-2 text-xs font-medium text-slate-500">
                                 <ShieldCheck size={15} className="text-emerald-600" /> Không chia sẻ thông tin với bên thứ ba.
                             </p>
-                            <button type="submit" className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-orange-600 px-6 text-sm font-bold text-white shadow-lg shadow-orange-100 transition hover:bg-orange-700">
-                                <Send size={17} /> Soạn email
+                            <button
+                                type="submit"
+                                disabled={isSubmitting}
+                                className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-orange-600 px-6 text-sm font-bold text-white shadow-lg shadow-orange-100 transition hover:bg-orange-700 disabled:cursor-not-allowed disabled:opacity-70"
+                            >
+                                {isSubmitting ? <Loader2 size={17} className="animate-spin" /> : <Send size={17} />}
+                                {isSubmitting ? 'Đang gửi...' : 'Gửi yêu cầu'}
                             </button>
                         </div>
                     </form>
@@ -344,7 +507,7 @@ export default function ContactContent() {
                         <Clock3 size={21} className="text-orange-600" />
                         <h2 className="mt-4 text-lg font-black">Để được phản hồi nhanh</h2>
                         <p className="mt-2 text-sm font-medium leading-6 text-slate-600">
-                            Hãy gửi kèm tên sản phẩm, mã đơn và ảnh chụp lỗi nếu yêu cầu liên quan đến đơn hàng.
+                            Hãy gửi kèm tên mẫu demo, mã đơn và ảnh chụp lỗi nếu yêu cầu liên quan đến yêu cầu.
                         </p>
                     </motion.div>
                 </motion.aside>

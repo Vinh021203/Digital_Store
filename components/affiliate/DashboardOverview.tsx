@@ -383,7 +383,7 @@ export const DashboardOverview = ({ user, handleCopyLink, copied }: DashboardOve
                                     <PenLine size={16} className="text-blue-400" />
                                 </div>
                                 <div>
-                                    <p className="text-sm font-medium">Viết review sản phẩm</p>
+                                    <p className="text-sm font-medium">Viết review mẫu demo</p>
                                     <p className="text-xs text-slate-400">Tăng độ tin cậy 3x</p>
                                 </div>
                             </div>

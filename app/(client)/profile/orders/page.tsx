@@ -47,14 +47,14 @@ export default function OrdersPage() {
             case 'pending':
                 return (
                     <span className="flex items-center gap-1.5 text-xs font-bold text-amber-700 bg-amber-100 px-3 py-1.5 rounded-full">
-                        <Clock size={14} /> Chờ thanh toán
+                        <Clock size={14} /> Chờ xác nhận tư vấn
                     </span>
                 );
             case 'cancelled':
             case 'refunded':
                 return (
                     <span className="flex items-center gap-1.5 text-xs font-bold text-red-700 bg-red-100 px-3 py-1.5 rounded-full">
-                        <XCircle size={14} /> {status === 'refunded' ? 'Hoàn tiền' : 'Đã hủy'}
+                        <XCircle size={14} /> {status === 'refunded' ? 'Xử lý yêu cầu' : 'Đã hủy'}
                     </span>
                 );
             default:
@@ -100,7 +100,7 @@ export default function OrdersPage() {
                         <ChevronRight size={14} />
                         <Link href="/profile" className="hover:text-white transition-colors">Profile</Link>
                         <ChevronRight size={14} />
-                        <span className="text-white font-medium">Đơn hàng</span>
+                        <span className="text-white font-medium">Yêu cầu</span>
                     </div>
 
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -112,8 +112,8 @@ export default function OrdersPage() {
                                 <span className="bg-blue-500/20 text-blue-300 px-2.5 py-0.5 rounded-full text-xs font-bold mb-2 inline-block">
                                     <Sparkles size={10} className="inline mr-1" /> Order History
                                 </span>
-                                <h1 className="text-2xl md:text-3xl font-black">Đơn hàng</h1>
-                                <p className="text-slate-400 text-sm">Lịch sử mua hàng của bạn</p>
+                                <h1 className="text-2xl md:text-3xl font-black">Yêu cầu</h1>
+                                <p className="text-slate-400 text-sm">Lịch sử gửi yêu cầu của bạn</p>
                             </div>
                         </div>
 
@@ -178,7 +178,7 @@ export default function OrdersPage() {
                             <p className="text-lg font-black text-orange-600">
                                 {(stats.totalSpent / 1000000).toFixed(1)}M
                             </p>
-                            <p className="text-xs text-slate-500 font-medium">Đã chi tiêu</p>
+	                            <p className="text-xs text-slate-500 font-medium">Giá trị tham khảo</p>
                         </div>
                     </div>
                 </div>
@@ -190,7 +190,7 @@ export default function OrdersPage() {
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                     <input
                         type="text"
-                        placeholder="Tìm theo mã đơn hàng..."
+                        placeholder="Tìm theo mã yêu cầu..."
                         value={searchTerm}
                         onChange={e => setSearchTerm(e.target.value)}
                         className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
@@ -202,8 +202,8 @@ export default function OrdersPage() {
                     className="bg-white border border-slate-200 text-slate-600 px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
                 >
                     <option value="all">Tất cả trạng thái</option>
-                    <option value="pending">Chờ thanh toán</option>
-                    <option value="paid">Đã thanh toán</option>
+                    <option value="pending">Chờ xác nhận tư vấn</option>
+                    <option value="paid">Đã xác nhận tư vấn</option>
                     <option value="completed">Hoàn thành</option>
                     <option value="cancelled">Đã hủy</option>
                 </select>
@@ -220,16 +220,16 @@ export default function OrdersPage() {
                     <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                         <ShoppingBag size={32} className="text-slate-300" />
                     </div>
-                    <h3 className="text-xl font-bold text-slate-900 mb-2">Chưa có đơn hàng nào</h3>
+                    <h3 className="text-xl font-bold text-slate-900 mb-2">Chưa có yêu cầu nào</h3>
                     <p className="text-slate-500 mb-6 max-w-md mx-auto">
-                        Bắt đầu mua sắm để xem lịch sử đơn hàng của bạn tại đây
+                        Bắt đầu tham khảo demo để xem lịch sử yêu cầu của bạn tại đây
                     </p>
                     <Link
                         href="/products"
                         className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold px-6 py-3 rounded-xl hover:shadow-lg hover:shadow-orange-500/30 transition-all"
                     >
                         <Sparkles size={18} />
-                        Khám phá sản phẩm
+                        Khám phá mẫu demo
                     </Link>
                 </div>
             ) : (

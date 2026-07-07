@@ -76,19 +76,19 @@ export async function getRoleStats(): Promise<RoleInfo[]> {
         {
             name: 'admin',
             label: 'Admin',
-            description: 'Quản lý đơn hàng, sản phẩm và khách hàng.',
+            description: 'Quản lý yêu cầu, mẫu demo và khách hàng.',
             color: 'bg-purple-100 text-purple-700 border-purple-200'
         },
         {
             name: 'editor',
             label: 'Editor',
-            description: 'Quản lý sản phẩm, bài viết, nội dung hiển thị.',
+            description: 'Quản lý mẫu demo, bài viết, nội dung hiển thị.',
             color: 'bg-emerald-100 text-emerald-700 border-emerald-200'
         },
         {
             name: 'support',
             label: 'Support',
-            description: 'Xem đơn hàng, chăm sóc khách hàng, hỗ trợ chat.',
+            description: 'Xem yêu cầu, chăm sóc khách hàng, hỗ trợ chat.',
             color: 'bg-amber-100 text-amber-700 border-amber-200'
         },
     ];

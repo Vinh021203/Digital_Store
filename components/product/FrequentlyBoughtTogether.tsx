@@ -3,10 +3,11 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ShoppingCart, Check, Plus, Sparkles } from 'lucide-react';
+import { MessageCircle, Check, Plus, Sparkles } from 'lucide-react';
 import { Product } from '@/types';
 import { useCart } from '@/context/CartContext';
 import { useToast } from '@/context/ToastContext';
+import { useSiteMode } from '@/hooks/useSiteSettings';
 
 interface FrequentlyBoughtTogetherProps {
     currentProduct: Product;
@@ -16,6 +17,7 @@ interface FrequentlyBoughtTogetherProps {
 export default function FrequentlyBoughtTogether({ currentProduct, recommendedProducts = [] }: FrequentlyBoughtTogetherProps) {
     const { addToCart } = useCart();
     const { addToast } = useToast();
+    const { isCatalogMode } = useSiteMode();
     const [selectedProducts, setSelectedProducts] = React.useState<number[]>([currentProduct.id]);
 
     // Use provided recommendedProducts or empty array
@@ -47,9 +49,13 @@ export default function FrequentlyBoughtTogether({ currentProduct, recommendedPr
     };
 
     const handleAddBundle = () => {
+        if (isCatalogMode) {
+            window.location.href = `/contact?product=${encodeURIComponent(String((currentProduct as any).slug || currentProduct.id))}`;
+            return;
+        }
         const productsToAdd = allProducts.filter(p => selectedProducts.includes(p.id));
         productsToAdd.forEach(p => addToCart(p));
-        addToast(`Đã thêm ${productsToAdd.length} sản phẩm vào giỏ hàng!`, 'success');
+        addToast(`Đã thêm ${productsToAdd.length} mẫu demo vào danh sách quan tâm!`, 'success');
     };
 
     if (recommendedProducts.length === 0) return null;
@@ -58,7 +64,7 @@ export default function FrequentlyBoughtTogether({ currentProduct, recommendedPr
         <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-6 border border-orange-100">
             <h3 className="text-lg font-black text-slate-900 mb-4 flex items-center gap-2">
                 <Sparkles className="text-orange-500" size={20} />
-                Mua cùng nhau & tiết kiệm
+                Bộ mẫu thường xem cùng nhau
             </h3>
 
             <div className="flex flex-wrap items-center gap-3 mb-6">
@@ -80,7 +86,7 @@ export default function FrequentlyBoughtTogether({ currentProduct, recommendedPr
                                 </div>
                             )}
                             <p className="text-xs font-bold text-slate-700 mt-2 text-center truncate w-20">
-                                {product.price.toLocaleString('vi-VN')}₫
+                                {isCatalogMode ? 'Lien he tu van' : product.price.toLocaleString('vi-VN') + ' VND'}
                             </p>
                         </div>
                         {idx < allProducts.length - 1 && (
@@ -96,13 +102,13 @@ export default function FrequentlyBoughtTogether({ currentProduct, recommendedPr
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-orange-200">
                 <div>
                     <p className="text-sm text-slate-600 mb-1">
-                        Tổng cho {selectedProducts.length} sản phẩm:
+                        Tổng cho {selectedProducts.length} mẫu demo:
                     </p>
                     <div className="flex items-center gap-2">
                         <span className="text-2xl font-black text-orange-600">
-                            {totalPrice.toLocaleString('vi-VN')}₫
+                            {isCatalogMode ? 'Lien he tu van' : totalPrice.toLocaleString('vi-VN') + ' VND'}
                         </span>
-                        {savings > 0 && (
+                        {!isCatalogMode && savings > 0 && (
                             <span className="text-sm text-green-600 font-bold bg-green-100 px-2 py-0.5 rounded">
                                 Tiết kiệm {bundleDiscount}%
                             </span>
@@ -114,8 +120,8 @@ export default function FrequentlyBoughtTogether({ currentProduct, recommendedPr
                     disabled={selectedProducts.length === 0}
                     className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-600 to-red-600 text-white font-bold rounded-xl hover:from-orange-700 hover:to-red-700 transition-all shadow-lg shadow-orange-200 disabled:opacity-50"
                 >
-                    <ShoppingCart size={18} />
-                    Thêm {selectedProducts.length} sản phẩm vào giỏ
+                    <MessageCircle size={18} />
+                    {isCatalogMode ? 'Nhan tu van' : `Them ${selectedProducts.length} mau demo vao danh sach`}
                 </button>
             </div>
 
@@ -132,7 +138,7 @@ export default function FrequentlyBoughtTogether({ currentProduct, recommendedPr
                             {selectedProducts.includes(product.id) && <Check size={10} className="text-white" />}
                         </div>
                         <span className="flex-1 truncate">{product.name}</span>
-                        <span className="font-bold">{product.price.toLocaleString('vi-VN')}₫</span>
+                        <span className="font-bold">{isCatalogMode ? 'Tu van' : product.price.toLocaleString('vi-VN') + ' VND'}</span>
                     </div>
                 ))}
             </div>

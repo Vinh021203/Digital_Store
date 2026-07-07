@@ -80,7 +80,7 @@ export async function createAffiliateReferral(payload: AffiliateReferralPayload)
 
     if (error) {
         console.error('Error creating affiliate referral:', error);
-        // Don't throw - affiliate tracking should not break checkout
+        // Don't throw - affiliate tracking should not break yêu cầu tư vấn
         return null;
     }
     return data;

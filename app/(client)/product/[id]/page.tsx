@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     if (!product) {
       return {
-        title: 'Sản phẩm không tìm thấy',
+        title: 'Mẫu giao diện không tìm thấy',
         robots: {
           index: false,
           follow: false,
@@ -31,11 +31,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       };
     }
 
-    const title = `${product.name} - Template website có demo và thông tin kỹ thuật`;
+    const title = `${product.name} - Mẫu giao diện có demo và thông tin kỹ thuật`;
     const plainDescription = product.description?.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
     const description =
       plainDescription ||
-      `Tham khảo ${product.name} với demo, công nghệ và thông tin kỹ thuật rõ ràng. ${product.category?.name || 'Giao diện website'} chuyên nghiệp từ ${product.author || 'Shop Web rẻ'}.`;
+      `Tham khảo ${product.name} với demo, công nghệ và thông tin kỹ thuật rõ ràng. ${product.category?.name || 'Giao diện website'} chuyên nghiệp từ ${product.author || 'Web Giá Rẻ - Portfolio'}.`;
     const productPath = `/product/${product.slug || product.id}`;
 
     const keywords = buildProductSeoKeywords({
@@ -53,7 +53,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description: description.substring(0, 160),
       keywords,
-      authors: [{ name: product.author || 'Shop Web rẻ' }],
+      authors: [{ name: product.author || 'Web Giá Rẻ - Portfolio' }],
       openGraph: {
         type: 'website',
         title,
@@ -66,7 +66,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             alt: product.name,
           },
         ],
-        siteName: 'Shop Web rẻ',
+        siteName: 'Web Giá Rẻ - Portfolio',
       },
       twitter: {
         card: 'summary_large_image',
@@ -81,7 +81,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   } catch (error) {
     console.error('Error generating metadata:', error);
     return {
-      title: 'Sản phẩm',
+      title: 'Mẫu giao diện',
     };
   }
 }
@@ -133,26 +133,19 @@ export default async function Page({ params }: Props) {
 
   const structuredData = {
     '@context': 'https://schema.org',
-    '@type': 'Product',
+    '@type': 'CreativeWork',
     name: product.name,
     image: [product.image, ...(product.images || [])].filter(Boolean),
     description: plainDescription?.slice(0, 500),
     sku: String(product.id),
     brand: {
       '@type': 'Brand',
-      name: product.author || 'Shop Web rẻ',
+      name: product.author || 'Web Giá Rẻ - Portfolio',
     },
     ...(technicalProperties.length > 0
       ? { additionalProperty: technicalProperties }
       : {}),
-    offers: {
-      '@type': 'Offer',
-      url: `${siteUrl}${productPath}`,
-      priceCurrency: 'VND',
-      price: Number(product.price || 0),
-      availability: 'https://schema.org/InStock',
-      itemCondition: 'https://schema.org/NewCondition',
-    },
+    url: `${siteUrl}${productPath}`,
     ...(ratingValue > 0 && reviewCount > 0
       ? {
           aggregateRating: {

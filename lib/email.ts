@@ -50,7 +50,7 @@ export interface NewVersionEmailData {
 export async function sendEmail(options: EmailOptions) {
     try {
         const { data, error } = await resend.emails.send({
-            from: `Shop Web rẻ <${FROM_EMAIL}>`,
+            from: `Web Giá Rẻ - Portfolio <${FROM_EMAIL}>`,
             to: options.to,
             subject: options.subject,
             html: options.html,
@@ -93,7 +93,7 @@ export async function sendOrderConfirmationEmail(data: OrderEmailData) {
     <body style="font-family: 'Segoe UI', Arial, sans-serif; background: #f4f4f5; margin: 0; padding: 20px;">
         <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
             <div style="background: linear-gradient(135deg, #f97316, #ea580c); padding: 32px; text-align: center;">
-                <h1 style="color: white; margin: 0; font-size: 24px;">Cảm ơn bạn đã mua hàng!</h1>
+                <h1 style="color: white; margin: 0; font-size: 24px;">Cảm ơn bạn đã gửi yêu cầu!</h1>
             </div>
 
             <div style="padding: 32px;">
@@ -101,14 +101,14 @@ export async function sendOrderConfirmationEmail(data: OrderEmailData) {
                     Xin chào <strong>${data.customerName}</strong>,
                 </p>
                 <p style="color: #666;">
-                    Đơn hàng <strong>#${data.orderId}</strong> của bạn đã được xác nhận.
-                    Dưới đây là chi tiết đơn hàng và license key của bạn:
+                    Yêu cầu <strong>#${data.orderId}</strong> của bạn đã được xác nhận.
+                    Dưới đây là chi tiết yêu cầu và license key của bạn:
                 </p>
 
                 <table style="width: 100%; border-collapse: collapse; margin: 24px 0;">
                     <thead>
                         <tr style="background: #f8f8f8;">
-                            <th style="padding: 12px; text-align: left; font-weight: 600;">Sản phẩm</th>
+                            <th style="padding: 12px; text-align: left; font-weight: 600;">Mẫu demo</th>
                             <th style="padding: 12px; text-align: right; font-weight: 600;">Giá</th>
                         </tr>
                     </thead>
@@ -149,7 +149,7 @@ export async function sendOrderConfirmationEmail(data: OrderEmailData) {
                     Cần hỗ trợ? <a href="${SITE_URL}/profile/support" style="color: #f97316;">Liên hệ chúng tôi</a>
                 </p>
                 <p style="margin: 8px 0 0; color: #999; font-size: 12px;">
-                    © 2026 Shop Web rẻ. All rights reserved.
+                    © 2026 Web Giá Rẻ - Portfolio. All rights reserved.
                 </p>
             </div>
         </div>
@@ -159,7 +159,7 @@ export async function sendOrderConfirmationEmail(data: OrderEmailData) {
 
     return sendEmail({
         to: data.customerEmail,
-        subject: `Đơn hàng #${data.orderId} đã được xác nhận`,
+        subject: `Yêu cầu #${data.orderId} đã được xác nhận`,
         html,
     });
 }
@@ -182,7 +182,7 @@ export async function sendLicenseDeliveryEmail(data: LicenseEmailData) {
                     Xin chào <strong>${data.customerName}</strong>,
                 </p>
                 <p style="color: #666;">
-                    Đây là license key cho sản phẩm <strong>${data.productName}</strong>:
+                    Đây là license key cho mẫu demo <strong>${data.productName}</strong>:
                 </p>
 
                 <div style="background: #f0fdf4; border: 2px solid #22c55e; border-radius: 12px; padding: 24px; margin: 24px 0; text-align: center;">
@@ -196,14 +196,14 @@ export async function sendLicenseDeliveryEmail(data: LicenseEmailData) {
                 <div style="text-align: center; margin: 32px 0;">
                     <a href="${data.downloadUrl}"
                        style="display: inline-block; background: linear-gradient(135deg, #10b981, #059669); color: white; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: bold;">
-                        Tải xuống sản phẩm
+                        Tải xuống mẫu demo
                     </a>
                 </div>
             </div>
 
             <div style="background: #f8f8f8; padding: 24px; text-align: center; border-top: 1px solid #eee;">
                 <p style="margin: 0; color: #999; font-size: 12px;">
-                    © 2026 Shop Web rẻ. All rights reserved.
+                    © 2026 Web Giá Rẻ - Portfolio. All rights reserved.
                 </p>
             </div>
         </div>
@@ -236,7 +236,7 @@ export async function sendNewVersionEmail(data: NewVersionEmailData) {
                     Xin chào <strong>${data.customerName}</strong>,
                 </p>
                 <p style="color: #666;">
-                    Sản phẩm <strong>${data.productName}</strong> vừa được cập nhật lên phiên bản <strong>v${data.newVersion}</strong>.
+                    Mẫu demo <strong>${data.productName}</strong> vừa được cập nhật lên phiên bản <strong>v${data.newVersion}</strong>.
                 </p>
 
                 ${data.changelog ? `
@@ -256,7 +256,7 @@ export async function sendNewVersionEmail(data: NewVersionEmailData) {
 
             <div style="background: #f8f8f8; padding: 24px; text-align: center; border-top: 1px solid #eee;">
                 <p style="margin: 0; color: #999; font-size: 12px;">
-                    © 2026 Shop Web rẻ. All rights reserved.
+                    © 2026 Web Giá Rẻ - Portfolio. All rights reserved.
                 </p>
             </div>
         </div>

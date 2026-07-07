@@ -21,9 +21,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       };
     }
 
-    const title = `${post.title} | Blog Shop Web rẻ`;
+    const title = `${post.title} | Blog Web Giá Rẻ - Portfolio`;
     const plainContent = post.content?.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
-    const description = post.excerpt || plainContent?.substring(0, 160) || 'Đọc bài viết trên Shop Web rẻ Blog';
+    const description = post.excerpt || plainContent?.substring(0, 160) || 'Đọc bài viết trên Web Giá Rẻ - Portfolio Blog';
     const keywords = [
       ...(post.tags || []),
       post.category,

@@ -144,7 +144,7 @@ const NewsletterPopup = () => {
             <div className="relative mb-6">
               <div className="absolute inset-0 animate-pulse rounded-3xl bg-white/30 blur-xl" />
               <div className="relative flex h-20 w-20 animate-bounce-slow items-center justify-center rounded-3xl bg-white p-3 shadow-2xl">
-                <img src="/logo_webgiare_display.webp" alt="Shop Web rẻ" className="h-full w-full object-contain" loading="lazy" />
+                <img src="/logo_webgiare_display.webp" alt="Web Giá Rẻ - Portfolio" className="h-full w-full object-contain" loading="lazy" />
               </div>
               <Sparkles size={16} className="absolute -right-2 -top-2 animate-spin-slow text-amber-400" />
             </div>
@@ -168,7 +168,7 @@ const NewsletterPopup = () => {
             />
             <div className="absolute inset-x-0 top-0 flex h-32 items-center justify-center bg-gradient-to-b from-orange-600/80 to-red-600/80">
               <div className="text-center text-white">
-                <img src="/logo_webgiare_display.webp" alt="Shop Web rẻ" className="mx-auto mb-2 h-10 w-10 object-contain" loading="lazy" />
+                <img src="/logo_webgiare_display.webp" alt="Web Giá Rẻ - Portfolio" className="mx-auto mb-2 h-10 w-10 object-contain" loading="lazy" />
                 <p className="text-lg font-bold">Tặng Ebook Miễn Phí</p>
               </div>
             </div>

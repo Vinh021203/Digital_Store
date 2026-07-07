@@ -1,4 +1,4 @@
-// hooks/useSiteSettings.ts
+﻿// hooks/useSiteSettings.ts
 // React hooks to fetch and cache site settings for client components.
 
 'use client';
@@ -47,9 +47,9 @@ export interface PaymentSettings {
 }
 
 const defaultPublicSettings: PublicSiteSettings = {
-    siteName: 'Shop Web rẻ',
-    tagline: 'Kho giao diện website đẹp, dễ dùng, giá hợp lý',
-    description: 'Mua giao diện website, template, landing page, UI kit, dashboard và source code chất lượng cao.',
+    siteName: 'Web Gia Re - Portfolio',
+    tagline: 'Portfolio giao dien website, landing page va du an web chuyen nghiep',
+    description: 'Portfolio giao dien website, template, landing page, UI kit va du an web chat luong cao. Xem demo va nhan tu van trien khai.',
     email: '',
     phone: '',
     address: '',
@@ -57,7 +57,7 @@ const defaultPublicSettings: PublicSiteSettings = {
     favicon: '',
     maintenanceMode: false,
     maintenanceMessage: '',
-    siteMode: 'sales',
+    siteMode: 'catalog',
     social: {
         facebook: '',
         youtube: '',
@@ -136,7 +136,7 @@ export function useMaintenanceMode() {
 }
 
 export function useSiteMode() {
-    const [siteMode, setSiteMode] = useState<SiteMode>('sales');
+    const [siteMode, setSiteMode] = useState<SiteMode>('catalog');
     const [loading, setLoading] = useState(true);
 
     const refresh = useCallback(async () => {
@@ -144,7 +144,7 @@ export function useSiteMode() {
             setSiteMode(await getSiteMode());
         } catch (error) {
             console.error('Error loading site mode:', error);
-            setSiteMode('sales');
+            setSiteMode('catalog');
         } finally {
             setLoading(false);
         }

@@ -36,6 +36,7 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
   const discount = product.originalPrice
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0;
+  const priceLabel = isCatalogMode ? 'Lien he tu van' : product.price.toLocaleString('vi-VN') + ' VND';
 
   // Memoized handlers
   const handleAddToCart = useCallback((e: React.MouseEvent) => {
@@ -51,7 +52,7 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
     }
     addToCart(product);
     addToast(
-      'Đã thêm vào giỏ',
+      'Đã thêm vào danh sách',
       'success'
     );
   }, [product, addToCart, addToast, isCatalogMode]);
@@ -76,7 +77,7 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
       addToast('Đã xóa khỏi so sánh', 'info');
     } else {
       if (compareList.length >= 3) {
-        addToast('Chỉ có thể so sánh tối đa 3 sản phẩm', 'warning');
+        addToast('Chỉ có thể so sánh tối đa 3 mẫu demo', 'warning');
       } else {
         addToCompare(product);
         addToast('Đã thêm vào so sánh', 'success');
@@ -158,8 +159,8 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
 
           <div className="mt-auto flex items-center justify-between">
             <div className="flex flex-col">
-              <span className="text-xl font-black text-orange-700">{product.price.toLocaleString('vi-VN')}₫</span>
-              {product.originalPrice && (
+              <span className="text-xl font-black text-orange-700">{priceLabel}</span>
+              {!isCatalogMode && product.originalPrice && (
                 <span className="text-xs text-slate-500 line-through">
                   {product.originalPrice.toLocaleString('vi-VN')}₫
                 </span>
@@ -221,7 +222,7 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
         </div>
 
         {/* Discount Badge */}
-        {discount > 0 && (
+        {!isCatalogMode && discount > 0 && (
           <span className="absolute top-2 right-2 bg-rose-600 text-white text-[11px] font-black px-1.5 py-0.5 rounded shadow-sm">
             -{discount}%
           </span>
@@ -327,9 +328,9 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
           {/* Price */}
           <div className="flex flex-col min-w-0 flex-shrink">
             <span className="text-sm md:text-base font-black text-orange-700 truncate">
-              {product.price.toLocaleString('vi-VN')}₫
+              {priceLabel}
             </span>
-            {product.originalPrice && (
+            {!isCatalogMode && product.originalPrice && (
               <span className="text-[10px] md:text-xs text-slate-500 line-through truncate">
                 {product.originalPrice.toLocaleString('vi-VN')}₫
               </span>
@@ -343,7 +344,7 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
           >
             {isCatalogMode ? <MessageCircle size={12} /> : <ShoppingCart size={12} />}
             <span className="hidden sm:inline">{isCatalogMode ? 'Tư vấn' : 'Thêm giỏ'}</span>
-            <span className="sm:hidden">{isCatalogMode ? 'Tư vấn' : 'Mua'}</span>
+            <span className="sm:hidden">{isCatalogMode ? 'Tư vấn' : 'Tư vấn'}</span>
           </button>
         </div>
 

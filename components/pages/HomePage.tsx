@@ -37,6 +37,7 @@ import {
   ImageIcon,
   Palette,
   Headphones,
+  MessageCircle,
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
@@ -87,7 +88,7 @@ const mockProducts: Product[] = [
     price: 950000,
     originalPrice: 1250000,
     description:
-      "Mẫu website bán hàng thời trang và công nghệ hiệu năng cao, tối ưu SEO vượt trội.",
+      "Mẫu storefront demo cho ngành thời trang và công nghệ, hiệu năng cao, tối ưu SEO vượt trội.",
     category: "ecommerce",
     image: fallbackImages[1],
     rating: 4.8,
@@ -220,7 +221,7 @@ const mockBlogs = [
     title:
       "Làm Thế Nào Để Xây Dựng Một SaaS Landing Page Đạt Tỉ Lệ Chuyển Đổi Cao",
     excerpt:
-      "Phân tích cấu trúc lý tưởng cho một landing page bán phần mềm, vị trí đặt CTA và cách viết tiêu đề thu hút khách hàng.",
+      "Phân tích cấu trúc lý tưởng cho một landing page giới thiệu phần mềm, vị trí đặt CTA và cách viết tiêu đề thu hút khách hàng.",
     cover_image:
       "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop&auto=format",
     category: "Khởi Nghiệp",
@@ -315,8 +316,8 @@ const DpMarketProductCard = memo(
     const [imgLoaded, setImgLoaded] = useState(false);
 
     const isLiked = isInWishlist(product.id);
-    const hasDiscount =
-      product.originalPrice && product.originalPrice > product.price;
+	    const hasDiscount =
+	      !isCatalogMode && product.originalPrice && product.originalPrice > product.price;
 
     const handleAddToCart = (e: React.MouseEvent) => {
       e.preventDefault();
@@ -329,7 +330,7 @@ const DpMarketProductCard = memo(
         return;
       }
       addToCart(product);
-      addToast("Đã thêm vào giỏ hàng", "success");
+      addToast("Đã thêm vào danh sách quan tâm", "success");
     };
 
     const handleToggleWishlist = (e: React.MouseEvent) => {
@@ -344,7 +345,7 @@ const DpMarketProductCard = memo(
       }
     };
 
-    const formattedPrice = product.price.toLocaleString("vi-VN") + "₫";
+    const formattedPrice = isCatalogMode ? "Lien he tu van" : product.price.toLocaleString("vi-VN") + " VND";
     const formattedOriginalPrice = product.originalPrice
       ? product.originalPrice.toLocaleString("vi-VN") + "₫"
       : "";
@@ -375,7 +376,7 @@ const DpMarketProductCard = memo(
         >
           <Link
             href={`/product/${product.slug || product.id}`}
-            className="block w-full h-full"
+            className="relative block w-full h-full"
           >
             <Image
               src={product.image}
@@ -447,7 +448,7 @@ const DpMarketProductCard = memo(
                   : "text-[10px] sm:text-xs max-w-[96px] sm:max-w-[140px]"
               }`}
             >
-              {product.author || "Shop Web rẻ"}
+              {product.author || "Web Giá Rẻ - Portfolio"}
             </span>
             <div
               className={`flex flex-shrink-0 ${
@@ -482,7 +483,7 @@ const DpMarketProductCard = memo(
                 <span
                   className={`${variant === "mobileHorizontal" ? "text-[10px]" : "text-[10px] sm:text-xs"} md:text-[11px] font-bold text-slate-500 mb-0.5`}
                 >
-                  {(product.reviews || 0) * 8 + 12} Sales
+                  {(product.reviews || 0) * 8 + 12} {isCatalogMode ? "Quan tam" : "Sales"}
                 </span>
                 <div className="flex items-center gap-0.5 text-amber-400">
                   {[...Array(5)].map((_, i) => (
@@ -511,9 +512,9 @@ const DpMarketProductCard = memo(
                 <button
                   onClick={handleAddToCart}
                   className={`${variant === "mobileHorizontal" ? "w-7 h-7" : "w-8 h-8 sm:w-9 sm:h-9"} md:w-[36px] md:h-[36px] rounded-full border border-slate-200 text-slate-500 hover:bg-[#ea580c] hover:text-white hover:border-[#ea580c] flex items-center justify-center transition-all duration-200 shadow-sm`}
-                  aria-label={isCatalogMode ? "Nhận tư vấn" : "Thêm vào giỏ"}
+                  aria-label={isCatalogMode ? "Nhận tư vấn" : "Thêm vào danh sách"}
                 >
-                  <Download size={14} strokeWidth={2.5} />
+	                  {isCatalogMode ? <MessageCircle size={14} strokeWidth={2.5} /> : <Download size={14} strokeWidth={2.5} />}
                 </button>
                 <Link
                   href={`/product/${product.slug || product.id}`}
@@ -850,8 +851,8 @@ const HomePage = ({
                   </>
                 ) : (
                   <>
-                    Mua <span className="text-[#ea580c]">giao diện website</span> đẹp,
-                    dễ dùng và giá hợp lý
+                    Tham khảo <span className="text-[#ea580c]">giao diện website</span> đẹp,
+                    dễ tùy chỉnh và hợp nhu cầu
                   </>
                 )}
               </h1>
@@ -859,7 +860,7 @@ const HomePage = ({
               <p className="max-w-xl text-sm sm:text-lg text-slate-600 font-normal leading-relaxed mb-5 md:mb-7">
                 {isCatalogMode
                   ? 'Khám phá template website, landing page, UI kit và dashboard chất lượng cao. Xem demo, lọc mẫu phù hợp và gửi nhu cầu để được tư vấn triển khai.'
-                  : 'Khám phá template website, landing page, UI kit và dashboard chất lượng cao. Xem demo trước khi mua, tải file nhanh và dễ dàng tùy chỉnh cho dự án của bạn.'}
+                  : 'Khám phá portfolio giao diện website, landing page, UI kit và dashboard chất lượng cao. Xem demo, tham khảo thông tin kỹ thuật và gửi nhu cầu tư vấn cho dự án của bạn.'}
               </p>
 
               {/* Search Bar */}
@@ -1048,9 +1049,9 @@ const HomePage = ({
                       </svg>
                     ),
                   },
-                ].map((tech) => (
+                ].map((tech, index) => (
                   <Link
-                    key={tech.name}
+                    key={`${tech.name}-${tech.search}-${index}`}
                     href={`/products?search=${tech.search}`}
                     className={`px-3.5 py-2 rounded-full border border-slate-200 bg-white/90 text-xs md:text-sm font-semibold text-slate-600 flex items-center gap-2 transition-all duration-200 ${tech.color} shadow-sm hover:shadow-md hover:-translate-y-0.5`}
                   >
@@ -1287,7 +1288,7 @@ const HomePage = ({
               },
             ].map((cat, i) => (
               <Link
-                key={cat.name}
+                key={`${cat.name}-${cat.slug}-${i}`}
                 href={`/products?category=${cat.slug}`}
                 className={`group popular-item flex flex-col items-center text-center p-4 bg-white/95 border border-slate-200/80 rounded-2xl shadow-sm shadow-slate-200/60 hover:shadow-lg hover:-translate-y-1 hover:border-[#ea580c]/30 transition-all duration-300 min-w-[132px] md:min-w-0 flex-shrink-0 snap-start`}
               >
@@ -1300,7 +1301,7 @@ const HomePage = ({
                   {cat.name}
                 </h6>
                 <span className="text-[10px] md:text-xs text-slate-500 font-medium">
-                  {cat.qty} sản phẩm
+                  {cat.qty} mẫu demo
                 </span>
               </Link>
             ))}
@@ -1334,7 +1335,7 @@ const HomePage = ({
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
           <div className="text-center max-w-2xl mx-auto mb-4 md:mb-6">
             <span className="inline-flex items-center justify-center rounded-full border border-orange-200 bg-white/90 px-3 py-1 text-[#ea580c] text-[11px] md:text-xs font-bold uppercase tracking-widest mb-2 shadow-sm">
-              SẢN PHẨM MỚI NHẤT
+              MẪU DEMO MỚI NHẤT
             </span>
             <h2 className="text-2xl md:text-4xl font-extrabold text-slate-950 leading-tight">
               Tài nguyên số mới cập bến
@@ -1407,12 +1408,12 @@ const HomePage = ({
             {
               href: "/products?category=themes",
               image: "/hero_section/banner_1.webp",
-              alt: "Kho template và theme website chất lượng cao tại Shop Web rẻ",
+              alt: "Portfolio giao diện website và landing page chất lượng cao tại Web Giá Rẻ - Portfolio",
             },
             {
               href: "/products?category=ui-kits",
               image: "/hero_section/banner_2.webp",
-              alt: "Bộ sưu tập giao diện, UI kit và landing page tại Shop Web rẻ",
+              alt: "Bộ sưu tập giao diện, UI kit và landing page tại Web Giá Rẻ - Portfolio",
             },
           ].map((banner) => (
             <Link
@@ -1514,10 +1515,10 @@ const HomePage = ({
                 <div className="absolute bottom-0 right-0 h-px w-full bg-gradient-to-r from-transparent via-orange-300/60 to-transparent" />
                 <div className="relative">
                   <span className="text-[#ea580c] text-xs font-extrabold uppercase tracking-widest mb-1 md:mb-2 block">
-                    SẢN PHẨM NỔI BẬT
+                    MẪU DEMO NỔI BẬT
                   </span>
                   <h2 className="text-xl md:text-4xl font-extrabold text-slate-950 leading-snug md:leading-tight mb-3 md:mb-4">
-                    Sản phẩm tiêu biểu do chúng tôi chọn lọc
+                    Mẫu giao diện tiêu biểu do chúng tôi chọn lọc
                   </h2>
                   <p className="text-sm md:text-base text-slate-600 font-normal leading-relaxed mb-5 md:mb-6">
                     Mỗi tuần, các chuyên gia nội dung của chúng tôi lựa chọn
@@ -1623,15 +1624,15 @@ const HomePage = ({
             <div>
               <span className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-white/90 px-3 py-1 text-[#ea580c] text-xs font-extrabold uppercase tracking-widest mb-3 shadow-sm shadow-orange-100">
                 <TrendingUp size={13} />
-                {isCatalogMode ? 'ĐƯỢC QUAN TÂM TUẦN NÀY' : 'BÁN CHẠY NHẤT TUẦN'}
+                {isCatalogMode ? 'ĐƯỢC QUAN TÂM TUẦN NÀY' : 'ĐƯỢC QUAN TÂM TUẦN NÀY'}
               </span>
               <h2 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-slate-950 leading-tight">
-                {isCatalogMode ? 'Sản phẩm được quan tâm hàng đầu' : 'Sản phẩm bán chạy hàng đầu'}
+                {isCatalogMode ? 'Mẫu demo được quan tâm hàng đầu' : 'Mẫu demo được quan tâm hàng đầu'}
               </h2>
               <p className="text-slate-600 text-xs md:text-sm font-normal max-w-xl mt-2 leading-relaxed">
                 {isCatalogMode
                   ? 'Danh sách những mẫu giao diện được người dùng xem demo và quan tâm nhiều trong tuần qua.'
-                  : 'Danh sách những sản phẩm được người dùng tải và mua nhiều nhất trong tuần qua.'}
+                  : 'Danh sách những mẫu giao diện được người dùng xem demo và quan tâm nhiều trong tuần qua.'}
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
                 {[
@@ -1763,7 +1764,7 @@ const HomePage = ({
               </h2>
               <p className="text-slate-500 text-sm leading-relaxed mb-5 max-w-xs">
                 Mỗi tháng chúng tôi chọn ra những nhà phát triển xuất sắc nhất
-                với sản phẩm chất lượng cao và hỗ trợ khách hàng tích cực nhất.
+                với mẫu demo chất lượng cao và hỗ trợ khách hàng tích cực nhất.
               </p>
 
               {/* Author card */}
@@ -1822,7 +1823,7 @@ const HomePage = ({
                   {[
                     {
                       value: displayAuthorProducts.length || 5,
-                      label: "Sản phẩm",
+                      label: "Mẫu demo",
                     },
                     { value: "4.9", label: "Rating" },
                     { value: "98%", label: "Hỗ trợ" },
@@ -1931,7 +1932,7 @@ const HomePage = ({
                     Bộ sưu tập tác giả
                   </p>
                   <h3 className="text-base font-extrabold text-slate-950">
-                    Sản phẩm nổi bật trong tháng
+                    Mẫu demo nổi bật trong tháng
                   </h3>
                 </div>
                 <span className="hidden sm:inline-flex rounded-full bg-orange-50 px-3 py-1 text-[11px] font-bold text-[#ea580c] ring-1 ring-orange-100">
@@ -2106,7 +2107,7 @@ const HomePage = ({
                 </span>
                 <div className="relative z-10">
                   <p className="text-slate-500 text-xs font-medium mb-2">
-                    Tổng sản phẩm
+                    Tổng mẫu demo
                   </p>
                   <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-slate-800 leading-none">
                     45,000+
@@ -2133,11 +2134,11 @@ const HomePage = ({
                 />
                 <div className="absolute inset-x-6 bottom-7 h-px bg-gradient-to-r from-transparent via-white/70 to-transparent" />
                 <span className="relative z-10 flex h-10 w-10 items-center justify-center rounded-2xl bg-white/55 text-pink-700 shadow-sm ring-1 ring-white/60 backdrop-blur">
-                  <Download size={18} strokeWidth={2.4} />
+                  <MessageCircle size={18} strokeWidth={2.4} />
                 </span>
                 <div className="relative z-10">
                   <p className="text-slate-500 text-xs font-medium mb-2">
-                    Lượt tải xuống
+                      Luot xem demo
                   </p>
                   <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-slate-800 leading-none">
                     98,000+
@@ -2147,7 +2148,7 @@ const HomePage = ({
                       2.4K hôm nay
                     </span>
                     <span className="text-[11px] font-medium text-slate-500">
-                      Tải nhanh
+                      Tu van nhanh
                     </span>
                   </div>
                 </div>
@@ -2362,7 +2363,7 @@ const HomePage = ({
                     <div className="relative aspect-[16/9] w-full overflow-hidden bg-slate-100">
                       <Link
                         href={`/blog/${blog.slug || blog.id}`}
-                        className="block w-full h-full"
+                        className="relative block w-full h-full"
                       >
                         <Image
                           src={
@@ -2412,7 +2413,7 @@ const HomePage = ({
 
                       <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-3 md:pt-4">
                         <span className="hidden md:inline text-[11px] font-bold uppercase tracking-wide text-slate-400">
-                          Shop Web rẻ
+                          Web Giá Rẻ - Portfolio
                         </span>
                         <Link
                           href={`/blog/${blog.slug || blog.id}`}
@@ -2455,12 +2456,12 @@ const HomePage = ({
               </div>
               <div>
                 <h3 className="text-2xl md:text-3xl font-bold text-[#0b0f19] mb-4 leading-tight tracking-tight">
-                  {isCatalogMode ? 'Giới thiệu khách cần giao diện website' : 'Kiếm hoa hồng khi giới thiệu khách mua template'}
+                  {isCatalogMode ? 'Giới thiệu khách cần giao diện website' : 'Giới thiệu khách cần tư vấn template'}
                 </h3>
                 <p className="text-sm md:text-base text-slate-800 font-medium leading-relaxed mb-6 md:mb-8 max-w-xl">
                   {isCatalogMode
-                    ? 'Tham gia chương trình affiliate của Shop Web rẻ, chia sẻ link giới thiệu và nhận ghi nhận khi khách để lại nhu cầu tư vấn giao diện website, landing page hoặc source code.'
-                    : 'Tham gia chương trình affiliate của Shop Web rẻ, chia sẻ link giới thiệu và nhận hoa hồng khi khách mua giao diện website, landing page hoặc source code.'}
+                    ? 'Tham gia chương trình affiliate của Web Giá Rẻ - Portfolio, chia sẻ link giới thiệu và nhận ghi nhận khi khách để lại nhu cầu tư vấn giao diện website, landing page hoặc dự án web.'
+                    : 'Tham gia chương trình affiliate của Web Giá Rẻ - Portfolio, chia sẻ link giới thiệu và nhận ghi nhận khi khách để lại nhu cầu tư vấn giao diện website, landing page hoặc dự án web.'}
                 </p>
               </div>
               <Link
@@ -2487,7 +2488,7 @@ const HomePage = ({
                 <p className="text-sm md:text-base text-slate-800 font-medium leading-relaxed mb-6 md:mb-8 max-w-xl">
                   {isCatalogMode
                     ? 'Bạn có thể gửi mẫu giao diện quan tâm rồi yêu cầu tư vấn thay logo, đổi màu, sửa nội dung, gắn form hoặc deploy lên hosting theo nhu cầu thực tế.'
-                    : 'Bạn có thể mua template sẵn rồi yêu cầu hỗ trợ thay logo, đổi màu, sửa nội dung, gắn form hoặc deploy lên hosting theo nhu cầu thực tế.'}
+                    : 'Bạn có thể chọn mẫu template quan tâm rồi yêu cầu hỗ trợ thay logo, đổi màu, sửa nội dung, gắn form hoặc deploy lên hosting theo nhu cầu thực tế.'}
                 </p>
               </div>
               <Link
@@ -2533,7 +2534,7 @@ const HomePage = ({
                 <div className="relative h-[250px] w-[260px] lg:h-[290px] lg:w-[300px]">
                   <Image
                     src="/support-agent.webp"
-                    alt="Nhân viên chăm sóc khách hàng Shop Web rẻ"
+                    alt="Nhân viên tư vấn Web Giá Rẻ - Portfolio"
                     fill
                     sizes="(min-width: 1024px) 300px, 260px"
                     className="object-contain drop-shadow-[0_24px_32px_rgba(15,23,42,0.16)]"

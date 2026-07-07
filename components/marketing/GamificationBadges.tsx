@@ -21,8 +21,8 @@ interface Badge {
 
 const BADGES: Badge[] = [
     // Buyer badges
-    { id: 'first-purchase', name: 'Người Mua Đầu', description: 'Mua sản phẩm đầu tiên', icon: ShoppingBag, color: 'text-green-600', bgColor: 'bg-green-100', rarity: 'common' },
-    { id: 'collector', name: 'Nhà Sưu Tập', description: 'Mua 10+ sản phẩm', icon: Star, color: 'text-amber-600', bgColor: 'bg-amber-100', rarity: 'rare' },
+    { id: 'first-purchase', name: 'Người Chọn Mẫu Đầu', description: 'Chọn mẫu demo đầu tiên', icon: ShoppingBag, color: 'text-green-600', bgColor: 'bg-green-100', rarity: 'common' },
+    { id: 'collector', name: 'Nhà Sưu Tập', description: 'Lưu 10+ mẫu demo', icon: Star, color: 'text-amber-600', bgColor: 'bg-amber-100', rarity: 'rare' },
     { id: 'big-spender', name: 'Đại Gia', description: 'Chi tiêu trên 5 triệu', icon: Crown, color: 'text-purple-600', bgColor: 'bg-purple-100', rarity: 'epic' },
     { id: 'loyal', name: 'Khách Hàng Trung Thành', description: 'Thành viên trên 1 năm', icon: Heart, color: 'text-rose-600', bgColor: 'bg-rose-100', rarity: 'rare' },
 

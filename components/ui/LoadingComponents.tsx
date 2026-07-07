@@ -84,7 +84,7 @@ export function PageLoader() {
                         ease: "easeInOut",
                     }}
                 >
-                    Shop Web rẻ
+                    Web Giá Rẻ - Portfolio
                 </motion.h2>
             </div>
         </div>

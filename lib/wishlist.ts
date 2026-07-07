@@ -80,7 +80,7 @@ export async function addToWishlist(userId: string, productId: number): Promise<
         .maybeSingle();
 
     if (existing) {
-        throw new Error('Sản phẩm đã có trong danh sách yêu thích');
+        throw new Error('Mẫu demo đã có trong danh sách yêu thích');
     }
 
     const { data, error } = await supabase

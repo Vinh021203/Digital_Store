@@ -45,7 +45,7 @@ export default function StockCounter({
                     {isAlmostOut ? (
                         <span className="animate-pulse">Chỉ còn {remaining}!</span>
                     ) : (
-                        `Còn ${remaining} sản phẩm`
+                        `Còn ${remaining} mẫu demo`
                     )}
                 </span>
             </div>
@@ -65,14 +65,14 @@ export default function StockCounter({
                             {isAlmostOut ? '🔥 SẮP HẾT HÀNG!' : '⚠️ SẮP HẾT HÀNG'}
                         </p>
                         <p className="text-sm text-red-600">
-                            Chỉ còn <span className="font-black text-xl">{remaining}</span> sản phẩm - Đặt ngay!
+                            Chỉ còn <span className="font-black text-xl">{remaining}</span> mẫu demo - Đặt ngay!
                         </p>
                     </div>
                 </div>
                 {showViewers && viewers > 0 && (
                     <div className="mt-3 flex items-center gap-2 text-sm text-red-600">
                         <Users size={14} className="animate-pulse" />
-                        <span>{viewers} người đang xem sản phẩm này</span>
+                        <span>{viewers} người đang xem mẫu demo này</span>
                     </div>
                 )}
             </div>
@@ -92,15 +92,15 @@ export default function StockCounter({
                     )}
                     <span className="font-bold">
                         {isAlmostOut ? (
-                            <span className="animate-pulse">Chỉ còn {remaining} sản phẩm!</span>
+                            <span className="animate-pulse">Chỉ còn {remaining} mẫu demo!</span>
                         ) : isLowStock ? (
-                            `Còn ${remaining} sản phẩm - Nhanh tay!`
+                            `Còn ${remaining} mẫu demo - Nhanh tay!`
                         ) : (
-                            `Còn ${remaining} sản phẩm`
+                            `Còn ${remaining} mẫu demo`
                         )}
                     </span>
                 </div>
-                <span className="text-sm text-slate-500">Đã bán {soldCount}</span>
+                <span className="text-sm text-slate-500">{soldCount} lượt quan tâm</span>
             </div>
 
             {/* Progress Bar */}
@@ -139,7 +139,7 @@ export default function StockCounter({
             {soldCount > 0 && (
                 <div className="flex items-center gap-2 text-xs text-slate-400">
                     <ShoppingCart size={12} />
-                    <span>Có người vừa mua {Math.floor(Math.random() * 30) + 1} phút trước</span>
+                    <span>Có người vừa xem demo {Math.floor(Math.random() * 30) + 1} phút trước</span>
                 </div>
             )}
 
