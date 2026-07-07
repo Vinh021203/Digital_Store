@@ -185,9 +185,9 @@ export default function AffiliateDashboardPage() {
     return (
         <div className="min-h-screen bg-[#f5f7fb]">
             {/* Desktop Sidebar - Partner Portal Theme */}
-            <aside className="hidden lg:flex lg:w-72 lg:flex-col lg:fixed lg:inset-y-0 bg-slate-950 border-r border-white/10">
+            <aside className="hidden lg:flex lg:w-72 lg:flex-col lg:fixed lg:inset-y-0 overflow-hidden bg-slate-950 border-r border-white/10">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(249,115,22,0.18),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(14,165,233,0.12),transparent_30%)]" />
-                <div className="relative flex flex-col h-full p-4">
+                <div className="relative flex h-full min-h-0 flex-col overflow-y-auto overscroll-contain no-scrollbar p-4">
                     {/* Logo */}
                     <Link href="/" className="mb-6 flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3 hover:bg-white/10 transition">
                         <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-amber-500 rounded-2xl flex items-center justify-center shadow-lg shadow-orange-500/30">
@@ -266,7 +266,7 @@ export default function AffiliateDashboardPage() {
                 <div className="fixed inset-0 z-50 lg:hidden">
                     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setMobileMenuOpen(false)} />
                     <div className="fixed inset-y-0 left-0 w-72 bg-slate-900 shadow-2xl">
-                        <div className="flex flex-col h-full">
+                        <div className="flex h-full min-h-0 flex-col overflow-y-auto overscroll-contain no-scrollbar">
                             {/* Mobile Header */}
                             <div className="p-4 border-b border-slate-800 flex items-center justify-between">
                                 <div className="flex items-center gap-3">
