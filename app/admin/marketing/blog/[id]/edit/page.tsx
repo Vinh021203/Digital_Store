@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, use } from 'react';
+import React, { useRef, useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import {
     FileText,
@@ -9,6 +9,7 @@ import {
     Loader2,
     Image as ImageIcon,
     Eye,
+    Upload,
     X,
 } from 'lucide-react';
 import { getPostById, updatePost, type DbBlogPost } from '@/lib/blog';
@@ -21,10 +22,12 @@ export default function EditBlogPage({ params }: { params: Promise<{ id: string 
     const { id } = use(params);
     const router = useRouter();
     const toast = useToast();
+    const coverInputRef = useRef<HTMLInputElement>(null);
 
     const [post, setPost] = useState<DbBlogPost | null>(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [uploadingCover, setUploadingCover] = useState(false);
     const [preview, setPreview] = useState(false);
 
     const [formData, setFormData] = useState({
@@ -72,6 +75,33 @@ export default function EditBlogPage({ params }: { params: Promise<{ id: string 
                 ? prev.tags.filter(t => t !== tag)
                 : [...prev.tags, tag],
         }));
+    };
+
+    const handleCoverUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        setUploadingCover(true);
+        try {
+            const uploadData = new FormData();
+            uploadData.append('file', file);
+
+            const response = await fetch('/api/upload/blog-cover', {
+                method: 'POST',
+                body: uploadData,
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'Không thể tải ảnh bìa');
+
+            setFormData(prev => ({ ...prev, cover_image: data.url }));
+            toast.success('Đã tải ảnh bìa lên Cloudinary');
+        } catch (error: any) {
+            console.error('Cover upload error:', error);
+            toast.error(error.message || 'Không thể tải ảnh bìa');
+        } finally {
+            setUploadingCover(false);
+            if (coverInputRef.current) coverInputRef.current.value = '';
+        }
     };
 
     const handleSubmit = async (publish: boolean) => {
@@ -221,6 +251,8 @@ export default function EditBlogPage({ params }: { params: Promise<{ id: string 
                                     onChange={(html: string) => setFormData(prev => ({ ...prev, content: html }))}
                                     placeholder="Viết nội dung bài viết..."
                                     minHeight={350}
+                                    uploadType="blog-cover"
+                                    imageAlt={formData.title || 'Ảnh minh họa bài viết'}
                                 />
                             </div>
                         </div>
@@ -250,10 +282,17 @@ export default function EditBlogPage({ params }: { params: Promise<{ id: string 
 
                         <div className="bg-white rounded-2xl border border-slate-100 p-6 space-y-4">
                             <h3 className="font-bold text-slate-900 border-b pb-3">Ảnh bìa</h3>
+                            <input
+                                ref={coverInputRef}
+                                type="file"
+                                accept="image/*"
+                                onChange={handleCoverUpload}
+                                className="hidden"
+                            />
                             {formData.cover_image ? (
-                                <div className="relative">
-                                    <img src={formData.cover_image} alt="" className="w-full h-32 object-cover rounded-xl" />
-                                    <button
+	                                <div className="relative aspect-video overflow-hidden rounded-xl border border-slate-100 bg-slate-50">
+	                                    <img src={formData.cover_image} alt="" className="h-full w-full object-contain" />
+	                                    <button
                                         onClick={() => setFormData(prev => ({ ...prev, cover_image: '' }))}
                                         className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full"
                                     >
@@ -261,10 +300,19 @@ export default function EditBlogPage({ params }: { params: Promise<{ id: string 
                                     </button>
                                 </div>
                             ) : (
-                                <div className="border-2 border-dashed border-slate-200 rounded-xl p-6 text-center text-slate-400">
+	                                <div className="flex aspect-video flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 p-6 text-center text-slate-400">
                                     <ImageIcon size={32} className="mx-auto mb-2" />
                                 </div>
                             )}
+                            <button
+                                type="button"
+                                onClick={() => coverInputRef.current?.click()}
+                                disabled={uploadingCover}
+                                className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-orange-200 bg-orange-50 px-4 py-3 text-sm font-bold text-orange-600 transition hover:bg-orange-100 disabled:opacity-60"
+                            >
+                                {uploadingCover ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
+                                {uploadingCover ? 'Đang tải lên...' : 'Tải ảnh lên Cloudinary'}
+                            </button>
                             <input
                                 type="text"
                                 value={formData.cover_image}

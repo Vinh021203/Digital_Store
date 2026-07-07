@@ -307,7 +307,7 @@ export default function CommentsSection({ postId }: CommentsSectionProps) {
     );
 
     return (
-        <section className="mt-12 pt-8 border-t border-slate-100">
+        <section className="mt-12 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
             <h2 className="text-2xl font-black text-slate-900 mb-6 flex items-center gap-2">
                 <MessageCircle className="text-orange-500" />
                 Bình luận ({comments.length})
@@ -317,7 +317,7 @@ export default function CommentsSection({ postId }: CommentsSectionProps) {
             </h2>
 
             {/* Comment Form */}
-            <div className="bg-gradient-to-br from-slate-50 to-orange-50/30 rounded-2xl p-6 mb-8">
+            <div className="mb-8 rounded-2xl border border-orange-100 bg-gradient-to-br from-orange-50/70 via-white to-slate-50 p-5 shadow-sm sm:p-6">
                 <h3 className="font-bold text-slate-900 mb-4">
                     {user ? `Bình luận với tên ${profile?.name || user.email}` : 'Để lại bình luận của bạn'}
                 </h3>
@@ -331,14 +331,14 @@ export default function CommentsSection({ postId }: CommentsSectionProps) {
                                 onChange={e => setGuestName(e.target.value)}
                                 placeholder="Tên của bạn *"
                                 required
-                                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none bg-white"
+                                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none bg-white shadow-sm"
                             />
                             <input
                                 type="email"
                                 value={guestEmail}
                                 onChange={e => setGuestEmail(e.target.value)}
                                 placeholder="Email (không công khai)"
-                                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none bg-white"
+                                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none bg-white shadow-sm"
                             />
                         </div>
                     )}
@@ -348,7 +348,7 @@ export default function CommentsSection({ postId }: CommentsSectionProps) {
                         placeholder="Viết bình luận của bạn..."
                         rows={4}
                         required
-                        className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none resize-none bg-white mb-4"
+                        className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none resize-none bg-white mb-4 shadow-sm"
                     />
                     <div className="flex items-center justify-between">
                         <p className="text-xs text-slate-400">
@@ -372,7 +372,7 @@ export default function CommentsSection({ postId }: CommentsSectionProps) {
                     <Loader2 className="w-6 h-6 animate-spin text-orange-600" />
                 </div>
             ) : comments.length === 0 ? (
-                <div className="text-center py-12 bg-slate-50 rounded-2xl">
+                <div className="text-center py-12 bg-slate-50 rounded-2xl border border-slate-100">
                     <MessageCircle size={48} className="mx-auto text-slate-200 mb-4" />
                     <p className="text-slate-500">Chưa có bình luận nào</p>
                     <p className="text-sm text-slate-400">Hãy là người đầu tiên bình luận!</p>

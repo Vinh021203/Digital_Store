@@ -4,7 +4,7 @@ import React, { useState, useMemo, useCallback, memo, useEffect } from 'react';
 import {
     MessageCircle, Search, Filter, User, Home,
     Flame, Sparkles, Heart, MessageSquare, Share2, Bookmark, MoreHorizontal,
-    Award, Star, Zap, Coffee, Users, ChevronRight, PenTool, Loader2
+    Award, Star, Zap, Coffee, Users, ChevronRight, PenTool, Loader2, ClipboardList
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -383,7 +383,10 @@ export default function CommunityPage() {
 
                         {/* Guidelines */}
                         <div className="bg-gradient-to-br from-slate-50 to-purple-50 rounded-2xl p-5 border border-slate-100">
-                            <h3 className="font-bold text-slate-900 mb-3 text-sm">📋 Quy tắc cộng đồng</h3>
+                            <h3 className="font-bold text-slate-900 mb-3 text-sm flex items-center gap-2">
+                                <ClipboardList className="text-orange-500" size={16} />
+                                Quy tắc cộng đồng
+                            </h3>
                             <ul className="text-xs text-slate-600 space-y-2">
                                 <li>• Tôn trọng ý kiến của mọi người</li>
                                 <li>• Không spam hoặc quảng cáo</li>

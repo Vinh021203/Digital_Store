@@ -7,6 +7,7 @@ interface SafeHTMLProps {
   html: string;
   className?: string;
   fallback?: string;
+  allowInlineStyles?: boolean;
 }
 
 const extractStyleBlocks = (value: string) => {
@@ -59,6 +60,7 @@ export default function SafeHTML({
   html,
   className = '',
   fallback = '<p>Không có nội dung</p>',
+  allowInlineStyles = true,
 }: SafeHTMLProps) {
   const [sanitizedHtml, setSanitizedHtml] = useState('');
   const [scopedCss, setScopedCss] = useState('');
@@ -80,11 +82,13 @@ export default function SafeHTML({
         'a', 'img',
         'blockquote', 'code', 'pre',
         'table', 'thead', 'tbody', 'tr', 'th', 'td',
+        'article', 'section', 'figure', 'figcaption',
         'div', 'span', 'hr',
       ],
       ALLOWED_ATTR: [
         'href', 'target', 'rel', 'src', 'alt', 'title', 'width', 'height',
-        'class', 'style',
+        'class',
+        ...(allowInlineStyles ? ['style'] : []),
       ],
       ALLOW_DATA_ATTR: false,
       ADD_ATTR: ['target', 'rel'],
@@ -98,7 +102,7 @@ export default function SafeHTML({
 
     setSanitizedHtml(template.innerHTML);
     setScopedCss(scopeCss(css, scopeClass));
-  }, [html, fallback, scopeClass]);
+  }, [html, fallback, scopeClass, allowInlineStyles]);
 
   if (!mounted) {
     return <div className={className}><p>Đang tải nội dung...</p></div>;

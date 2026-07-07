@@ -81,7 +81,7 @@ const UPLOAD_CONFIGS: Record<string, UploadConfig> = {
     // Blog
     'blog-cover': {
         folder: 'digitalmart/blog',
-        transformation: [{ width: 1200, height: 630, crop: 'fill', quality: 'auto' }],
+        transformation: [{ width: 1600, height: 900, crop: 'pad', background: 'auto', quality: 'auto' }],
         maxSizeBytes: 8 * MB,
         allowedMimeTypes: IMAGE_MIME_TYPES,
         allowedExtensions: IMAGE_EXTENSIONS,

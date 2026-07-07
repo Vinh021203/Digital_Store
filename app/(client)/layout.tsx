@@ -69,7 +69,9 @@ const ClientLayout = ({ children }: ClientLayoutProps) => {
       timers.push(window.setTimeout(callback, delay));
     };
 
-    schedule(() => setShowFloatingWidgets(true), 9000, 12000);
+    if (canShowMarketingWidgets) {
+      schedule(() => setShowFloatingWidgets(true), 9000, 12000);
+    }
 
     if (canShowMarketingWidgets) {
       schedule(() => setShowNewsletterPopup(true), 8000, 14000);
@@ -102,7 +104,7 @@ const ClientLayout = ({ children }: ClientLayoutProps) => {
       </div>
 
       {!hasPageOwnedMobileNav && <MobileBottomNav />}
-      {showFloatingWidgets && <FloatingWidgets />}
+      {canShowMarketingWidgets && showFloatingWidgets && <FloatingWidgets />}
       {showNewsletterPopup && <NewsletterPopup />}
       {showSocialProof && <SocialProofNotifications />}
     </MaintenanceGuard>

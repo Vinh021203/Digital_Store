@@ -34,9 +34,20 @@ interface RichTextEditorProps {
   onChange: (value: string) => void;
   placeholder?: string;
   minHeight?: number;
+  uploadType?: string;
+  imageAlt?: string;
 }
 
 type EditorMode = 'visual' | 'html';
+
+const keepSafeDesignClasses = (_match: string, classValue: string) => {
+  const safeClasses = classValue
+    .split(/\s+/)
+    .map((className) => className.trim())
+    .filter((className) => /^(seo|blog)-[a-z0-9_-]+$/i.test(className));
+
+  return safeClasses.length ? ` class="${safeClasses.join(' ')}"` : '';
+};
 
 const cleanPastedHtml = (html: string) =>
   html
@@ -45,7 +56,8 @@ const cleanPastedHtml = (html: string) =>
     .replace(/<\/?v:[^>]*>/gi, '')
     .replace(/<\/?w:[^>]*>/gi, '')
     .replace(/\s*mso-[^:]+:[^;"']+;?/gi, '')
-    .replace(/\s*class="[^"]*"/gi, '')
+    .replace(/\s*class="([^"]*)"/gi, keepSafeDesignClasses)
+    .replace(/\s*style="[^"]*"/gi, '')
     .replace(/^[\s\S]*<body[^>]*>/i, '')
     .replace(/<\/body>[\s\S]*$/i, '')
     .trim();
@@ -63,6 +75,8 @@ export default function RichTextEditor({
   onChange,
   placeholder = 'Nhập nội dung...',
   minHeight = 300,
+  uploadType = 'product-image',
+  imageAlt = 'Ảnh minh họa',
 }: RichTextEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -132,7 +146,7 @@ export default function RichTextEditor({
     try {
       const formData = new FormData();
       formData.append('file', file);
-      const response = await fetch('/api/upload/product-image', {
+      const response = await fetch(`/api/upload/${uploadType}`, {
         method: 'POST',
         body: formData,
       });
@@ -154,7 +168,7 @@ export default function RichTextEditor({
     document.execCommand(
       'insertHTML',
       false,
-      `<img src="${imageUrl.trim()}" alt="Ảnh mô tả sản phẩm" />`
+      `<img src="${imageUrl.trim()}" alt="${imageAlt}" />`
     );
     syncContent();
     setImageUrl('');
