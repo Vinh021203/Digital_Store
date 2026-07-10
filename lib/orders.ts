@@ -21,7 +21,7 @@ export interface DbOrder {
     created_at: string;
     updated_at: string;
     // Joined
-    user?: { id: string; name: string; email: string } | null;
+    user?: { id: string; name: string; email: string; avatar: string | null } | null;
     items?: DbOrderItem[];
 }
 
@@ -77,7 +77,7 @@ export async function fetchOrders(filters?: {
         .from('orders')
         .select(`
       *,
-      user:user_id (id, name, email)
+      user:user_id (id, name, email, avatar)
     `)
         .order('created_at', { ascending: false });
 

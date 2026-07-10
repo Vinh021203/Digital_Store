@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import {
     Key, Search, Plus, Download, Copy, Check, X,
-    RefreshCw, Loader2
+    RefreshCw, Loader2, ShieldCheck, Clock3, Ban
 } from 'lucide-react';
 import { fetchLicenses, revokeLicense, type DbLicense } from '@/lib/licenses';
 
@@ -14,6 +14,8 @@ export default function LicensesPage() {
     const [filterStatus, setFilterStatus] = useState('all');
     const [copiedId, setCopiedId] = useState<number | null>(null);
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState<10 | 20 | 50>(10);
 
     const loadLicenses = async () => {
         setLoading(true);
@@ -54,9 +56,9 @@ export default function LicensesPage() {
             revoked: 'bg-red-100 text-red-700',
         };
         const labels: Record<string, string> = {
-            active: 'Active',
-            expired: 'Expired',
-            revoked: 'Revoked',
+            active: 'Hoạt động',
+            expired: 'Hết hạn',
+            revoked: 'Đã thu hồi',
         };
         return <span className={`px-2 py-1 rounded-lg text-xs font-bold ${styles[status] || 'bg-slate-100 text-slate-600'}`}>{labels[status] || status}</span>;
     };
@@ -89,15 +91,22 @@ export default function LicensesPage() {
         });
     }, [licenses, filterStatus, searchQuery]);
 
+    const totalPages = Math.max(1, Math.ceil(filteredLicenses.length / pageSize));
+    const safeCurrentPage = Math.min(currentPage, totalPages);
+    const paginatedLicenses = filteredLicenses.slice(
+        (safeCurrentPage - 1) * pageSize,
+        safeCurrentPage * pageSize
+    );
+
     return (
         <div className="space-y-6">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl md:text-3xl font-black text-slate-900">Quản Lý Licenses</h1>
-                    <p className="text-slate-500">Quản lý tất cả license keys của sản phẩm</p>
+                    <h1 className="text-2xl font-black text-slate-900 md:text-3xl">Quản lý giấy phép</h1>
+                    <p className="text-slate-500">Quản lý toàn bộ mã giấy phép của sản phẩm</p>
                 </div>
-                <div className="flex gap-3">
+                <div className="flex flex-wrap gap-2 sm:gap-3">
                     <button
                         onClick={loadLicenses}
                         className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl font-bold text-sm hover:bg-slate-50 transition-all"
@@ -118,21 +127,23 @@ export default function LicensesPage() {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
                 {[
-                    { label: 'Tổng Licenses', value: stats.total, color: 'bg-blue-500' },
-                    { label: 'Active', value: stats.active, color: 'bg-green-500' },
-                    { label: 'Expired', value: stats.expired, color: 'bg-yellow-500' },
-                    { label: 'Revoked', value: stats.revoked, color: 'bg-red-500' },
+                    { label: 'Tổng giấy phép', value: stats.total, icon: Key, color: 'from-indigo-600 to-blue-500', note: 'Tất cả giấy phép' },
+                    { label: 'Đang hoạt động', value: stats.active, icon: ShieldCheck, color: 'from-emerald-600 to-teal-500', note: 'Có thể sử dụng' },
+                    { label: 'Đã hết hạn', value: stats.expired, icon: Clock3, color: 'from-amber-500 to-orange-500', note: 'Cần gia hạn' },
+                    { label: 'Đã thu hồi', value: stats.revoked, icon: Ban, color: 'from-rose-600 to-red-500', note: 'Không còn hiệu lực' },
                 ].map((stat, idx) => (
-                    <div key={idx} className="bg-white rounded-xl p-4 border border-slate-100">
-                        <div className="flex items-center gap-3">
-                            <div className={`p-2 rounded-lg ${stat.color} text-white`}>
-                                <Key size={18} />
-                            </div>
+                    <div key={idx} className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${stat.color} p-5 text-white shadow-sm`}>
+                        <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-white/10" />
+                        <div className="relative flex items-center justify-between gap-3">
                             <div>
-                                <p className="text-2xl font-black text-slate-900">{stat.value}</p>
-                                <p className="text-xs text-slate-500">{stat.label}</p>
+                                <p className="text-xs font-bold uppercase tracking-wide text-white/80">{stat.label}</p>
+                                <p className="mt-1 text-3xl font-black">{stat.value}</p>
+                                <p className="mt-1 text-xs text-white/75">{stat.note}</p>
+                            </div>
+                            <div className="rounded-xl bg-white/20 p-3 ring-1 ring-white/20">
+                                <stat.icon size={22} />
                             </div>
                         </div>
                     </div>
@@ -140,21 +151,21 @@ export default function LicensesPage() {
             </div>
 
             {/* Filters */}
-            <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex flex-col gap-3 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm md:flex-row">
                 <div className="flex-1 relative">
                     <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                     <input
                         type="text"
                         placeholder="Tìm theo key, sản phẩm, người mua..."
                         value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none"
+                        onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
+                        className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 outline-none focus:ring-2 focus:ring-orange-500"
                     />
                 </div>
                 <select
                     value={filterStatus}
-                    onChange={(e) => setFilterStatus(e.target.value)}
-                    className="px-4 py-3 bg-white border border-slate-200 rounded-xl font-bold text-sm cursor-pointer"
+                    onChange={(e) => { setFilterStatus(e.target.value); setCurrentPage(1); }}
+                    className="min-w-52 cursor-pointer rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold outline-none focus:ring-2 focus:ring-orange-500"
                 >
                     <option value="all">Tất cả trạng thái</option>
                     <option value="active">Active</option>
@@ -164,18 +175,18 @@ export default function LicensesPage() {
             </div>
 
             {/* Table */}
-            <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+            <div className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm">
                 <div className="overflow-x-auto">
-                    <table className="w-full">
+                    <table className="w-full min-w-[1050px] table-fixed">
                         <thead className="bg-slate-50 text-xs text-slate-500 uppercase font-bold">
                             <tr>
-                                <th className="px-6 py-4 text-left">License Key</th>
-                                <th className="px-6 py-4 text-left">Sản phẩm</th>
-                                <th className="px-6 py-4 text-left">Người mua</th>
-                                <th className="px-6 py-4 text-center">Loại</th>
-                                <th className="px-6 py-4 text-center">Activations</th>
-                                <th className="px-6 py-4 text-center">Status</th>
-                                <th className="px-6 py-4 text-right">Actions</th>
+                                <th className="w-[235px] px-6 py-4 text-left">Mã giấy phép</th>
+                                <th className="w-[260px] px-6 py-4 text-left">Sản phẩm</th>
+                                <th className="w-[220px] px-6 py-4 text-left">Người mua</th>
+                                <th className="w-[110px] px-4 py-4 text-center">Loại</th>
+                                <th className="w-[120px] px-4 py-4 text-center">Kích hoạt</th>
+                                <th className="w-[120px] px-4 py-4 text-center">Trạng thái</th>
+                                <th className="w-[80px] px-4 py-4 text-right">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
@@ -193,11 +204,11 @@ export default function LicensesPage() {
                                     </td>
                                 </tr>
                             ) : (
-                                filteredLicenses.map(license => (
-                                    <tr key={license.id} className="hover:bg-slate-50 transition-colors">
+                                paginatedLicenses.map(license => (
+                                    <tr key={license.id} className="transition-colors hover:bg-orange-50/30">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-2">
-                                                <code className="font-mono text-sm text-slate-700 bg-slate-100 px-2 py-1 rounded max-w-[200px] truncate">
+                                                <code className="max-w-[170px] truncate rounded-lg bg-indigo-50 px-2.5 py-1.5 font-mono text-xs font-semibold text-indigo-700 ring-1 ring-indigo-100">
                                                     {license.license_key}
                                                 </code>
                                                 <button
@@ -209,9 +220,18 @@ export default function LicensesPage() {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className="font-medium text-slate-900">
-                                                {license.product?.name || 'N/A'}
-                                            </span>
+                                            <div className="flex items-center gap-3">
+                                                <div className="aspect-video w-16 flex-shrink-0 overflow-hidden rounded-lg bg-slate-100 ring-1 ring-slate-200">
+                                                    {license.product?.image ? (
+                                                        <img src={license.product.image} alt="" className="h-full w-full object-cover" />
+                                                    ) : (
+                                                        <div className="flex h-full w-full items-center justify-center"><Key size={16} className="text-slate-300" /></div>
+                                                    )}
+                                                </div>
+                                                <span className="line-clamp-2 text-sm font-bold leading-5 text-slate-900">
+                                                    {license.product?.name || 'N/A'}
+                                                </span>
+                                            </div>
                                         </td>
                                         <td className="px-6 py-4">
                                             <div>
@@ -224,8 +244,10 @@ export default function LicensesPage() {
                                                 {license.type}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-center font-mono text-sm text-slate-600">
-                                            {license.activations_used}/{license.activations_limit}
+                                        <td className="px-4 py-4 text-center">
+                                            <span className="inline-flex min-w-12 justify-center rounded-full bg-blue-50 px-2.5 py-1 font-mono text-xs font-bold text-blue-700">
+                                                {license.activations_used}/{license.activations_limit}
+                                            </span>
                                         </td>
                                         <td className="px-6 py-4 text-center">{getStatusBadge(license.status)}</td>
                                         <td className="px-6 py-4">
@@ -247,6 +269,28 @@ export default function LicensesPage() {
                         </tbody>
                     </table>
                 </div>
+                {!loading && filteredLicenses.length > 0 && (
+                    <div className="flex flex-col gap-3 border-t border-slate-100 bg-slate-50/70 px-5 py-4 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between">
+                        <span>
+                            Hiển thị <b>{(safeCurrentPage - 1) * pageSize + 1}–{Math.min(safeCurrentPage * pageSize, filteredLicenses.length)}</b> / {filteredLicenses.length} giấy phép
+                        </span>
+                        <div className="flex flex-wrap items-center gap-2">
+                            <span className="text-xs font-semibold">Mỗi trang</span>
+                            <select
+                                value={pageSize}
+                                onChange={(event) => { setPageSize(Number(event.target.value) as 10 | 20 | 50); setCurrentPage(1); }}
+                                className="rounded-lg border border-slate-200 bg-white px-2 py-1.5 font-bold outline-none"
+                            >
+                                <option value={10}>10</option>
+                                <option value={20}>20</option>
+                                <option value={50}>50</option>
+                            </select>
+                            <button disabled={safeCurrentPage === 1} onClick={() => setCurrentPage(page => Math.max(1, page - 1))} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 font-bold disabled:cursor-not-allowed disabled:opacity-40">Trước</button>
+                            <span className="min-w-[72px] text-center font-bold">{safeCurrentPage}/{totalPages}</span>
+                            <button disabled={safeCurrentPage === totalPages} onClick={() => setCurrentPage(page => Math.min(totalPages, page + 1))} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 font-bold disabled:cursor-not-allowed disabled:opacity-40">Sau</button>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Create Modal */}

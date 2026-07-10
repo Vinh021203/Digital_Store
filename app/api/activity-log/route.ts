@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+import { createAdminClient } from '@/lib/supabase/server';
 
 const ALLOWED_SEVERITIES = new Set(['info', 'warning', 'error', 'success']);
 
@@ -50,11 +51,11 @@ export async function POST(request: NextRequest) {
         // Get current user
         const { data: { user } } = await supabase.auth.getUser();
 
-        // Insert activity log with IP
-        const { data, error } = await supabase
+        const writer = process.env.SUPABASE_SERVICE_ROLE_KEY ? createAdminClient() : supabase;
+        const { data, error } = await writer
             .from('activity_logs')
             .insert({
-                user_id: user?.id || null,
+                user_id: user?.id || cleanString(body.user_id, 120),
                 action,
                 entity: cleanString(body.entity, 80),
                 entity_id: cleanString(body.entity_id, 120),

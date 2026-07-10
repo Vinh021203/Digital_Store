@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
     MoreHorizontal, Clock, CheckCircle, Truck, AlertCircle,
@@ -39,9 +40,11 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onClick }) => {
 
             {/* Customer Info */}
             <div className="flex items-center gap-2 mb-3 pb-3 border-b border-slate-100">
-                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-100 to-indigo-200 flex items-center justify-center text-[11px] font-bold text-indigo-700 border-2 border-white shadow-sm">
-                    {customerName.charAt(0).toUpperCase()}
-                </div>
+                {order.user?.avatar ? (
+                    <Image src={order.user.avatar} alt={customerName} width={28} height={28} className="h-7 w-7 shrink-0 rounded-full border-2 border-white object-cover shadow-sm" />
+                ) : (
+                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 border-white bg-gradient-to-br from-indigo-100 to-indigo-200 text-[11px] font-bold text-indigo-700 shadow-sm">{customerName.charAt(0).toUpperCase()}</div>
+                )}
                 <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium text-slate-700 truncate">{customerName}</p>
                     <p className="text-[10px] text-slate-400 truncate">{customerEmail}</p>

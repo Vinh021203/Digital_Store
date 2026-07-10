@@ -37,11 +37,10 @@ import { fetchCategories, type DbCategory } from '@/lib/categories';
 import { fetchProductTypes, type DbProductType } from '@/lib/productTypes';
 import { getProductTypeSoftStyle } from '@/lib/productTypeDisplay';
 import { useToast } from '@/context/ToastContext';
+import { createActivityLog } from '@/lib/activityLogs';
 
 type ProductTypeFilter = 'all' | string;
 type StatusFilter = 'all' | 'active' | 'draft' | 'pending' | 'rejected';
-
-const PAGE_SIZE = 10;
 
 const ProductsManager = () => {
   const router = useRouter();
@@ -60,6 +59,7 @@ const ProductsManager = () => {
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState<10 | 20 | 50>(10);
   const [activeActionId, setActiveActionId] = useState<number | null>(null);
   const [showActionsMenu, setShowActionsMenu] = useState(false);
 
@@ -97,10 +97,11 @@ const ProductsManager = () => {
 
   // Pagination
   const totalItems = products.length;
-  const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+  const safeCurrentPage = Math.min(currentPage, totalPages);
   const paginatedProducts = products.slice(
-    (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE
+    (safeCurrentPage - 1) * pageSize,
+    safeCurrentPage * pageSize
   );
 
   // Helpers
@@ -145,6 +146,7 @@ const ProductsManager = () => {
 
     try {
       await deleteProduct(product.id);
+      await createActivityLog({ action: 'Delete', entity: 'product', entity_id: String(product.id), entity_name: product.name, details: `Xóa sản phẩm: ${product.name}`, severity: 'warning' });
       toast.success('Xóa sản phẩm thành công!');
       await loadData();
     } catch (error: any) {
@@ -243,39 +245,59 @@ const ProductsManager = () => {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
-          <p className="text-xs text-slate-500 uppercase font-bold">Tổng sản phẩm</p>
-          <p className="text-2xl font-bold text-slate-900">{stats?.total || 0}</p>
-          <p className="text-[11px] text-slate-400 mt-1">
-            {stats?.active || 0} hoạt động
-          </p>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="group relative min-h-[156px] overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-blue-500 p-5 text-white shadow-lg shadow-blue-200/60">
+          <div className="absolute -right-7 -top-8 h-28 w-28 rounded-full bg-white/10 transition-transform group-hover:scale-110" />
+          <div className="relative flex h-full items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-black uppercase tracking-wide text-white/85">Tổng sản phẩm</p>
+              <p className="mt-2 text-4xl font-black leading-none">{stats?.total || 0}</p>
+              <p className="mt-3 text-sm font-medium text-white/75">{stats?.active || 0} đang hoạt động</p>
+            </div>
+            <div className="rounded-2xl bg-white/20 p-4 ring-1 ring-white/15"><Package size={28} strokeWidth={2.2} /></div>
+          </div>
         </div>
-        <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
-          <p className="text-xs text-slate-500 uppercase font-bold">Themes</p>
-          <p className="text-2xl font-bold text-indigo-600">{stats?.byFormat?.Theme || 0}</p>
-          <p className="text-[11px] text-slate-400 mt-1">UI Kits & Web Themes</p>
+        <div className="group relative min-h-[156px] overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-500 p-5 text-white shadow-lg shadow-emerald-200/60">
+          <div className="absolute -right-7 -top-8 h-28 w-28 rounded-full bg-white/10 transition-transform group-hover:scale-110" />
+          <div className="relative flex h-full items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-black uppercase tracking-wide text-white/85">Themes</p>
+              <p className="mt-2 text-4xl font-black leading-none">{stats?.byFormat?.Theme || 0}</p>
+              <p className="mt-3 text-sm font-medium text-white/75">UI Kits & Web Themes</p>
+            </div>
+            <div className="rounded-2xl bg-white/20 p-4 ring-1 ring-white/15"><Palette size={28} strokeWidth={2.2} /></div>
+          </div>
         </div>
-        <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
-          <p className="text-xs text-slate-500 uppercase font-bold">Templates</p>
-          <p className="text-2xl font-bold text-purple-600">{stats?.byFormat?.Template || 0}</p>
-          <p className="text-[11px] text-slate-400 mt-1">Figma, Notion, Email</p>
+        <div className="group relative min-h-[156px] overflow-hidden rounded-2xl bg-gradient-to-br from-violet-600 to-purple-500 p-5 text-white shadow-lg shadow-purple-200/60">
+          <div className="absolute -right-7 -top-8 h-28 w-28 rounded-full bg-white/10 transition-transform group-hover:scale-110" />
+          <div className="relative flex h-full items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-black uppercase tracking-wide text-white/85">Templates</p>
+              <p className="mt-2 text-4xl font-black leading-none">{stats?.byFormat?.Template || 0}</p>
+              <p className="mt-3 text-sm font-medium text-white/75">Figma, Notion, Email</p>
+            </div>
+            <div className="rounded-2xl bg-white/20 p-4 ring-1 ring-white/15"><Layers size={28} strokeWidth={2.2} /></div>
+          </div>
         </div>
-        <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
-          <p className="text-xs text-slate-500 uppercase font-bold">Landing & Apps</p>
-          <p className="text-2xl font-bold text-emerald-600">
-            {(stats?.byFormat?.Landing || 0) + (stats?.byFormat?.MiniApp || 0)}
-          </p>
-          <p className="text-[11px] text-slate-400 mt-1">Landing Pages & MiniApps</p>
+        <div className="group relative min-h-[156px] overflow-hidden rounded-2xl bg-gradient-to-br from-orange-500 to-rose-500 p-5 text-white shadow-lg shadow-orange-200/60">
+          <div className="absolute -right-7 -top-8 h-28 w-28 rounded-full bg-white/10 transition-transform group-hover:scale-110" />
+          <div className="relative flex h-full items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-black uppercase tracking-wide text-white/85">Landing & Apps</p>
+              <p className="mt-2 text-4xl font-black leading-none">{(stats?.byFormat?.Landing || 0) + (stats?.byFormat?.MiniApp || 0)}</p>
+              <p className="mt-3 text-sm font-medium text-white/75">Landing Pages & MiniApps</p>
+            </div>
+            <div className="rounded-2xl bg-white/20 p-4 ring-1 ring-white/15"><Zap size={28} strokeWidth={2.2} /></div>
+          </div>
         </div>
       </div>
 
       {/* List Container */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden min-h-[500px]">
+      <div className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm">
         {/* Toolbar */}
-        <div className="p-4 border-b border-slate-100 flex flex-col lg:flex-row gap-4 justify-between bg-slate-50/50">
+        <div className="grid gap-3 border-b border-slate-100 bg-slate-50/50 p-4 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-center">
           {/* Type Filter Tabs */}
-          <div className="flex gap-2 p-1 bg-slate-200/50 rounded-lg w-fit overflow-x-auto">
+          <div className="flex min-w-0 gap-2 overflow-x-auto rounded-lg bg-slate-200/50 p-1 no-scrollbar">
             {[
               { key: 'all', label: 'Tất cả', count: stats?.total || 0 },
               ...productTypes.map(type => ({ key: type.name, label: type.label, count: stats?.byFormat?.[type.name] || 0 })),
@@ -298,14 +320,14 @@ const ProductsManager = () => {
           </div>
 
           {/* Right side filters */}
-          <div className="flex gap-3 items-center flex-wrap">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 xl:flex xl:flex-nowrap xl:items-center">
             <select
               value={statusFilter}
               onChange={e => {
                 setStatusFilter(e.target.value as StatusFilter);
                 setCurrentPage(1);
               }}
-              className="px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer"
+              className="h-10 min-w-0 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 xl:w-44"
             >
               <option value="all">Tất cả trạng thái</option>
               <option value="active">Hoạt động</option>
@@ -320,7 +342,7 @@ const ProductsManager = () => {
                 setCategoryFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer"
+              className="h-10 min-w-0 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 xl:w-48"
             >
               <option value="all">Tất cả danh mục</option>
               {categories.map(cat => (
@@ -328,7 +350,7 @@ const ProductsManager = () => {
               ))}
             </select>
 
-            <div className="relative w-56">
+            <div className="relative min-w-0 xl:w-52">
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
@@ -376,7 +398,7 @@ const ProductsManager = () => {
                     >
                       <td className="px-6 py-4 pl-8">
                         <div className="flex items-center gap-4">
-                          <div className="w-14 h-14 rounded-xl overflow-hidden border border-slate-100 flex-shrink-0 bg-slate-100">
+                          <div className="aspect-video w-20 flex-shrink-0 overflow-hidden rounded-lg border border-slate-100 bg-slate-100">
                             {product.image ? (
                               <img
                                 src={product.image}
@@ -511,24 +533,39 @@ const ProductsManager = () => {
 
         {/* Pagination */}
         {!loading && products.length > 0 && (
-          <div className="p-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-50/40 text-xs text-slate-500">
+          <div className="flex flex-col items-center justify-between gap-3 border-t border-slate-100 bg-slate-50/40 p-4 text-xs text-slate-500 sm:flex-row">
             <span>
               Hiển thị{' '}
-              {totalItems === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1} -{' '}
-              {Math.min(currentPage * PAGE_SIZE, totalItems)} / {totalItems} sản phẩm
+              {totalItems === 0 ? 0 : (safeCurrentPage - 1) * pageSize + 1}–{' '}
+              {Math.min(safeCurrentPage * pageSize, totalItems)} / {totalItems} sản phẩm
             </span>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              <label htmlFor="products-page-size" className="font-semibold">Số dòng</label>
+              <select
+                id="products-page-size"
+                value={pageSize}
+                onChange={event => {
+                  setPageSize(Number(event.target.value) as 10 | 20 | 50);
+                  setCurrentPage(1);
+                }}
+                className="h-9 rounded-lg border border-slate-200 bg-white px-2 font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500"
+              >
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={50}>50</option>
+              </select>
+              <span className="min-w-[72px] text-center font-semibold">Trang {safeCurrentPage}/{totalPages}</span>
               <button
-                disabled={currentPage === 1}
+                disabled={safeCurrentPage === 1}
                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                className="px-3 py-1 border border-slate-200 rounded-lg font-bold hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed"
+                className="h-9 rounded-lg border border-slate-200 px-3 font-bold hover:bg-white disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Trước
               </button>
               <button
-                disabled={currentPage === totalPages}
+                disabled={safeCurrentPage === totalPages}
                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                className="px-3 py-1 border border-slate-200 rounded-lg font-bold hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed"
+                className="h-9 rounded-lg border border-slate-200 px-3 font-bold hover:bg-white disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Sau
               </button>

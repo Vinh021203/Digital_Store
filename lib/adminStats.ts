@@ -38,6 +38,7 @@ export interface RecentOrder {
     id: string;
     customer_name: string;
     customer_email: string;
+    customer_avatar: string | null;
     total: number;
     status: string;
     created_at: string;
@@ -96,7 +97,7 @@ export async function getAdminStats(): Promise<AdminStats> {
             // Total orders
             supabase.from('orders').select('id', { count: 'exact', head: true }),
             // Completed orders
-            supabase.from('orders').select('id', { count: 'exact', head: true }).eq('status', 'completed'),
+            supabase.from('orders').select('id', { count: 'exact', head: true }).in('status', ['paid', 'completed']),
             // Pending orders
             supabase.from('orders').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
             // Processing orders
@@ -104,13 +105,13 @@ export async function getAdminStats(): Promise<AdminStats> {
             // Cancelled orders
             supabase.from('orders').select('id', { count: 'exact', head: true }).eq('status', 'cancelled'),
             // Total revenue (completed orders)
-            supabase.from('orders').select('total').eq('status', 'completed'),
+            supabase.from('orders').select('total').in('status', ['paid', 'completed']),
             // Today's revenue
-            supabase.from('orders').select('total').eq('status', 'completed').gte('created_at', startOfToday),
+            supabase.from('orders').select('total').in('status', ['paid', 'completed']).gte('created_at', startOfToday),
             // This month's revenue
-            supabase.from('orders').select('total').eq('status', 'completed').gte('created_at', startOfMonth),
+            supabase.from('orders').select('total').in('status', ['paid', 'completed']).gte('created_at', startOfMonth),
             // Last month's revenue
-            supabase.from('orders').select('total').eq('status', 'completed').gte('created_at', startOfLastMonth).lt('created_at', startOfMonth),
+            supabase.from('orders').select('total').in('status', ['paid', 'completed']).gte('created_at', startOfLastMonth).lt('created_at', startOfMonth),
             // Total customers
             supabase.from('profiles').select('id', { count: 'exact', head: true }),
             // New customers this week
@@ -183,7 +184,7 @@ export async function getRecentOrders(limit: number = 6): Promise<RecentOrder[]>
                 total,
                 status,
                 created_at,
-                profiles:user_id (name, email)
+                profiles:user_id (name, email, avatar)
             `)
             .order('created_at', { ascending: false })
             .limit(limit);
@@ -197,6 +198,7 @@ export async function getRecentOrders(limit: number = 6): Promise<RecentOrder[]>
             id: order.id,
             customer_name: order.profiles?.name || 'Khách hàng',
             customer_email: order.profiles?.email || '',
+            customer_avatar: order.profiles?.avatar || null,
             total: Number(order.total) || 0,
             status: order.status || 'pending',
             created_at: order.created_at,
@@ -331,7 +333,7 @@ export async function getMonthlyRevenue(year?: number): Promise<{ month: string;
             const { data } = await supabase
                 .from('orders')
                 .select('total')
-                .eq('status', 'completed')
+                .in('status', ['paid', 'completed'])
                 .gte('created_at', startOfMonth)
                 .lte('created_at', endOfMonth);
 

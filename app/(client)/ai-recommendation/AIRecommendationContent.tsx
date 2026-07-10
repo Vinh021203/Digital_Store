@@ -13,6 +13,7 @@ import { useToast } from '@/context/ToastContext';
 import { useSiteMode } from '@/hooks/useSiteSettings';
 import confetti from 'canvas-confetti';
 import type { Product } from '@/types';
+import { getProductTypeSoftStyle } from '@/lib/productTypeDisplay';
 
 const stripHtml = (value?: string | null) =>
     String(value || '')
@@ -282,14 +283,7 @@ const AIProductCard = memo(({
                     <span className="text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md">
                         {product.category}
                     </span>
-                    <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md ${product.format === 'Theme'
-                        ? 'bg-blue-50 text-blue-600'
-                        : product.format === 'Landing'
-                            ? 'bg-purple-50 text-purple-600'
-                            : product.format === 'Template'
-                                ? 'bg-green-50 text-green-600'
-                                : 'bg-orange-50 text-orange-600'
-                        }`}>
+                    <span className={`rounded-md border px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${getProductTypeSoftStyle(product.format)}`}>
                         {product.format}
                     </span>
                 </div>

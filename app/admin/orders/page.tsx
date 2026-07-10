@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import {
   Search, Download, Eye, MoreHorizontal,
   CheckCircle, Clock, Truck, XCircle,
@@ -32,6 +33,8 @@ const OrdersManager = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [orders, setOrders] = useState<DbOrder[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState<10 | 20 | 50>(10);
 
   // Fetch orders from Supabase
   const loadOrders = async () => {
@@ -112,6 +115,15 @@ const OrdersManager = () => {
       }),
     [orders, statusFilter, searchTerm]
   );
+
+  const totalPages = Math.max(1, Math.ceil(filteredOrders.length / pageSize));
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+  const pageStart = (safeCurrentPage - 1) * pageSize;
+  const paginatedOrders = filteredOrders.slice(pageStart, pageStart + pageSize);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [statusFilter, searchTerm, pageSize]);
 
   const statusTabs: { key: StatusFilter; label: string; count?: number }[] = [
     { key: 'all', label: 'Tất cả', count: stats.total },
@@ -233,7 +245,7 @@ const OrdersManager = () => {
                     </td>
                   </tr>
                 ) : (
-                  filteredOrders.map(order => {
+                  paginatedOrders.map(order => {
                     const customerName = order.billing_name || order.user?.name || 'Khách hàng';
                     const orderDate = new Date(order.created_at).toLocaleDateString('vi-VN');
 
@@ -249,9 +261,11 @@ const OrdersManager = () => {
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xs">
-                              {customerName.charAt(0).toUpperCase()}
-                            </div>
+                            {order.user?.avatar ? (
+                              <Image src={order.user.avatar} alt={customerName} width={32} height={32} className="h-8 w-8 shrink-0 rounded-full border border-slate-200 object-cover" />
+                            ) : (
+                              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-600">{customerName.charAt(0).toUpperCase()}</div>
+                            )}
                             <div>
                               <span className="font-bold text-slate-900 text-sm block">
                                 {customerName}
@@ -286,7 +300,7 @@ const OrdersManager = () => {
                           </span>
                         </td>
                         <td className="px-6 py-4 text-right">
-                          <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="flex justify-end gap-2 opacity-100 transition-opacity lg:opacity-0 lg:group-hover:opacity-100">
                             <button
                               onClick={() =>
                                 router.push(`/admin/orders/${order.id}`)
@@ -306,7 +320,7 @@ const OrdersManager = () => {
                   })
                 )}
 
-                {filteredOrders.length === 0 && (
+                {!loading && filteredOrders.length === 0 && (
                   <tr>
                     <td
                       colSpan={7}
@@ -321,15 +335,35 @@ const OrdersManager = () => {
           </div>
 
           {/* Footer */}
-          <div className="p-4 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-3 bg-slate-50/30 text-xs text-slate-500">
+          <div className="flex flex-col items-center justify-between gap-3 border-t border-slate-100 bg-slate-50/30 p-4 text-xs text-slate-500 sm:flex-row">
             <span>
-              Hiển thị {filteredOrders.length} / {stats.total} đơn theo bộ lọc
+              Hiển thị {filteredOrders.length === 0 ? 0 : pageStart + 1}–{Math.min(pageStart + pageSize, filteredOrders.length)} / {filteredOrders.length} đơn
             </span>
-            <div className="flex gap-2">
-              <button className="px-3 py-1 border border-slate-200 rounded-lg font-bold hover:bg-white disabled:opacity-50">
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              <label htmlFor="orders-page-size" className="font-semibold text-slate-500">Số dòng</label>
+              <select
+                id="orders-page-size"
+                value={pageSize}
+                onChange={event => setPageSize(Number(event.target.value) as 10 | 20 | 50)}
+                className="h-9 rounded-lg border border-slate-200 bg-white px-2 font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500"
+              >
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={50}>50</option>
+              </select>
+              <span className="min-w-[72px] text-center font-semibold">Trang {safeCurrentPage}/{totalPages}</span>
+              <button
+                onClick={() => setCurrentPage(page => Math.max(1, page - 1))}
+                disabled={safeCurrentPage <= 1}
+                className="h-9 rounded-lg border border-slate-200 px-3 font-bold hover:bg-white disabled:cursor-not-allowed disabled:opacity-40"
+              >
                 Trước
               </button>
-              <button className="px-3 py-1 border border-slate-200 rounded-lg font-bold hover:bg-white">
+              <button
+                onClick={() => setCurrentPage(page => Math.min(totalPages, page + 1))}
+                disabled={safeCurrentPage >= totalPages}
+                className="h-9 rounded-lg border border-slate-200 px-3 font-bold hover:bg-white disabled:cursor-not-allowed disabled:opacity-40"
+              >
                 Sau
               </button>
             </div>

@@ -129,30 +129,22 @@ export async function fetchActivityLogs(options?: {
 // Create a log entry
 // ============================================
 export async function createActivityLog(payload: CreateLogPayload): Promise<DbActivityLog | null> {
-    const supabase = createClient();
-    if (!supabase) return null;
-
-    const { data, error } = await supabase
-        .from('activity_logs')
-        .insert({
-            user_id: payload.user_id || null,
-            action: payload.action,
-            entity: payload.entity || null,
-            entity_id: payload.entity_id || null,
-            entity_name: payload.entity_name || null,
-            details: payload.details || null,
-            ip_address: payload.ip_address || null,
-            severity: payload.severity || 'info',
-        })
-        .select()
-        .single();
-
-    if (error) {
+    try {
+        const response = await fetch('/api/activity-log', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+        });
+        if (!response.ok) {
+            console.error('[ActivityLogs] API error:', await response.text());
+            return null;
+        }
+        const result = await response.json();
+        return result.data || null;
+    } catch (error) {
         console.error('[ActivityLogs] Error creating:', error);
         return null;
     }
-
-    return data;
 }
 
 // ============================================

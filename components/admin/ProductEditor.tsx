@@ -34,6 +34,7 @@ import {
 import { fetchCategories, type DbCategory } from '@/lib/categories';
 import { fetchProductTypes, type DbProductType } from '@/lib/productTypes';
 import { useToast } from '@/context/ToastContext';
+import { createActivityLog } from '@/lib/activityLogs';
 
 interface ProductEditorProps {
   mode: 'create' | 'edit';
@@ -336,6 +337,7 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
 
       if (isEditMode && productId) {
         await updateProduct(Number(productId), payload);
+        await createActivityLog({ action: 'Update', entity: 'product', entity_id: productId, entity_name: product.name, details: `Cập nhật sản phẩm: ${product.name}`, severity: 'info' });
         if (
           currentProductFileId &&
           product.version.trim() &&
@@ -351,6 +353,9 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
         toast.success('Cập nhật sản phẩm thành công!');
       } else {
         const newProduct = await createProduct(payload);
+        if (newProduct?.id) {
+          await createActivityLog({ action: 'Create', entity: 'product', entity_id: String(newProduct.id), entity_name: product.name, details: `Tạo sản phẩm mới: ${product.name}`, severity: 'success' });
+        }
 
         // If product file was uploaded, create the first version
         if (productFile && newProduct?.id) {

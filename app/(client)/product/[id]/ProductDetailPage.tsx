@@ -732,11 +732,14 @@ const ModernProductDetailLayout = ({
 	                        )}
                     </div>
                     <h3 id="features" className="mb-5 scroll-mt-24 text-xl font-bold text-slate-950">Tổng quan mẫu demo</h3>
-                    <div className="mb-5 grid gap-2 sm:grid-cols-2">
+                    <div className="mb-5 grid grid-cols-2 gap-2">
                         {featureList.map((feature: string, index: number) => (
-                            <div key={`${feature}-${index}`} className="flex items-start gap-2 rounded-xl border border-orange-100 bg-orange-50/60 px-3 py-2.5 text-sm font-semibold text-slate-700">
-                                <Check size={16} className="mt-0.5 shrink-0 text-orange-600" />
-                                <span>{feature}</span>
+                            <div
+                                key={`${feature}-${index}`}
+                                className={`flex min-h-12 items-start gap-1.5 rounded-xl border border-orange-100 bg-orange-50/60 px-2 py-2.5 text-[11px] font-semibold leading-4 text-slate-700 sm:gap-2 sm:px-3 sm:text-sm sm:leading-5 ${featureList.length % 2 === 1 && index === featureList.length - 1 ? 'col-span-2 sm:col-span-1' : ''}`}
+                            >
+                                <Check size={15} className="mt-0.5 shrink-0 text-orange-600 sm:h-4 sm:w-4" />
+                                <span className="break-words">{feature}</span>
                             </div>
                         ))}
                     </div>

@@ -478,7 +478,7 @@ const Footer = () => {
       )}
 
       {/* ── FOOTER CHÍNH ── */}
-      <footer className="relative mt-2 md:mt-3 overflow-visible bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      <footer className="relative mt-2 overflow-visible bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 pb-16 md:mt-3 md:pb-0">
         {/* Wave */}
         <svg
           className="absolute left-0 right-0 -top-5 md:-top-8 h-5 md:h-8 w-full pointer-events-none"

@@ -542,7 +542,7 @@ const MobileMenu = memo<MobileMenuProps>(
     <>
       {/* Backdrop */}
       <div
-        className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-50 lg:hidden transition-opacity duration-300 ${
+        className={`fixed inset-0 z-[210] bg-black/60 backdrop-blur-sm transition-opacity duration-300 lg:hidden ${
           isOpen
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
@@ -553,7 +553,7 @@ const MobileMenu = memo<MobileMenuProps>(
 
       {/* Slide-from-right panel */}
       <div
-        className={`fixed top-0 right-0 bottom-0 w-[85vw] max-w-[360px] bg-white z-50 lg:hidden flex flex-col shadow-2xl transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        className={`fixed inset-y-0 right-0 z-[220] flex h-[100dvh] max-h-[100dvh] w-[85vw] max-w-[360px] flex-col bg-white shadow-2xl transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] lg:hidden ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
         role="dialog"
@@ -654,7 +654,7 @@ const MobileMenu = memo<MobileMenuProps>(
         )}
 
         {/* Scrollable body */}
-        <div className="flex-1 overflow-y-auto overscroll-contain pb-24">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pb-[calc(6rem+env(safe-area-inset-bottom))] touch-pan-y">
           {/* Nav items */}
           <div className="px-3 pt-3 pb-2">
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2">

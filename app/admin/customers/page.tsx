@@ -140,70 +140,50 @@ const CustomersManager: React.FC = () => {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
-              <Users size={20} className="text-blue-600" />
-            </div>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="group relative min-h-[156px] overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-blue-500 p-5 text-white shadow-lg shadow-blue-200/60">
+          <div className="absolute -right-7 -top-8 h-28 w-28 rounded-full bg-white/10 transition-transform group-hover:scale-110" />
+          <div className="relative flex h-full items-center justify-between gap-3">
             <div>
-              <p className="text-xs text-slate-500 uppercase font-bold">Tổng User</p>
-              <p className="text-2xl font-bold text-slate-900">
-                {stats?.total || 0}
-              </p>
+              <p className="text-xs font-black uppercase tracking-wide text-white/85">Tổng người dùng</p>
+              <p className="mt-2 text-4xl font-black leading-none">{stats?.total || 0}</p>
+              <p className="mt-3 text-sm font-medium text-white/75">+{stats?.newToday || 0} mới hôm nay</p>
             </div>
+            <div className="rounded-2xl bg-white/20 p-4 ring-1 ring-white/15"><Users size={28} strokeWidth={2.2} /></div>
           </div>
-          <p className="text-[11px] text-slate-400">
-            +{stats?.newToday || 0} mới hôm nay
-          </p>
         </div>
-        <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
-              <Crown size={20} className="text-amber-600" />
-            </div>
+        <div className="group relative min-h-[156px] overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 p-5 text-white shadow-lg shadow-amber-200/60">
+          <div className="absolute -right-7 -top-8 h-28 w-28 rounded-full bg-white/10 transition-transform group-hover:scale-110" />
+          <div className="relative flex h-full items-center justify-between gap-3">
             <div>
-              <p className="text-xs text-slate-500 uppercase font-bold">Affiliate</p>
-              <p className="text-2xl font-bold text-amber-600">
-                {stats?.affiliates || 0}
-              </p>
+              <p className="text-xs font-black uppercase tracking-wide text-white/85">Cộng tác viên</p>
+              <p className="mt-2 text-4xl font-black leading-none">{stats?.affiliates || 0}</p>
+              <p className="mt-3 text-sm font-medium text-white/75">Tài khoản Affiliate</p>
             </div>
+            <div className="rounded-2xl bg-white/20 p-4 ring-1 ring-white/15"><Crown size={28} strokeWidth={2.2} /></div>
           </div>
-          <p className="text-[11px] text-slate-400">
-            Cộng tác viên
-          </p>
         </div>
-        <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center">
-              <Shield size={20} className="text-indigo-600" />
-            </div>
+        <div className="group relative min-h-[156px] overflow-hidden rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-500 p-5 text-white shadow-lg shadow-indigo-200/60">
+          <div className="absolute -right-7 -top-8 h-28 w-28 rounded-full bg-white/10 transition-transform group-hover:scale-110" />
+          <div className="relative flex h-full items-center justify-between gap-3">
             <div>
-              <p className="text-xs text-slate-500 uppercase font-bold">Admin</p>
-              <p className="text-2xl font-bold text-indigo-600">
-                {stats?.admins || 0}
-              </p>
+              <p className="text-xs font-black uppercase tracking-wide text-white/85">Quản trị viên</p>
+              <p className="mt-2 text-4xl font-black leading-none">{stats?.admins || 0}</p>
+              <p className="mt-3 text-sm font-medium text-white/75">Tài khoản quản trị</p>
             </div>
+            <div className="rounded-2xl bg-white/20 p-4 ring-1 ring-white/15"><Shield size={28} strokeWidth={2.2} /></div>
           </div>
-          <p className="text-[11px] text-slate-400">
-            Quản trị viên
-          </p>
         </div>
-        <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
-              <BookOpen size={20} className="text-emerald-600" />
-            </div>
+        <div className="group relative min-h-[156px] overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-500 p-5 text-white shadow-lg shadow-emerald-200/60">
+          <div className="absolute -right-7 -top-8 h-28 w-28 rounded-full bg-white/10 transition-transform group-hover:scale-110" />
+          <div className="relative flex h-full items-center justify-between gap-3">
             <div>
-              <p className="text-xs text-slate-500 uppercase font-bold">User</p>
-              <p className="text-2xl font-bold text-emerald-600">
-                {stats?.users || 0}
-              </p>
+              <p className="text-xs font-black uppercase tracking-wide text-white/85">Khách hàng</p>
+              <p className="mt-2 text-4xl font-black leading-none">{stats?.users || 0}</p>
+              <p className="mt-3 text-sm font-medium text-white/75">Tài khoản khách hàng</p>
             </div>
+            <div className="rounded-2xl bg-white/20 p-4 ring-1 ring-white/15"><BookOpen size={28} strokeWidth={2.2} /></div>
           </div>
-          <p className="text-[11px] text-slate-400">
-            Tài khoản khách hàng
-          </p>
         </div>
       </div>
 

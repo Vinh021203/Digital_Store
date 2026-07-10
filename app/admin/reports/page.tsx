@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
     DollarSign, TrendingUp, TrendingDown, Calendar, Download,
     CreditCard, PieChart, ArrowUpRight, Wallet, Loader,
@@ -78,6 +79,11 @@ const RevenueReport = () => {
 
     // Max for chart scaling
     const maxMonthlyRevenue = Math.max(...monthlyData.map(d => d.revenue), 1);
+    const linePoints = monthlyData.map((data, index) => {
+        const x = monthlyData.length > 1 ? (index / (monthlyData.length - 1)) * 100 : 50;
+        const y = 92 - (data.revenue / maxMonthlyRevenue) * 82;
+        return `${x},${y}`;
+    }).join(' ');
 
     const formatColors = [
         { name: 'Template', color: 'bg-indigo-500', gradient: 'from-indigo-500 to-purple-500' },
@@ -176,13 +182,13 @@ const RevenueReport = () => {
                 </div>
 
                 {/* Net Profit */}
-                <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-lg transition-all cursor-pointer group">
-                    <div className="flex justify-between items-start mb-4">
-                        <div>
+                <div className="group cursor-pointer overflow-hidden rounded-2xl border border-slate-100 bg-white p-6 shadow-sm transition-all hover:shadow-lg">
+                    <div className="mb-4 flex items-start justify-between gap-3">
+                        <div className="min-w-0 flex-1">
                             <p className="text-slate-500 font-bold text-xs uppercase tracking-wider mb-1">Lợi Nhuận Ròng</p>
-                            <h3 className="text-3xl font-bold text-slate-900">{formatCurrency(netProfit)}</h3>
+                            <h3 className="text-2xl font-bold text-slate-900 xl:text-3xl">{formatCurrency(netProfit)}</h3>
                         </div>
-                        <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl group-hover:scale-110 transition-transform">
+                        <div className="shrink-0 rounded-xl bg-emerald-50 p-2.5 text-emerald-600 transition-transform group-hover:scale-110">
                             <Wallet size={24} />
                         </div>
                     </div>
@@ -197,13 +203,13 @@ const RevenueReport = () => {
                 </div>
 
                 {/* Average Order Value */}
-                <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-lg transition-all cursor-pointer group">
-                    <div className="flex justify-between items-start mb-4">
-                        <div>
+                <div className="group cursor-pointer overflow-hidden rounded-2xl border border-slate-100 bg-white p-6 shadow-sm transition-all hover:shadow-lg">
+                    <div className="mb-4 flex items-start justify-between gap-3">
+                        <div className="min-w-0 flex-1">
                             <p className="text-slate-500 font-bold text-xs uppercase tracking-wider mb-1">Giá Trị Đơn TB</p>
-                            <h3 className="text-3xl font-bold text-slate-900">{formatCurrency(stats.avgOrderValue)}</h3>
+                            <h3 className="text-2xl font-bold text-slate-900 xl:text-3xl">{formatCurrency(stats.avgOrderValue)}</h3>
                         </div>
-                        <div className="p-3 bg-amber-50 text-amber-600 rounded-xl group-hover:scale-110 transition-transform">
+                        <div className="shrink-0 rounded-xl bg-amber-50 p-2.5 text-amber-600 transition-transform group-hover:scale-110">
                             <ShoppingCart size={24} />
                         </div>
                     </div>
@@ -279,6 +285,17 @@ const RevenueReport = () => {
                             ))}
                         </div>
 
+                        {chartView === 'line' && monthlyData.length > 0 && (
+                            <svg className="pointer-events-none absolute bottom-8 left-12 right-0 top-0 z-10 overflow-visible" style={{ height: 'calc(100% - 2rem)', width: 'calc(100% - 3rem)' }} viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                                <polyline points={linePoints} fill="none" stroke="#6366f1" strokeWidth="1.5" vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round" />
+                                {monthlyData.map((data, index) => {
+                                    const cx = monthlyData.length > 1 ? (index / (monthlyData.length - 1)) * 100 : 50;
+                                    const cy = 92 - (data.revenue / maxMonthlyRevenue) * 82;
+                                    return <circle key={data.month} cx={cx} cy={cy} r="1.2" fill="#8b5cf6" stroke="white" strokeWidth="0.6" vectorEffect="non-scaling-stroke" />;
+                                })}
+                            </svg>
+                        )}
+
                         {/* Bars */}
                         {monthlyData.map((data, i) => {
                             const heightPercent = maxMonthlyRevenue > 0 ? (data.revenue / maxMonthlyRevenue) * 100 : 0;
@@ -294,7 +311,7 @@ const RevenueReport = () => {
                                     <div className="flex gap-1 h-full items-end mb-8">
                                         <div
                                             className="bg-gradient-to-t from-indigo-600 to-purple-500 w-full rounded-t opacity-90 group-hover:opacity-100 transition-all duration-300 shadow-lg shadow-indigo-200"
-                                            style={{ height: `${heightPercent}%`, minHeight: data.revenue > 0 ? '4px' : '0' }}
+                                            style={{ height: chartView === 'bar' ? `${heightPercent}%` : '0', minHeight: chartView === 'bar' && data.revenue > 0 ? '4px' : '0' }}
                                         ></div>
                                     </div>
 
@@ -433,9 +450,11 @@ const RevenueReport = () => {
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-2">
-                                                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold">
-                                                    {order.customer_name.charAt(0)}
-                                                </div>
+                                                {order.customer_avatar ? (
+                                                    <Image src={order.customer_avatar} alt={order.customer_name} width={32} height={32} className="h-8 w-8 rounded-full border border-slate-200 object-cover" />
+                                                ) : (
+                                                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 text-xs font-bold text-white">{order.customer_name.charAt(0)}</div>
+                                                )}
                                                 <span className="text-sm font-bold text-slate-900">{order.customer_name}</span>
                                             </div>
                                         </td>
@@ -443,7 +462,7 @@ const RevenueReport = () => {
                                             {new Date(order.created_at).toLocaleDateString('vi-VN')}
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className={`px-2 py-1 rounded-lg text-xs font-bold ${order.status === 'completed' ? 'bg-emerald-50 text-emerald-700' :
+                                            <span className={`px-2 py-1 rounded-lg text-xs font-bold ${order.status === 'completed' || order.status === 'paid' ? 'bg-emerald-50 text-emerald-700' :
                                                 order.status === 'pending' ? 'bg-amber-50 text-amber-700' :
                                                     'bg-slate-50 text-slate-700'
                                                 }`}>

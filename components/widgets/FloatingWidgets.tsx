@@ -250,7 +250,7 @@ const FloatingWidgets = () => {
 
   return (
     <>
-      <div className={`fixed bottom-20 left-3 z-[70] hidden flex-col items-center gap-2 rounded-3xl border border-slate-200/80 bg-white/92 p-1.5 font-sans shadow-[0_18px_45px_rgba(15,23,42,0.13)] backdrop-blur-xl transition-all duration-300 md:bottom-6 md:left-6 md:flex md:p-2 ${hideNearFooter ? 'pointer-events-none translate-y-6 opacity-0' : 'animate-widget-dock-in opacity-100'}`}>
+      <div className={`fixed bottom-24 left-3 z-[70] flex flex-col items-center gap-2 rounded-3xl border border-slate-200/80 bg-white/92 p-1.5 font-sans shadow-[0_18px_45px_rgba(15,23,42,0.13)] backdrop-blur-xl transition-all duration-300 md:bottom-6 md:left-6 md:p-2 ${hideNearFooter ? 'pointer-events-none translate-y-6 opacity-0' : 'animate-widget-dock-in opacity-100'}`}>
         <a href={PHONE_LINK} className="group relative flex items-center" aria-label={`Gọi ${DISPLAY_PHONE}`}>
           <div className="widget-action flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 ring-1 ring-blue-100 transition-all duration-200 hover:-translate-y-0.5 hover:bg-blue-600 hover:text-white hover:shadow-lg hover:shadow-blue-200 md:h-11 md:w-11">
             <Phone size={19} strokeWidth={2.35} />

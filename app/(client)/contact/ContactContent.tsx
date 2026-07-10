@@ -265,30 +265,30 @@ export default function ContactContent() {
             </section>
 
             <section className="border-b border-slate-200 bg-white">
-                <div className="mx-auto grid max-w-7xl md:grid-cols-3">
+                <div className="mx-auto grid max-w-7xl grid-cols-2 gap-2 bg-slate-50 p-3 md:grid-cols-3 md:gap-0 md:bg-white md:p-0">
                     {contactMethods.map((method, index) => (
                         <a
                             key={method.label}
                             href={method.href}
                             target={method.label === 'Facebook' ? '_blank' : undefined}
                             rel={method.label === 'Facebook' ? 'noopener noreferrer' : undefined}
-                            className={`group flex items-center gap-4 px-5 py-5 transition hover:bg-orange-50/60 sm:px-7 ${index < contactMethods.length - 1 ? 'border-b border-slate-100 md:border-b-0 md:border-r' : ''}`}
+                            className={`group relative flex min-w-0 flex-col items-start gap-2 rounded-xl border border-slate-200 bg-white p-3 transition hover:bg-orange-50/60 sm:p-4 md:flex-row md:items-center md:gap-4 md:rounded-none md:border-0 md:px-7 md:py-5 ${index === contactMethods.length - 1 ? 'col-span-2 md:col-span-1' : ''} ${index < contactMethods.length - 1 ? 'md:border-r md:border-slate-100' : ''}`}
                         >
-                            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-orange-50 text-orange-600 transition group-hover:bg-orange-600 group-hover:text-white">
-                                <method.icon size={20} />
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-orange-50 text-orange-600 transition group-hover:bg-orange-600 group-hover:text-white md:h-11 md:w-11">
+                                <method.icon size={19} />
                             </div>
-                            <div className="min-w-0">
-                                <p className="text-xs font-bold uppercase text-slate-400">{method.label}</p>
-                                <p className="mt-1 truncate text-sm font-extrabold text-slate-900">{method.value}</p>
+                            <div className="min-w-0 max-w-full">
+                                <p className="text-[10px] font-bold uppercase leading-4 text-slate-400 md:text-xs">{method.label}</p>
+                                <p className="mt-0.5 break-all text-[11px] font-extrabold leading-4 text-slate-900 sm:text-xs md:mt-1 md:truncate md:text-sm">{method.value}</p>
                                 <p className="mt-1 hidden text-xs text-slate-500 sm:block">{method.detail}</p>
                             </div>
-                            <ExternalLink size={15} className="ml-auto shrink-0 text-slate-300 transition group-hover:text-orange-600" />
+                            <ExternalLink size={14} className="absolute right-3 top-3 shrink-0 text-slate-300 transition group-hover:text-orange-600 md:static md:ml-auto md:h-[15px] md:w-[15px]" />
                         </a>
                     ))}
                 </div>
             </section>
 
-            <section className="mx-auto grid max-w-7xl items-start gap-7 px-4 py-10 sm:px-6 sm:py-14 lg:grid-cols-[1fr_360px] lg:px-8">
+            <section className="mx-auto grid max-w-7xl items-start gap-5 px-4 pb-8 pt-4 sm:gap-7 sm:px-6 sm:py-14 lg:grid-cols-[1fr_360px] lg:px-8">
                 <motion.div
                     initial="hidden"
                     whileInView="visible"

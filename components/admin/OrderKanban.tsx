@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useMemo } from 'react';
+import Image from 'next/image';
 import { DbOrder } from '@/lib/orders';
 import { CheckCircle, Clock, CreditCard, XCircle, Package, Ban } from 'lucide-react';
 
@@ -122,9 +123,11 @@ const OrderKanban: React.FC<OrderKanbanProps> = ({ orders }) => {
 
                         {/* Customer */}
                         <div className="flex items-center gap-2 mb-3">
-                          <div className="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold">
-                            {customerName.charAt(0).toUpperCase()}
-                          </div>
+                          {order.user?.avatar ? (
+                            <Image src={order.user.avatar} alt={customerName} width={24} height={24} className="h-6 w-6 shrink-0 rounded-full border border-slate-200 object-cover" />
+                          ) : (
+                            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-600">{customerName.charAt(0).toUpperCase()}</div>
+                          )}
                           <div className="flex-1 min-w-0">
                             <span className="text-sm font-semibold text-slate-900 truncate block">
                               {customerName}

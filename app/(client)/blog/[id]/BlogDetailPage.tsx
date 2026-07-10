@@ -486,11 +486,11 @@ export default function BlogDetailPage({ params }: { params: Promise<{ id: strin
 
             {demoProducts.length > 0 && (
                 <section className="border-t border-slate-200 bg-white">
-                    <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+                    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
                         <div className="mb-6 flex items-end justify-between gap-4">
                             <div>
                                 <p className="text-xs font-black uppercase tracking-widest text-orange-500">Mẫu demo gợi ý</p>
-                                <h2 className="mt-1 text-2xl font-black text-slate-950">Giao diện có thể phù hợp với nội dung này</h2>
+                                <h2 className="mt-1 text-xl font-black leading-tight text-slate-950 sm:text-2xl">Giao diện có thể phù hợp với nội dung này</h2>
                             </div>
                             <Link href="/products" className="hidden items-center gap-2 text-sm font-black text-slate-600 hover:text-orange-600 sm:inline-flex">
                                 Xem thư viện demo
@@ -498,14 +498,14 @@ export default function BlogDetailPage({ params }: { params: Promise<{ id: strin
                             </Link>
                         </div>
 
-                        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
-                            {demoProducts.map(product => (
+                        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                            {demoProducts.slice(0, 4).map((product, index) => (
                                 <Link
                                     key={product.id}
                                     href={`/product/${(product as any).slug || product.id}`}
-                                    className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all hover:-translate-y-1 hover:border-orange-200 hover:shadow-xl"
+                                    className={`group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all hover:-translate-y-1 hover:border-orange-200 hover:shadow-xl ${index > 0 ? 'hidden sm:block' : ''}`}
                                 >
-                                    <div className="relative aspect-video overflow-hidden bg-slate-100">
+                                    <div className="relative aspect-[16/10] overflow-hidden bg-slate-100 sm:aspect-video">
                                         {product.image ? (
                                             <Image
                                                 src={product.image}
@@ -526,7 +526,7 @@ export default function BlogDetailPage({ params }: { params: Promise<{ id: strin
                                             {Number(product.rating || 5).toFixed(1)}
                                             <span className="font-bold text-slate-400">({product.reviews || 0} đánh giá)</span>
                                         </div>
-                                        <h3 className="line-clamp-2 min-h-[42px] text-base font-black leading-snug text-slate-950 transition-colors group-hover:text-orange-600">
+                                        <h3 className="line-clamp-2 min-h-[42px] text-lg font-black leading-snug text-slate-950 transition-colors group-hover:text-orange-600 sm:text-base">
                                             {product.name}
                                         </h3>
                                         <div className="mt-3 flex items-center justify-between gap-3 rounded-xl bg-orange-50 px-3 py-2 text-orange-600 transition-colors group-hover:bg-orange-600 group-hover:text-white">
@@ -539,6 +539,9 @@ export default function BlogDetailPage({ params }: { params: Promise<{ id: strin
                                 </Link>
                             ))}
                         </div>
+                        <Link href="/products" className="mt-5 flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-orange-200 bg-orange-50 text-sm font-black text-orange-600 sm:hidden">
+                            Xem thêm mẫu demo <ChevronRight size={17} />
+                        </Link>
                     </div>
                 </section>
             )}

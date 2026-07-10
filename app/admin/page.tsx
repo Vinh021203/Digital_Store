@@ -317,7 +317,7 @@ const DashboardOverview = () => {
             </div>
 
             {/* Main Content: 2 Columns */}
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-3">
 
                 {/* Left: Top Products */}
                 <div className="xl:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
