@@ -818,6 +818,11 @@ function CheckoutPageContent() {
                                     </div>
                                 ))}
                             </div>
+                            {safeCart.length > 2 && (
+                                <p className="-mt-3 mb-5 text-center text-xs font-semibold text-slate-400 lg:hidden">
+                                    Vuốt lên để xem thêm sản phẩm
+                                </p>
+                            )}
 
                             {/* Coupon */}
                             <div className="mb-5 rounded-2xl border border-orange-100 bg-orange-50/50 p-3 sm:p-4">

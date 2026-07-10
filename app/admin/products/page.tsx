@@ -34,9 +34,11 @@ import {
   type DbProduct,
 } from '@/lib/products';
 import { fetchCategories, type DbCategory } from '@/lib/categories';
+import { fetchProductTypes, type DbProductType } from '@/lib/productTypes';
+import { getProductTypeSoftStyle } from '@/lib/productTypeDisplay';
 import { useToast } from '@/context/ToastContext';
 
-type ProductTypeFilter = 'all' | 'theme' | 'template' | 'landing' | 'miniapp' | 'bundle';
+type ProductTypeFilter = 'all' | string;
 type StatusFilter = 'all' | 'active' | 'draft' | 'pending' | 'rejected';
 
 const PAGE_SIZE = 10;
@@ -48,6 +50,7 @@ const ProductsManager = () => {
   // Data states
   const [products, setProducts] = useState<DbProduct[]>([]);
   const [categories, setCategories] = useState<DbCategory[]>([]);
+  const [productTypes, setProductTypes] = useState<DbProductType[]>([]);
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -64,19 +67,21 @@ const ProductsManager = () => {
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const [productsData, categoriesData, statsData] = await Promise.all([
+      const [productsData, categoriesData, productTypesData, statsData] = await Promise.all([
         fetchAllProducts({
           status: statusFilter !== 'all' ? statusFilter : undefined,
-          format: filterType !== 'all' ? filterType.charAt(0).toUpperCase() + filterType.slice(1) : undefined,
+          format: filterType !== 'all' ? filterType : undefined,
           category_id: categoryFilter !== 'all' ? Number(categoryFilter) : undefined,
           search: searchTerm || undefined,
         }),
         fetchCategories(),
+        fetchProductTypes(),
         getProductStats(),
       ]);
 
       setProducts(productsData);
       setCategories(categoriesData);
+      setProductTypes(productTypesData);
       setStats(statsData);
     } catch (error) {
       console.error('Error loading data:', error);
@@ -99,22 +104,6 @@ const ProductsManager = () => {
   );
 
   // Helpers
-  const getFormatStyle = (format: string) => {
-    switch (format) {
-      case 'Theme':
-        return 'bg-indigo-50 text-indigo-700 border-indigo-100';
-      case 'Template':
-        return 'bg-purple-50 text-purple-700 border-purple-100';
-      case 'Landing':
-        return 'bg-emerald-50 text-emerald-700 border-emerald-100';
-      case 'MiniApp':
-        return 'bg-amber-50 text-amber-700 border-amber-100';
-      case 'Bundle':
-      default:
-        return 'bg-rose-50 text-rose-700 border-rose-100';
-    }
-  };
-
   const getFormatIcon = (format: string) => {
     switch (format) {
       case 'Theme':
@@ -223,6 +212,16 @@ const ProductsManager = () => {
                 </button>
                 <button
                   onClick={() => {
+                    router.push('/admin/products/types');
+                    setShowActionsMenu(false);
+                  }}
+                  className="w-full px-4 py-2.5 text-left text-sm font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 flex items-center gap-3"
+                >
+                  <Layers size={18} />
+                  Quản lý loại sản phẩm
+                </button>
+                <button
+                  onClick={() => {
                     router.push('/admin/products/licenses');
                     setShowActionsMenu(false);
                   }}
@@ -279,11 +278,7 @@ const ProductsManager = () => {
           <div className="flex gap-2 p-1 bg-slate-200/50 rounded-lg w-fit overflow-x-auto">
             {[
               { key: 'all', label: 'Tất cả', count: stats?.total || 0 },
-              { key: 'theme', label: 'Theme', count: stats?.byFormat?.Theme || 0 },
-              { key: 'template', label: 'Template', count: stats?.byFormat?.Template || 0 },
-              { key: 'landing', label: 'Landing', count: stats?.byFormat?.Landing || 0 },
-              { key: 'miniapp', label: 'MiniApp', count: stats?.byFormat?.MiniApp || 0 },
-              { key: 'bundle', label: 'Bundle', count: stats?.byFormat?.Bundle || 0 },
+              ...productTypes.map(type => ({ key: type.name, label: type.label, count: stats?.byFormat?.[type.name] || 0 })),
             ].map(tab => (
               <button
                 key={tab.key}
@@ -411,7 +406,7 @@ const ProductsManager = () => {
                       </td>
 
                       <td className="px-6 py-4">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold border ${getFormatStyle(product.format)}`}>
+                        <span className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-bold ${getProductTypeSoftStyle(product.format)}`}>
                           {getFormatIcon(product.format)}
                           {product.format}
                         </span>

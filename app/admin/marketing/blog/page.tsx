@@ -18,9 +18,8 @@ import {
   Tag,
   ArrowLeft,
 } from 'lucide-react';
-import { fetchAllPosts, deletePost, togglePublish, type DbBlogPost } from '@/lib/blog';
+import { collectBlogTaxonomy, fetchAllPosts, deletePost, togglePublish, type DbBlogPost } from '@/lib/blog';
 import { useToast } from '@/context/ToastContext';
-import { BLOG_CATEGORIES } from '@/lib/blog';
 
 export default function BlogManager() {
   const router = useRouter();
@@ -35,12 +34,7 @@ export default function BlogManager() {
   const loadPosts = useCallback(async () => {
     setLoading(true);
     try {
-      const filters: any = {};
-      if (filterStatus === 'published') filters.is_published = true;
-      if (filterStatus === 'draft') filters.is_published = false;
-      if (filterCategory) filters.category = filterCategory;
-
-      const data = await fetchAllPosts(filters);
+      const data = await fetchAllPosts();
       setPosts(data);
     } catch (error) {
       console.error('Error loading posts:', error);
@@ -48,16 +42,20 @@ export default function BlogManager() {
     } finally {
       setLoading(false);
     }
-  }, [toast, filterStatus, filterCategory]);
+  }, [toast]);
 
   useEffect(() => {
     loadPosts();
   }, [loadPosts]);
 
-  const filteredPosts = posts.filter(p =>
-    p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (p.excerpt || '').toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const categories = collectBlogTaxonomy(posts, false).categories;
+  const filteredPosts = posts.filter(p => {
+    const matchesSearch = p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (p.excerpt || '').toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = filterStatus === 'all' || (filterStatus === 'published' ? p.is_published : !p.is_published);
+    const matchesCategory = !filterCategory || p.category === filterCategory;
+    return matchesSearch && matchesStatus && matchesCategory;
+  });
 
   const stats = {
     total: posts.length,
@@ -168,8 +166,8 @@ export default function BlogManager() {
           className="px-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
         >
           <option value="">Tất cả danh mục</option>
-          {BLOG_CATEGORIES.map(cat => (
-            <option key={cat.name} value={cat.name}>{cat.icon} {cat.name}</option>
+          {categories.map(category => (
+            <option key={category} value={category}>{category}</option>
           ))}
         </select>
       </div>

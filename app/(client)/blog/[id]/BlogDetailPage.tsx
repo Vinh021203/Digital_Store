@@ -13,13 +13,13 @@ import {
     Clock,
     Eye,
     Facebook,
-    Heart,
     Home,
     Linkedin,
     Link2,
     Loader2,
     Mail,
     MessageCircle,
+    Send,
     Share2,
     Sparkles,
     Star,
@@ -27,7 +27,6 @@ import {
     Twitter,
     User,
 } from 'lucide-react';
-import { useToast } from '@/context/ToastContext';
 import { getPostBySlug, fetchPublishedPosts, type DbBlogPost } from '@/lib/blog';
 import { fetchActiveProducts } from '@/lib/products';
 import type { Product } from '@/types';
@@ -50,13 +49,11 @@ const formatDate = (date: string) =>
 
 export default function BlogDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const { id: slug } = use(params);
-    const { addToast } = useToast();
 
     const [post, setPost] = useState<DbBlogPost | null>(null);
     const [relatedPosts, setRelatedPosts] = useState<DbBlogPost[]>([]);
     const [demoProducts, setDemoProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
-    const [liked, setLiked] = useState(false);
     const [saved, setSaved] = useState(false);
     const [copied, setCopied] = useState(false);
 
@@ -93,11 +90,21 @@ export default function BlogDetailPage({ params }: { params: Promise<{ id: strin
     const readingTime = useMemo(() => getReadingTime(post?.content), [post?.content]);
     const plainExcerpt = post?.excerpt || stripHtml(post?.content).slice(0, 180);
 
+    useEffect(() => {
+        if (post) setSaved(localStorage.getItem(`saved-blog-${post.id}`) === 'true');
+    }, [post]);
+
+    const handleSave = () => {
+        if (!post) return;
+        const nextSaved = !saved;
+        setSaved(nextSaved);
+        localStorage.setItem(`saved-blog-${post.id}`, String(nextSaved));
+    };
+
     const handleCopyLink = async () => {
         await navigator.clipboard.writeText(window.location.href);
         setCopied(true);
-        addToast('Đã sao chép link bài viết', 'success');
-        setTimeout(() => setCopied(false), 2000);
+        window.setTimeout(() => setCopied(false), 2000);
     };
 
     const handleShare = (platform: string) => {
@@ -109,6 +116,8 @@ export default function BlogDetailPage({ params }: { params: Promise<{ id: strin
             facebook: `https://facebook.com/sharer/sharer.php?u=${url}`,
             twitter: `https://twitter.com/intent/tweet?url=${url}&text=${title}`,
             linkedin: `https://linkedin.com/shareArticle?mini=true&url=${url}&title=${title}`,
+            telegram: `https://t.me/share/url?url=${url}&text=${title}`,
+            whatsapp: `https://wa.me/?text=${title}%20${url}`,
         };
 
         window.open(shareUrls[platform], '_blank', 'width=640,height=460');
@@ -254,57 +263,60 @@ export default function BlogDetailPage({ params }: { params: Promise<{ id: strin
                 <aside className="hidden lg:block">
                     <div className="sticky top-24 flex flex-col items-center gap-3">
                         <button
-                            onClick={() => setLiked(!liked)}
-                            className={`flex h-12 w-12 items-center justify-center rounded-2xl border shadow-sm transition-all ${liked ? 'border-red-100 bg-red-50 text-red-500' : 'border-slate-200 bg-white text-slate-500 hover:border-red-200 hover:text-red-500'}`}
-                            aria-label="Thích bài viết"
-                        >
-                            <Heart size={20} fill={liked ? 'currentColor' : 'none'} />
-                        </button>
-                        <button
-                            onClick={() => setSaved(!saved)}
-                            className={`flex h-12 w-12 items-center justify-center rounded-2xl border shadow-sm transition-all ${saved ? 'border-orange-100 bg-orange-50 text-orange-600' : 'border-slate-200 bg-white text-slate-500 hover:border-orange-200 hover:text-orange-600'}`}
-                            aria-label="Lưu bài viết"
+                            onClick={handleSave}
+                            className={`inline-flex h-12 w-12 items-center justify-center rounded-2xl border bg-white shadow-sm transition-all hover:-translate-y-0.5 ${saved ? 'border-orange-200 text-orange-600' : 'border-slate-200 text-slate-500 hover:text-orange-600'}`}
+                            aria-label={saved ? 'Bỏ lưu bài viết' : 'Lưu bài viết'}
+                            title={saved ? 'Bỏ lưu bài viết' : 'Lưu bài viết'}
                         >
                             <Bookmark size={20} fill={saved ? 'currentColor' : 'none'} />
                         </button>
                         <button
                             onClick={handleCopyLink}
-                            className={`flex h-12 w-12 items-center justify-center rounded-2xl border shadow-sm transition-all ${copied ? 'border-emerald-100 bg-emerald-50 text-emerald-600' : 'border-slate-200 bg-white text-slate-500 hover:border-emerald-200 hover:text-emerald-600'}`}
-                            aria-label="Sao chép link"
+                            className={`inline-flex h-12 w-12 items-center justify-center rounded-2xl border bg-white shadow-sm transition-all hover:-translate-y-0.5 ${copied ? 'border-emerald-200 text-emerald-600' : 'border-slate-200 text-slate-500 hover:text-emerald-600'}`}
+                            aria-label="Sao chép liên kết"
+                            title={copied ? 'Đã sao chép' : 'Sao chép liên kết'}
                         >
                             {copied ? <Check size={20} /> : <Link2 size={20} />}
                         </button>
+                        <span className="my-0.5 h-px w-8 bg-slate-200" aria-hidden="true" />
+                        {[
+                            { icon: Facebook, color: 'bg-blue-600 hover:bg-blue-700', platform: 'facebook', label: 'Facebook' },
+                            { icon: Twitter, color: 'bg-sky-500 hover:bg-sky-600', platform: 'twitter', label: 'Twitter' },
+                            { icon: Linkedin, color: 'bg-blue-700 hover:bg-blue-800', platform: 'linkedin', label: 'LinkedIn' },
+                            { icon: Send, color: 'bg-sky-600 hover:bg-sky-700', platform: 'telegram', label: 'Telegram' },
+                            { icon: MessageCircle, color: 'bg-emerald-500 hover:bg-emerald-600', platform: 'whatsapp', label: 'WhatsApp' },
+                        ].map(social => (
+                            <button
+                                key={social.platform}
+                                onClick={() => handleShare(social.platform)}
+                                className={`inline-flex h-12 w-12 items-center justify-center rounded-2xl text-white shadow-sm transition-all hover:-translate-y-0.5 ${social.color}`}
+                                aria-label={`Chia sẻ lên ${social.label}`}
+                                title={`Chia sẻ lên ${social.label}`}
+                            >
+                                <social.icon size={20} />
+                            </button>
+                        ))}
                     </div>
                 </aside>
 
                 <article className="min-w-0">
                     <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8 lg:p-10">
-                        <div className="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-6 lg:hidden">
-                            <div className="flex items-center gap-2">
-                                <button
-                                    onClick={() => setLiked(!liked)}
-                                    className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold ${liked ? 'bg-red-50 text-red-600' : 'bg-slate-100 text-slate-600'}`}
-                                >
-                                    <Heart size={18} fill={liked ? 'currentColor' : 'none'} />
-                                    Thích
-                                </button>
-                                <button
-                                    onClick={() => setSaved(!saved)}
-                                    className={`rounded-full p-2.5 ${saved ? 'bg-orange-50 text-orange-600' : 'bg-slate-100 text-slate-600'}`}
-                                    aria-label="Lưu bài viết"
-                                >
-                                    <Bookmark size={18} fill={saved ? 'currentColor' : 'none'} />
-                                </button>
-                            </div>
-                            <button
-                                onClick={handleCopyLink}
-                                className={`rounded-full p-2.5 ${copied ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-600'}`}
-                                aria-label="Sao chép link"
-                            >
-                                {copied ? <Check size={18} /> : <Link2 size={18} />}
+                        <div className="mb-6 flex items-center gap-2 overflow-x-auto border-b border-slate-100 pb-5 lg:hidden no-scrollbar">
+                            <button onClick={handleSave} className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border ${saved ? 'border-orange-200 bg-orange-50 text-orange-600' : 'border-slate-200 bg-white text-slate-500'}`} aria-label={saved ? 'Bỏ lưu bài viết' : 'Lưu bài viết'}>
+                                <Bookmark size={19} fill={saved ? 'currentColor' : 'none'} />
                             </button>
+                            <button onClick={handleCopyLink} className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border ${copied ? 'border-emerald-200 bg-emerald-50 text-emerald-600' : 'border-slate-200 bg-white text-slate-500'}`} aria-label="Sao chép liên kết">
+                                {copied ? <Check size={19} /> : <Link2 size={19} />}
+                            </button>
+                            <span className="mx-1 h-7 w-px shrink-0 bg-slate-200" />
+                            {[
+                                { icon: Facebook, color: 'bg-blue-600', platform: 'facebook', label: 'Facebook' },
+                                { icon: Twitter, color: 'bg-sky-500', platform: 'twitter', label: 'Twitter' },
+                                { icon: Linkedin, color: 'bg-blue-700', platform: 'linkedin', label: 'LinkedIn' },
+                                { icon: Send, color: 'bg-sky-600', platform: 'telegram', label: 'Telegram' },
+                                { icon: MessageCircle, color: 'bg-emerald-500', platform: 'whatsapp', label: 'WhatsApp' },
+                            ].map(social => <button key={social.platform} onClick={() => handleShare(social.platform)} className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-white ${social.color}`} aria-label={`Chia sẻ lên ${social.label}`}><social.icon size={19} /></button>)}
                         </div>
-
                         {post.excerpt && (
                             <div className="mb-8 rounded-2xl border-l-4 border-orange-500 bg-orange-50 p-5 text-base font-medium leading-8 text-slate-700 sm:text-lg">
                                 {post.excerpt}
@@ -313,7 +325,7 @@ export default function BlogDetailPage({ params }: { params: Promise<{ id: strin
 
                         <SafeHTML
                             html={post.content || ''}
-                            className="blog-rich-content prose prose-lg max-w-none prose-slate prose-headings:scroll-mt-24 prose-headings:font-black prose-headings:text-slate-950 prose-p:leading-8 prose-a:text-orange-600 prose-a:no-underline hover:prose-a:underline prose-img:rounded-2xl prose-img:border prose-img:border-slate-100 prose-blockquote:rounded-r-2xl prose-blockquote:border-l-orange-500 prose-blockquote:bg-orange-50 prose-blockquote:px-5 prose-blockquote:py-3 prose-blockquote:not-italic prose-pre:rounded-2xl prose-pre:bg-slate-950 prose-pre:text-slate-100"
+                            className="blog-rich-content max-w-none"
                             fallback="<p>Không có nội dung.</p>"
                             allowInlineStyles={false}
                         />
@@ -332,31 +344,6 @@ export default function BlogDetailPage({ params }: { params: Promise<{ id: strin
                             </div>
                         )}
                     </div>
-
-                    <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-                        <div className="flex flex-wrap items-center justify-between gap-4">
-                            <div>
-                                <p className="text-xs font-black uppercase tracking-widest text-orange-500">Chia sẻ bài viết</p>
-                                <h2 className="mt-1 text-xl font-black text-slate-950">Gửi cho người đang cần nội dung này</h2>
-                            </div>
-                            <div className="flex gap-2">
-                                {[
-                                    { icon: Facebook, color: 'bg-blue-600 hover:bg-blue-700', platform: 'facebook', label: 'Facebook' },
-                                    { icon: Twitter, color: 'bg-sky-500 hover:bg-sky-600', platform: 'twitter', label: 'Twitter' },
-                                    { icon: Linkedin, color: 'bg-blue-700 hover:bg-blue-800', platform: 'linkedin', label: 'LinkedIn' },
-                                ].map(social => (
-                                    <button
-                                        key={social.platform}
-                                        onClick={() => handleShare(social.platform)}
-                                        className={`inline-flex h-11 w-11 items-center justify-center rounded-xl text-white transition-colors ${social.color}`}
-                                        aria-label={`Chia sẻ lên ${social.label}`}
-                                    >
-                                        <social.icon size={18} />
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                    </section>
 
                     <div className="mt-8">
                         <CommentsSection postId={post.id} />

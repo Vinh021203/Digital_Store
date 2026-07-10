@@ -16,8 +16,7 @@ import {
     Sparkles,
     Tag,
 } from 'lucide-react';
-import { fetchPublishedPosts, type DbBlogPost } from '@/lib/blog';
-import { BLOG_CATEGORIES } from '@/lib/blog';
+import { collectBlogTaxonomy, fetchPublishedPosts, type DbBlogPost } from '@/lib/blog';
 
 const ALL_CATEGORY = 'Tất cả';
 
@@ -75,7 +74,7 @@ export default function BlogPage() {
         loadPosts();
     }, [loadPosts]);
 
-    const categories = useMemo(() => [ALL_CATEGORY, ...BLOG_CATEGORIES.map(category => category.name)], []);
+    const categories = useMemo(() => [ALL_CATEGORY, ...collectBlogTaxonomy(posts, false).categories], [posts]);
 
     const filteredPosts = useMemo(() => {
         const normalizedSearch = searchTerm.trim().toLowerCase();
@@ -155,7 +154,7 @@ export default function BlogPage() {
                                     Bài viết
                                 </div>
                                 <div className="rounded-xl bg-white/10 p-3">
-                                    <p className="text-lg font-black text-white">{BLOG_CATEGORIES.length}</p>
+                                    <p className="text-lg font-black text-white">{Math.max(0, categories.length - 1)}</p>
                                     Chủ đề
                                 </div>
                                 <div className="rounded-xl bg-white/10 p-3">

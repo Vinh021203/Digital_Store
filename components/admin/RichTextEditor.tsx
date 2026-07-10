@@ -273,7 +273,7 @@ export default function RichTextEditor({
             onInput={syncContent}
             onPaste={handlePaste}
             onBlur={syncContent}
-            className="rich-editor-content max-w-none p-5 text-slate-800 outline-none"
+            className="rich-editor-content max-w-none p-5 font-sans text-base font-normal leading-8 text-slate-800 outline-none"
             style={{ minHeight }}
             data-placeholder={placeholder}
             suppressContentEditableWarning
@@ -297,14 +297,16 @@ export default function RichTextEditor({
           pointer-events: none;
         }
         .rich-editor-content h1 {
-          margin: 1rem 0 0.625rem;
+          margin: 1.25rem 0 0.75rem;
           font-size: 1.875rem;
           line-height: 1.2;
           font-weight: 800;
           color: #0f172a;
         }
         .rich-editor-content h2 {
-          margin: 1rem 0 0.5rem;
+          margin: 1.25rem 0 0.625rem;
+          border-left: 4px solid #f97316;
+          padding-left: 1rem;
           font-size: 1.5rem;
           line-height: 1.3;
           font-weight: 800;

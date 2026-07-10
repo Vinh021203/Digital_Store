@@ -15,6 +15,7 @@ export interface DbProduct {
   image: string;
   images: string[];
   format: string;
+  product_type_id: number | null;
   category_id: number | null;
   author: string;
   rating: number;
@@ -53,6 +54,7 @@ export interface ProductPayload {
   image: string;
   images?: string[];
   format: string;
+  product_type_id?: number | null;
   category_id?: number | null;
   author?: string;
   is_new?: boolean;
@@ -293,6 +295,7 @@ export async function createProduct(payload: ProductPayload): Promise<DbProduct 
       image: payload.image,
       images: payload.images || [],
       format: payload.format || 'Template',
+      product_type_id: payload.product_type_id || null,
       category_id: payload.category_id || null,
       author: payload.author || 'Web Giá Rẻ - Portfolio',
       is_new: payload.is_new ?? true,
@@ -346,6 +349,7 @@ export async function updateProduct(
   if (payload.image !== undefined) updates.image = payload.image;
   if (payload.images !== undefined) updates.images = payload.images;
   if (payload.format !== undefined) updates.format = payload.format;
+  if (payload.product_type_id !== undefined) updates.product_type_id = payload.product_type_id;
   if (payload.category_id !== undefined) updates.category_id = payload.category_id;
   if (payload.author !== undefined) updates.author = payload.author;
   if (payload.is_new !== undefined) updates.is_new = payload.is_new;

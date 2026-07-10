@@ -91,7 +91,7 @@ const ClientLayout = ({ children }: ClientLayoutProps) => {
 
   return (
     <MaintenanceGuard>
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col pb-16 md:pb-0">
         {!isFullscreenPage && <Navbar />}
 
         <main className="flex-1" id="main-content" role="main">

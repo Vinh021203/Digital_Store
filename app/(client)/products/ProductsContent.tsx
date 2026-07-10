@@ -115,7 +115,7 @@ const FilterSidebar = ({
     }, [products]);
 
     const visibleCategories = showAllCategories ? categories : categories.slice(0, 5);
-    const formatOptions = ['Theme', 'Template', 'Plugin', 'UI Kit', 'Icon / Vector', 'Landing', 'MiniApp'];
+    const formatOptions = Array.from(new Set(products.map(product => product.format).filter(Boolean))) as string[];
     const visibleFormats = showAllFormats ? formatOptions : formatOptions.slice(0, 5);
     const platformOptions = [
         { label: 'React', key: 'react', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg' },

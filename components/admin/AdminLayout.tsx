@@ -120,6 +120,14 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         return 'Dashboard';
     };
 
+    const primaryAction = pathname === '/admin/marketing/blog'
+        ? { label: 'Thêm bài viết', href: '/admin/marketing/blog/new' }
+        : pathname === '/admin/marketing'
+            ? { label: 'Thêm chiến dịch', href: '/admin/marketing/new' }
+            : pathname === '/admin/products'
+                ? { label: 'Thêm sản phẩm', href: '/admin/products/new' }
+                : null;
+
     const handleLogout = () => {
         logout();
         router.push('/');
@@ -408,13 +416,13 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                         </button>
 
                         {/* Add New Button */}
-                        <button
+                        {primaryAction && <button
                             type="button"
-                            onClick={() => router.push('/admin/products/new')}
+                            onClick={() => router.push(primaryAction.href)}
                             className="hidden sm:flex items-center gap-2 bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-lg shadow-orange-200 hover:bg-orange-700 hover:-translate-y-0.5 transition-all"
                         >
-                            <UserPlus size={16} /> <span className="hidden lg:inline">Thêm mới</span>
-                        </button>
+                            <UserPlus size={16} /> <span className="hidden lg:inline">{primaryAction.label}</span>
+                        </button>}
 
                         <div className="w-px h-8 bg-slate-200"></div>
 
@@ -440,7 +448,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                             {isNotiOpen && (
                                 <>
                                     <div className="fixed inset-0 z-40" onClick={() => setIsNotiOpen(false)}></div>
-                                    <div className="absolute right-0 top-14 w-96 bg-white rounded-2xl shadow-2xl border border-slate-100 z-50 overflow-hidden animate-fade-in-up">
+                                    <div className="fixed left-3 right-3 top-20 z-50 overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-2xl animate-fade-in-up sm:absolute sm:left-auto sm:right-0 sm:top-14 sm:w-96">
                                         {/* Header */}
                                         <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-gradient-to-r from-orange-50 to-purple-50">
                                             <div>

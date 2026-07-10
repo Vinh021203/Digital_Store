@@ -110,7 +110,7 @@ const NewsletterPopup = () => {
 
   return (
     <div
-      className={`fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/70 px-4 backdrop-blur-md transition-all duration-300 ${isClosing ? 'opacity-0' : 'opacity-100'}`}
+      className={`fixed inset-0 z-[190] flex items-center justify-center bg-slate-900/70 px-4 backdrop-blur-md transition-all duration-300 ${isClosing ? 'opacity-0' : 'opacity-100'}`}
       onClick={handleClose}
       role="dialog"
       aria-modal="true"

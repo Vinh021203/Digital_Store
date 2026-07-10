@@ -345,7 +345,7 @@ const DpMarketProductCard = memo(
       }
     };
 
-    const formattedPrice = isCatalogMode ? "Lien he tu van" : product.price.toLocaleString("vi-VN") + " VND";
+    const formattedPrice = isCatalogMode ? "Liên hệ tư vấn" : product.price.toLocaleString("vi-VN") + " VND";
     const formattedOriginalPrice = product.originalPrice
       ? product.originalPrice.toLocaleString("vi-VN") + "₫"
       : "";
@@ -390,7 +390,7 @@ const DpMarketProductCard = memo(
           </Link>
           <button
             onClick={handleToggleWishlist}
-            className={`absolute top-3 right-3 w-8 h-8 rounded-full bg-white/95 backdrop-blur flex items-center justify-center transition-all duration-200 shadow-sm z-10 ${
+            className={`absolute right-3 top-3 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white/95 shadow-sm backdrop-blur transition-all duration-200 ${
               isLiked
                 ? "text-rose-500 bg-rose-50"
                 : "text-slate-400 hover:text-white hover:bg-[#ea580c]"
@@ -511,7 +511,7 @@ const DpMarketProductCard = memo(
               >
                 <button
                   onClick={handleAddToCart}
-                  className={`${variant === "mobileHorizontal" ? "w-7 h-7" : "w-8 h-8 sm:w-9 sm:h-9"} md:w-[36px] md:h-[36px] rounded-full border border-slate-200 text-slate-500 hover:bg-[#ea580c] hover:text-white hover:border-[#ea580c] flex items-center justify-center transition-all duration-200 shadow-sm`}
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 text-slate-500 shadow-sm transition-all duration-200 hover:border-[#ea580c] hover:bg-[#ea580c] hover:text-white"
                   aria-label={isCatalogMode ? "Nhận tư vấn" : "Thêm vào danh sách"}
                 >
 	                  {isCatalogMode ? <MessageCircle size={14} strokeWidth={2.5} /> : <Download size={14} strokeWidth={2.5} />}
@@ -2378,7 +2378,7 @@ const HomePage = ({
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/35 via-transparent to-transparent opacity-70 transition-opacity duration-300 group-hover:opacity-45" />
                       </Link>
-                      <span className="absolute left-2 top-2 md:left-4 md:top-4 rounded-full bg-white/90 px-2 md:px-3 py-0.5 md:py-1 text-[8px] md:text-[10px] font-extrabold uppercase tracking-wide text-[#ea580c] shadow-sm backdrop-blur">
+                      <span className="absolute left-2 top-2 rounded-full bg-white/90 px-2 py-1 text-[10px] font-extrabold uppercase tracking-wide text-[#ea580c] shadow-sm backdrop-blur md:left-4 md:top-4 md:px-3">
                         {blog.category || "Học Tập"}
                       </span>
                       <span className="absolute right-2 top-2 md:right-4 md:top-4 flex h-7 w-7 md:h-9 md:w-9 items-center justify-center rounded-full bg-white/90 text-[10px] md:text-xs font-extrabold text-slate-700 shadow-sm backdrop-blur">

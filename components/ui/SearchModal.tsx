@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { fetchActiveProducts } from '@/lib/products';
 import type { Product } from '@/types';
+import { getProductTypeSoftStyle } from '@/lib/productTypeDisplay';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -124,7 +125,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-start justify-center pt-12 sm:pt-20 px-4 bg-slate-900/70 backdrop-blur-md transition-all duration-300 ${isAnimating ? 'opacity-100' : 'opacity-0'
+      className={`fixed inset-0 z-[200] flex items-start justify-center bg-slate-900/70 px-4 pt-12 backdrop-blur-md transition-all duration-300 sm:pt-20 ${isAnimating ? 'opacity-100' : 'opacity-0'
         }`}
       onClick={handleClose}
     >
@@ -267,11 +268,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
                       <div className="flex-1 min-w-0">
                         <h4 className="font-bold text-slate-900 group-hover:text-orange-600 text-sm truncate">{product.name}</h4>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${product.format === 'Theme' ? 'bg-orange-100 text-orange-700' :
-                            product.format === 'Template' ? 'bg-amber-100 text-amber-700' :
-                              product.format === 'Landing' ? 'bg-red-100 text-red-700' :
-                                'bg-rose-100 text-rose-700'
-                            }`}>
+                          <span className={`rounded border px-2 py-0.5 text-[10px] font-bold uppercase ${getProductTypeSoftStyle(product.format)}`}>
                             {product.format}
                           </span>
                           <span className="text-sm font-bold text-orange-600">{product.price.toLocaleString('vi-VN')}₫</span>

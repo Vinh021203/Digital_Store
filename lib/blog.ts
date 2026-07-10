@@ -5,13 +5,24 @@ import { createClient } from './supabase/client';
 // Constants
 // ============================================
 export const BLOG_CATEGORIES = [
-    { name: 'Góc Review Sách', count: 18, icon: '📚' },
-    { name: 'Kỹ Năng Mềm', count: 12, icon: '🎯' },
-    { name: 'Học Lập Trình', count: 15, icon: '💻' },
-    { name: 'Chuyện Nghề', count: 14, icon: '💼' },
-    { name: 'Tài Chính Cá Nhân', count: 10, icon: '💰' },
-    { name: 'Phong Cách Sống', count: 13, icon: '🌟' },
+    { name: 'Góc Review Sách', count: 18, icon: 'book' },
+    { name: 'Kỹ Năng Mềm', count: 12, icon: 'target' },
+    { name: 'Học Lập Trình', count: 15, icon: 'code' },
+    { name: 'Chuyện Nghề', count: 14, icon: 'briefcase' },
+    { name: 'Tài Chính Cá Nhân', count: 10, icon: 'wallet' },
+    { name: 'Phong Cách Sống', count: 13, icon: 'sparkles' },
 ];
+
+export const collectBlogTaxonomy = (posts: Pick<DbBlogPost, 'category' | 'tags'>[], includeDefaults = true) => ({
+    categories: Array.from(new Set([
+        ...(includeDefaults ? BLOG_CATEGORIES.map(category => category.name) : []),
+        ...posts.map(post => post.category?.trim()).filter((value): value is string => Boolean(value)),
+    ])).sort((a, b) => a.localeCompare(b, 'vi')),
+    tags: Array.from(new Set([
+        ...(includeDefaults ? BLOG_TAGS : []),
+        ...posts.flatMap(post => post.tags || []).map(tag => tag.trim()).filter(Boolean),
+    ])).sort((a, b) => a.localeCompare(b, 'vi')),
+});
 
 export const BLOG_TAGS = [
     'Học Tập',

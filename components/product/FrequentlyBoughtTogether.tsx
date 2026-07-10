@@ -86,7 +86,7 @@ export default function FrequentlyBoughtTogether({ currentProduct, recommendedPr
                                 </div>
                             )}
                             <p className="text-xs font-bold text-slate-700 mt-2 text-center truncate w-20">
-                                {isCatalogMode ? 'Lien he tu van' : product.price.toLocaleString('vi-VN') + ' VND'}
+                                {isCatalogMode ? 'Liên hệ tư vấn' : product.price.toLocaleString('vi-VN') + ' VND'}
                             </p>
                         </div>
                         {idx < allProducts.length - 1 && (
@@ -106,7 +106,7 @@ export default function FrequentlyBoughtTogether({ currentProduct, recommendedPr
                     </p>
                     <div className="flex items-center gap-2">
                         <span className="text-2xl font-black text-orange-600">
-                            {isCatalogMode ? 'Lien he tu van' : totalPrice.toLocaleString('vi-VN') + ' VND'}
+                            {isCatalogMode ? 'Liên hệ tư vấn' : totalPrice.toLocaleString('vi-VN') + ' VND'}
                         </span>
                         {!isCatalogMode && savings > 0 && (
                             <span className="text-sm text-green-600 font-bold bg-green-100 px-2 py-0.5 rounded">

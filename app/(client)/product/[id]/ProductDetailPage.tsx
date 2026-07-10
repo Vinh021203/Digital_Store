@@ -50,30 +50,41 @@ const DemoPreviewModal = ({ isOpen, onClose, demoUrl, productName }: {
     demoUrl: string;
     productName: string;
 }) => {
-    if (!isOpen) return null;
+    useEffect(() => {
+        if (!isOpen) return;
 
-    return (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-in fade-in duration-200">
-            <div className="relative w-full max-w-[90vw] h-[90vh] bg-white rounded-2xl overflow-hidden shadow-2xl flex flex-col">
+        const previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+
+        return () => {
+            document.body.style.overflow = previousOverflow;
+        };
+    }, [isOpen]);
+
+    if (!isOpen || typeof document === 'undefined') return null;
+
+    return createPortal(
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/90 p-0 backdrop-blur-md animate-in fade-in duration-200 sm:p-4">
+            <div className="relative flex h-full w-full flex-col overflow-hidden bg-white shadow-2xl sm:h-[90vh] sm:max-w-[90vw] sm:rounded-2xl">
                 {/* Header */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-white z-10">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center">
+                <div className="z-10 flex items-center justify-between gap-2 border-b border-slate-100 bg-white px-3 py-3 sm:px-6 sm:py-4">
+                    <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-orange-50 sm:h-10 sm:w-10">
                             <Play size={20} className="text-orange-600 fill-orange-600" />
                         </div>
-                        <div>
-                            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Live Preview</p>
-                            <h3 className="font-bold text-slate-900 text-lg leading-none">{productName}</h3>
+                        <div className="min-w-0">
+                            <p className="hidden text-xs font-bold uppercase tracking-wider text-slate-500 sm:block">Live Preview</p>
+                            <h3 className="truncate text-sm font-bold leading-tight text-slate-900 sm:text-lg">{productName}</h3>
                         </div>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex shrink-0 items-center gap-2 sm:gap-3">
                         <a
                             href={demoUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl text-sm font-bold hover:bg-orange-600 transition-colors shadow-lg shadow-slate-200"
+                            className="flex h-10 items-center gap-2 rounded-xl bg-slate-900 px-3 text-sm font-bold text-white shadow-lg shadow-slate-200 transition-colors hover:bg-orange-600 sm:px-5"
                         >
-                            <ExternalLink size={16} /> Mở tab mới
+                            <ExternalLink size={16} /> <span className="hidden sm:inline">Mở tab mới</span>
                         </a>
                         <button
                             onClick={onClose}
@@ -95,7 +106,8 @@ const DemoPreviewModal = ({ isOpen, onClose, demoUrl, productName }: {
                     />
                 </div>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 };
 

@@ -14,8 +14,8 @@ import {
 } from 'lucide-react';
 import { getPostById, updatePost, type DbBlogPost } from '@/lib/blog';
 import { useToast } from '@/context/ToastContext';
-import { BLOG_CATEGORIES, BLOG_TAGS } from '@/lib/blog';
 import SafeHTML from '@/components/ui/SafeHTML';
+import BlogTaxonomyFields from '@/components/blog/BlogTaxonomyFields';
 import RichTextEditor from '@/components/admin/RichTextEditor';
 
 export default function EditBlogPage({ params }: { params: Promise<{ id: string }> }) {
@@ -67,15 +67,6 @@ export default function EditBlogPage({ params }: { params: Promise<{ id: string 
         };
         loadPost();
     }, [id, toast]);
-
-    const handleTagToggle = (tag: string) => {
-        setFormData(prev => ({
-            ...prev,
-            tags: prev.tags.includes(tag)
-                ? prev.tags.filter(t => t !== tag)
-                : [...prev.tags, tag],
-        }));
-    };
 
     const handleCoverUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -194,7 +185,7 @@ export default function EditBlogPage({ params }: { params: Promise<{ id: string 
                     <p className="text-slate-500 mb-6">{formData.excerpt}</p>
                     <SafeHTML
                         html={formData.content || ''}
-                        className="prose max-w-none"
+                        className="blog-rich-content max-w-none"
                         fallback="<p>Nội dung...</p>"
                     />
                 </div>
@@ -322,37 +313,12 @@ export default function EditBlogPage({ params }: { params: Promise<{ id: string 
                             />
                         </div>
 
-                        <div className="bg-white rounded-2xl border border-slate-100 p-6 space-y-4">
-                            <h3 className="font-bold text-slate-900 border-b pb-3">Danh mục</h3>
-                            <select
-                                value={formData.category}
-                                onChange={e => setFormData(prev => ({ ...prev, category: e.target.value }))}
-                                className="w-full border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none"
-                            >
-                                <option value="">Chọn danh mục</option>
-                                {BLOG_CATEGORIES.map(cat => (
-                                    <option key={cat.name} value={cat.name}>{cat.icon} {cat.name}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <div className="bg-white rounded-2xl border border-slate-100 p-6 space-y-4">
-                            <h3 className="font-bold text-slate-900 border-b pb-3">Thẻ</h3>
-                            <div className="flex flex-wrap gap-2">
-                                {BLOG_TAGS.slice(0, 12).map(tag => (
-                                    <button
-                                        key={tag}
-                                        onClick={() => handleTagToggle(tag)}
-                                        className={`px-3 py-1 rounded-full text-xs font-bold transition-colors ${formData.tags.includes(tag)
-                                            ? 'bg-indigo-100 text-indigo-600'
-                                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                                            }`}
-                                    >
-                                        {tag}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
+                        <BlogTaxonomyFields
+                            category={formData.category}
+                            tags={formData.tags}
+                            onCategoryChange={category => setFormData(prev => ({ ...prev, category }))}
+                            onTagsChange={tags => setFormData(prev => ({ ...prev, tags }))}
+                        />
                     </div>
                 </div>
             )}

@@ -163,7 +163,7 @@ export default function BlogDetailPage({ params }: { params: Promise<{ id: strin
 
                         <SafeHTML
                             html={post.content || ''}
-                            className="prose max-w-none"
+                            className="blog-rich-content max-w-none"
                             fallback="<p class='text-slate-400'>Không có nội dung</p>"
                         />
                     </div>

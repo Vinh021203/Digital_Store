@@ -12,6 +12,7 @@ import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/context/ToastContext';
 import { useSiteMode } from '@/hooks/useSiteSettings';
+import { getProductTypeFilledStyle } from '@/lib/productTypeDisplay';
 
 // Blur placeholder for images
 const BLUR_DATA_URL = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMCwsLCgwMDhEODQ4RDgwMEhQSFhITExMOFRcZGxkWGhQWFhL/2wBDAQMEBAUEBQkFBQkWDwwPFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhL/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAYH/8QAJRAAAQMDAwMFAAAAAAAAAAAAAQIDBAAFEQYSIQcTMRQiQVFh/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAXEQEBAQEAAAAAAAAAAAAAAAABAgAD/9oADAMBERACEEQ8T//UAJwKkKV0NQAG0ADE8CuKH//Z';
@@ -36,7 +37,7 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
   const discount = product.originalPrice
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0;
-  const priceLabel = isCatalogMode ? 'Lien he tu van' : product.price.toLocaleString('vi-VN') + ' VND';
+  const priceLabel = isCatalogMode ? 'Liên hệ tư vấn' : product.price.toLocaleString('vi-VN') + ' VND';
 
   // Memoized handlers
   const handleAddToCart = useCallback((e: React.MouseEvent) => {
@@ -126,7 +127,7 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
             onLoad={() => setImageLoaded(true)}
           />
           {product.isNew && (
-            <span className="absolute top-2 left-2 bg-pink-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider shadow-sm">
+            <span className="absolute top-2 left-2 rounded bg-pink-600 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
               MỚI
             </span>
           )}
@@ -203,11 +204,7 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
         <div className="absolute top-2 left-2 flex gap-1">
           {/* Format Badge */}
           {product.format && (
-            <span className={`text-white text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider shadow-sm flex items-center gap-0.5 ${product.format === 'Theme' ? 'bg-orange-700' :
-              product.format === 'Landing' ? 'bg-red-700' :
-                product.format === 'Template' ? 'bg-amber-700' :
-                  product.format === 'MiniApp' ? 'bg-rose-700' : 'bg-orange-600'
-              }`}>
+            <span className={`flex items-center gap-0.5 rounded px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm ${getProductTypeFilledStyle(product.format)}`}>
               {product.format === 'Theme' || product.format === 'Landing' ? <Package size={9} /> : <PlayCircle size={9} />}
               {product.format}
             </span>
@@ -319,7 +316,7 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
         </Link>
 
         {/* Author */}
-        <p className="text-[9px] md:text-[10px] text-slate-500 mb-1.5 line-clamp-1">
+        <p className="mb-1.5 line-clamp-1 text-[11px] text-slate-500 md:text-xs">
           by <span className="font-semibold">{product.author}</span>
         </p>
 
@@ -340,7 +337,7 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
           {/* Buy Button */}
           <button
             onClick={handleAddToCart}
-            className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white px-2.5 md:px-3 py-1.5 rounded-lg text-[10px] md:text-xs font-bold transition-all shadow-sm hover:shadow-lg hover:scale-105 whitespace-nowrap flex-shrink-0 flex items-center gap-1"
+            className="flex h-10 flex-shrink-0 items-center gap-1 whitespace-nowrap rounded-lg bg-gradient-to-r from-orange-600 to-red-600 px-3 text-xs font-bold text-white shadow-sm transition-all hover:scale-105 hover:from-orange-700 hover:to-red-700 hover:shadow-lg"
           >
             {isCatalogMode ? <MessageCircle size={12} /> : <ShoppingCart size={12} />}
             <span className="hidden sm:inline">{isCatalogMode ? 'Tư vấn' : 'Thêm giỏ'}</span>

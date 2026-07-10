@@ -9,6 +9,7 @@ import {
 import { Product } from '@/types';
 import Link from 'next/link';
 import Image from 'next/image';
+import { getProductTypeFilledStyle } from '@/lib/productTypeDisplay';
 import { useCart } from '@/context/CartContext';
 import { useToast } from '@/context/ToastContext';
 import { useSiteMode } from '@/hooks/useSiteSettings';
@@ -48,18 +49,6 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, isOpen, onClos
     return Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
   }, [product?.originalPrice, product?.price]);
   const priceLabel = isCatalogMode || !product ? 'Liên hệ tư vấn' : `${product.price.toLocaleString('vi-VN')}₫`;
-
-  // Format badge style
-  const getFormatStyle = (format: string) => {
-    switch (format) {
-      case 'Theme': return 'bg-gradient-to-r from-orange-600 to-red-600';
-      case 'Template': return 'bg-gradient-to-r from-amber-600 to-orange-600';
-      case 'Landing': return 'bg-gradient-to-r from-red-600 to-rose-600';
-      case 'MiniApp': return 'bg-gradient-to-r from-rose-600 to-pink-600';
-      case 'Bundle': return 'bg-gradient-to-r from-purple-600 to-violet-600';
-      default: return 'bg-orange-600';
-    }
-  };
 
   // Close on Escape key
   const handleEscape = useCallback((e: KeyboardEvent) => {
@@ -118,7 +107,7 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, isOpen, onClos
 
   return (
     <div
-      className="fixed inset-0 z-[60] flex items-end md:items-center justify-center bg-black/60 backdrop-blur-sm"
+      className="fixed inset-0 z-[200] flex items-end justify-center bg-black/60 backdrop-blur-sm md:items-center"
       onClick={onClose}
       style={{ animation: 'fadeIn 0.2s ease-out' }}
     >
@@ -151,7 +140,7 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, isOpen, onClos
           {/* Badges */}
           <div className="absolute top-3 left-3 flex gap-1.5 flex-wrap">
             {product.format && (
-              <span className={`text-white text-[10px] font-bold px-2 py-1 rounded-lg uppercase tracking-wide shadow-md ${getFormatStyle(product.format)}`}>
+              <span className={`rounded-lg px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-white shadow-md ${getProductTypeFilledStyle(product.format)}`}>
                 <Package size={10} className="inline mr-1" />
                 {product.format}
               </span>

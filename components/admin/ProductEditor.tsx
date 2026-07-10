@@ -32,6 +32,7 @@ import {
   type ProductPayload,
 } from '@/lib/products';
 import { fetchCategories, type DbCategory } from '@/lib/categories';
+import { fetchProductTypes, type DbProductType } from '@/lib/productTypes';
 import { useToast } from '@/context/ToastContext';
 
 interface ProductEditorProps {
@@ -39,15 +40,14 @@ interface ProductEditorProps {
   productId?: string;
 }
 
-type ProductFormat = 'Theme' | 'Template' | 'Landing' | 'MiniApp' | 'Bundle';
-
 interface EditorProduct {
   name: string;
   price: number;
   originalPrice: number;
   description: string;
   category: string;
-  format: ProductFormat;
+  format: string;
+  productTypeId: number | null;
   image: string;
   gallery: string[];
   author: string;
@@ -74,6 +74,7 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
 
   // Data states
   const [categories, setCategories] = useState<DbCategory[]>([]);
+  const [productTypes, setProductTypes] = useState<DbProductType[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -99,6 +100,7 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
     description: '',
     category: '',
     format: 'Theme',
+    productTypeId: null,
     image: '',
     gallery: [],
     author: 'Shop Web rẻ',
@@ -125,8 +127,19 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const cats = await fetchCategories();
+      const [cats, types] = await Promise.all([fetchCategories(), fetchProductTypes(true)]);
       setCategories(cats);
+      setProductTypes(types);
+
+      if (!isEditMode) {
+        const firstType = types[0];
+        setProduct(prev => ({
+          ...prev,
+          category: prev.category || (cats[0] ? String(cats[0].id) : ''),
+          productTypeId: firstType && firstType.id > 0 ? firstType.id : null,
+          format: firstType?.name || prev.format,
+        }));
+      }
 
       if (isEditMode && productId) {
         const found = await getProductById(Number(productId));
@@ -140,7 +153,8 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
             originalPrice: Number(found.original_price) || 0,
             description: found.description || '',
             category: String(found.category_id || ''),
-            format: found.format as ProductFormat,
+            format: found.format,
+            productTypeId: found.product_type_id || types.find(type => type.name === found.format && type.id > 0)?.id || null,
             image: found.image,
             gallery: found.images || [],
             author: found.author,
@@ -304,6 +318,7 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
         image: product.image,
         images: product.gallery,
         format: product.format,
+        product_type_id: product.productTypeId,
         category_id: product.category ? Number(product.category) : null,
         author: product.author || 'Shop Web rẻ',
         is_new: product.isNew,
@@ -863,18 +878,17 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
                   Loại sản phẩm
                 </label>
                 <select
-                  value={product.format}
-                  onChange={e =>
-                    setProduct({ ...product, format: e.target.value as ProductFormat })
-                  }
+                  value={product.productTypeId ?? product.format}
+                  onChange={e => {
+                    const selected = productTypes.find(type => String(type.id) === e.target.value);
+                    setProduct({ ...product, productTypeId: selected && selected.id > 0 ? selected.id : null, format: selected?.name || e.target.value });
+                  }}
                   className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-orange-500"
                 >
-                  <option value="Theme">Theme / UI Kit</option>
-                  <option value="Template">Template (Figma, Notion, etc.)</option>
-                  <option value="Landing">Landing Page</option>
-                  <option value="MiniApp">Mini App / Tool</option>
-                  <option value="Bundle">Bundle</option>
+                  <option value="" disabled>Chọn loại sản phẩm</option>
+                  {productTypes.map(type => <option key={type.id} value={type.id > 0 ? type.id : type.name}>{type.label}</option>)}
                 </select>
+                <button type="button" onClick={() => router.push('/admin/products/types')} className="mt-2 text-xs font-bold text-indigo-600 hover:underline">Quản lý loại sản phẩm</button>
               </div>
               <div>
                 <label className="block text-xs font-bold text-slate-500 mb-1.5">
@@ -887,6 +901,7 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
                   }
                   className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-orange-500"
                 >
+                  <option value="" disabled>Chọn danh mục</option>
                   {categories.map(cat => (
                     <option key={cat.id} value={cat.id}>
                       {cat.name}

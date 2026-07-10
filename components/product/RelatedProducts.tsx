@@ -8,6 +8,7 @@ import { Product } from '@/types';
 import { useCart } from '@/context/CartContext';
 import { useToast } from '@/context/ToastContext';
 import { useSiteMode } from '@/hooks/useSiteSettings';
+import { getProductTypeFilledStyle } from '@/lib/productTypeDisplay';
 
 interface RelatedProductsProps {
     currentProduct: Product;
@@ -79,17 +80,14 @@ export default function RelatedProducts({ currentProduct, relatedProducts = [], 
                                 {/* Badges */}
                                 <div className="absolute top-2 left-2 flex gap-1">
                                     {product.format && (
-                                        <span className={`text-white text-[9px] font-bold px-2 py-0.5 rounded uppercase ${product.format === 'Theme' ? 'bg-orange-600' :
-                                            product.format === 'Template' ? 'bg-amber-600' :
-                                                product.format === 'Landing' ? 'bg-red-600' : 'bg-rose-600'
-                                            }`}>
+                                        <span className={`rounded px-2 py-0.5 text-[10px] font-bold uppercase text-white ${getProductTypeFilledStyle(product.format)}`}>
                                             {product.format}
                                         </span>
                                     )}
                                 </div>
 
                                 {!isCatalogMode && discount > 0 && (
-                                    <span className="absolute top-2 right-2 bg-rose-500 text-white text-[9px] font-bold px-2 py-0.5 rounded">
+                                    <span className="absolute right-2 top-2 rounded bg-rose-500 px-2 py-1 text-[10px] font-bold text-white">
                                         -{discount}%
                                     </span>
                                 )}
@@ -121,7 +119,7 @@ export default function RelatedProducts({ currentProduct, relatedProducts = [], 
                                     {product.name}
                                 </h4>
                                 <div className="flex items-center gap-2">
-                                    <span className="font-black text-orange-600">{isCatalogMode ? 'Lien he tu van' : `${product.price.toLocaleString('vi-VN')} VND`}</span>
+                                    <span className="font-black text-orange-600">{isCatalogMode ? 'Liên hệ tư vấn' : `${product.price.toLocaleString('vi-VN')} VND`}</span>
                                     {!isCatalogMode && product.originalPrice && (
                                         <span className="text-xs text-slate-400 line-through">{product.originalPrice.toLocaleString('vi-VN')}₫</span>
                                     )}
