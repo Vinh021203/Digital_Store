@@ -1,10 +1,12 @@
 'use client';
 
 import React, { memo, useCallback, useEffect, useState } from 'react';
-import { ArrowRight, CheckCircle, Gift, Sparkles, X } from 'lucide-react';
+import { ArrowRight, CheckCircle, Gift, Loader2, Sparkles, X } from 'lucide-react';
 
 const STORAGE_KEY = 'shopwebre_newsletter_seen';
-const POPUP_DELAY = 5000;
+// Only show the promotion after the visitor has interacted with the page.
+// Rendering a large modal on a fixed timer can become the page's LCP element.
+const POPUP_DELAY_AFTER_INTERACTION = 3500;
 
 const SuccessAnimation = memo(() => (
   <div className="relative z-10 py-8 text-center sm:py-10">
@@ -50,15 +52,30 @@ const NewsletterPopup = () => {
   const [submitted, setSubmitted] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   useEffect(() => {
     setIsHydrated(true);
 
     const hasSeenPopup = localStorage.getItem(STORAGE_KEY);
-    if (!hasSeenPopup) {
-      const timer = window.setTimeout(() => setIsOpen(true), POPUP_DELAY);
-      return () => window.clearTimeout(timer);
-    }
+    if (hasSeenPopup) return;
+
+    let timer: number | undefined;
+    const schedulePopup = () => {
+      window.removeEventListener('pointerdown', schedulePopup);
+      window.removeEventListener('keydown', schedulePopup);
+      timer = window.setTimeout(() => setIsOpen(true), POPUP_DELAY_AFTER_INTERACTION);
+    };
+
+    window.addEventListener('pointerdown', schedulePopup, { once: true, passive: true });
+    window.addEventListener('keydown', schedulePopup, { once: true });
+
+    return () => {
+      window.removeEventListener('pointerdown', schedulePopup);
+      window.removeEventListener('keydown', schedulePopup);
+      if (timer) window.clearTimeout(timer);
+    };
   }, []);
 
   const handleClose = useCallback(() => {
@@ -72,15 +89,29 @@ const NewsletterPopup = () => {
   }, []);
 
   const handleSubmit = useCallback(
-    (e: React.FormEvent) => {
+    async (e: React.FormEvent) => {
       e.preventDefault();
+      if (!email || isSubmitting) return;
 
-      if (email) {
+      setIsSubmitting(true);
+      setSubmitError('');
+      try {
+        const response = await fetch('/api/newsletter', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+        });
+        const result = await response.json();
+        if (!response.ok || !result.success) throw new Error(result.message || 'Không gửi được email.');
         setSubmitted(true);
         window.setTimeout(handleClose, 5000);
+      } catch (error) {
+        setSubmitError(error instanceof Error ? error.message : 'Không gửi được email. Vui lòng thử lại.');
+      } finally {
+        setIsSubmitting(false);
       }
     },
-    [email, handleClose]
+    [email, handleClose, isSubmitting]
   );
 
   useEffect(() => {
@@ -110,14 +141,14 @@ const NewsletterPopup = () => {
 
   return (
     <div
-      className={`fixed inset-0 z-[190] flex items-center justify-center bg-slate-900/70 px-4 backdrop-blur-md transition-all duration-300 ${isClosing ? 'opacity-0' : 'opacity-100'}`}
+      className={`fixed inset-0 z-[190] flex items-center justify-center overflow-y-auto bg-slate-900/70 px-4 py-4 backdrop-blur-md transition-all duration-300 ${isClosing ? 'opacity-0' : 'opacity-100'}`}
       onClick={handleClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="newsletter-title"
     >
       <div
-        className={`relative flex w-full max-w-4xl transform flex-col overflow-hidden rounded-2xl bg-white shadow-2xl transition-all duration-300 sm:rounded-3xl md:flex-row ${isClosing ? 'scale-95 opacity-0' : 'scale-100 opacity-100'}`}
+        className={`relative flex max-h-[calc(100dvh-2rem)] w-full max-w-4xl transform flex-col overflow-y-auto rounded-2xl bg-white shadow-2xl transition-all duration-300 sm:rounded-3xl md:flex-row md:overflow-hidden ${isClosing ? 'scale-95 opacity-0' : 'scale-100 opacity-100'}`}
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -159,17 +190,17 @@ const NewsletterPopup = () => {
         </div>
 
         <div className="relative flex w-full flex-col justify-center bg-white p-6 sm:p-8 md:w-1/2 md:p-12">
-          <div className="-mx-6 -mt-6 mb-6 h-32 overflow-hidden sm:-mx-8 sm:-mt-8 md:hidden">
+          <div className="relative -mx-6 -mt-6 mb-5 h-40 overflow-hidden sm:-mx-8 sm:-mt-8 md:hidden">
             <img
               src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80"
               alt="Newsletter"
               className="h-full w-full object-cover"
               loading="lazy"
             />
-            <div className="absolute inset-x-0 top-0 flex h-32 items-center justify-center bg-gradient-to-b from-orange-600/80 to-red-600/80">
+            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-b from-orange-600/85 to-red-600/85">
               <div className="text-center text-white">
-                <img src="/logo_webgiare_display.webp" alt="Web Giá Rẻ - Portfolio" className="mx-auto mb-2 h-10 w-10 object-contain" loading="lazy" />
-                <p className="text-lg font-bold">Tặng Ebook Miễn Phí</p>
+                <img src="/logo_webgiare_display.webp" alt="Web Giá Rẻ - Portfolio" className="mx-auto h-16 w-44 object-contain drop-shadow-lg" loading="lazy" />
+                <p className="mt-1 text-lg font-bold">Tặng Ebook Miễn Phí</p>
               </div>
             </div>
           </div>
@@ -181,10 +212,7 @@ const NewsletterPopup = () => {
                 <span className="text-xs font-bold uppercase tracking-wide text-orange-700">Quà tặng kiến thức</span>
               </div>
 
-              <h2 id="newsletter-title" className="mb-3 flex flex-wrap items-center gap-2 text-2xl font-bold text-slate-900 sm:mb-4 sm:text-3xl lg:text-4xl">
-                Nhận Ebook Hay
-                <img src="/logo_webgiare_display.webp" alt="" className="inline-block h-8 w-8 object-contain" loading="lazy" />
-              </h2>
+              <h2 id="newsletter-title" className="mb-3 text-2xl font-bold text-slate-900 sm:mb-4 sm:text-3xl lg:text-4xl">Nhận Ebook Hay</h2>
 
               <p className="mb-6 text-sm leading-relaxed text-slate-600 sm:mb-8 sm:text-base">
                 Để lại email để nhận ebook <strong className="text-orange-700">Kỹ năng tự học vượt trội</strong> và mã ưu đãi <strong className="text-amber-700">20%</strong> cho lần tư vấn đầu tiên.
@@ -199,15 +227,19 @@ const NewsletterPopup = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   autoComplete="email"
+                  disabled={isSubmitting}
                 />
+
+                {submitError && <p className="rounded-lg bg-red-50 px-3 py-2 text-xs font-semibold text-red-600" role="alert">{submitError}</p>}
 
                 <button
                   type="submit"
-                  className="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-orange-600 to-red-600 py-3 text-sm font-bold text-white shadow-lg shadow-orange-200 transition-all duration-300 hover:from-orange-700 hover:to-red-700 hover:shadow-xl hover:shadow-orange-300 active:scale-95 sm:py-4 sm:text-base"
+                  disabled={isSubmitting}
+                  className="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-orange-600 to-red-600 py-3 text-sm font-bold text-white shadow-lg shadow-orange-200 transition-all duration-300 hover:from-orange-700 hover:to-red-700 hover:shadow-xl hover:shadow-orange-300 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 sm:py-4 sm:text-base"
                 >
-                  <Gift size={18} className="transition-transform group-hover:rotate-12" />
-                  Nhận Ebook Ngay
-                  <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+                  {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <Gift size={18} className="transition-transform group-hover:rotate-12" />}
+                  {isSubmitting ? 'Đang gửi Ebook...' : 'Nhận Ebook Ngay'}
+                  {!isSubmitting && <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />}
                 </button>
               </form>
 

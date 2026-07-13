@@ -811,12 +811,9 @@ const HomePage = ({
       <section className="relative bg-gradient-to-br from-[#fff7ed] via-white to-[#f8fafc] pt-5 pb-8 md:pt-10 md:pb-12 lg:pt-20 lg:pb-16 overflow-hidden">
         {/* Soft Background Gradients */}
         <div className="absolute inset-0 z-0">
-          <Image
-            src="/dpmarket-assets/images/gradients/banner-gradient.png"
-            alt="Gradient Background"
-            fill
-            priority
-            className="object-cover opacity-45"
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-[radial-gradient(circle_at_18%_12%,rgba(251,146,60,0.14),transparent_38%),radial-gradient(circle_at_84%_78%,rgba(244,63,94,0.08),transparent_40%)]"
           />
           {/* Gradient Mesh Blur Spot decorations */}
           <div className="absolute w-[280px] md:w-[420px] h-[280px] md:h-[420px] rounded-full bg-orange-200/20 blur-[90px] md:blur-[130px] -top-16 -left-10 pointer-events-none"></div>

@@ -4,7 +4,7 @@ import React, { useState, useEffect, useMemo, useCallback, memo } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import {
-    Brain, ArrowRight, Check, Sparkles, RefreshCw, BookOpen,
+    Brain, ArrowRight, Check, Sparkles, RefreshCw,
     Monitor, Briefcase, Smile, Coffee, TrendingUp, Users, Target,
     Zap, Layers, Award, Clock, ShoppingCart, Heart, Share2, Star, MessageCircle
 } from 'lucide-react';
@@ -202,17 +202,17 @@ const AIQuestionCard = memo(({
     return (
         <button
             onClick={onSelect}
-            className="w-full p-4 md:p-5 rounded-2xl border-2 border-slate-100 hover:border-orange-600 hover:bg-orange-50 transition-all group flex items-center text-left hover:shadow-lg active:scale-[0.98]"
+            className="group flex min-h-[72px] w-full items-center rounded-2xl border border-slate-200 bg-white p-3 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-lg active:scale-[0.98] md:p-4"
         >
-            <div className={`w-12 h-12 rounded-xl flex items-center justify-center mr-4 transition-all ${option.color} group-hover:scale-110`}>
+            <div className={`mr-3 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-all ${option.color} group-hover:scale-105`}>
                 <Icon size={22} />
             </div>
             <div className="flex-1">
-                <span className="text-base md:text-lg font-bold text-slate-700 group-hover:text-orange-900 transition-colors">
+                <span className="text-sm font-bold leading-5 text-slate-700 transition-colors group-hover:text-blue-900 md:text-base">
                     {option.label}
                 </span>
             </div>
-            <div className="w-6 h-6 rounded-full border-2 border-slate-200 group-hover:border-orange-600 group-hover:bg-orange-600 flex items-center justify-center transition-all">
+            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-slate-200 transition-all group-hover:border-blue-600 group-hover:bg-blue-600">
                 <Check size={14} className="text-white opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
         </button>
@@ -375,22 +375,6 @@ export default function AIRecommendationPage() {
         }
     }, [addToast, reasoning]);
 
-    useEffect(() => {
-        // Hide navbar and footer
-        const navbar = document.querySelector('nav');
-        const footer = document.querySelector('footer');
-
-        if (navbar) navbar.style.display = 'none';
-        if (footer) footer.style.display = 'none';
-
-        // Show them back on unmount
-        return () => {
-            if (navbar) navbar.style.display = '';
-            if (footer) footer.style.display = '';
-        };
-    }, []);
-
-
     const handleAnswer = useCallback((key: string, value: string) => {
         setAnswers(prev => ({ ...prev, [key]: value }));
 
@@ -509,187 +493,57 @@ export default function AIRecommendationPage() {
     // ========== RENDER: INTRO ==========
     if (step === 0) {
         return (
-            <div className="min-h-screen relative flex items-center justify-center p-4 overflow-hidden">
-                {/* ✨ Premium Gradient Background - BRAND COLORS */}
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-orange-900 via-slate-900 to-black" />
+            <div className="relative h-[100dvh] w-full overflow-hidden bg-[#07111f] text-white">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(37,99,235,0.24),transparent_34%),radial-gradient(circle_at_80%_70%,rgba(124,58,237,0.22),transparent_34%),radial-gradient(circle_at_52%_10%,rgba(249,115,22,0.13),transparent_24%)]" />
+                <div className="absolute inset-0 opacity-30 [background-image:linear-gradient(rgba(255,255,255,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.045)_1px,transparent_1px)] [background-size:56px_56px]" />
 
-                {/* ✨ Animated Grid Pattern */}
-                <div className="absolute inset-0 bg-[linear-gradient(rgba(16,185,129,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(16,185,129,0.03)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_85%)]" />
+                <header className="relative z-20 flex h-14 items-center justify-between border-b border-white/10 px-3 sm:h-16 sm:px-7 lg:px-10">
+                    <button onClick={() => router.push('/')} className="flex items-center gap-3 text-left" aria-label="Về trang chủ">
+                        <Image src="/logo_webgiare_display.webp" alt="Web Giá Rẻ" width={150} height={48} className="h-7 w-auto object-contain sm:h-9" priority />
+                        <span className="hidden h-6 w-px bg-white/15 sm:block" />
+                        <span className="hidden text-xs font-bold text-slate-300 sm:block">AI Design Advisor</span>
+                    </button>
+                    <div className="flex items-center gap-1.5 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-2.5 py-1.5 text-[9px] font-bold text-emerald-300 sm:gap-2 sm:px-3 sm:text-[11px]">
+                        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400 sm:h-2 sm:w-2" /> Gemini AI sẵn sàng
+                    </div>
+                </header>
 
-                {/* ✨ Floating Orbs - BRAND COLORS */}
-                <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    {/* Large orbs */}
-                    <div className="absolute top-[10%] left-[15%] w-96 h-96 bg-gradient-to-br from-orange-500/30 to-red-600/30 rounded-full mix-blend-screen filter blur-[120px] animate-float-slow" />
-                    <div className="absolute top-[40%] right-[10%] w-[500px] h-[500px] bg-gradient-to-br from-red-500/25 to-amber-600/25 rounded-full mix-blend-screen filter blur-[140px] animate-float-delayed" />
-                    <div className="absolute bottom-[10%] left-[40%] w-80 h-80 bg-gradient-to-br from-amber-500/30 to-orange-600/30 rounded-full mix-blend-screen filter blur-[100px] animate-float" />
-
-                    {/* Small accent orbs */}
-                    <div className="absolute top-[20%] right-[30%] w-64 h-64 bg-gradient-to-br from-orange-500/20 to-red-600/20 rounded-full mix-blend-screen filter blur-[80px] animate-pulse-slow" />
-                    <div className="absolute bottom-[30%] right-[20%] w-48 h-48 bg-gradient-to-br from-red-500/25 to-orange-600/25 rounded-full mix-blend-screen filter blur-[90px] animate-float-slow" />
-                </div>
-
-                {/* ✨ Floating Particles */}
-                <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    {[...Array(20)].map((_, i) => (
-                        <div
-                            key={i}
-                            className="absolute w-1 h-1 bg-orange-400/40 rounded-full animate-float-particle"
-                            style={{
-                                left: `${Math.random() * 100}%`,
-                                top: `${Math.random() * 100}%`,
-                                animationDelay: `${Math.random() * 5}s`,
-                                animationDuration: `${3 + Math.random() * 4}s`,
-                            }}
-                        />
-                    ))}
-                </div>
-
-                {/* ✨ Spotlight Effect */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-gradient-to-b from-orange-500/10 via-transparent to-transparent blur-3xl pointer-events-none" />
-
-                {/* 🎴 Main Card */}
-                <div className="relative z-10 w-full max-w-md">
-                    {/* Card with glassmorphism */}
-                    <div className="relative group">
-                        {/* Glow effect - BRAND COLORS */}
-                        <div className="absolute -inset-1 bg-gradient-to-r from-orange-600 via-red-600 to-amber-600 rounded-3xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-1000 animate-pulse-slow" />
-
-                        {/* Card content */}
-                        <div className="relative bg-white/[0.08] backdrop-blur-2xl border border-white/20 rounded-3xl p-8 md:p-12 shadow-2xl">
-                            {/* Icon with animated rings */}
-                            <div className="relative w-24 h-24 mx-auto mb-8">
-                                {/* Animated rings */}
-                                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 animate-ping opacity-20" />
-                                <div className="absolute inset-2 rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 animate-pulse opacity-30" />
-
-                                {/* Main icon */}
-                                <div className="relative w-full h-full bg-gradient-to-br from-orange-500 via-red-600 to-amber-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-orange-500/50 group-hover:scale-110 transition-transform duration-500">
-                                    <Brain className="text-white animate-pulse" size={40} strokeWidth={2.5} />
-                                </div>
-                            </div>
-
-                            {/* Title with gradient */}
-                            <h1 className="text-2xl md:text-4xl font-black text-center mb-3 bg-gradient-to-r from-white via-orange-100 to-red-100 bg-clip-text text-transparent leading-tight">
-                                Web Giá Rẻ - Portfolio AI
-                            </h1>
-
-                            {/* Badge */}
-                            <div className="flex justify-center mb-6">
-                                <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-orange-500/20 to-red-500/20 border border-orange-400/30 rounded-full text-orange-100 text-xs font-bold backdrop-blur-sm">
-                                    <span className="relative flex h-2 w-2">
-                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75" />
-                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500" />
-                                    </span>
-                                    Powered by AI
-                                </span>
-                            </div>
-
-                            {/* Description */}
-                            <p className="text-orange-100/90 text-sm md:text-base mb-6 leading-relaxed text-center">
-                                Trả lời 4 câu hỏi nhanh để AI đề xuất themes, templates phù hợp nhất với dự án của bạn.
-                            </p>
-
-                            {/* CTA Button */}
-                            <button
-                                onClick={() => setStep(1)}
-                                className="group/btn relative w-full overflow-hidden rounded-xl"
-                            >
-                                {/* Animated gradient background */}
-                                <div className="absolute inset-0 bg-gradient-to-r from-orange-600 via-red-600 to-amber-600 transition-transform duration-300 group-hover/btn:scale-105" />
-                                <div className="absolute inset-0 bg-gradient-to-r from-amber-600 via-red-600 to-orange-600 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-700" />
-
-                                {/* Button content */}
-                                <span className="relative flex items-center justify-center gap-3 text-white font-bold text-lg py-4">
-                                    Bắt đầu ngay
-                                    <ArrowRight size={20} className="group-hover/btn:translate-x-1 transition-transform" />
-                                </span>
-                            </button>
-
-                            {/* Back button */}
-                            <button
-                                onClick={() => router.push('/')}
-                                className="mt-6 w-full text-orange-200 hover:text-white text-sm font-semibold transition-colors py-2 rounded-lg hover:bg-white/5"
-                            >
-                                ← Quay lại trang chủ
-                            </button>
+                <main className="relative z-10 mx-auto grid h-[calc(100dvh-3.5rem)] max-w-7xl grid-rows-[auto_minmax(0,1fr)] items-stretch gap-3 px-3 py-3 sm:h-[calc(100dvh-4rem)] sm:gap-4 sm:px-7 sm:py-4 lg:grid-cols-[0.88fr_1.12fr] lg:grid-rows-1 lg:items-center lg:gap-10 lg:px-10 lg:py-8">
+                    <section className="flex min-w-0 flex-col justify-start lg:justify-center">
+                        <span className="mb-2 inline-flex w-fit items-center gap-2 rounded-full border border-blue-400/20 bg-blue-400/10 px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.13em] text-blue-200 sm:mb-3 sm:text-[10px] lg:mb-4">
+                            <Sparkles size={13} /> Tư vấn giao diện bằng AI
+                        </span>
+                        <h1 className="max-w-2xl text-[1.75rem] font-black leading-[1.08] tracking-tight sm:text-4xl lg:text-[3.6rem]">
+                            Chọn đúng giao diện cho <span className="text-orange-400">dự án của bạn.</span>
+                        </h1>
+                        <p className="mt-2 max-w-xl text-xs leading-5 text-slate-300 sm:mt-3 sm:text-sm sm:leading-6 lg:mt-4 lg:text-base lg:leading-7">
+                            Trả lời 4 câu hỏi ngắn. Gemini AI sẽ phân tích mục tiêu, nền tảng, phong cách và ngân sách để đề xuất những mẫu phù hợp nhất.
+                        </p>
+                        <div className="mt-3 flex flex-wrap gap-1.5 sm:mt-4 sm:gap-2 lg:mt-6 lg:gap-2.5">
+                            {['4 câu hỏi nhanh', 'Dữ liệu mẫu thực tế', 'Kết quả cá nhân hóa'].map((item) => (
+                                <span key={item} className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.06] px-2.5 py-1.5 text-[10px] font-semibold text-slate-200 sm:px-3 sm:py-2 sm:text-xs"><Check size={12} className="text-emerald-400" />{item}</span>
+                            ))}
                         </div>
-                    </div>
+                        <div className="mt-4 flex items-center gap-2 sm:mt-5 sm:gap-3 lg:mt-7">
+                            <button onClick={() => setStep(1)} className="inline-flex items-center gap-2 rounded-xl bg-orange-500 px-4 py-3 text-xs font-black text-white shadow-[0_14px_35px_rgba(249,115,22,0.28)] transition hover:-translate-y-0.5 hover:bg-orange-400 sm:rounded-2xl sm:px-6 sm:py-3.5 sm:text-sm">
+                                Bắt đầu tư vấn <ArrowRight size={18} />
+                            </button>
+                            <button onClick={() => router.push('/')} className="rounded-xl border border-white/10 px-3 py-3 text-xs font-bold text-slate-300 transition hover:bg-white/5 hover:text-white sm:rounded-2xl sm:px-4 sm:py-3.5 sm:text-sm">Về trang chủ</button>
+                        </div>
+                    </section>
 
-                    {/* Floating stats */}
-                    <div className="mt-8 grid grid-cols-3 gap-4 text-center">
-                        {[
-                            { label: 'Người dùng', value: '50K+', icon: Users },
-                            { label: 'Độ chính xác', value: '98%', icon: Target },
-                            { label: 'Khóa học', value: '10K+', icon: BookOpen },
-                        ].map((stat, idx) => {
-                            const Icon = stat.icon;
-                            return (
-                                <div
-                                    key={idx}
-                                    className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 hover:bg-white/10 transition-all hover:scale-105 hover:border-orange-400/30 group"
-                                >
-                                    <div className="flex justify-center mb-2">
-                                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500/20 to-red-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                            <Icon size={20} className="text-orange-400" strokeWidth={2.5} />
-                                        </div>
-                                    </div>
-                                    <div className="text-xl font-bold text-white mb-1">{stat.value}</div>
-                                    <div className="text-xs text-orange-200/80">{stat.label}</div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-
-                {/* ✨ Enhanced Animations */}
-                <style jsx>{`
-        @keyframes float-slow {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          33% { transform: translate(30px, -30px) scale(1.05); }
-          66% { transform: translate(-30px, 30px) scale(0.95); }
-        }
-        @keyframes float-delayed {
-          0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
-          33% { transform: translate(-40px, 40px) scale(1.1) rotate(5deg); }
-          66% { transform: translate(40px, -30px) scale(0.9) rotate(-5deg); }
-        }
-        @keyframes float {
-          0%, 100% { transform: translate(0, 0); }
-          50% { transform: translate(20px, -20px); }
-        }
-        @keyframes float-particle {
-          0% { 
-            transform: translateY(0) translateX(0);
-            opacity: 0;
-          }
-          10% { opacity: 1; }
-          90% { opacity: 1; }
-          100% { 
-            transform: translateY(-100vh) translateX(50px);
-            opacity: 0;
-          }
-        }
-        @keyframes pulse-slow {
-          0%, 100% { opacity: 0.2; transform: scale(1); }
-          50% { opacity: 0.4; transform: scale(1.05); }
-        }
-        
-        .animate-float-slow {
-          animation: float-slow 12s ease-in-out infinite;
-        }
-        .animate-float-delayed {
-          animation: float-delayed 15s ease-in-out infinite;
-        }
-        .animate-float {
-          animation: float 10s ease-in-out infinite;
-        }
-        .animate-float-particle {
-          animation: float-particle linear infinite;
-        }
-        .animate-pulse-slow {
-          animation: pulse-slow 4s ease-in-out infinite;
-        }
-      `}</style>
+                    <section className="relative mx-auto flex min-h-0 h-full w-full max-w-[650px] items-center justify-center overflow-hidden rounded-3xl border border-white/10 bg-white/[0.055] shadow-2xl backdrop-blur-xl lg:max-h-[620px] lg:rounded-[32px]">
+                        <div className="absolute left-3 top-3 z-10 rounded-xl border border-white/10 bg-slate-950/70 px-2.5 py-1.5 backdrop-blur sm:left-5 sm:top-5 sm:rounded-2xl sm:px-3 sm:py-2">
+                            <p className="text-[8px] font-bold uppercase tracking-wider text-slate-400 sm:text-[10px]">AI matching</p><p className="mt-0.5 text-[10px] font-black text-white sm:text-sm">Đề xuất theo thời gian thực</p>
+                        </div>
+                        <Image src="/ai-assistant-studio.webp" alt="Trợ lý AI tư vấn giao diện website" fill priority sizes="(max-width: 1024px) 100vw, 650px" className="object-cover" />
+                        <div className="absolute inset-x-2 bottom-2 grid grid-cols-3 gap-1.5 sm:inset-x-5 sm:bottom-5 sm:gap-2">
+                            {[['1.200+', 'Mẫu giao diện'], ['98%', 'Khớp nhu cầu'], ['24/7', 'Tư vấn AI']].map(([value, label]) => (
+                                <div key={label} className="rounded-xl border border-white/10 bg-slate-950/75 px-1 py-1.5 text-center backdrop-blur-md sm:rounded-2xl sm:px-2 sm:py-2.5"><p className="text-xs font-black text-white sm:text-lg">{value}</p><p className="text-[7px] font-semibold text-slate-400 sm:text-[10px]">{label}</p></div>
+                            ))}
+                        </div>
+                    </section>
+                </main>
             </div>
         );
     }
@@ -698,21 +552,22 @@ export default function AIRecommendationPage() {
     // ========== RENDER: ANALYZING ==========
     if (step === 5) {
         return (
-            <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-4">
-                <div className="w-24 h-24 relative mb-8">
-                    <div className="absolute inset-0 border-4 border-slate-800 rounded-full" />
-                    <div className="absolute inset-0 border-4 border-orange-500 rounded-full border-t-transparent animate-spin" />
-                    <Brain className="absolute inset-0 m-auto text-orange-400 animate-pulse" size={40} />
+            <div className="relative flex h-[100dvh] w-full flex-col items-center justify-center overflow-hidden bg-[#07111f] p-4 text-white">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(37,99,235,0.22),transparent_35%),radial-gradient(circle_at_70%_75%,rgba(249,115,22,0.12),transparent_30%)]" />
+                <div className="relative mb-7 h-24 w-24">
+                    <div className="absolute inset-0 rounded-full border border-blue-400/20 bg-blue-400/5" />
+                    <div className="absolute inset-0 animate-spin rounded-full border-4 border-blue-500 border-t-orange-400" />
+                    <Brain className="absolute inset-0 m-auto animate-pulse text-cyan-300" size={38} />
                 </div>
-
-                <div className="max-w-md w-full space-y-3 font-mono">
+                <div className="relative mb-6 text-center"><p className="text-xs font-black uppercase tracking-[0.2em] text-blue-300">Gemini AI đang làm việc</p><h1 className="mt-2 text-2xl font-black sm:text-3xl">Đang tìm lựa chọn phù hợp nhất</h1></div>
+                <div className="relative w-full max-w-md space-y-2 rounded-3xl border border-white/10 bg-white/[0.055] p-5 font-mono backdrop-blur-xl">
                     {analysisLog.map((log, idx) => (
                         <div
                             key={idx}
-                            className="text-orange-400 text-sm animate-fade-in-up flex items-center gap-3"
+                            className="flex animate-fade-in-up items-center gap-3 text-xs text-slate-300 sm:text-sm"
                             style={{ animationDelay: `${idx * 100}ms` }}
                         >
-                            <Check size={14} className="text-orange-500 flex-shrink-0" />
+                            <Check size={14} className="flex-shrink-0 text-emerald-400" />
                             <span>{log}</span>
                         </div>
                     ))}
@@ -724,15 +579,19 @@ export default function AIRecommendationPage() {
     // ========== RENDER: RESULT ==========
     if (step === 6) {
         return (
-            <div className="min-h-screen bg-slate-50 py-8 md:py-12 px-4">
-                <div className="max-w-6xl mx-auto">
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+            <div className="h-[100dvh] w-full overflow-hidden bg-[#f4f7fb] px-3 py-3 sm:px-5 sm:py-4">
+                <div className="mx-auto flex h-full max-w-7xl flex-col">
+                    <header className="mb-3 flex h-14 shrink-0 items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 shadow-sm">
+                        <button onClick={() => router.push('/')} className="flex items-center gap-3"><Image src="/logo_webgiare_display.webp" alt="Web Giá Rẻ" width={130} height={40} className="h-8 w-auto object-contain" /><span className="hidden text-sm font-black text-slate-800 sm:block">AI Design Advisor</span></button>
+                        <div className="flex items-center gap-2"><button onClick={handleShareResults} className="rounded-xl p-2 text-slate-500 hover:bg-blue-50 hover:text-blue-600" aria-label="Chia sẻ"><Share2 size={17} /></button><button onClick={resetQuiz} className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-3 py-2 text-xs font-bold text-white"><RefreshCw size={15} /> Làm lại</button></div>
+                    </header>
+                    <div className="grid min-h-0 flex-1 grid-cols-1 gap-3 lg:grid-cols-[330px_1fr]">
                         {/* AI Insight Sidebar */}
-                        <aside className="lg:col-span-1">
-                            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-lg border border-slate-100 sticky top-24">
+                        <aside className="hidden min-h-0 lg:block">
+                            <div className="h-full overflow-hidden rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
                                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-500 to-purple-600 rounded-t-2xl" />
 
-                                <div className="flex justify-between items-center mb-6">
+                                <div className="mb-4 flex items-center justify-between">
                                     <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 ${poweredByAi
                                         ? 'bg-emerald-600 text-white'
                                         : 'bg-amber-500 text-white'
@@ -759,17 +618,17 @@ export default function AIRecommendationPage() {
                                     </div>
                                 </div>
 
-                                <h2 className="text-2xl md:text-3xl font-black text-slate-900 mb-4">
+                                <h2 className="mb-3 text-2xl font-black text-slate-900">
                                     Lộ Trình Của Bạn
                                 </h2>
 
-                                <div className="prose prose-sm text-slate-600 mb-6">
-                                    <p className="leading-relaxed text-sm md:text-base italic">
+                                <div className="mb-4 text-slate-600">
+                                    <p className="line-clamp-5 text-sm leading-6 italic">
                                         &quot;{reasoning}&quot;
                                     </p>
                                 </div>
 
-                                <div className="space-y-3 mb-6">
+                                <div className="mb-4 space-y-2">
                                     <div className="flex items-center gap-3 text-xs md:text-sm font-bold text-slate-700 bg-orange-50 p-3 rounded-xl border border-orange-100">
                                         <div className="p-1.5 bg-orange-100 rounded-full text-orange-600">
                                             <Check size={12} />
@@ -786,7 +645,7 @@ export default function AIRecommendationPage() {
 
                                 {/* Bundle Card */}
                                 {results.length > 0 && (
-                                <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 text-white shadow-xl relative overflow-hidden group cursor-pointer hover:scale-[1.02] transition-transform">
+                                <div className="group relative overflow-hidden rounded-2xl bg-slate-900 p-4 text-white shadow-lg transition-transform">
                                     <div className="relative z-10">
                                         <div className="flex justify-between items-start mb-4">
                                             <div>
@@ -827,14 +686,14 @@ export default function AIRecommendationPage() {
                         </aside>
 
                         {/* Product Grid */}
-                        <div className="lg:col-span-2">
-                            <h3 className="text-xl md:text-2xl font-black text-slate-900 mb-6 flex items-center gap-2">
+                        <div className="flex min-h-0 flex-col rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+                            <h3 className="mb-3 flex shrink-0 items-center gap-2 text-lg font-black text-slate-900 md:text-xl">
                                 <Sparkles className="text-amber-500" size={24} fill="currentColor" />
                                 {hasMatches ? 'Đề Xuất Hàng Đầu' : 'Chưa Có Sản Phẩm Khớp'}
                             </h3>
                             {results.length > 0 ? (
-                                <div className="space-y-6">
-                                    {results.map((product, idx) => (
+                                <div className="min-h-0 space-y-3 overflow-y-auto pr-1 [scrollbar-width:thin]">
+                                    {results.slice(0, 3).map((product, idx) => (
                                         <AIProductCard key={product.id} product={product} index={idx} />
                                     ))}
                                 </div>
@@ -865,10 +724,12 @@ export default function AIRecommendationPage() {
     const currentQuestion = QUESTIONS[step - 1];
 
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-8 md:py-12 px-4">
-            <div className="max-w-2xl w-full mx-auto">
+        <div className="relative flex h-[100dvh] w-full items-center overflow-hidden bg-[#f4f7fb] px-4 py-4 sm:px-6">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_10%,rgba(59,130,246,0.09),transparent_30%),radial-gradient(circle_at_90%_80%,rgba(124,58,237,0.08),transparent_30%)]" />
+            <div className="relative mx-auto flex h-full w-full max-w-5xl items-center justify-center">
+                <div className="mx-auto flex h-[min(620px,calc(100dvh-2rem))] w-full max-w-4xl flex-col">
                 {/* Progress Bar */}
-                <div className="mb-8">
+                <div className="mb-4 shrink-0">
                     <div className="flex justify-between text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">
                         <span>Bước {step}/{QUESTIONS.length}</span>
                         <span>{Math.round((step / QUESTIONS.length) * 100)}%</span>
@@ -882,16 +743,16 @@ export default function AIRecommendationPage() {
                 </div>
 
                 {/* Question Card */}
-                <div className="bg-white rounded-2xl md:rounded-3xl shadow-xl border border-slate-100 p-6 md:p-10 min-h-[400px] flex flex-col relative overflow-hidden">
+                <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_20px_55px_rgba(15,23,42,0.08)] md:p-7">
                     <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
                         <Brain size={180} />
                     </div>
 
-                    <h2 className="text-xl md:text-3xl font-black text-slate-900 mb-8 leading-tight min-h-[3em] relative z-10">
+                    <h2 className="relative z-10 mb-4 min-h-[2.5em] text-xl font-black leading-tight text-slate-900 md:text-3xl">
                         <TypewriterText text={currentQuestion.question} />
                     </h2>
 
-                    <div className="space-y-4 mt-auto relative z-10">
+                    <div className="relative z-10 mt-auto grid min-h-0 grid-cols-1 gap-2.5 overflow-y-auto pr-1 sm:grid-cols-2">
                         {currentQuestion.options.map(option => (
                             <AIQuestionCard
                                 key={option.id}
@@ -903,13 +764,14 @@ export default function AIRecommendationPage() {
                 </div>
 
                 {/* Navigation */}
-                <div className="text-center mt-8">
+                <div className="mt-4 shrink-0 text-center">
                     <button
                         onClick={() => (step > 1 ? setStep(step - 1) : router.push('/'))}
                         className="text-slate-400 hover:text-slate-600 text-sm font-bold transition-colors"
                     >
                         {step > 1 ? '← Quay lại câu trước' : 'Hủy bỏ'}
                     </button>
+                </div>
                 </div>
             </div>
         </div>

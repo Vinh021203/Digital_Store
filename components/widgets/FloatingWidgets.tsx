@@ -241,6 +241,7 @@ const FloatingWidgets = () => {
     'Landing page cho startup',
     'Template Next.js giới thiệu/demo',
     'Template React đẹp',
+    'Tư vấn theo ngân sách',
   ];
 
   const handleQuickSuggestion = (text: string) => {
@@ -371,12 +372,12 @@ const FloatingWidgets = () => {
           {!isTyping && (
             <div className="flex-shrink-0 border-t border-slate-100 bg-slate-50 px-3 py-1.5">
               <p className="mb-1 text-[10px] text-slate-400">Gợi ý nhanh:</p>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="grid grid-cols-2 gap-1.5">
                 {(currentQuickReplies.length > 0 ? currentQuickReplies : quickSuggestions).map((text) => (
                   <button
                     key={text}
                     onClick={() => handleQuickSuggestion(text)}
-                    className="rounded-full border border-orange-200 bg-white px-2.5 py-1 text-[11px] font-medium text-orange-600 transition-colors hover:border-orange-300 hover:bg-orange-50"
+                    className="flex min-h-9 items-center justify-center rounded-xl border border-orange-200 bg-white px-2 py-1.5 text-center text-[10px] font-semibold leading-tight text-orange-600 transition-colors hover:border-orange-300 hover:bg-orange-50 sm:text-[11px]"
                     type="button"
                   >
                     {text}

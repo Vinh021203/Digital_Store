@@ -39,8 +39,9 @@ const ClientLayout = ({ children }: ClientLayoutProps) => {
 
   // Hide navbar/footer on fullscreen client pages, but keep the shared mobile
   // bottom nav available across the client area unless a page owns its own nav.
-  const isFullscreenPage = pathname === '/community' || pathname === '/affiliate' || pathname === '/profile/affiliate' || pathname === '/affiliate/dashboard';
-  const hasPageOwnedMobileNav = pathname === '/affiliate/dashboard';
+  const isAiStudio = pathname === '/ai-recommendation';
+  const isFullscreenPage = pathname === '/community' || pathname === '/affiliate' || pathname === '/profile/affiliate' || pathname === '/affiliate/dashboard' || isAiStudio;
+  const hasPageOwnedMobileNav = pathname === '/affiliate/dashboard' || isAiStudio;
   const canShowMarketingWidgets = !isFullscreenPage && pathname !== '/checkout';
   const canShowSocialProof =
     canShowMarketingWidgets &&

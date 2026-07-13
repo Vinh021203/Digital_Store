@@ -327,7 +327,7 @@ export default function BlogDetailPage({ params }: { params: Promise<{ id: strin
                             html={post.content || ''}
                             className="blog-rich-content max-w-none"
                             fallback="<p>Không có nội dung.</p>"
-                            allowInlineStyles={false}
+                            allowInlineStyles
                         />
 
                         {post.tags.length > 0 && (

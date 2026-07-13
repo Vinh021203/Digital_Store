@@ -45,9 +45,9 @@ const GEMINI_MODELS = (process.env.GEMINI_MODEL || 'gemini-2.5-flash,gemini-2.5-
     .filter(Boolean);
 
 const QUICK_REPLIES = {
-    greeting: ['Tìm Landing Page', 'Xem Theme phổ biến', 'Nhận tư vấn'],
-    product: ['Xem thêm mẫu demo', 'Hỏi về license', 'Nhận báo giá'],
-    support: ['Tư vấn mẫu demo', 'Hỏi về license', 'Liên hệ hotline'],
+    greeting: ['Tìm Landing Page', 'Xem Theme phổ biến', 'Tư vấn theo ngân sách', 'Liên hệ chuyên viên'],
+    product: ['Xem thêm mẫu demo', 'Hỏi về license', 'Nhận báo giá', 'So sánh các mẫu'],
+    support: ['Tư vấn mẫu demo', 'Hỏi về license', 'Liên hệ hotline', 'Gửi yêu cầu hỗ trợ'],
 };
 
 const FALLBACK_MESSAGES = {
@@ -230,6 +230,9 @@ Bạn là trợ lý AI của Web Giá Rẻ - Portfolio, một website portfolio/
 
 Yêu cầu:
 - Trả lời bằng tiếng Việt, thân thiện, ngắn gọn, tự nhiên.
+- Trả lời như một chuyên viên tư vấn website: đi thẳng vào nhu cầu, diễn đạt rõ ràng và đưa ra bước tiếp theo cụ thể.
+- Nếu thông tin của khách chưa đủ để tư vấn chính xác, chỉ hỏi tối đa 2 câu quan trọng về mục đích, công nghệ hoặc ngân sách.
+- Khi đề xuất mẫu demo, nêu ngắn gọn điểm phù hợp, công nghệ/định dạng và giá nếu dữ liệu có cung cấp.
 - Chỉ tư vấn dựa trên thông tin website và danh sách mẫu demo bên dưới.
 - Nếu khách hỏi chọn mẫu demo, hãy gợi ý 1-3 mẫu phù hợp và nói lý do ngắn.
 - Nếu danh sách mẫu demo bên dưới rỗng, phải nói rõ hiện chưa có mẫu demo khớp điều kiện. Không gợi ý mẫu demo ngoài điều kiện.
@@ -331,7 +334,7 @@ function fallbackResponse(intent: string, searchResult: ProductSearchResult): Ch
     if (intent === 'product' && searchResult.hasHardFilters && !searchResult.hasExactMatches) {
         return {
             message: `Hiện mình chưa thấy mẫu demo nào khớp đúng ${filterSummary(searchResult)} trong kho Web Giá Rẻ - Portfolio. Bạn có thể nới ngân sách hoặc đổi loại mẫu demo để mình tìm tiếp nhé.`,
-            quickReplies: ['Nới ngân sách', 'Tìm loại khác', 'Xem mẫu demo phổ biến'],
+            quickReplies: ['Nới ngân sách', 'Tìm loại khác', 'Xem mẫu phổ biến', 'Liên hệ chuyên viên'],
         };
     }
 

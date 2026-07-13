@@ -434,13 +434,14 @@ const ModernProductDetailLayout = ({
         'Auto layout & Components thông minh',
         'Giao diện hiện đại, tối ưu trải nghiệm',
         'Responsive-ready cho mọi thiết bị',
-    ]).slice(0, 5);
+        'Tài liệu hướng dẫn sử dụng chi tiết',
+    ]).slice(0, 6);
     const heroStats = [
-        { value: '12+', label: 'Sections' },
-        { value: 'SEO', label: 'Optimized' },
-        { value: 'Fast', label: 'Loading' },
-        { value: 'Form', label: 'Ready' },
-        { value: 'Motion', label: 'Effects' },
+        { value: '12+', label: 'Sections', icon: Layers },
+        { value: 'SEO', label: 'Optimized', icon: Globe },
+        { value: 'Fast', label: 'Loading', icon: Zap },
+        { value: 'Form', label: 'Ready', icon: FileCode },
+        { value: 'Motion', label: 'Effects', icon: RotateCcw },
     ];
     const plainDescription = stripHtml(product.description);
     const shortDescription = product.short_description || product.shortDescription || (
@@ -468,10 +469,8 @@ const ModernProductDetailLayout = ({
     const tabs = [
         ['description', 'Mô tả mẫu demo'],
         ['features', 'Tính năng nổi bật'],
-        ['screenshots', 'Screenshots'],
         ['package', 'Bộ tài nguyên'],
         ['workflow', 'Quy trình & Ứng dụng'],
-        ['license', 'So sánh & Quyền truy cập'],
         ['reviews', 'Đánh giá'],
     ];
     const overviewCards = [
@@ -480,7 +479,6 @@ const ModernProductDetailLayout = ({
         { icon: Layers, title: 'Dễ dàng tùy biến', stat: 'Component linh hoạt', tag: 'Design system', text: 'Các khối giao diện được tách lớp hợp lý, thuận tiện chỉnh màu, nội dung và branding.' },
         { icon: Smartphone, title: 'Responsive-ready', stat: 'Mobile first', tag: 'Đủ breakpoint', text: 'Tương thích tốt trên desktop, laptop, tablet và mobile với bố cục dễ kiểm soát.' },
     ];
-    const screenshotTitles = ['Tổng quan Dashboard', 'Lịch đăng & lên lịch', 'Hộp thư & Tin nhắn', 'Báo cáo & Phân tích'];
     const workflowCards = [
         { icon: Eye, title: 'Phân tích & Lên kế hoạch', tag: 'Nghiên cứu' },
         { icon: Calendar, title: 'Lên lịch & Tạo nội dung', tag: 'Lịch đăng' },
@@ -572,15 +570,18 @@ const ModernProductDetailLayout = ({
                         </p>
                         <div className="mt-5 rounded-2xl border border-orange-100 bg-white/80 p-2 shadow-sm backdrop-blur">
                             <div className="grid grid-cols-5 divide-x divide-orange-100">
-                                {heroStats.map((item) => (
+                                {heroStats.map((item) => {
+                                    const StatIcon = item.icon;
+                                    return (
                                     <div key={item.value} className="px-2 py-2 text-center">
                                         <div className="mx-auto mb-1 flex h-8 w-8 items-center justify-center rounded-full bg-orange-600 text-white">
-                                            <Check size={16} strokeWidth={3} />
+                                            <StatIcon size={16} strokeWidth={2.4} />
                                         </div>
                                         <p className="text-sm font-bold leading-5 text-slate-950">{item.value}</p>
                                         <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{item.label}</p>
                                     </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         </div>
                         <div className="mt-3 flex flex-wrap gap-2">
@@ -771,24 +772,9 @@ const ModernProductDetailLayout = ({
                     </div>
                 </section>
 
-	                <section id="screenshots" className="mt-7 scroll-mt-24 md:mt-8">
-	                    <h2 className="mb-4 text-xl font-bold text-slate-950 md:mb-5">2. Screenshots nổi bật</h2>
-	                    <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-1 md:grid md:grid-cols-2 md:gap-5 md:overflow-visible md:pb-0 xl:grid-cols-4">
-	                        {images.slice(0, 4).map((img: string, index: number) => (
-	                            <button key={index} onClick={() => { setSelectedImageIndex(index); setShowLightbox(true); }} className="w-[82%] shrink-0 snap-start overflow-hidden rounded-2xl border border-slate-200 bg-white text-left shadow-sm transition hover:-translate-y-1 hover:shadow-lg md:w-auto md:shrink">
-	                                <div className="relative aspect-[16/9] bg-slate-50"><Image src={img} alt="" fill className="object-cover" /></div>
-	                                <div className="p-3 md:p-4">
-	                                    <h3 className="text-sm font-bold text-slate-900 md:text-base">{screenshotTitles[index] || `Screenshot ${index + 1}`}</h3>
-	                                    <p className="mt-1.5 line-clamp-2 text-xs leading-5 text-slate-600 md:mt-2 md:text-sm md:leading-6">Theo dõi giao diện thực tế, bố cục và trải nghiệm triển khai.</p>
-	                                </div>
-	                            </button>
-                        ))}
-                    </div>
-                </section>
-
 	                <div className="mt-6 grid gap-6 md:mt-8 lg:grid-cols-[0.95fr_1.05fr]">
 	                    <section id="package" className="scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:p-6">
-	                        <h2 className="mb-3 text-lg font-bold text-slate-950 md:mb-5 md:text-xl">3. Bộ tài nguyên bao gồm</h2>
+		                        <h2 className="mb-3 text-lg font-bold text-slate-950 md:mb-5 md:text-xl">2. Bộ tài nguyên bao gồm</h2>
 	                        <div className="grid gap-4 md:grid-cols-[0.9fr_1fr] md:gap-5">
 	                            <div className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-orange-50 md:aspect-square">
 	                                {product.image && <Image src={product.image} alt="" fill className="object-cover" />}
@@ -803,7 +789,7 @@ const ModernProductDetailLayout = ({
 
 	                    <section id="workflow" className="scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
 	                        <div className="mb-3 flex items-center justify-between gap-3 md:mb-4">
-	                            <h2 className="text-lg font-bold text-slate-950 md:text-xl">4. Quy trình & Ứng dụng</h2>
+		                            <h2 className="text-lg font-bold text-slate-950 md:text-xl">3. Quy trình & Ứng dụng</h2>
 	                            <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-bold uppercase tracking-wide text-orange-700">6 bước</span>
 	                        </div>
 	                        <div className="grid grid-cols-2 gap-2 md:gap-3">
@@ -825,7 +811,7 @@ const ModernProductDetailLayout = ({
                     </section>
                 </div>
 
-	                <div id="license" className="mt-6 grid scroll-mt-24 gap-5 md:mt-8 md:gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+		                <div id="license" className="hidden">
 	                    <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
 	                        <h2 className="mb-3 text-lg font-bold text-slate-950 md:mb-4 md:text-xl">5. So sánh phiên bản</h2>
 	                        <div className="overflow-x-auto rounded-xl border border-slate-100">
@@ -876,7 +862,7 @@ const ModernProductDetailLayout = ({
                 </div>
 
                 <section id="reviews" className="mt-8 scroll-mt-24">
-                    <h2 className="mb-5 text-xl font-bold text-slate-950">7. Khách hàng nói gì về {product.name}</h2>
+                    <h2 className="mb-5 text-xl font-bold text-slate-950">4. Khách hàng nói gì về {product.name}</h2>
                     <div className="relative overflow-hidden rounded-2xl">
                         <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 bg-gradient-to-r from-[#fffdf9] to-transparent" />
                         <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 bg-gradient-to-l from-[#fffdf9] to-transparent" />
