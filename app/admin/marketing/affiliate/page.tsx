@@ -212,94 +212,92 @@ const AffiliateManager = () => {
   return (
     <div className="space-y-8 animate-fade-in">
       {/* Header Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         {/* Total Partners */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-          <div className="flex justify-between items-start mb-4">
+        <div className="group relative min-h-[180px] overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-blue-500 p-6 text-white shadow-lg shadow-blue-200/60">
+          <div className="absolute -right-8 -top-10 h-36 w-36 rounded-full bg-white/10 transition-transform group-hover:scale-110" />
+          <div className="relative flex items-start justify-between gap-4">
             <div>
-              <p className="text-slate-500 font-bold text-xs uppercase">Tổng Đối Tác</p>
-              <h3 className="text-3xl font-serif font-bold text-slate-900">{stats.totalPartners}</h3>
-              <p className="text-xs text-slate-400 mt-1">{stats.activePartners} đang hoạt động</p>
+              <p className="text-xs font-black uppercase tracking-wide text-white/85">Tổng đối tác</p>
+              <h3 className="mt-2 text-4xl font-black leading-none">{stats.totalPartners}</h3>
+              <p className="mt-3 text-sm font-medium text-white/75">{stats.activePartners} đang hoạt động</p>
             </div>
-            <div className="p-3 bg-indigo-50 text-indigo-600 rounded-xl">
-              <UserCheck size={24} />
+            <div className="rounded-2xl bg-white/20 p-4 ring-1 ring-white/15">
+              <UserCheck size={28} />
             </div>
           </div>
-          <button onClick={loadData} className="text-xs text-indigo-600 font-bold flex items-center gap-1 hover:underline">
+          <button onClick={loadData} className="relative mt-5 flex items-center gap-1 text-xs font-bold text-white/90 hover:text-white">
             <RefreshCw size={12} /> Làm mới
           </button>
         </div>
 
         {/* Revenue */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-          <div className="flex justify-between items-start mb-4">
+        <div className="group relative min-h-[180px] overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-500 p-6 text-white shadow-lg shadow-emerald-200/60">
+          <div className="absolute -right-8 -top-10 h-36 w-36 rounded-full bg-white/10 transition-transform group-hover:scale-110" />
+          <div className="relative flex items-start justify-between gap-4">
             <div>
-              <p className="text-slate-500 font-bold text-xs uppercase">Tổng Hoa Hồng Đã Trả</p>
-              <h3 className="text-3xl font-serif font-bold text-slate-900">
+              <p className="text-xs font-black uppercase tracking-wide text-white/85">Tổng hoa hồng đã trả</p>
+              <h3 className="mt-2 text-3xl font-black leading-none">
                 {stats.totalRevenue.toLocaleString('vi-VN')}₫
               </h3>
+              <p className="mt-3 text-sm font-medium text-white/75">{stats.pendingCount} yêu cầu rút tiền chờ duyệt</p>
             </div>
-            <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl">
-              <DollarSign size={24} />
+            <div className="rounded-2xl bg-white/20 p-4 ring-1 ring-white/15">
+              <DollarSign size={28} />
             </div>
           </div>
-          <p className="text-xs text-slate-400 font-medium">
-            {stats.pendingCount} yêu cầu rút tiền chờ duyệt
-          </p>
         </div>
 
         {/* Top Partner */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-          <div className="flex justify-between items-start mb-3">
+        <div className="group relative min-h-[180px] overflow-hidden rounded-2xl bg-gradient-to-br from-violet-600 to-purple-500 p-6 text-white shadow-lg shadow-purple-200/60">
+          <div className="absolute -right-8 -top-10 h-36 w-36 rounded-full bg-white/10 transition-transform group-hover:scale-110" />
+          <div className="relative flex items-start justify-between gap-4">
             <div>
-              <p className="text-slate-500 font-bold text-xs uppercase">Top Partner</p>
+              <p className="text-xs font-black uppercase tracking-wide text-white/85">Đối tác nổi bật</p>
               {stats.topPartner ? (
                 <>
-                  <p className="font-bold text-slate-900 text-sm mt-1">{stats.topPartner.name}</p>
-                  <p className="text-xs text-slate-500">{stats.topPartner.email}</p>
+                  <p className="mt-2 text-lg font-black">{stats.topPartner.name}</p>
+                  <p className="max-w-[220px] truncate text-xs text-white/75">{stats.topPartner.email}</p>
+                  <p className="mt-3 text-sm text-white/80">Hoa hồng: <b className="text-white">{stats.topPartner.totalCommission.toLocaleString('vi-VN')}₫</b></p>
                 </>
               ) : (
-                <p className="text-xs text-slate-400 mt-1">Chưa có dữ liệu</p>
+                <p className="mt-2 text-sm text-white/70">Chưa có dữ liệu</p>
               )}
             </div>
-            <div className="p-3 bg-sky-50 text-sky-600 rounded-xl">
-              <Target size={24} />
+            <div className="rounded-2xl bg-white/20 p-4 ring-1 ring-white/15">
+              <Target size={28} />
             </div>
           </div>
-          {stats.topPartner && (
-            <p className="text-xs text-slate-500">
-              Hoa hồng: <span className="font-bold text-slate-900">{stats.topPartner.totalCommission.toLocaleString('vi-VN')}₫</span>
-            </p>
-          )}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
         {/* Withdrawal Requests */}
         <div className="xl:col-span-1 space-y-4">
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 h-fit">
-            <div className="flex items-center justify-between mb-3">
+          <div className="h-fit overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm">
+            <div className="flex items-center justify-between gap-3 border-b border-slate-100 bg-gradient-to-r from-orange-50 to-amber-50 p-5">
               <div>
                 <h3 className="font-bold text-lg text-slate-900">Yêu Cầu Rút Tiền</h3>
-                <p className="text-xs text-slate-500 mt-1">Từ bảng affiliate_withdrawals</p>
+                <p className="mt-1 text-xs text-slate-500">Quản lý yêu cầu thanh toán hoa hồng</p>
               </div>
               <div className="text-right">
-                <p className="text-xs text-slate-400">{stats.pendingCount} pending</p>
-                <p className="text-xs font-semibold text-amber-600">{stats.pendingAmount.toLocaleString('vi-VN')}₫</p>
+                <p className="text-xs font-semibold text-amber-700">{stats.pendingCount} chờ duyệt</p>
+                <p className="text-sm font-black text-orange-600">{stats.pendingAmount.toLocaleString('vi-VN')}₫</p>
               </div>
             </div>
 
+            <div className="p-5">
             {/* Tabs */}
-            <div className="inline-flex text-xs rounded-full bg-slate-50 p-1 mb-4">
+            <div className="mb-4 inline-flex rounded-xl bg-slate-100 p-1 text-xs">
               <button
                 onClick={() => setPayoutTab('all')}
-                className={`px-3 py-1 rounded-full ${payoutTab === 'all' ? 'bg-white shadow-sm text-slate-900 font-semibold' : 'text-slate-500'}`}
+                className={`rounded-lg px-3 py-1.5 ${payoutTab === 'all' ? 'bg-white shadow-sm text-slate-900 font-semibold' : 'text-slate-500'}`}
               >
                 Tất cả
               </button>
               <button
                 onClick={() => setPayoutTab('pending')}
-                className={`px-3 py-1 rounded-full ${payoutTab === 'pending' ? 'bg-white shadow-sm text-slate-900 font-semibold' : 'text-slate-500'}`}
+                className={`rounded-lg px-3 py-1.5 ${payoutTab === 'pending' ? 'bg-white shadow-sm text-slate-900 font-semibold' : 'text-slate-500'}`}
               >
                 Chờ duyệt
               </button>
@@ -307,7 +305,7 @@ const AffiliateManager = () => {
 
             <div className="space-y-4 max-h-[500px] overflow-y-auto custom-scrollbar">
               {visibleWithdrawals.map(w => (
-                <div key={w.id} className="p-4 border border-slate-100 rounded-xl bg-slate-50/50">
+                <div key={w.id} className="rounded-xl border border-slate-200 bg-slate-50/70 p-4 transition-colors hover:border-orange-200 hover:bg-orange-50/40">
                   <div className="flex justify-between items-start mb-2">
                     <span className="font-bold text-slate-900">{w.user?.name || 'User'}</span>
                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${w.status === 'pending' ? 'bg-amber-100 text-amber-700' :
@@ -344,16 +342,20 @@ const AffiliateManager = () => {
                 </div>
               ))}
               {visibleWithdrawals.length === 0 && (
-                <p className="text-xs text-slate-500 text-center py-6">Không có yêu cầu rút tiền.</p>
+                <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/60 px-4 py-10 text-center">
+                  <DollarSign size={28} className="mx-auto mb-2 text-slate-300" />
+                  <p className="text-sm font-semibold text-slate-500">Không có yêu cầu rút tiền</p>
+                </div>
               )}
+            </div>
             </div>
           </div>
         </div>
 
         {/* Partner List */}
-        <div className="xl:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col">
+        <div className="flex flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm xl:col-span-2">
           {/* Filter bar */}
-          <div className="p-6 border-b border-slate-100 space-y-3 md:space-y-0 md:flex md:items-center md:justify-between">
+          <div className="space-y-4 border-b border-slate-100 bg-gradient-to-r from-indigo-50/70 to-blue-50/50 p-5 md:flex md:items-center md:justify-between md:space-y-0">
             <div className="flex items-center gap-2">
               <Filter size={16} className="text-slate-400" />
               <div>
@@ -369,13 +371,13 @@ const AffiliateManager = () => {
                   placeholder="Tìm tên, email, mã AFF..."
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
-                  className="w-full bg-slate-50 border-none rounded-xl pl-9 pr-4 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full rounded-xl border border-white bg-white/90 py-2.5 pl-9 pr-4 text-sm shadow-sm outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
               <select
                 value={filterStatus}
                 onChange={e => setFilterStatus(e.target.value as typeof filterStatus)}
-                className="bg-white border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 text-slate-600 outline-none"
+                className="rounded-xl border border-white bg-white px-3 py-2.5 text-xs font-semibold text-slate-600 shadow-sm outline-none"
               >
                 <option value="all">Tất cả</option>
                 <option value="Active">Active</option>
@@ -387,10 +389,14 @@ const AffiliateManager = () => {
           {/* Rows */}
           <div className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-3">
             {paginatedPartners.map(p => (
-              <div key={p.id} className="border border-slate-100 rounded-2xl bg-white hover:bg-slate-50/60 transition-colors px-4 py-3 md:px-6 md:py-4">
+              <div key={p.id} className="rounded-2xl border border-slate-200 bg-white px-4 py-4 transition-all hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-md md:px-5">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   {/* Info */}
-                  <div className="flex-1">
+                  <div className="flex min-w-0 flex-1 items-center gap-3">
+                    <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-indigo-100 to-blue-100 font-black text-indigo-700 ring-2 ring-white shadow-sm">
+                      {p.avatar ? <img src={p.avatar} alt="" className="h-full w-full object-cover" /> : p.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-3 mb-2">
                       <div>
                         <p className="font-bold text-slate-900 text-sm">{p.name}</p>
@@ -406,11 +412,12 @@ const AffiliateManager = () => {
                       <span>Hoa hồng: <b>{p.totalCommission.toLocaleString('vi-VN')}₫</b></span>
                       <span>Số dư: <b className="text-indigo-600">{p.availableBalance.toLocaleString('vi-VN')}₫</b></span>
                     </div>
+                    </div>
                   </div>
 
                   {/* Code */}
                   <div className="flex items-center gap-2">
-                    <div className="inline-flex items-center gap-2 bg-slate-50 rounded-full px-3 py-1">
+                    <div className="inline-flex items-center gap-2 rounded-xl bg-indigo-50 px-3 py-2 ring-1 ring-indigo-100">
                       <span className="font-mono text-xs font-bold text-slate-800">{p.affiliateCode}</span>
                       <button
                         onClick={() => handleCopyCode(p.affiliateCode)}

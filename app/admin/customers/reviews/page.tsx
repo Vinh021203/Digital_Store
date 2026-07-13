@@ -30,6 +30,8 @@ const ReviewsManager = () => {
   const [filterRating, setFilterRating] = useState<RatingFilter>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [actionMenuId, setActionMenuId] = useState<number | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState<10 | 20 | 50>(10);
 
   const loadReviews = useCallback(async () => {
     setLoading(true);
@@ -69,6 +71,13 @@ const ReviewsManager = () => {
       total: reviews.length,
     };
   }, [reviews]);
+  const totalPages = Math.max(1, Math.ceil(filteredReviews.length / pageSize));
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+  const paginatedReviews = filteredReviews.slice((safeCurrentPage - 1) * pageSize, safeCurrentPage * pageSize);
+  const approvedCount = reviews.filter(review => review.is_approved).length;
+  const pendingCount = reviews.length - approvedCount;
+
+  useEffect(() => { setCurrentPage(1); }, [filterRating, searchTerm, pageSize]);
 
   const handleToggleApproval = async (id: number) => {
     try {
@@ -113,8 +122,8 @@ const ReviewsManager = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">
-            Đánh Giá & Phản Hồi
+          <h2 className="text-2xl font-black text-slate-900 md:text-3xl">
+            Đánh giá & phản hồi
           </h2>
           <p className="text-sm text-slate-500">
             Quản lý ý kiến khách hàng để cải thiện chất lượng.
@@ -135,8 +144,14 @@ const ReviewsManager = () => {
         </div>
       </div>
 
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="flex items-center gap-4 rounded-2xl border border-amber-200 bg-amber-50 p-5 shadow-sm"><div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-500 text-white"><Star size={22} fill="currentColor" /></div><div><p className="text-xs font-black uppercase text-amber-700">Điểm trung bình</p><p className="mt-1 text-2xl font-black text-slate-950">{stats.average}/5</p></div></div>
+        <div className="flex items-center gap-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-5 shadow-sm"><div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-600 text-white"><Check size={22} /></div><div><p className="text-xs font-black uppercase text-emerald-700">Đã duyệt</p><p className="mt-1 text-2xl font-black text-slate-950">{approvedCount}</p></div></div>
+        <div className="flex items-center gap-4 rounded-2xl border border-orange-200 bg-orange-50 p-5 shadow-sm"><div className="flex h-11 w-11 items-center justify-center rounded-xl bg-orange-500 text-white"><Eye size={22} /></div><div><p className="text-xs font-black uppercase text-orange-700">Chờ duyệt</p><p className="mt-1 text-2xl font-black text-slate-950">{pendingCount}</p></div></div>
+      </div>
+
       {/* Filters */}
-      <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-wrap gap-4 items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50/70 p-4 shadow-sm">
         <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 sm:pb-0">
           <button
             onClick={() => setFilterRating('all')}
@@ -187,7 +202,7 @@ const ReviewsManager = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4">
-          {filteredReviews.map(review => (
+          {paginatedReviews.map(review => (
             <div
               key={review.id}
               className="bg-white p-5 sm:p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all"
@@ -321,6 +336,12 @@ const ReviewsManager = () => {
               </div>
             </div>
           ))}
+        </div>
+      )}
+      {!loading && filteredReviews.length > 0 && (
+        <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white px-5 py-4 text-sm text-slate-600 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+          <span>Hiển thị <b>{(safeCurrentPage - 1) * pageSize + 1}–{Math.min(safeCurrentPage * pageSize, filteredReviews.length)}</b> / {filteredReviews.length} đánh giá</span>
+          <div className="flex flex-wrap items-center gap-2"><span className="text-xs font-semibold">Mỗi trang</span><select value={pageSize} onChange={e => setPageSize(Number(e.target.value) as 10 | 20 | 50)} className="rounded-lg border border-slate-200 px-2 py-1.5 font-bold"><option value={10}>10</option><option value={20}>20</option><option value={50}>50</option></select><button disabled={safeCurrentPage === 1} onClick={() => setCurrentPage(p => Math.max(1, p - 1))} className="rounded-lg border px-3 py-1.5 font-bold disabled:opacity-30">Trước</button><b className="min-w-[60px] text-center">{safeCurrentPage}/{totalPages}</b><button disabled={safeCurrentPage === totalPages} onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} className="rounded-lg border px-3 py-1.5 font-bold disabled:opacity-30">Sau</button></div>
         </div>
       )}
     </div>

@@ -177,7 +177,7 @@ export default function AdminCommentsPage() {
             />
 
             {/* Header */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                 <div>
                     <h1 className="text-2xl font-black text-slate-900">Quản lý Bình luận</h1>
                     <p className="text-slate-500">Duyệt, xóa và quản lý bình luận trên blog</p>
@@ -192,27 +192,39 @@ export default function AdminCommentsPage() {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-3 gap-4">
-                <div className="bg-white rounded-xl p-4 border border-slate-100">
-                    <div className="flex items-center gap-2 mb-2">
-                        <MessageSquare size={18} className="text-slate-600" />
-                        <span className="text-sm text-slate-500">Tổng bình luận</span>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <div className="group relative min-h-[156px] overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-blue-500 p-5 text-white shadow-lg shadow-blue-200/60">
+                    <div className="absolute -right-7 -top-8 h-28 w-28 rounded-full bg-white/10 transition-transform group-hover:scale-110" />
+                    <div className="relative flex h-full items-center justify-between gap-3">
+                        <div>
+                            <p className="text-xs font-black uppercase tracking-wide text-white/85">Tổng bình luận</p>
+                            <p className="mt-2 text-4xl font-black leading-none">{totalComments}</p>
+                            <p className="mt-3 text-sm font-medium text-white/75">Tất cả phản hồi trên Blog</p>
+                        </div>
+                        <div className="rounded-2xl bg-white/20 p-4 ring-1 ring-white/15"><MessageSquare size={28} strokeWidth={2.2} /></div>
                     </div>
-                    <p className="text-2xl font-black text-slate-900">{totalComments}</p>
                 </div>
-                <div className="bg-green-50 rounded-xl p-4 border border-green-100">
-                    <div className="flex items-center gap-2 mb-2">
-                        <Check size={18} className="text-green-600" />
-                        <span className="text-sm text-green-700">Đã duyệt</span>
+                <div className="group relative min-h-[156px] overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-500 p-5 text-white shadow-lg shadow-emerald-200/60">
+                    <div className="absolute -right-7 -top-8 h-28 w-28 rounded-full bg-white/10 transition-transform group-hover:scale-110" />
+                    <div className="relative flex h-full items-center justify-between gap-3">
+                        <div>
+                            <p className="text-xs font-black uppercase tracking-wide text-white/85">Đã duyệt</p>
+                            <p className="mt-2 text-4xl font-black leading-none">{approvedCount}</p>
+                            <p className="mt-3 text-sm font-medium text-white/75">Đang hiển thị công khai</p>
+                        </div>
+                        <div className="rounded-2xl bg-white/20 p-4 ring-1 ring-white/15"><Check size={28} strokeWidth={2.2} /></div>
                     </div>
-                    <p className="text-2xl font-black text-green-700">{approvedCount}</p>
                 </div>
-                <div className="bg-amber-50 rounded-xl p-4 border border-amber-100">
-                    <div className="flex items-center gap-2 mb-2">
-                        <AlertCircle size={18} className="text-amber-600" />
-                        <span className="text-sm text-amber-700">Chờ duyệt</span>
+                <div className="group relative min-h-[156px] overflow-hidden rounded-2xl bg-gradient-to-br from-orange-500 to-amber-500 p-5 text-white shadow-lg shadow-orange-200/60">
+                    <div className="absolute -right-7 -top-8 h-28 w-28 rounded-full bg-white/10 transition-transform group-hover:scale-110" />
+                    <div className="relative flex h-full items-center justify-between gap-3">
+                        <div>
+                            <p className="text-xs font-black uppercase tracking-wide text-white/85">Chờ duyệt</p>
+                            <p className="mt-2 text-4xl font-black leading-none">{pendingCount}</p>
+                            <p className="mt-3 text-sm font-medium text-white/75">Cần kiểm tra nội dung</p>
+                        </div>
+                        <div className="rounded-2xl bg-white/20 p-4 ring-1 ring-white/15"><AlertCircle size={28} strokeWidth={2.2} /></div>
                     </div>
-                    <p className="text-2xl font-black text-amber-700">{pendingCount}</p>
                 </div>
             </div>
 

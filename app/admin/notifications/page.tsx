@@ -202,41 +202,49 @@ export default function AdminNotificationsPage() {
                     onClick={loadData}
                     className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-bold text-sm hover:bg-slate-200 transition-all"
                 >
-                    <RefreshCw size={16} /> Refresh
+                    <RefreshCw size={16} /> Làm mới
                 </button>
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl p-5 text-white">
-                    <div className="flex items-center gap-2 text-orange-100 mb-2">
-                        <Bell size={18} /> Tổng Thông Báo
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                <div className="group relative min-h-[156px] overflow-hidden rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 p-5 text-white shadow-lg shadow-orange-200/60">
+                    <div className="absolute -right-7 -top-8 h-28 w-28 rounded-full bg-white/10 transition-transform group-hover:scale-110" />
+                    <div className="relative flex h-full items-center justify-between gap-3">
+                    <div><p className="text-xs font-black uppercase tracking-wide text-white/85">Tổng thông báo</p>
+                    <p className="mt-2 text-4xl font-black leading-none">{stats.total.toLocaleString()}</p><p className="mt-3 text-sm font-medium text-white/75">Tất cả thông báo đã tạo</p></div>
+                    <div className="rounded-2xl bg-white/20 p-4 ring-1 ring-white/15"><Bell size={28} strokeWidth={2.2} /></div>
                     </div>
-                    <p className="text-3xl font-black">{stats.total.toLocaleString()}</p>
                 </div>
-                <div className="bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl p-5 text-white">
-                    <div className="flex items-center gap-2 text-blue-100 mb-2">
-                        <AlertCircle size={18} /> Chưa Đọc
+                <div className="group relative min-h-[156px] overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-cyan-500 p-5 text-white shadow-lg shadow-blue-200/60">
+                    <div className="absolute -right-7 -top-8 h-28 w-28 rounded-full bg-white/10 transition-transform group-hover:scale-110" />
+                    <div className="relative flex h-full items-center justify-between gap-3">
+                    <div><p className="text-xs font-black uppercase tracking-wide text-white/85">Chưa đọc</p>
+                    <p className="mt-2 text-4xl font-black leading-none">{stats.unread.toLocaleString()}</p><p className="mt-3 text-sm font-medium text-white/75">Đang chờ người dùng xem</p></div>
+                    <div className="rounded-2xl bg-white/20 p-4 ring-1 ring-white/15"><AlertCircle size={28} strokeWidth={2.2} /></div>
                     </div>
-                    <p className="text-3xl font-black">{stats.unread.toLocaleString()}</p>
                 </div>
-                <div className="bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl p-5 text-white">
-                    <div className="flex items-center gap-2 text-green-100 mb-2">
-                        <CheckCircle size={18} /> Gửi Hôm Nay
+                <div className="group relative min-h-[156px] overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-500 p-5 text-white shadow-lg shadow-emerald-200/60">
+                    <div className="absolute -right-7 -top-8 h-28 w-28 rounded-full bg-white/10 transition-transform group-hover:scale-110" />
+                    <div className="relative flex h-full items-center justify-between gap-3">
+                    <div><p className="text-xs font-black uppercase tracking-wide text-white/85">Gửi hôm nay</p>
+                    <p className="mt-2 text-4xl font-black leading-none">{stats.today}</p><p className="mt-3 text-sm font-medium text-white/75">Thông báo trong ngày</p></div>
+                    <div className="rounded-2xl bg-white/20 p-4 ring-1 ring-white/15"><CheckCircle size={28} strokeWidth={2.2} /></div>
                     </div>
-                    <p className="text-3xl font-black">{stats.today}</p>
                 </div>
-                <div className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl p-5 text-white">
-                    <div className="flex items-center gap-2 text-purple-100 mb-2">
-                        <Users size={18} /> Người Dùng
+                <div className="group relative min-h-[156px] overflow-hidden rounded-2xl bg-gradient-to-br from-violet-600 to-pink-500 p-5 text-white shadow-lg shadow-purple-200/60">
+                    <div className="absolute -right-7 -top-8 h-28 w-28 rounded-full bg-white/10 transition-transform group-hover:scale-110" />
+                    <div className="relative flex h-full items-center justify-between gap-3">
+                    <div><p className="text-xs font-black uppercase tracking-wide text-white/85">Người dùng</p>
+                    <p className="mt-2 text-4xl font-black leading-none">{users.length}</p><p className="mt-3 text-sm font-medium text-white/75">Có thể nhận thông báo</p></div>
+                    <div className="rounded-2xl bg-white/20 p-4 ring-1 ring-white/15"><Users size={28} strokeWidth={2.2} /></div>
                     </div>
-                    <p className="text-3xl font-black">{users.length}</p>
                 </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Send Notification Form */}
-                <div className="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 p-6">
+                <div className="rounded-2xl border border-slate-100 border-t-4 border-t-orange-500 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800 lg:col-span-2">
                     <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                         <Send size={20} className="text-orange-600" /> Gửi Thông Báo
                     </h2>
@@ -334,7 +342,7 @@ export default function AdminNotificationsPage() {
                 </div>
 
                 {/* User Selection */}
-                <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 p-6">
+                <div className="rounded-2xl border border-slate-100 border-t-4 border-t-blue-500 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
                     <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                         <Users size={20} className="text-blue-600" /> Chọn Người Nhận
                     </h2>

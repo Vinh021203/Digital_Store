@@ -315,12 +315,12 @@ export default function AdminCommunityPage() {
             />
 
             {/* Header */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                 <div>
                     <h1 className="text-2xl font-black text-slate-900">Quản lý Cộng đồng</h1>
                     <p className="text-slate-500">Quản lý bài viết, bình luận và nội dung cộng đồng</p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                     <Link
                         href="/community"
                         target="_blank"
@@ -339,43 +339,43 @@ export default function AdminCommunityPage() {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-4 gap-4">
-                <div className="bg-white rounded-xl p-4 border border-slate-100">
-                    <div className="flex items-center gap-2 mb-2">
-                        <MessageCircle size={18} className="text-purple-600" />
-                        <span className="text-sm text-slate-500">Tổng bài viết</span>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                <div className="group relative min-h-[156px] overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-blue-500 p-5 text-white shadow-lg shadow-blue-200/60">
+                    <div className="absolute -right-7 -top-8 h-28 w-28 rounded-full bg-white/10 transition-transform group-hover:scale-110" />
+                    <div className="relative flex h-full items-center justify-between gap-3">
+                        <div><p className="text-xs font-black uppercase tracking-wide text-white/85">Tổng bài viết</p><p className="mt-2 text-4xl font-black leading-none">{totalPosts}</p><p className="mt-3 text-sm font-medium text-white/75">Nội dung cộng đồng</p></div>
+                        <div className="rounded-2xl bg-white/20 p-4 ring-1 ring-white/15"><MessageCircle size={28} strokeWidth={2.2} /></div>
                     </div>
-                    <p className="text-2xl font-black text-slate-900">{totalPosts}</p>
                 </div>
-                <div className="bg-amber-50 rounded-xl p-4 border border-amber-100">
-                    <div className="flex items-center gap-2 mb-2">
-                        <Star size={18} className="text-amber-600" />
-                        <span className="text-sm text-amber-700">Bài ghim</span>
+                <div className="group relative min-h-[156px] overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 p-5 text-white shadow-lg shadow-amber-200/60">
+                    <div className="absolute -right-7 -top-8 h-28 w-28 rounded-full bg-white/10 transition-transform group-hover:scale-110" />
+                    <div className="relative flex h-full items-center justify-between gap-3">
+                        <div><p className="text-xs font-black uppercase tracking-wide text-white/85">Bài viết đã ghim</p><p className="mt-2 text-4xl font-black leading-none">{pinnedCount}</p><p className="mt-3 text-sm font-medium text-white/75">Nội dung nổi bật</p></div>
+                        <div className="rounded-2xl bg-white/20 p-4 ring-1 ring-white/15"><Star size={28} strokeWidth={2.2} /></div>
                     </div>
-                    <p className="text-2xl font-black text-amber-700">{pinnedCount}</p>
                 </div>
-                <div className="bg-rose-50 rounded-xl p-4 border border-rose-100">
-                    <div className="flex items-center gap-2 mb-2">
-                        <Heart size={18} className="text-rose-600" />
-                        <span className="text-sm text-rose-700">Tổng likes</span>
+                <div className="group relative min-h-[156px] overflow-hidden rounded-2xl bg-gradient-to-br from-rose-600 to-pink-500 p-5 text-white shadow-lg shadow-rose-200/60">
+                    <div className="absolute -right-7 -top-8 h-28 w-28 rounded-full bg-white/10 transition-transform group-hover:scale-110" />
+                    <div className="relative flex h-full items-center justify-between gap-3">
+                        <div><p className="text-xs font-black uppercase tracking-wide text-white/85">Tổng lượt thích</p><p className="mt-2 text-4xl font-black leading-none">{totalLikes}</p><p className="mt-3 text-sm font-medium text-white/75">Tương tác yêu thích</p></div>
+                        <div className="rounded-2xl bg-white/20 p-4 ring-1 ring-white/15"><Heart size={28} strokeWidth={2.2} /></div>
                     </div>
-                    <p className="text-2xl font-black text-rose-700">{totalLikes}</p>
                 </div>
-                <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
-                    <div className="flex items-center gap-2 mb-2">
-                        <MessageSquare size={18} className="text-blue-600" />
-                        <span className="text-sm text-blue-700">Tổng comments</span>
+                <div className="group relative min-h-[156px] overflow-hidden rounded-2xl bg-gradient-to-br from-violet-600 to-purple-500 p-5 text-white shadow-lg shadow-purple-200/60">
+                    <div className="absolute -right-7 -top-8 h-28 w-28 rounded-full bg-white/10 transition-transform group-hover:scale-110" />
+                    <div className="relative flex h-full items-center justify-between gap-3">
+                        <div><p className="text-xs font-black uppercase tracking-wide text-white/85">Tổng bình luận</p><p className="mt-2 text-4xl font-black leading-none">{totalComments}</p><p className="mt-3 text-sm font-medium text-white/75">Thảo luận cộng đồng</p></div>
+                        <div className="rounded-2xl bg-white/20 p-4 ring-1 ring-white/15"><MessageSquare size={28} strokeWidth={2.2} /></div>
                     </div>
-                    <p className="text-2xl font-black text-blue-700">{totalComments}</p>
                 </div>
             </div>
 
             {/* Tabs */}
-            <div className="flex border-b border-slate-200">
+            <div className="flex w-fit rounded-xl bg-slate-100 p-1 shadow-inner">
                 <button
                     onClick={() => setActiveTab('posts')}
-                    className={`px-6 py-3 font-bold text-sm transition-all ${activeTab === 'posts'
-                        ? 'text-purple-600 border-b-2 border-purple-600'
+                    className={`rounded-lg px-5 py-2.5 text-sm font-bold transition-all ${activeTab === 'posts'
+                        ? 'bg-white text-purple-600 shadow-sm'
                         : 'text-slate-500 hover:text-slate-700'
                         }`}
                 >
@@ -384,8 +384,8 @@ export default function AdminCommunityPage() {
                 </button>
                 <button
                     onClick={() => setActiveTab('comments')}
-                    className={`px-6 py-3 font-bold text-sm transition-all ${activeTab === 'comments'
-                        ? 'text-purple-600 border-b-2 border-purple-600'
+                    className={`rounded-lg px-5 py-2.5 text-sm font-bold transition-all ${activeTab === 'comments'
+                        ? 'bg-white text-purple-600 shadow-sm'
                         : 'text-slate-500 hover:text-slate-700'
                         }`}
                 >
@@ -398,7 +398,7 @@ export default function AdminCommunityPage() {
             {activeTab === 'posts' && (
                 <>
                     {/* Filters */}
-                    <div className="flex flex-wrap items-center gap-4 bg-white p-4 rounded-xl border border-slate-100">
+                    <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-slate-100 bg-gradient-to-r from-purple-50/60 to-blue-50/40 p-4 shadow-sm">
                         <div className="relative flex-1 min-w-[200px]">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                             <input
@@ -406,13 +406,13 @@ export default function AdminCommunityPage() {
                                 value={searchQuery}
                                 onChange={e => setSearchQuery(e.target.value)}
                                 placeholder="Tìm theo tiêu đề, nội dung, tác giả..."
-                                className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+                                className="w-full rounded-xl border border-white bg-white py-2.5 pl-10 pr-4 shadow-sm outline-none focus:ring-2 focus:ring-purple-500"
                             />
                         </div>
                         <select
                             value={pinnedFilter}
                             onChange={e => setPinnedFilter(e.target.value as typeof pinnedFilter)}
-                            className="px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none"
+                            className="rounded-xl border border-white bg-white px-4 py-2.5 font-semibold shadow-sm outline-none focus:ring-2 focus:ring-purple-500"
                         >
                             <option value="all">Tất cả</option>
                             <option value="pinned">Đã ghim</option>
@@ -430,7 +430,7 @@ export default function AdminCommunityPage() {
                     </div>
 
                     {/* Posts Table */}
-                    <div className="bg-white rounded-xl border border-slate-100 overflow-hidden">
+                    <div className="overflow-x-auto rounded-2xl border border-slate-100 bg-white shadow-sm">
                         {loadingPosts ? (
                             <div className="flex items-center justify-center py-20">
                                 <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
@@ -441,7 +441,7 @@ export default function AdminCommunityPage() {
                                 <p className="text-slate-500">Không có bài viết nào</p>
                             </div>
                         ) : (
-                            <table className="w-full">
+                            <table className="w-full min-w-[900px]">
                                 <thead className="bg-slate-50 border-b border-slate-100">
                                     <tr>
                                         <th className="px-4 py-3 text-left">
@@ -552,7 +552,7 @@ export default function AdminCommunityPage() {
             {activeTab === 'comments' && (
                 <>
                     {/* Filters */}
-                    <div className="flex flex-wrap items-center gap-4 bg-white p-4 rounded-xl border border-slate-100">
+                    <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-slate-100 bg-gradient-to-r from-purple-50/60 to-blue-50/40 p-4 shadow-sm">
                         <div className="relative flex-1 min-w-[200px]">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                             <input
@@ -560,7 +560,7 @@ export default function AdminCommunityPage() {
                                 value={commentSearch}
                                 onChange={e => setCommentSearch(e.target.value)}
                                 placeholder="Tìm theo nội dung, tác giả, bài viết..."
-                                className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+                                className="w-full rounded-xl border border-white bg-white py-2.5 pl-10 pr-4 shadow-sm outline-none focus:ring-2 focus:ring-purple-500"
                             />
                         </div>
                         {selectedCommentIds.size > 0 && (
@@ -575,7 +575,7 @@ export default function AdminCommunityPage() {
                     </div>
 
                     {/* Comments Table */}
-                    <div className="bg-white rounded-xl border border-slate-100 overflow-hidden">
+                    <div className="overflow-x-auto rounded-2xl border border-slate-100 bg-white shadow-sm">
                         {loadingComments ? (
                             <div className="flex items-center justify-center py-20">
                                 <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
@@ -586,7 +586,7 @@ export default function AdminCommunityPage() {
                                 <p className="text-slate-500">Không có bình luận nào</p>
                             </div>
                         ) : (
-                            <table className="w-full">
+                            <table className="w-full min-w-[850px]">
                                 <thead className="bg-slate-50 border-b border-slate-100">
                                     <tr>
                                         <th className="px-4 py-3 text-left">

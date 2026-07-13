@@ -50,6 +50,8 @@ const FinanceManager = () => {
 
   // Transaction filter
   const [txFilter, setTxFilter] = useState<TxFilter>('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState<10 | 20 | 50>(10);
 
   // Load data
   const loadData = useCallback(async () => {
@@ -57,7 +59,7 @@ const FinanceManager = () => {
     try {
       const [statsData, txData, accountsData] = await Promise.all([
         getFinanceStats(),
-        getTransactions(20),
+        getTransactions(500),
         getLinkedAccounts(),
       ]);
       setStats(statsData);
@@ -86,6 +88,17 @@ const FinanceManager = () => {
     if (txFilter === 'all') return transactions;
     return transactions.filter((t) => t.type === txFilter);
   }, [txFilter, transactions]);
+
+  const totalPages = Math.max(1, Math.ceil(visibleTransactions.length / pageSize));
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+  const paginatedTransactions = useMemo(() => {
+    const start = (safeCurrentPage - 1) * pageSize;
+    return visibleTransactions.slice(start, start + pageSize);
+  }, [visibleTransactions, safeCurrentPage, pageSize]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [txFilter, pageSize]);
 
   const handleWithdraw = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -156,11 +169,11 @@ const FinanceManager = () => {
   }
 
   return (
-    <div className="space-y-8 animate-fade-in relative">
+    <div className="relative space-y-6 animate-fade-in">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h2 className="text-xl md:text-2xl font-bold text-slate-900 flex items-center gap-2">
+          <h2 className="flex items-center gap-2 text-2xl font-black text-slate-900 md:text-3xl">
             Tài Chính & Dòng Tiền
             <button
               onClick={loadData}
@@ -180,7 +193,7 @@ const FinanceManager = () => {
           </button>
           <button
             onClick={() => setIsWithdrawModalOpen(true)}
-            className="flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-indigo-700 transition-colors shadow-lg shadow-slate-400/40"
+            className="flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-indigo-200 transition-colors hover:bg-indigo-700"
           >
             <ArrowUpRight size={18} /> Rút tiền
           </button>
@@ -188,45 +201,45 @@ const FinanceManager = () => {
       </div>
 
       {/* Top metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-        <div className="bg-white rounded-2xl border border-slate-100 p-4 md:p-5 flex items-center gap-4 shadow-sm">
-          <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
-            <Wallet size={20} />
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div className="flex min-h-[140px] items-center gap-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-5 shadow-sm">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white">
+            <Wallet size={23} />
           </div>
           <div>
-            <p className="text-xs font-semibold text-slate-500 uppercase">
+            <p className="text-xs font-black uppercase tracking-wide text-emerald-700">
               Số dư khả dụng
             </p>
-            <p className="text-lg md:text-xl font-bold text-slate-900">
+            <p className="mt-1 text-2xl font-black text-slate-950">
               {formatCurrency(stats.availableBalance)}
             </p>
-            <p className="text-[11px] text-slate-400">
+            <p className="mt-1 text-xs font-medium text-emerald-700/70">
               Có thể rút ngay về ngân hàng liên kết.
             </p>
           </div>
         </div>
-        <div className="bg-white rounded-2xl border border-slate-100 p-4 md:p-5 flex items-center gap-4 shadow-sm">
-          <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
-            <Clock size={20} />
+        <div className="flex min-h-[140px] items-center gap-4 rounded-2xl border border-amber-200 bg-amber-50 p-5 shadow-sm">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-amber-500 text-white">
+            <Clock size={23} />
           </div>
           <div>
-            <p className="text-xs font-semibold text-slate-500 uppercase">
+            <p className="text-xs font-black uppercase tracking-wide text-amber-700">
               Đang chờ đối soát
             </p>
-            <p className="text-lg md:text-xl font-bold text-slate-900">
+            <p className="mt-1 text-2xl font-black text-slate-950">
               {formatCurrency(stats.pendingBalance)}
             </p>
-            <p className="text-[11px] text-slate-400">
+            <p className="mt-1 text-xs font-medium text-amber-700/70">
               Từ đơn hàng đang xử lý.
             </p>
           </div>
         </div>
-        <div className="bg-white rounded-2xl border border-slate-100 p-4 md:p-5 flex items-center gap-4 shadow-sm">
-          <div className="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-amber-300">
-            <CreditCard size={20} />
+        <div className="flex min-h-[140px] items-center gap-4 rounded-2xl border border-blue-200 bg-blue-50 p-5 shadow-sm">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white">
+            <CreditCard size={23} />
           </div>
           <div>
-            <p className="text-xs font-semibold text-slate-500 uppercase">
+            <p className="text-xs font-black uppercase tracking-wide text-blue-700">
               Dòng tiền tháng này
             </p>
             <p className="text-sm text-emerald-600 font-semibold">
@@ -240,61 +253,29 @@ const FinanceManager = () => {
       </div>
 
       {/* Wallet + Linked accounts */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
         {/* Left Column: Wallet Cards */}
-        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 lg:col-span-2 md:grid-cols-2">
           {/* Main Wallet Card */}
-          <div className="bg-gradient-to-br from-slate-800 via-slate-900 to-black rounded-3xl p-7 md:p-8 text-white relative overflow-hidden shadow-2xl">
-            <div className="absolute top-0 right-0 p-8 opacity-5">
-              <Landmark size={200} />
-            </div>
-            <div className="relative z-10 flex flex-col justify-between h-full min-h-[220px] gap-8">
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="text-slate-400 text-xs font-medium uppercase tracking-[0.18em] mb-1">
-                    Số dư khả dụng
-                  </p>
-                  <h3 className="text-3xl md:text-4xl font-mono font-bold tracking-tight">
-                    {formatCurrency(stats.availableBalance)}
-                  </h3>
-                </div>
-                <div className="w-12 h-8 bg-white/10 rounded-md border border-white/20 flex items-center justify-center overflow-hidden">
-                  <div className="w-6 h-6 rounded-full bg-orange-500/80 -mr-3" />
-                  <div className="w-6 h-6 rounded-full bg-red-500/80" />
-                </div>
-              </div>
-
+          <div className="flex min-h-[270px] flex-col justify-between rounded-2xl border border-indigo-700 bg-indigo-600 p-6 text-white shadow-lg shadow-indigo-200 md:p-7">
+            <div className="flex items-start justify-between gap-4">
               <div>
-                <div className="flex flex-wrap gap-8 mb-5">
-                  <div>
-                    <p className="text-[10px] text-slate-400 uppercase font-semibold">
-                      Tổng thu
-                    </p>
-                    <p className="font-medium tracking-wide text-emerald-400">
-                      {formatCurrency(stats.totalIncome)}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-[10px] text-slate-400 uppercase font-semibold">
-                      Đã rút
-                    </p>
-                    <p className="font-medium tracking-wide">
-                      {formatCurrency(stats.totalWithdrawals)}
-                    </p>
-                  </div>
-                </div>
-                <p className="font-mono text-slate-400 tracking-[0.28em] text-sm">
-                  **** **** **** 8899
-                </p>
+                <p className="text-xs font-black uppercase tracking-[0.16em] text-indigo-200">Ví doanh thu</p>
+                <h3 className="mt-3 text-3xl font-black tracking-tight md:text-4xl">{formatCurrency(stats.availableBalance)}</h3>
+                <p className="mt-2 text-sm font-medium text-indigo-100">Số dư có thể rút ngay</p>
               </div>
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/15 ring-1 ring-white/20"><Wallet size={24} /></div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="rounded-xl bg-indigo-700/70 p-3 ring-1 ring-white/10"><p className="text-[10px] font-bold uppercase text-indigo-200">Tổng thu</p><p className="mt-1 text-sm font-black">{formatCurrency(stats.totalIncome)}</p></div>
+              <div className="rounded-xl bg-indigo-700/70 p-3 ring-1 ring-white/10"><p className="text-[10px] font-bold uppercase text-indigo-200">Đã rút</p><p className="mt-1 text-sm font-black">{formatCurrency(stats.totalWithdrawals)}</p></div>
             </div>
           </div>
 
           {/* Pending Balance Card */}
-          <div className="bg-white rounded-3xl p-7 md:p-8 border border-slate-100 shadow-sm flex flex-col justify-between relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-orange-50 rounded-full -mr-10 -mt-10 blur-2xl" />
+          <div className="flex min-h-[270px] flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:p-7">
             <div className="space-y-4">
-              <div className="w-11 h-11 bg-orange-50 text-orange-500 rounded-2xl flex items-center justify-center">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-100 text-amber-600">
                 <Clock size={22} />
               </div>
               <div>
@@ -319,9 +300,9 @@ const FinanceManager = () => {
         </div>
 
         {/* Right Column: Linked accounts */}
-        <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex flex-col gap-5">
+        <div className="flex flex-col gap-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
           <div className="flex items-center justify-between gap-2">
-            <h3 className="font-bold text-slate-900">Tài Khoản Liên Kết</h3>
+            <div className="flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-blue-700"><Landmark size={20} /></div><h3 className="font-black text-slate-900">Tài khoản liên kết</h3></div>
             <span className="text-[11px] text-slate-400">
               Sử dụng khi rút tiền
             </span>
@@ -330,7 +311,7 @@ const FinanceManager = () => {
             {linkedAccounts.map((account) => (
               <div
                 key={account.id}
-                className="flex items-center gap-4 p-4 border border-slate-200 rounded-2xl hover:border-indigo-200 hover:bg-indigo-50/30 transition-colors cursor-pointer"
+                className={`flex cursor-pointer items-center gap-4 rounded-xl border p-4 transition-colors ${account.is_default ? 'border-blue-200 bg-blue-50/60' : 'border-slate-200 hover:border-indigo-200 hover:bg-indigo-50/30'}`}
               >
                 <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${account.type === 'bank' ? 'bg-green-50' : 'bg-pink-50'}`}>
                   {account.type === 'bank' ? (
@@ -355,7 +336,7 @@ const FinanceManager = () => {
               </div>
             ))}
 
-            <button className="w-full mt-1 py-3 border border-dashed border-slate-300 rounded-xl text-slate-500 text-sm font-semibold hover:border-indigo-500 hover:text-indigo-600 transition-colors">
+            <button className="mt-1 w-full rounded-xl border border-dashed border-slate-300 py-3 text-sm font-bold text-slate-500 transition-colors hover:border-indigo-500 hover:bg-indigo-50 hover:text-indigo-600">
               + Thêm tài khoản mới
             </button>
           </div>
@@ -370,18 +351,18 @@ const FinanceManager = () => {
       </div>
 
       {/* Transaction History */}
-      <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
-        <div className="p-5 md:p-6 border-b border-slate-50 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="flex flex-col gap-3 border-b border-slate-100 bg-slate-50/70 p-5 md:flex-row md:items-center md:justify-between md:p-6">
           <div>
             <h3 className="font-bold text-lg text-slate-900">
-              Lịch Sử Giao Dịch
+              Lịch sử giao dịch
             </h3>
             <p className="text-xs text-slate-500">
               Theo dõi chi tiết các giao dịch vào/ra ví trong thời gian gần đây.
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-1 bg-slate-50 rounded-lg p-1 text-xs">
+            <div className="flex items-center gap-1 rounded-xl bg-slate-200/70 p-1 text-xs">
               <button
                 onClick={() => setTxFilter('all')}
                 className={`px-3 py-1 rounded-md font-semibold ${txFilter === 'all'
@@ -434,7 +415,7 @@ const FinanceManager = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
-              {visibleTransactions.map((trx) => (
+              {paginatedTransactions.map((trx) => (
                 <tr
                   key={trx.id}
                   className="hover:bg-slate-50/70 transition-colors"
@@ -515,16 +496,38 @@ const FinanceManager = () => {
             </tbody>
           </table>
         </div>
+        {visibleTransactions.length > 0 && (
+          <div className="flex flex-col gap-3 border-t border-slate-100 bg-slate-50/70 px-5 py-4 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between">
+            <span>
+              Hiển thị <b>{(safeCurrentPage - 1) * pageSize + 1}–{Math.min(safeCurrentPage * pageSize, visibleTransactions.length)}</b> / {visibleTransactions.length} giao dịch
+            </span>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-semibold">Mỗi trang</span>
+              <select
+                value={pageSize}
+                onChange={(event) => setPageSize(Number(event.target.value) as 10 | 20 | 50)}
+                className="rounded-lg border border-slate-200 bg-white px-2 py-1.5 font-bold outline-none"
+              >
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={50}>50</option>
+              </select>
+              <button disabled={safeCurrentPage === 1} onClick={() => setCurrentPage(page => Math.max(1, page - 1))} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 font-bold disabled:cursor-not-allowed disabled:opacity-40">Trước</button>
+              <span className="min-w-[72px] text-center font-bold">{safeCurrentPage}/{totalPages}</span>
+              <button disabled={safeCurrentPage === totalPages} onClick={() => setCurrentPage(page => Math.min(totalPages, page + 1))} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 font-bold disabled:cursor-not-allowed disabled:opacity-40">Sau</button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Withdraw Modal */}
       {isWithdrawModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
-          <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden">
+          <div className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl">
             <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/60">
               <h3 className="text-lg md:text-xl font-bold text-slate-900 flex items-center gap-2">
                 <ArrowUpRight size={20} className="text-indigo-600" />
-                Rút tiền về ngân hàng
+                Tạo yêu cầu rút tiền
               </h3>
               <button
                 onClick={() => setIsWithdrawModalOpen(false)}

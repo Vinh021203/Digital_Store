@@ -42,6 +42,8 @@ const SupportManager = () => {
   const [replyText, setReplyText] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | TicketStatus>('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState<10 | 20 | 50>(10);
   const [stats, setStats] = useState<{
     total: number;
     open: number;
@@ -150,6 +152,11 @@ const SupportManager = () => {
       );
     });
   }, [tickets, searchTerm]);
+  const totalPages = Math.max(1, Math.ceil(filteredTickets.length / pageSize));
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+  const paginatedTickets = filteredTickets.slice((safeCurrentPage - 1) * pageSize, safeCurrentPage * pageSize);
+
+  useEffect(() => { setCurrentPage(1); }, [filterStatus, searchTerm, pageSize]);
 
   const priorityBadgeClass = (p: string) =>
     p === 'high'
@@ -183,11 +190,11 @@ const SupportManager = () => {
   };
 
   return (
-    <div className="h-[calc(100vh-140px)] flex flex-col gap-6 animate-fade-in">
+    <div className="flex min-h-[calc(100vh-140px)] flex-col gap-6 animate-fade-in lg:h-[calc(100vh-140px)]">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">Hỗ Trợ Khách Hàng</h2>
+          <h2 className="text-2xl font-black text-slate-900 md:text-3xl">Hỗ trợ khách hàng</h2>
           <p className="text-sm text-slate-500">
             Quản lý và phản hồi yêu cầu hỗ trợ từ khách hàng
           </p>
@@ -206,10 +213,10 @@ const SupportManager = () => {
           <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
         </div>
       ) : (
-        <div className="flex-1 flex gap-6">
+        <div className="flex flex-1 flex-col gap-6 lg:min-h-0 lg:flex-row">
           {/* Left: Ticket List */}
-          <div className="w-96 bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col overflow-hidden">
-            <div className="p-4 border-b border-slate-100 space-y-3">
+          <div className="flex min-h-[440px] w-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm lg:w-96">
+            <div className="space-y-3 border-b border-slate-100 bg-slate-50/70 p-4">
               <div className="flex items-center justify-between">
                 <h3 className="font-bold text-lg text-slate-900">Hộp Thư Hỗ Trợ</h3>
                 <span className="text-xs text-slate-400">{stats?.total || 0} ticket</span>
@@ -254,7 +261,7 @@ const SupportManager = () => {
                   Không có ticket nào
                 </div>
               ) : (
-                filteredTickets.map(ticket => (
+                paginatedTickets.map(ticket => (
                   <button
                     key={ticket.id}
                     type="button"
@@ -289,13 +296,19 @@ const SupportManager = () => {
                 ))
               )}
             </div>
+            {filteredTickets.length > 0 && (
+              <div className="flex items-center justify-between gap-2 border-t border-slate-100 bg-white px-3 py-2 text-xs text-slate-500">
+                <select value={pageSize} onChange={e => setPageSize(Number(e.target.value) as 10 | 20 | 50)} className="rounded-lg border border-slate-200 px-2 py-1 font-bold"><option value={10}>10</option><option value={20}>20</option><option value={50}>50</option></select>
+                <div className="flex items-center gap-1"><button disabled={safeCurrentPage === 1} onClick={() => setCurrentPage(p => Math.max(1, p - 1))} className="rounded border px-2 py-1 disabled:opacity-30">Trước</button><b>{safeCurrentPage}/{totalPages}</b><button disabled={safeCurrentPage === totalPages} onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} className="rounded border px-2 py-1 disabled:opacity-30">Sau</button></div>
+              </div>
+            )}
           </div>
 
           {/* Right: Chat Interface */}
           {selectedTicket ? (
-            <div className="flex-1 bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col overflow-hidden">
+            <div className="flex min-h-[540px] flex-1 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm lg:min-h-0">
               {/* Chat Header */}
-              <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/30">
+              <div className="flex flex-col gap-3 border-b border-slate-100 bg-slate-50/70 p-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-4">
                   {selectedTicket.user?.avatar ? (
                     <Image

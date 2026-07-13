@@ -17,6 +17,7 @@ import {
   User,
   Tag,
   ArrowLeft,
+  BarChart3,
 } from 'lucide-react';
 import { collectBlogTaxonomy, fetchAllPosts, deletePost, togglePublish, type DbBlogPost } from '@/lib/blog';
 import { useToast } from '@/context/ToastContext';
@@ -125,18 +126,51 @@ export default function BlogManager() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {[
-          { label: 'Tổng bài viết', value: stats.total, color: 'text-indigo-600' },
-          { label: 'Đã xuất bản', value: stats.published, color: 'text-green-600' },
-          { label: 'Bản nháp', value: stats.draft, color: 'text-orange-600' },
-          { label: 'Lượt xem', value: stats.views.toLocaleString(), color: 'text-slate-600' },
-        ].map((stat, idx) => (
-          <div key={idx} className="bg-white rounded-xl p-4 border border-slate-100">
-            <p className={`text-2xl font-black ${stat.color}`}>{stat.value}</p>
-            <p className="text-xs text-slate-500">{stat.label}</p>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="group relative min-h-[156px] overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-blue-500 p-5 text-white shadow-lg shadow-blue-200/60">
+          <div className="absolute -right-7 -top-8 h-28 w-28 rounded-full bg-white/10 transition-transform group-hover:scale-110" />
+          <div className="relative flex h-full items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-black uppercase tracking-wide text-white/85">Tổng bài viết</p>
+              <p className="mt-2 text-4xl font-black leading-none">{stats.total}</p>
+              <p className="mt-3 text-sm font-medium text-white/75">Tất cả nội dung Blog</p>
+            </div>
+            <div className="rounded-2xl bg-white/20 p-4 ring-1 ring-white/15"><FileText size={28} strokeWidth={2.2} /></div>
           </div>
-        ))}
+        </div>
+        <div className="group relative min-h-[156px] overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-500 p-5 text-white shadow-lg shadow-emerald-200/60">
+          <div className="absolute -right-7 -top-8 h-28 w-28 rounded-full bg-white/10 transition-transform group-hover:scale-110" />
+          <div className="relative flex h-full items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-black uppercase tracking-wide text-white/85">Đã xuất bản</p>
+              <p className="mt-2 text-4xl font-black leading-none">{stats.published}</p>
+              <p className="mt-3 text-sm font-medium text-white/75">Đang hiển thị trên website</p>
+            </div>
+            <div className="rounded-2xl bg-white/20 p-4 ring-1 ring-white/15"><Eye size={28} strokeWidth={2.2} /></div>
+          </div>
+        </div>
+        <div className="group relative min-h-[156px] overflow-hidden rounded-2xl bg-gradient-to-br from-orange-500 to-amber-500 p-5 text-white shadow-lg shadow-orange-200/60">
+          <div className="absolute -right-7 -top-8 h-28 w-28 rounded-full bg-white/10 transition-transform group-hover:scale-110" />
+          <div className="relative flex h-full items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-black uppercase tracking-wide text-white/85">Bản nháp</p>
+              <p className="mt-2 text-4xl font-black leading-none">{stats.draft}</p>
+              <p className="mt-3 text-sm font-medium text-white/75">Nội dung chưa xuất bản</p>
+            </div>
+            <div className="rounded-2xl bg-white/20 p-4 ring-1 ring-white/15"><Edit3 size={28} strokeWidth={2.2} /></div>
+          </div>
+        </div>
+        <div className="group relative min-h-[156px] overflow-hidden rounded-2xl bg-gradient-to-br from-violet-600 to-purple-500 p-5 text-white shadow-lg shadow-purple-200/60">
+          <div className="absolute -right-7 -top-8 h-28 w-28 rounded-full bg-white/10 transition-transform group-hover:scale-110" />
+          <div className="relative flex h-full items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-black uppercase tracking-wide text-white/85">Lượt xem</p>
+              <p className="mt-2 text-4xl font-black leading-none">{stats.views.toLocaleString()}</p>
+              <p className="mt-3 text-sm font-medium text-white/75">Tổng lượt đọc bài viết</p>
+            </div>
+            <div className="rounded-2xl bg-white/20 p-4 ring-1 ring-white/15"><BarChart3 size={28} strokeWidth={2.2} /></div>
+          </div>
+        </div>
       </div>
 
       {/* Filters */}

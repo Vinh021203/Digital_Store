@@ -12,6 +12,7 @@ import {
     TrendingUp, AlertCircle, ChevronDown, Sparkles, Zap, Clock
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { getAdminStats } from '@/lib/adminStats';
 
 interface AdminLayoutProps {
     children: React.ReactNode;
@@ -89,12 +90,28 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [currentTime, setCurrentTime] = useState(new Date());
+    const [salesStats, setSalesStats] = useState({ totalRevenue: 0, totalOrders: 0 });
 
     // Update time every minute
     useEffect(() => {
         const timer = setInterval(() => setCurrentTime(new Date()), 60000);
         return () => clearInterval(timer);
     }, []);
+
+    useEffect(() => {
+        let active = true;
+        getAdminStats().then(data => {
+            if (active) setSalesStats({ totalRevenue: data.totalRevenue, totalOrders: data.totalOrders });
+        });
+        return () => { active = false; };
+    }, []);
+
+    const formatCompactRevenue = (value: number) => {
+        if (value >= 1_000_000_000) return `${(value / 1_000_000_000).toLocaleString('vi-VN', { maximumFractionDigits: 1 })} tỷ`;
+        if (value >= 1_000_000) return `${(value / 1_000_000).toLocaleString('vi-VN', { maximumFractionDigits: 1 })} tr`;
+        if (value >= 1_000) return `${(value / 1_000).toLocaleString('vi-VN', { maximumFractionDigits: 1 })}K`;
+        return value.toLocaleString('vi-VN');
+    };
 
     // Keyboard shortcuts
     useEffect(() => {
@@ -320,14 +337,16 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                                     <TrendingUp size={12} />
                                     <span className="text-[10px] font-bold">Doanh thu</span>
                                 </div>
-                                <p className="text-white text-sm font-bold">156M</p>
+                                <p className="text-white text-sm font-bold" title={`${salesStats.totalRevenue.toLocaleString('vi-VN')}₫`}>
+                                    {formatCompactRevenue(salesStats.totalRevenue)}₫
+                                </p>
                             </div>
                             <div className="bg-slate-800/50 rounded-lg p-2 border border-slate-700/50">
                                 <div className="flex items-center gap-1.5 text-blue-400 mb-1">
                                     <ShoppingBag size={12} />
                                     <span className="text-[10px] font-bold">Đơn hàng</span>
                                 </div>
-                                <p className="text-white text-sm font-bold">342</p>
+                                <p className="text-white text-sm font-bold">{salesStats.totalOrders.toLocaleString('vi-VN')}</p>
                             </div>
                         </div>
 

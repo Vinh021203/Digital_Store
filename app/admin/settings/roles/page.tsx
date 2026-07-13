@@ -39,6 +39,8 @@ const RolesManager = () => {
   const [roles, setRoles] = useState<RoleInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState<10 | 20 | 50>(10);
 
   // Form state
   const [formName, setFormName] = useState('');
@@ -68,6 +70,9 @@ const RolesManager = () => {
   }, [loadData]);
 
   const totalActive = staff.filter((s) => s.status === 'active').length;
+  const totalPages = Math.max(1, Math.ceil(staff.length / pageSize));
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+  const paginatedStaff = staff.slice((safeCurrentPage - 1) * pageSize, safeCurrentPage * pageSize);
 
   const handleEdit = (s: StaffMember) => {
     setEditingStaff(s);
@@ -179,6 +184,13 @@ const RolesManager = () => {
     }
   };
 
+  const getRoleAccent = (role: StaffRole) => ({
+    super_admin: 'border-t-blue-500',
+    admin: 'border-t-violet-500',
+    editor: 'border-t-emerald-500',
+    support: 'border-t-amber-500',
+  }[role]);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -191,11 +203,11 @@ const RolesManager = () => {
   }
 
   return (
-    <div className="space-y-8 animate-fade-in relative">
+    <div className="relative space-y-6 animate-fade-in">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-xl md:text-2xl font-bold text-slate-900 flex items-center gap-2">
+          <h2 className="flex items-center gap-2 text-2xl font-black text-slate-900 md:text-3xl">
             <Shield size={20} className="text-indigo-600" />
             Phân Quyền Nhân Viên
             <button
@@ -219,54 +231,54 @@ const RolesManager = () => {
       </div>
 
       {/* Top summary */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white rounded-2xl border border-slate-100 p-4 flex items-center gap-3 shadow-sm">
-          <div className="w-9 h-9 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
-            <Users size={18} />
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div className="flex min-h-[130px] items-center gap-4 rounded-2xl border border-blue-200 bg-blue-50 p-5 shadow-sm">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white">
+            <Users size={23} />
           </div>
           <div>
-            <p className="text-xs font-semibold text-slate-500 uppercase">
+            <p className="text-xs font-black uppercase tracking-wide text-blue-700">
               Tổng nhân sự
             </p>
-            <p className="text-lg font-bold text-slate-900">
+            <p className="mt-1 text-2xl font-black text-slate-950">
               {staff.length} tài khoản
             </p>
           </div>
         </div>
-        <div className="bg-white rounded-2xl border border-slate-100 p-4 flex items-center gap-3 shadow-sm">
-          <div className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
-            <Shield size={18} />
+        <div className="flex min-h-[130px] items-center gap-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-5 shadow-sm">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white">
+            <Shield size={23} />
           </div>
           <div>
-            <p className="text-xs font-semibold text-slate-500 uppercase">
+            <p className="text-xs font-black uppercase tracking-wide text-emerald-700">
               Đang hoạt động
             </p>
-            <p className="text-lg font-bold text-slate-900">
-              {totalActive} Active
+            <p className="mt-1 text-2xl font-black text-slate-950">
+              {totalActive} hoạt động
             </p>
           </div>
         </div>
-        <div className="bg-white rounded-2xl border border-slate-100 p-4 flex items-center gap-3 shadow-sm">
-          <div className="w-9 h-9 rounded-xl bg-slate-900 flex items-center justify-center text-amber-300">
-            <Lock size={18} />
+        <div className="flex min-h-[130px] items-center gap-4 rounded-2xl border border-violet-200 bg-violet-50 p-5 shadow-sm">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-violet-600 text-white">
+            <Lock size={23} />
           </div>
           <div>
-            <p className="text-xs font-semibold text-slate-500 uppercase">
+            <p className="text-xs font-black uppercase tracking-wide text-violet-700">
               Nhóm quyền
             </p>
-            <p className="text-lg font-bold text-slate-900">
-              {roles.filter(r => r.count > 0).length} role
+            <p className="mt-1 text-2xl font-black text-slate-950">
+              {roles.filter(r => r.count > 0).length} vai trò
             </p>
           </div>
         </div>
       </div>
 
       {/* Role Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {roles.map((role) => (
           <div
             key={role.name}
-            className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:border-indigo-200 hover:-translate-y-0.5 transition-all cursor-pointer group"
+            className={`group cursor-pointer rounded-2xl border border-slate-200 border-t-4 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md ${getRoleAccent(role.name)}`}
           >
             <div className="flex justify-between items-start mb-3">
               <div
@@ -277,7 +289,7 @@ const RolesManager = () => {
               {role.count > 0 && (
                 <span className="text-[10px] text-slate-400 flex items-center gap-1">
                   <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                  Active
+                  Đang dùng
                 </span>
               )}
             </div>
@@ -296,10 +308,10 @@ const RolesManager = () => {
       </div>
 
       {/* Staff List */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-        <div className="p-6 border-b border-slate-50 flex items-center justify-between">
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="flex flex-col gap-1 border-b border-slate-100 bg-slate-50/70 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
           <h3 className="font-bold text-lg text-slate-900">
-            Danh Sách Nhân Sự
+            Danh sách nhân sự
           </h3>
           <p className="text-xs text-slate-400">
             Quản lý tài khoản nội bộ và quyền truy cập dashboard.
@@ -317,7 +329,7 @@ const RolesManager = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
-              {staff.map((s) => (
+              {paginatedStaff.map((s) => (
                 <tr
                   key={s.id}
                   className="hover:bg-slate-50/60 transition-colors"
@@ -402,12 +414,26 @@ const RolesManager = () => {
             </tbody>
           </table>
         </div>
+        {staff.length > 0 && (
+          <div className="flex flex-col gap-3 border-t border-slate-100 bg-slate-50/70 px-5 py-4 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between">
+            <span>Hiển thị <b>{(safeCurrentPage - 1) * pageSize + 1}–{Math.min(safeCurrentPage * pageSize, staff.length)}</b> / {staff.length} nhân sự</span>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-semibold">Mỗi trang</span>
+              <select value={pageSize} onChange={(event) => { setPageSize(Number(event.target.value) as 10 | 20 | 50); setCurrentPage(1); }} className="rounded-lg border border-slate-200 bg-white px-2 py-1.5 font-bold outline-none">
+                <option value={10}>10</option><option value={20}>20</option><option value={50}>50</option>
+              </select>
+              <button disabled={safeCurrentPage === 1} onClick={() => setCurrentPage(page => Math.max(1, page - 1))} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 font-bold disabled:cursor-not-allowed disabled:opacity-40">Trước</button>
+              <span className="min-w-[72px] text-center font-bold">{safeCurrentPage}/{totalPages}</span>
+              <button disabled={safeCurrentPage === totalPages} onClick={() => setCurrentPage(page => Math.min(totalPages, page + 1))} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 font-bold disabled:cursor-not-allowed disabled:opacity-40">Sau</button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* STAFF MODAL */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in-up">
+          <div className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl animate-fade-in-up">
             <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/60">
               <h3 className="text-lg md:text-xl font-bold text-slate-900">
                 {editingStaff ? 'Sửa thông tin' : 'Thêm nhân viên mới'}
