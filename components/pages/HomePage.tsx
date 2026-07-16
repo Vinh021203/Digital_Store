@@ -385,7 +385,7 @@ const DpMarketProductCard = memo(
               sizes="(max-width: 768px) 50vw, 25vw"
               className={`object-cover w-full h-full transition-transform duration-500 group-hover:scale-105 ${stableMedia || imgLoaded ? "opacity-100" : "opacity-0"}`}
               onLoad={() => setImgLoaded(true)}
-              loading={stableMedia ? "eager" : "lazy"}
+              loading="lazy"
             />
           </Link>
           <button
@@ -903,6 +903,7 @@ const HomePage = ({
                         src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg"
                         alt=""
                         className="h-[18px] w-[18px]"
+                        loading="lazy"
                       />
                     ),
                   },
@@ -1127,6 +1128,7 @@ const HomePage = ({
                     src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg"
                     alt=""
                     className="h-7 w-7 md:h-8 md:w-8"
+                    loading="lazy"
                   />
                 ),
               },
@@ -1780,10 +1782,11 @@ const HomePage = ({
               {/* Author card */}
               <div className="relative mb-5 overflow-hidden rounded-2xl border border-orange-100 bg-white shadow-lg shadow-orange-100/45">
                 <div className="relative h-24 overflow-hidden bg-orange-50">
-                  <img
-                    src={displayAuthorProducts[0]?.image || fallbackImages[0]}
-                    alt={topAuthorName}
-                    className="h-full w-full object-cover opacity-85"
+	                  <img
+	                    src={displayAuthorProducts[0]?.image || fallbackImages[0]}
+	                    alt={topAuthorName}
+	                    className="h-full w-full object-cover opacity-85"
+	                    loading="lazy"
                     onError={(e) => {
                       (e.currentTarget as HTMLImageElement).src =
                         fallbackImages[0];
@@ -1802,14 +1805,15 @@ const HomePage = ({
                       background: "linear-gradient(135deg, #ffedd5, #fed7aa)",
                     }}
                   >
-                    <img
+	                    <img
                       src={
                         displayAuthorProducts[1]?.image ||
                         displayAuthorProducts[0]?.image ||
                         fallbackImages[1]
                       }
-                      alt={topAuthorName}
-                      className="w-full h-full object-cover"
+	                      alt={topAuthorName}
+	                      className="w-full h-full object-cover"
+	                      loading="lazy"
                       onError={(e) => {
                         (e.currentTarget as HTMLImageElement).style.display =
                           "none";
@@ -2012,6 +2016,7 @@ const HomePage = ({
                 src={banner.image}
                 alt={banner.title}
                 className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                loading="lazy"
                 onError={(e) => {
                   (e.currentTarget as HTMLImageElement).src = fallbackImages[0];
                 }}
@@ -2462,6 +2467,7 @@ const HomePage = ({
                   src="/dpmarket-assets/images/shapes/affiliate-bg.png"
                   alt="Bg shape"
                   className="object-cover w-full h-full"
+                  loading="lazy"
                 />
               </div>
               <div>
@@ -2489,6 +2495,7 @@ const HomePage = ({
                   src="/dpmarket-assets/images/shapes/service-bg.png"
                   alt="Bg shape"
                   className="object-cover w-full h-full"
+                  loading="lazy"
                 />
               </div>
               <div>
@@ -2517,12 +2524,14 @@ const HomePage = ({
               src="/dpmarket-assets/images/shapes/spider-net-sm.png"
               alt=""
               className="absolute top-0 right-0 h-full w-auto object-contain pointer-events-none opacity-80 z-0"
+              loading="lazy"
             />
             {/* Arrow/plane path curve */}
             <img
               src="/dpmarket-assets/images/shapes/arrow-shape.png"
               alt=""
               className="absolute left-[35%] top-[30%] max-w-[20%] pointer-events-none hidden lg:block z-0"
+              loading="lazy"
             />
             {/* Background blur circle */}
             <div
