@@ -728,7 +728,7 @@ const Footer = () => {
                 <span className="hidden sm:inline opacity-40">•</span>
                 <span className="hidden sm:inline">All rights reserved.</span>
               </p>
-              <nav className="flex flex-wrap justify-center gap-x-4 gap-y-1">
+              <nav className="flex flex-wrap justify-center gap-2 sm:gap-x-4 sm:gap-y-1" aria-label="Chính sách và thông tin pháp lý">
                 {[
                   { href: "/policy/privacy", label: "Bảo mật" },
                   { href: "/policy/terms", label: "Điều khoản" },
@@ -740,7 +740,7 @@ const Footer = () => {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="hover:text-orange-400 transition-colors hover:underline"
+                    className="inline-flex min-h-11 items-center rounded-lg px-2 py-2 hover:bg-slate-900 hover:text-orange-300 transition-colors hover:underline sm:min-h-0 sm:px-0 sm:py-0 sm:hover:bg-transparent"
                     prefetch={true}
                   >
                     {link.label}
