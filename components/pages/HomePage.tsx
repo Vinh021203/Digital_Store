@@ -442,7 +442,7 @@ const DpMarketProductCard = memo(
             } ${variant === "mobileHorizontal" ? "mb-1" : "mb-1.5"}`}
           >
             <span
-              className={`text-slate-400 font-semibold truncate md:max-w-[120px] ${
+              className={`text-slate-600 font-semibold truncate md:max-w-[120px] ${
                 variant === "mobileHorizontal"
                   ? "text-[10px] max-w-[92px]"
                   : "text-[10px] sm:text-xs max-w-[96px] sm:max-w-[140px]"
@@ -1355,7 +1355,7 @@ const HomePage = ({
                   onClick={() => setArrivalTab(tab.id as any)}
                   className={`px-4 py-2 rounded-xl text-[10px] md:text-xs font-bold tracking-wide whitespace-nowrap transition-all duration-200 select-none ${
                     arrivalTab === tab.id
-                      ? "bg-[#ea580c] text-white shadow-md shadow-orange-200"
+                      ? "bg-[#c2410c] text-white shadow-md shadow-orange-200"
                       : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
                   }`}
                 >
@@ -1391,7 +1391,7 @@ const HomePage = ({
           <div className="text-center mt-5 md:mt-8">
             <Link
               href="/products"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 md:px-8 md:py-3.5 rounded-full bg-[#ea580c] hover:bg-[#c2410c] text-white font-bold text-xs md:text-sm shadow-lg shadow-orange-600/15 hover:shadow-xl hover:shadow-orange-600/25 transition-all duration-200 select-none"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 md:px-8 md:py-3.5 rounded-full bg-[#c2410c] hover:bg-[#9a3412] text-white font-bold text-xs md:text-sm shadow-lg shadow-orange-600/15 hover:shadow-xl hover:shadow-orange-600/25 transition-all duration-200 select-none"
             >
               Khám phá thêm giao diện <ArrowRight size={14} />
             </Link>
@@ -2231,7 +2231,7 @@ const HomePage = ({
 
             {/* RIGHT: Text + CTA */}
             <div className="relative flex flex-col justify-center px-6 sm:px-8 lg:px-12 py-10 lg:py-10 overflow-hidden bg-white lg:border-l lg:border-slate-100">
-              <span className="text-[#ea580c] text-xs font-semibold uppercase tracking-widest mb-3 block">
+              <span className="text-[#c2410c] text-xs font-semibold uppercase tracking-widest mb-3 block">
                 Hiệu suất vượt trội
               </span>
 
@@ -2249,7 +2249,7 @@ const HomePage = ({
               <div className="mb-6 rounded-2xl border border-slate-200/80 bg-white p-3">
                 <div className="mb-2 flex items-center justify-between text-xs font-semibold text-slate-600">
                   <span>Hệ thống ổn định</span>
-                  <span className="text-[#ea580c]">99.9%</span>
+                  <span className="text-[#c2410c]">99.9%</span>
                 </div>
                 <div className="h-2 overflow-hidden rounded-full bg-slate-100">
                   <div className="h-full w-[92%] rounded-full bg-gradient-to-r from-[#ea580c] to-amber-400" />
