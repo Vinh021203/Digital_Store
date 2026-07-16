@@ -560,9 +560,6 @@ const HomePage = ({
   // Search inputs
   const [searchVal, setSearchVal] = useState("");
   const [heroSlideIndex, setHeroSlideIndex] = useState(0);
-  const [loadedHeroSlides, setLoadedHeroSlides] = useState<Set<number>>(
-    () => new Set([0]),
-  );
 
   // Circular Text Ref
   const textRefFeaturedAuthor = useRef<HTMLDivElement>(null);
@@ -581,27 +578,6 @@ const HomePage = ({
 
     return () => window.clearInterval(timer);
   }, []);
-
-  useEffect(() => {
-    const nextSlideIndex = (heroSlideIndex + 1) % heroSliderImages.length;
-    const preloadNextSlide = () => {
-      setLoadedHeroSlides((current) => {
-        if (current.has(nextSlideIndex)) return current;
-
-        const next = new Set(current);
-        next.add(nextSlideIndex);
-        return next;
-      });
-    };
-
-    if (typeof window.requestIdleCallback === "function") {
-      const idleId = window.requestIdleCallback(preloadNextSlide, { timeout: 1800 });
-      return () => window.cancelIdleCallback(idleId);
-    }
-
-    const timeoutId = window.setTimeout(preloadNextSlide, 1200);
-    return () => window.clearTimeout(timeoutId);
-  }, [heroSlideIndex]);
 
   useEffect(() => {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -1086,8 +1062,7 @@ const HomePage = ({
             {/* Right Banner Image Mockup with Floating Badges */}
 	            <div className="relative flex justify-center lg:justify-end w-full min-w-0">
 	              <div className="relative w-full max-w-[330px] sm:max-w-[470px] lg:max-w-[680px] aspect-[1.12] pointer-events-none">
-		                {heroSliderImages.map((image, index) =>
-		                  loadedHeroSlides.has(index) || index === heroSlideIndex ? (
+		                {heroSliderImages.map((image, index) => (
 		                  <Image
 		                    key={image}
 		                    src={image}
@@ -1098,10 +1073,8 @@ const HomePage = ({
 	                      index === heroSlideIndex ? "opacity-100" : "opacity-0"
 		                    }`}
 		                    priority={index === 0}
-		                    fetchPriority={index === 0 ? "high" : "auto"}
 		                  />
-		                  ) : null,
-		                )}
+		                ))}
 
                 {/* Floating Badge 1 (Purple - Left Float) */}
                 <div className="absolute left-1 md:left-[-14px] bottom-5 md:bottom-[44px] z-10 animate-float px-3 md:px-5 py-2.5 md:py-3 rounded-2xl bg-[#ea580c] text-center text-white shadow-xl shadow-orange-300/30 min-w-[88px] md:min-w-[125px] border border-white/30 select-none pointer-events-auto cursor-default">
