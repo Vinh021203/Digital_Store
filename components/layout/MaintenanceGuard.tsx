@@ -26,7 +26,6 @@ const POLL_INTERVAL = 5000;
 export default function MaintenanceGuard({ children }: MaintenanceGuardProps) {
     const { isAdmin, isLoading } = useAuth();
     const pathname = usePathname();
-    const [checked, setChecked] = useState(false);
     const [blocked, setBlocked] = useState(false);
     const [message, setMessage] = useState('Website đang được bảo trì. Vui lòng quay lại sau.');
 
@@ -49,7 +48,6 @@ export default function MaintenanceGuard({ children }: MaintenanceGuardProps) {
             setBlocked(false);
         }
 
-        setChecked(true);
     }, [pathname, isAdmin, isLoading]);
 
     useEffect(() => {
@@ -63,10 +61,6 @@ export default function MaintenanceGuard({ children }: MaintenanceGuardProps) {
 
         return () => clearInterval(interval);
     }, [checkMaintenance]);
-
-    if (!checked || isLoading) {
-        return null;
-    }
 
     if (blocked) {
         return (
