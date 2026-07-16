@@ -229,7 +229,7 @@ const TopBar = memo<TopBarProps>(
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-9 text-xs">
           {/* Left Side: Contacts & Stats */}
-          <div className="flex items-center gap-4 text-slate-400">
+          <div className="flex items-center gap-4 text-slate-300">
             <a
               href="mailto:veutong961@gmail.com"
               className="flex items-center gap-1.5 hover:text-white transition-colors"
@@ -246,7 +246,7 @@ const TopBar = memo<TopBarProps>(
               0971.386.588
             </a>
             <span className="w-px h-3 bg-slate-700" />
-            <span className="flex items-center gap-1.5 text-slate-500">
+            <span className="flex items-center gap-1.5 text-slate-300">
               <TrendingUp size={13} className="text-green-400" />
               1,200+ giao diện website
             </span>
@@ -254,7 +254,7 @@ const TopBar = memo<TopBarProps>(
 
           {/* Right Side: Quick Links, Language & Notification */}
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-3 text-slate-400 font-medium">
+            <div className="flex items-center gap-3 text-slate-300 font-medium">
               <Link
                 href="/about"
                 className="flex items-center gap-1 hover:text-white transition-colors"
@@ -281,7 +281,7 @@ const TopBar = memo<TopBarProps>(
             </div>
 
             <span className="w-px h-4 bg-slate-700" />
-            <LanguageSwitcher />
+            <LanguageSwitcher variant="dark" />
 
             <span className="w-px h-4 bg-slate-700" />
             <div className="relative">

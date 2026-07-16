@@ -4,7 +4,11 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Globe } from 'lucide-react';
 
-const LanguageSwitcher = () => {
+interface LanguageSwitcherProps {
+  variant?: 'light' | 'dark';
+}
+
+const LanguageSwitcher = ({ variant = 'light' }: LanguageSwitcherProps) => {
   const { i18n } = useTranslation();
   const [language, setLanguage] = useState(i18n.resolvedLanguage || i18n.language || 'vi');
 
@@ -26,7 +30,11 @@ const LanguageSwitcher = () => {
   return (
     <button
       onClick={toggleLanguage}
-      className="flex items-center gap-1.5 text-slate-500 hover:text-orange-600 p-1.5 transition-colors rounded-lg hover:bg-orange-50"
+      className={`flex items-center gap-1.5 p-1.5 transition-colors rounded-lg ${
+        variant === 'dark'
+          ? 'text-slate-200 hover:bg-slate-800 hover:text-white'
+          : 'text-slate-600 hover:bg-orange-50 hover:text-orange-700'
+      }`}
       title={language === 'vi' ? 'Switch to English' : 'Chuyển sang Tiếng Việt'}
       aria-label={language === 'vi' ? 'Switch to English' : 'Chuyển sang Tiếng Việt'}
     >

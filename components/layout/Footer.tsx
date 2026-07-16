@@ -255,7 +255,7 @@ const NewsletterForm = memo(() => {
         </div>
       )}
 
-      <p className="text-xs text-slate-500 flex items-center gap-1.5">
+      <p className="text-xs text-slate-200 flex items-center gap-1.5">
         <Shield size={10} className="flex-shrink-0" />
         <span>Chúng tôi cam kết bảo mật thông tin của bạn.</span>
       </p>
@@ -546,12 +546,12 @@ const Footer = () => {
                 />
               </div>
 
-              <p className="hidden lg:block text-sm leading-relaxed text-slate-400">
+              <p className="hidden lg:block text-sm leading-relaxed text-slate-200">
                 Web Giá Rẻ - Portfolio là thư viện giao diện website, template, landing page và UI kit
                 dạng portfolio/demo dành cho cá nhân, doanh nghiệp và agency tại Việt Nam.
               </p>
 
-              <div className="grid grid-cols-2 lg:grid-cols-1 gap-x-4 gap-y-2 text-sm text-slate-400">
+              <div className="grid grid-cols-2 lg:grid-cols-1 gap-x-4 gap-y-2 text-sm text-slate-200">
                 <div className="flex items-center gap-2">
                   <Phone size={13} className="text-orange-500 flex-shrink-0" />
                   <span className="text-xs lg:text-sm truncate">
@@ -652,7 +652,7 @@ const Footer = () => {
                     Đăng Ký Nhận Tin
                   </h4>
                 </div>
-                <p className="text-xs text-slate-400 mb-3 leading-relaxed">
+                <p className="text-xs text-slate-200 mb-3 leading-relaxed">
                   Nhận thông báo về mẫu demo mới, tài nguyên hữu ích và gợi ý
                   triển khai.
                 </p>
@@ -668,17 +668,17 @@ const Footer = () => {
                 }}
               >
                 <div className="flex items-center justify-between mb-3">
-                  <h4 className="text-xs lg:text-sm font-bold text-orange-400">
+                  <h4 className="text-xs lg:text-sm font-bold text-orange-200">
                     Kênh Tư Vấn & Bảo Mật
                   </h4>
-                  <div className="flex items-center gap-1 text-[10px] text-slate-500">
+                  <div className="flex items-center gap-1 text-[10px] text-slate-200">
                     <Shield size={9} />
                     <span>An toàn & Bảo mật</span>
                   </div>
                 </div>
                 <div className="grid grid-cols-6 lg:grid-cols-3 gap-1.5 lg:gap-2">
                   <PaymentBadge>
-                    <span className="font-black text-blue-400 text-[10px] lg:text-xs tracking-wide">
+                    <span className="font-black text-blue-200 text-[10px] lg:text-xs tracking-wide">
                       VISA
                     </span>
                   </PaymentBadge>
@@ -689,7 +689,7 @@ const Footer = () => {
                     </div>
                   </PaymentBadge>
                   <PaymentBadge>
-                    <span className="font-black text-pink-400 text-[9px] lg:text-[11px] leading-none text-center">
+                    <span className="font-black text-pink-200 text-[9px] lg:text-[11px] leading-none text-center">
                       mo
                       <br />
                       mo
@@ -697,18 +697,18 @@ const Footer = () => {
                   </PaymentBadge>
                   <PaymentBadge>
                     <span className="font-bold text-[9px] lg:text-[10px] whitespace-nowrap">
-                      <span className="text-blue-300">Zalo</span>
-                      <span className="text-green-400">Pay</span>
+                      <span className="text-blue-200">Zalo</span>
+                      <span className="text-emerald-200">Pay</span>
                     </span>
                   </PaymentBadge>
                   <PaymentBadge>
-                    <span className="font-black text-blue-400 text-[9px] lg:text-[10px]">
+                    <span className="font-black text-blue-200 text-[9px] lg:text-[10px]">
                       PayPal
                     </span>
                   </PaymentBadge>
                   <PaymentBadge className="gap-1">
-                    <Shield size={8} className="text-green-400 flex-shrink-0" />
-                    <span className="font-bold text-green-400 text-[9px] lg:text-[10px]">
+                    <Shield size={8} className="text-emerald-200 flex-shrink-0" />
+                    <span className="font-bold text-emerald-200 text-[9px] lg:text-[10px]">
                       SSL
                     </span>
                   </PaymentBadge>

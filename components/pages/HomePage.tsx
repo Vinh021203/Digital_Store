@@ -1077,21 +1077,21 @@ const HomePage = ({
 		                ))}
 
                 {/* Floating Badge 1 (Purple - Left Float) */}
-                <div className="absolute left-1 md:left-[-14px] bottom-5 md:bottom-[44px] z-10 animate-float px-3 md:px-5 py-2.5 md:py-3 rounded-2xl bg-[#ea580c] text-center text-white shadow-xl shadow-orange-300/30 min-w-[88px] md:min-w-[125px] border border-white/30 select-none pointer-events-auto cursor-default">
-                  <h5 className="text-base md:text-xl font-extrabold mb-0">
+                <div className="absolute left-1 md:left-[-14px] bottom-5 md:bottom-[44px] z-10 animate-float px-3 md:px-5 py-2.5 md:py-3 rounded-2xl bg-[#c2410c] text-center text-white shadow-xl shadow-orange-300/30 min-w-[88px] md:min-w-[125px] border border-white/30 select-none pointer-events-auto cursor-default">
+                  <p className="text-base md:text-xl font-extrabold mb-0">
                     50K+
-                  </h5>
-                  <span className="text-[9px] md:text-[10px] font-semibold text-orange-50 uppercase tracking-widest leading-none block mt-0.5">
+                  </p>
+                  <span className="text-[9px] md:text-[10px] font-semibold text-white uppercase tracking-widest leading-none block mt-0.5">
                     Khách hàng
                   </span>
                 </div>
 
                 {/* Floating Badge 2 (White - Right Float) */}
                 <div className="absolute right-1 md:right-[-12px] top-5 md:top-[34px] z-10 animate-[float_3.5s_ease-in-out_infinite] px-3 md:px-5 py-2.5 md:py-3 rounded-2xl bg-white text-center text-slate-900 shadow-xl shadow-slate-200/80 min-w-[98px] md:min-w-[140px] border border-slate-100 select-none pointer-events-auto cursor-default">
-                  <h5 className="text-base md:text-xl font-extrabold text-slate-900 mb-0">
+                  <p className="text-base md:text-xl font-extrabold text-slate-900 mb-0">
                     22K+
-                  </h5>
-                  <span className="text-[9px] md:text-[10px] font-semibold text-[#ea580c] uppercase tracking-widest leading-none block mt-0.5">
+                  </p>
+                  <span className="text-[9px] md:text-[10px] font-semibold text-[#c2410c] uppercase tracking-widest leading-none block mt-0.5">
                     Theme & Plugin
                   </span>
                 </div>
