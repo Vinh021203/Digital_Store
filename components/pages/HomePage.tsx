@@ -572,11 +572,18 @@ const HomePage = ({
   const bestsellerPointerInside = useRef(false);
 
   useEffect(() => {
-    const timer = window.setInterval(() => {
+    let intervalId: number | undefined;
+    const initialDelayId = window.setTimeout(() => {
       setHeroSlideIndex((current) => (current + 1) % heroSliderImages.length);
-    }, 3000);
+      intervalId = window.setInterval(() => {
+        setHeroSlideIndex((current) => (current + 1) % heroSliderImages.length);
+      }, 3000);
+    }, 8000);
 
-    return () => window.clearInterval(timer);
+    return () => {
+      window.clearTimeout(initialDelayId);
+      if (intervalId !== undefined) window.clearInterval(intervalId);
+    };
   }, []);
 
   useEffect(() => {
@@ -1073,6 +1080,7 @@ const HomePage = ({
 	                      index === heroSlideIndex ? "opacity-100" : "opacity-0"
 		                    }`}
 		                    priority={index === 0}
+		                    fetchPriority={index === 0 ? "high" : "auto"}
 		                  />
 		                ))}
 
