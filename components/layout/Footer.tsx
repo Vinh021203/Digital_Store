@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 // ============================================
@@ -533,10 +534,12 @@ const Footer = () => {
             {/* ── CỘT 1: Brand + Contact + Social ── */}
             <div className="mb-6 lg:mb-0 space-y-4 lg:space-y-6">
               <div className="group relative h-14 w-[230px]">
-                <img
+                <Image
                   src="/logo_webgiare_footer.webp"
                   alt="Web Giá Rẻ - Portfolio"
-                  className="h-full w-full object-contain object-left transition-transform duration-300 group-hover:scale-[1.02]"
+                  fill
+                  sizes="230px"
+                  className="object-contain object-left transition-transform duration-300 group-hover:scale-[1.02]"
                 />
               </div>
 

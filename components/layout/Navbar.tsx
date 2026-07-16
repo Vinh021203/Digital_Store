@@ -9,6 +9,7 @@ import React, {
   useRef,
 } from "react";
 import Link from "next/link";
+import NextImage from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import {
   ShoppingCart,
@@ -1274,10 +1275,12 @@ const Navbar = () => {
               prefetch={true}
               aria-label="Web Giá Rẻ - Portfolio - Trang chủ"
             >
-              <img
+              <NextImage
                 src="/logo_webgiare_display.webp"
                 alt="Web Giá Rẻ - Portfolio"
-                className="h-full w-full object-contain object-left transition-transform duration-300 group-hover:scale-[1.02]"
+                fill
+                sizes="(max-width: 640px) 150px, (max-width: 1024px) 180px, 205px"
+                className="object-contain object-left transition-transform duration-300 group-hover:scale-[1.02]"
               />
             </Link>
 

@@ -1313,6 +1313,7 @@ const HomePage = ({
             src="/dpmarket-assets/images/gradients/product-gradient.png"
             alt="Gradient"
             fill
+            sizes="100vw"
             className="object-cover opacity-25"
             loading="lazy"
           />
@@ -1418,10 +1419,12 @@ const HomePage = ({
               href={banner.href}
               className="group relative aspect-[16/9] w-[82vw] min-w-[82vw] flex-shrink-0 snap-start overflow-hidden rounded-2xl bg-slate-950 shadow-md shadow-slate-200/60 sm:w-[66vw] sm:min-w-[66vw] lg:w-auto lg:min-w-0"
             >
-              <img
+              <Image
                 src={banner.image}
                 alt={banner.alt}
-                className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                fill
+                sizes="(max-width: 640px) 82vw, (max-width: 1024px) 66vw, 50vw"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
               />
             </Link>
           ))}
@@ -1436,10 +1439,12 @@ const HomePage = ({
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-gradient-to-tr from-amber-100/30 to-transparent blur-[100px] pointer-events-none z-0" />
         {/* Spider net background shapes */}
         <div className="absolute top-0 right-0 w-[300px] h-[300px] pointer-events-none opacity-10 z-1">
-          <img
+          <Image
             src="/dpmarket-assets/images/shapes/spider-net.png"
-            alt="Spider Net"
-            className="object-contain w-full h-full"
+            alt=""
+            fill
+            sizes="300px"
+            className="object-contain"
           />
         </div>
 
