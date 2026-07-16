@@ -272,8 +272,8 @@ const PaymentBadge = memo<{ children: React.ReactNode; className?: string }>(
     <div
       className={`flex items-center justify-center px-2 py-2 rounded-lg ${className}`}
       style={{
-        background: "rgba(255,255,255,0.07)",
-        border: "1px solid rgba(255,255,255,0.1)",
+        background: "#1e293b",
+        border: "1px solid #475569",
       }}
     >
       {children}
@@ -478,7 +478,7 @@ const Footer = () => {
       )}
 
       {/* ── FOOTER CHÍNH ── */}
-      <footer className="relative mt-2 overflow-visible bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 pb-16 md:mt-3 md:pb-0">
+      <footer id="site-footer" className="relative mt-2 overflow-visible bg-slate-950 pb-16 md:mt-3 md:pb-0">
         {/* Wave */}
         <svg
           className="absolute left-0 right-0 -top-5 md:-top-8 h-5 md:h-8 w-full pointer-events-none"
@@ -494,12 +494,6 @@ const Footer = () => {
 
         <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-orange-400/60 to-transparent" />
         <div className="absolute inset-x-0 -top-10 h-24 bg-gradient-to-b from-orange-500/10 via-transparent to-transparent blur-2xl pointer-events-none" />
-
-        {/* Background blobs */}
-        <div className="absolute inset-0 opacity-5 pointer-events-none">
-          <div className="absolute top-24 left-10 w-72 h-72 bg-orange-500 rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-red-500 rounded-full blur-3xl" />
-        </div>
 
         {/* Sparkle dots */}
         <div
@@ -634,8 +628,8 @@ const Footer = () => {
               <div
                 className="rounded-2xl p-4 lg:p-5"
                 style={{
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.08)",
+                  background: "#0f172a",
+                  border: "1px solid #334155",
                 }}
               >
                 <div className="flex items-center gap-3 mb-2">
@@ -663,8 +657,8 @@ const Footer = () => {
               <div
                 className="rounded-2xl p-4"
                 style={{
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.08)",
+                  background: "#0f172a",
+                  border: "1px solid #334155",
                 }}
               >
                 <div className="flex items-center justify-between mb-3">
