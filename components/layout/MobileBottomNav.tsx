@@ -39,20 +39,20 @@ const NavItem = memo<NavItemProps>(({ to, icon: Icon, label, badge = 0, isActive
           <Icon
             size={22}
             strokeWidth={isActive ? 2.5 : 2}
-            className={isActive ? 'text-orange-600' : 'text-slate-500'}
+            className={isActive ? 'text-orange-700' : 'text-slate-500'}
           />
         </div>
 
         {/* Badge */}
         {badge > 0 && (
-          <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 flex items-center justify-center bg-rose-500 text-white text-[9px] font-bold rounded-full">
+          <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 flex items-center justify-center bg-rose-700 text-white text-[9px] font-bold rounded-full">
             {badge > 9 ? '9+' : badge}
           </span>
         )}
       </div>
 
       {/* Label */}
-      <span className={`text-[10px] font-semibold mt-0.5 ${isActive ? 'text-orange-600' : 'text-slate-500'
+      <span className={`text-[10px] font-semibold mt-0.5 ${isActive ? 'text-orange-700' : 'text-slate-500'
         }`}>
         {label}
       </span>
