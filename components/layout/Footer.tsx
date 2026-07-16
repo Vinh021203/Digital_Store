@@ -713,7 +713,7 @@ const Footer = () => {
 
           {/* ── BOTTOM BAR ── */}
           <div className="border-t border-slate-800/50 pt-5 mt-2 lg:mt-0">
-            <div className="flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-slate-500">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-slate-300">
               <p className="flex flex-wrap items-center justify-center sm:justify-start gap-x-2 gap-y-0.5">
                 <span>&copy; {new Date().getFullYear()} Web Giá Rẻ - Portfolio.</span>
                 <span className="opacity-40">•</span>
