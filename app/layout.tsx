@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Be_Vietnam_Pro } from 'next/font/google';
 import { Suspense } from 'react';
 import './globals.css';
 import './animations.css';
@@ -7,6 +8,15 @@ import Providers from './providers';
 import { NavigationProgress } from '@/components/layout';
 import { getSiteUrl, getSocialImageUrl } from '@/lib/site-url';
 import { seoKeywords } from '@/lib/seo';
+
+const beVietnamPro = Be_Vietnam_Pro({
+  subsets: ['latin', 'vietnamese'],
+  weight: ['400', '500', '600', '700', '800', '900'],
+  display: 'swap',
+  variable: '--font-be-vietnam-pro',
+  fallback: ['Arial', 'sans-serif'],
+  adjustFontFallback: true,
+});
 
 const siteUrl = getSiteUrl();
 const socialImageUrl = getSocialImageUrl();
@@ -129,7 +139,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="vi">
+    <html lang="vi" className={beVietnamPro.variable}>
       <head>
         <link rel="preconnect" href="https://enxndlrdqotqaoatjkvo.supabase.co" />
         <link rel="dns-prefetch" href="https://enxndlrdqotqaoatjkvo.supabase.co" />
