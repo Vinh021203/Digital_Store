@@ -1294,9 +1294,9 @@ const HomePage = ({
                 >
                   {cat.icon}
                 </span>
-                <h6 className="text-xs md:text-sm font-bold text-slate-900 mb-0.5 group-hover:text-[#ea580c] transition-colors leading-tight">
+                <p className="text-xs md:text-sm font-bold text-slate-900 mb-0.5 group-hover:text-[#ea580c] transition-colors leading-tight">
                   {cat.name}
-                </h6>
+                </p>
                 <span className="text-[10px] md:text-xs text-slate-500 font-medium">
                   {cat.qty} mẫu demo
                 </span>
