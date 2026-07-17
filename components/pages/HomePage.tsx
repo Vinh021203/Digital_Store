@@ -2421,10 +2421,12 @@ const HomePage = ({
                         </h3>
                       </Link>
 
-                      <p className="hidden md:block text-sm text-slate-500 line-clamp-2 leading-relaxed mb-4">
-                        {blog.excerpt ||
-                          "Đọc bài viết chi tiết để hiểu rõ hơn về các kiến thức công nghệ hữu ích."}
-                      </p>
+                      <div className="mb-4 hidden min-h-[72px] md:block">
+                        <p className="line-clamp-3 text-sm leading-relaxed text-slate-500">
+                          {blog.excerpt ||
+                            "Đọc bài viết chi tiết để hiểu rõ hơn về các kiến thức công nghệ hữu ích."}
+                        </p>
+                      </div>
 
                       <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-3 md:pt-4">
                         <span className="hidden md:inline text-[11px] font-bold uppercase tracking-wide text-slate-400">
@@ -2432,7 +2434,7 @@ const HomePage = ({
                         </span>
                         <Link
                           href={`/blog/${blog.slug || blog.id}`}
-                          className="inline-flex h-8 md:h-10 w-full md:w-auto items-center justify-center gap-1.5 md:gap-2 rounded-full border border-slate-200 bg-white px-3 md:px-4 text-[10px] md:text-xs font-bold text-slate-700 transition-all duration-200 hover:border-[#ea580c] hover:bg-[#ea580c] hover:text-white select-none"
+                          className="inline-flex h-8 w-full shrink-0 select-none items-center justify-center gap-1.5 whitespace-nowrap rounded-full border border-slate-200 bg-white px-3 text-[10px] font-bold text-slate-700 transition-all duration-200 hover:border-[#ea580c] hover:bg-[#ea580c] hover:text-white md:h-10 md:w-auto md:min-w-[112px] md:gap-2 md:px-4 md:text-xs"
                         >
                           Đọc tiếp <ArrowUpRight size={13} />
                         </Link>
