@@ -6,12 +6,12 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
-    Star, ShieldCheck, RotateCcw, Heart, Check, ExternalLink,
+    Star, ShieldCheck, RotateCcw, Heart, Check,
     ChevronRight, Copy, Clock, ShoppingCart, ShoppingBag, Download, Package,
     Share2, Play, FileCode, Layers, Monitor, Smartphone, Tag,
     MessageCircle, ThumbsUp, ChevronDown, AlertCircle, Plus, Loader2,
     Eye, Users, Calendar, Code, Palette, Zap, Award, Globe, X,
-    ArrowRight
+    ArrowRight, Maximize2, Minimize2
 } from 'lucide-react';
 import { getProductBySlug, getProductById, fetchActiveProducts } from '@/lib/products';
 import ReviewsSection from '@/components/product/ReviewsSection';
@@ -50,47 +50,62 @@ const DemoPreviewModal = ({ isOpen, onClose, demoUrl, productName }: {
     demoUrl: string;
     productName: string;
 }) => {
+    const [isExpanded, setIsExpanded] = useState(false);
+
     useEffect(() => {
         if (!isOpen) return;
 
         const previousOverflow = document.body.style.overflow;
         document.body.style.overflow = 'hidden';
 
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') onClose();
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+
         return () => {
             document.body.style.overflow = previousOverflow;
+            window.removeEventListener('keydown', handleKeyDown);
         };
+    }, [isOpen, onClose]);
+
+    useEffect(() => {
+        if (!isOpen) setIsExpanded(false);
     }, [isOpen]);
 
     if (!isOpen || typeof document === 'undefined') return null;
 
     return createPortal(
-        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/90 p-0 backdrop-blur-md animate-in fade-in duration-200 sm:p-4">
-            <div className="relative flex h-full w-full flex-col overflow-hidden bg-white shadow-2xl sm:h-[90vh] sm:max-w-[90vw] sm:rounded-2xl">
+        <div className={`fixed inset-0 z-[200] flex items-center justify-center bg-black/90 backdrop-blur-md animate-in fade-in duration-200 ${isExpanded ? 'p-0' : 'p-0 sm:p-4'}`}>
+            <div className={`relative flex w-full flex-col overflow-hidden bg-white shadow-2xl transition-[height,max-width,border-radius] duration-200 ${isExpanded ? 'h-full max-w-none rounded-none' : 'h-full sm:h-[90vh] sm:max-w-[90vw] sm:rounded-2xl'}`}>
                 {/* Header */}
-                <div className="z-10 flex items-center justify-between gap-2 border-b border-slate-100 bg-white px-3 py-3 sm:px-6 sm:py-4">
-                    <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-orange-50 sm:h-10 sm:w-10">
-                            <Play size={20} className="text-orange-600 fill-orange-600" />
+                <div className={`z-20 flex shrink-0 items-center bg-white transition-all duration-200 ${isExpanded ? 'absolute bottom-4 right-4 h-auto gap-1.5 rounded-2xl border border-white/70 bg-white/90 p-2 shadow-xl shadow-black/20 backdrop-blur-xl' : 'h-14 w-full justify-between gap-2 border-b border-slate-100 px-3 sm:px-4'}`}>
+                    <div className={`min-w-0 items-center gap-2 sm:gap-3 ${isExpanded ? 'hidden' : 'flex'}`}>
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-orange-50">
+                            <Play size={16} className="fill-orange-600 text-orange-600" />
                         </div>
                         <div className="min-w-0">
-                            <p className="hidden text-xs font-bold uppercase tracking-wider text-slate-500 sm:block">Live Preview</p>
-                            <h3 className="truncate text-sm font-bold leading-tight text-slate-900 sm:text-lg">{productName}</h3>
+                            <p className={`text-[9px] font-bold uppercase tracking-wider text-slate-500 ${isExpanded ? 'hidden' : 'hidden sm:block'}`}>Live Preview</p>
+                            <h3 className="truncate text-xs font-bold leading-tight text-slate-900 sm:text-sm">{productName}</h3>
                         </div>
                     </div>
-                    <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-                        <a
-                            href={demoUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex h-10 items-center gap-2 rounded-xl bg-slate-900 px-3 text-sm font-bold text-white shadow-lg shadow-slate-200 transition-colors hover:bg-orange-600 sm:px-5"
+                    <div className="flex shrink-0 items-center gap-1.5">
+                        <button
+                            type="button"
+                            onClick={() => setIsExpanded((current) => !current)}
+                            className="flex h-9 items-center gap-1.5 rounded-xl bg-slate-900 px-3 text-xs font-bold text-white shadow-sm transition-colors hover:bg-orange-600"
+                            aria-label={isExpanded ? 'Thu nhỏ bản xem trước' : 'Mở rộng bản xem trước'}
                         >
-                            <ExternalLink size={16} /> <span className="hidden sm:inline">Mở tab mới</span>
-                        </a>
+                            {isExpanded ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+                            <span className={isExpanded ? 'sr-only' : 'hidden sm:inline'}>{isExpanded ? 'Thu nhỏ' : 'Mở rộng'}</span>
+                        </button>
                         <button
                             onClick={onClose}
-                            className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors"
+                            className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-600 transition-colors hover:bg-slate-200"
+                            aria-label="Đóng bản xem trước"
                         >
-                            <X size={20} />
+                            <X size={18} />
                         </button>
                     </div>
                 </div>
