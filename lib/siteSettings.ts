@@ -52,7 +52,7 @@ const defaultSettings: SiteSettings = {
     site_name: 'Web Giá Rẻ - Portfolio',
     site_tagline: 'Portfolio giao diện website, landing page và dự án web chuyên nghiệp',
     site_description: 'Portfolio giao diện website, template, landing page, UI kit, dashboard và dự án web chất lượng cao. Xem demo và nhận tư vấn triển khai.',
-    contact_email: 'veutong961@gmail.com',
+    contact_email: 'contact@webgiare.id.vn',
     contact_phone: '0971 386 588',
     contact_address: 'Hạ Long, Quảng Ninh, Việt Nam',
     site_logo: '',

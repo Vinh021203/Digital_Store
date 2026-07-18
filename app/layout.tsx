@@ -28,7 +28,7 @@ const organizationSchema = [
     name: 'Web Giá Rẻ - Portfolio',
     url: siteUrl,
     logo: `${siteUrl}/logo_webgiare_display.webp`,
-    email: 'mailto:veutong961@gmail.com',
+    email: 'mailto:contact@webgiare.id.vn',
     telephone: '+84971386588',
     sameAs: [
       'https://www.facebook.com/Ltvinh212',

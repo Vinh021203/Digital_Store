@@ -37,7 +37,7 @@ interface ProductRecommendation {
 const DISPLAY_PHONE = '0971 386 588';
 const PHONE_LINK = 'tel:0971386588';
 const ZALO_LINK = 'https://zalo.me/0971386588';
-const EMAIL_LINK = 'mailto:veutong961@gmail.com';
+const EMAIL_LINK = 'mailto:contact@webgiare.id.vn';
 
 const useThrottle = (callback: () => void, delay: number) => {
   const lastRun = useRef(0);

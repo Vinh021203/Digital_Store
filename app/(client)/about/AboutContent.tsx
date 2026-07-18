@@ -165,8 +165,8 @@ export default function AboutPage() {
                                     Không phải một đội ngũ lớn, nhưng mỗi phần của dự án đều được làm với sự chỉn chu và trách nhiệm.
                                 </p>
                                 <div className="mt-5 space-y-3 sm:mt-6">
-                                    <a href="mailto:veutong961@gmail.com" className="flex min-w-0 items-center gap-3 text-xs font-semibold text-slate-200 transition hover:text-orange-300 sm:text-sm">
-                                        <Mail size={17} className="text-orange-400" /> veutong961@gmail.com
+                                    <a href="mailto:contact@webgiare.id.vn" className="flex min-w-0 items-center gap-3 text-xs font-semibold text-slate-200 transition hover:text-orange-300 sm:text-sm">
+                                        <Mail size={17} className="text-orange-400" /> contact@webgiare.id.vn
                                     </a>
                                     <a href="tel:0971386588" className="flex items-center gap-3 text-xs font-semibold text-slate-200 transition hover:text-orange-300 sm:text-sm">
                                         <Phone size={17} className="text-orange-400" /> 0971 386 588
@@ -350,7 +350,7 @@ export default function AboutPage() {
                             </p>
                         </div>
                         <div className="grid grid-cols-2 gap-2.5 sm:flex sm:flex-row sm:gap-3 md:flex-col">
-                            <a href="mailto:veutong961@gmail.com" className="inline-flex min-w-0 items-center justify-center gap-1.5 rounded-lg bg-orange-600 px-2.5 py-3 text-xs font-bold text-white transition hover:bg-orange-700 sm:px-6 sm:py-3.5 sm:text-sm"><Mail size={15} className="shrink-0" /> <span className="truncate">Gửi email</span></a>
+                            <a href="mailto:contact@webgiare.id.vn" className="inline-flex min-w-0 items-center justify-center gap-1.5 rounded-lg bg-orange-600 px-2.5 py-3 text-xs font-bold text-white transition hover:bg-orange-700 sm:px-6 sm:py-3.5 sm:text-sm"><Mail size={15} className="shrink-0" /> <span className="truncate">Gửi email</span></a>
                             <a href="tel:0971386588" className="inline-flex min-w-0 items-center justify-center gap-1.5 rounded-lg border border-white/20 px-2.5 py-3 text-xs font-bold text-white transition hover:bg-white/10 sm:px-6 sm:py-3.5 sm:text-sm"><Phone size={15} className="shrink-0" /> <span className="truncate">0971 386 588</span></a>
                         </div>
                     </div>

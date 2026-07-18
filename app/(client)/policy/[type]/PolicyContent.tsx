@@ -87,7 +87,7 @@ const POLICIES: Record<string, Policy> = {
                 paragraphs: [
                     'Bạn có thể yêu cầu kiểm tra, cập nhật hoặc đề nghị xóa thông tin cá nhân trong phạm vi pháp luật và nghĩa vụ lưu trữ giao dịch cho phép.',
                 ],
-                note: 'Gửi yêu cầu qua email veutong961@gmail.com và cung cấp email tài khoản để xác minh.',
+                note: 'Gửi yêu cầu qua email contact@webgiare.id.vn và cung cấp email tài khoản để xác minh.',
             },
         ],
     },
@@ -187,7 +187,7 @@ const POLICIES: Record<string, Policy> = {
                 title: 'Cách gửi yêu cầu',
                 icon: Mail,
                 paragraphs: [
-                    'Gửi email tới veutong961@gmail.com với tiêu đề “Yêu cầu xử lý yêu cầu” để việc kiểm tra được nhanh và chính xác.',
+                    'Gửi email tới contact@webgiare.id.vn với tiêu đề “Yêu cầu xử lý yêu cầu” để việc kiểm tra được nhanh và chính xác.',
                 ],
                 bullets: [
                     'Mã yêu cầu và email dùng khi gửi nhu cầu.',
@@ -464,9 +464,9 @@ export default function PolicyContent({ type }: { type: string }) {
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                             <div>
                                 <p className="text-sm font-black">Có câu hỏi về chính sách này?</p>
-                                <p className="mt-1 text-xs font-medium text-slate-400">Email hỗ trợ: veutong961@gmail.com</p>
+                                <p className="mt-1 text-xs font-medium text-slate-400">Email hỗ trợ: contact@webgiare.id.vn</p>
                             </div>
-                            <a href="mailto:veutong961@gmail.com" className="inline-flex h-11 items-center justify-center gap-2 rounded-md bg-orange-600 px-5 text-sm font-bold text-white transition hover:bg-orange-500">
+                            <a href="mailto:contact@webgiare.id.vn" className="inline-flex h-11 items-center justify-center gap-2 rounded-md bg-orange-600 px-5 text-sm font-bold text-white transition hover:bg-orange-500">
                                 <Mail size={16} /> Gửi email
                             </a>
                         </div>

@@ -104,7 +104,7 @@ export default function MaintenanceGuard({ children }: MaintenanceGuardProps) {
                             <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-4">
                                 <Mail className="mx-auto mb-2 text-blue-600" size={20} aria-hidden="true" />
                                 <p className="text-xs font-black uppercase tracking-wide text-slate-400">Liên hệ</p>
-                                <p className="mt-1 break-words text-sm font-black text-slate-800">veutong961@gmail.com</p>
+                                <p className="mt-1 break-words text-sm font-black text-slate-800">contact@webgiare.id.vn</p>
                             </div>
                         </div>
 

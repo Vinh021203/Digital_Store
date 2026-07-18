@@ -427,7 +427,7 @@ export default function TrackingContent() {
                                     <h2 className="mt-4 text-xl font-black">Cần hỗ trợ tra cứu?</h2>
                                     <p className="mt-2 max-w-md text-sm font-medium leading-6 text-slate-400">Gửi mã yêu cầu và email đã đăng ký, đội ngũ hỗ trợ sẽ kiểm tra giúp bạn.</p>
                                 </div>
-                                <a href="mailto:veutong961@gmail.com" className="inline-flex w-fit items-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-bold text-slate-950 transition hover:-translate-y-0.5 hover:bg-orange-50">Liên hệ hỗ trợ <ArrowRight size={16} /></a>
+                                <a href="mailto:contact@webgiare.id.vn" className="inline-flex w-fit items-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-bold text-slate-950 transition hover:-translate-y-0.5 hover:bg-orange-50">Liên hệ hỗ trợ <ArrowRight size={16} /></a>
                             </div>
                         </aside>
                     </div>

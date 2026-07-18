@@ -232,11 +232,11 @@ const TopBar = memo<TopBarProps>(
           {/* Left Side: Contacts & Stats */}
           <div className="flex items-center gap-4 text-slate-300">
             <a
-              href="mailto:veutong961@gmail.com"
+              href="mailto:contact@webgiare.id.vn"
               className="flex items-center gap-1.5 hover:text-white transition-colors"
             >
               <Mail size={13} className="text-orange-400" />
-              veutong961@gmail.com
+              contact@webgiare.id.vn
             </a>
             <span className="w-px h-3 bg-slate-700" />
             <a

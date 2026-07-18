@@ -107,7 +107,7 @@ const faqs: FAQItem[] = [
     {
         category: 'support',
         question: 'Tôi có thể liên hệ hỗ trợ bằng cách nào?',
-        answer: 'Bạn có thể gửi email tới veutong961@gmail.com, gọi 0971 386 588 hoặc dùng trang Liên hệ. Hãy gửi kèm mã đơn, tên mẫu demo và ảnh lỗi để được kiểm tra nhanh hơn.',
+        answer: 'Bạn có thể gửi email tới contact@webgiare.id.vn, gọi 0971 386 588 hoặc dùng trang Liên hệ. Hãy gửi kèm mã đơn, tên mẫu demo và ảnh lỗi để được kiểm tra nhanh hơn.',
         link: { label: 'Mở trang liên hệ', href: '/contact' },
         featured: true,
     },
@@ -349,7 +349,7 @@ export default function FAQContent() {
                             Liên hệ hỗ trợ <ArrowRight size={16} />
                         </Link>
                         <div className="mt-4 flex items-center gap-2 text-xs font-medium text-slate-400">
-                            <Mail size={14} /> veutong961@gmail.com
+                            <Mail size={14} /> contact@webgiare.id.vn
                         </div>
                     </div>
 

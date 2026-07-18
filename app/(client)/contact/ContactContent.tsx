@@ -27,9 +27,9 @@ const contactMethods = [
     {
         icon: Mail,
         label: 'Email hỗ trợ',
-        value: 'veutong961@gmail.com',
+        value: 'contact@webgiare.id.vn',
         detail: 'Phù hợp khi cần gửi mã đơn hoặc hình ảnh',
-        href: 'mailto:veutong961@gmail.com',
+        href: 'mailto:contact@webgiare.id.vn',
     },
     {
         icon: Phone,
@@ -215,7 +215,7 @@ export default function ContactContent() {
                             </motion.p>
 
                             <motion.div variants={reveal} className="mt-7 grid grid-cols-2 gap-3 sm:flex">
-                                <a href="mailto:veutong961@gmail.com" className="inline-flex min-w-0 items-center justify-center gap-2 rounded-lg bg-orange-600 px-4 py-3.5 text-xs font-bold text-white shadow-lg shadow-orange-200 transition hover:bg-orange-700 sm:px-6 sm:text-sm">
+                                <a href="mailto:contact@webgiare.id.vn" className="inline-flex min-w-0 items-center justify-center gap-2 rounded-lg bg-orange-600 px-4 py-3.5 text-xs font-bold text-white shadow-lg shadow-orange-200 transition hover:bg-orange-700 sm:px-6 sm:text-sm">
                                     <Mail size={17} /> <span className="truncate">Gửi email</span>
                                 </a>
                                 <a href="tel:0971386588" className="inline-flex min-w-0 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3.5 text-xs font-bold text-slate-700 transition hover:border-orange-200 hover:text-orange-700 sm:px-6 sm:text-sm">

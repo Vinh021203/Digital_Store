@@ -3,7 +3,7 @@ import { sendEmail } from '@/lib/email';
 
 export const runtime = 'nodejs';
 
-const CONTACT_EMAIL = process.env.CONTACT_EMAIL || process.env.RESEND_CONTACT_EMAIL || 'veutong961@gmail.com';
+const CONTACT_EMAIL = process.env.CONTACT_EMAIL || process.env.RESEND_CONTACT_EMAIL || 'contact@webgiare.id.vn';
 
 function escapeHtml(value: string) {
   return value
