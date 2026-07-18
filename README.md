@@ -164,6 +164,9 @@ NEXT_PUBLIC_SEPAY_ACCOUNT_NAME=your_account_name
 # Resend
 RESEND_API_KEY=your_resend_api_key
 RESEND_FROM_EMAIL=your_verified_sender
+RESEND_WEBHOOK_SECRET=your_resend_webhook_signing_secret
+RESEND_INBOUND_ADDRESS=contact@webgiare.id.vn
+RESEND_INBOUND_FORWARD_TO=your_private_inbox@example.com
 
 # Gemini
 GEMINI_API_KEY=your_gemini_api_key
