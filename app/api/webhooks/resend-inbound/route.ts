@@ -35,14 +35,24 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const payload = await request.text();
+  let event;
+
   try {
-    const payload = await request.text();
-    const event = resend.webhooks.verify({
+    event = resend.webhooks.verify({
       payload,
       headers: { id, timestamp, signature },
       webhookSecret,
     });
+  } catch (error) {
+    console.error('Resend inbound signature verification failed:', error);
+    return NextResponse.json(
+      { error: 'Webhook signature verification failed.', stage: 'verification' },
+      { status: 401 }
+    );
+  }
 
+  try {
     if (event.type !== 'email.received') {
       return NextResponse.json({ received: true });
     }
@@ -59,7 +69,7 @@ export async function POST(request: NextRequest) {
 
     const { data, error } = await resend.emails.receiving.forward({
       emailId: event.data.email_id,
-      from: `Web Giá Rẻ - Portfolio <${forwardFrom}>`,
+      from: forwardFrom,
       to: forwardTo,
       passthrough: true,
     });
@@ -74,10 +84,11 @@ export async function POST(request: NextRequest) {
       id: data?.id,
     });
   } catch (error) {
-    console.error('Resend inbound webhook error:', error);
+    const message = error instanceof Error ? error.message : 'Unknown forwarding error';
+    console.error('Resend inbound forwarding failed:', error);
     return NextResponse.json(
-      { error: 'Invalid webhook or email forwarding failed.' },
-      { status: 400 }
+      { error: message, stage: 'forwarding' },
+      { status: 502 }
     );
   }
 }
