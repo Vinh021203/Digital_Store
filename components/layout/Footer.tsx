@@ -14,6 +14,7 @@ import {
   Phone,
   Clock,
   Shield,
+  BookOpen,
   ChevronRight,
   ChevronDown,
 } from "lucide-react";
@@ -21,6 +22,7 @@ import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useSiteMode } from "@/hooks/useSiteSettings";
 
 // ============================================
 // Social Link - Memoized
@@ -228,24 +230,24 @@ const NewsletterForm = memo(() => {
 
   return (
     <form onSubmit={handleSubscribe} className="space-y-3">
-      <div className="flex flex-col sm:flex-row gap-2">
+      <div className="flex gap-2">
         <input
           type="email"
-          placeholder="Email của bạn..."
+          placeholder="Email..."
           value={email}
           onChange={handleEmailChange}
-          className="flex-1 min-w-0 bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-orange-500 focus:bg-slate-800 placeholder-slate-500 transition-all duration-300"
+          className="h-10 min-w-0 flex-1 rounded-xl border border-slate-700 bg-slate-800/50 px-3 text-sm text-white transition-all duration-300 placeholder:text-slate-500 focus:border-orange-500 focus:bg-slate-800 focus:outline-none"
           required
           maxLength={100}
         />
         <button
           type="submit"
-          className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold text-white hover:opacity-90 active:scale-95 transition-all duration-200 flex-shrink-0"
+          className="flex h-10 flex-shrink-0 items-center justify-center gap-1.5 rounded-xl px-3 text-xs font-bold text-white transition-all duration-200 hover:opacity-90 active:scale-95"
           style={{
             background: "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
           }}
         >
-          Đăng ký ngay <Send size={14} />
+          Đăng ký <Send size={13} strokeWidth={2.4} />
         </button>
       </div>
 
@@ -256,9 +258,9 @@ const NewsletterForm = memo(() => {
         </div>
       )}
 
-      <p className="text-xs text-slate-200 flex items-center gap-1.5">
-        <Shield size={10} className="flex-shrink-0" />
-        <span>Chúng tôi cam kết bảo mật thông tin của bạn.</span>
+      <p className="flex items-center gap-1.5 text-[11px] leading-tight text-slate-300">
+        <Shield size={11} className="flex-shrink-0 text-slate-400" strokeWidth={2.2} />
+        <span>Bảo mật thông tin của bạn.</span>
       </p>
     </form>
   );
@@ -335,6 +337,7 @@ const CATEGORY_ITEMS = [
 const Footer = () => {
   const { t } = useTranslation();
   const pathname = usePathname();
+  const { isCatalogMode } = useSiteMode();
   const showBrandSlider = pathname === "/";
 
   const socialLinks = React.useMemo(
@@ -544,8 +547,8 @@ const Footer = () => {
               </div>
 
               <p className="hidden lg:block text-sm leading-relaxed text-slate-200">
-                Web Giá Rẻ - Portfolio là thư viện giao diện website, template, landing page và UI kit
-                dạng portfolio/demo dành cho cá nhân, doanh nghiệp và agency tại Việt Nam.
+                Web Giá Rẻ là thư viện tài nguyên số, starter kits và mẫu giao diện được chọn lọc
+                cho sinh viên, freelancer, developer và doanh nghiệp tại Việt Nam.
               </p>
 
               <div className="grid grid-cols-2 lg:grid-cols-1 gap-x-4 gap-y-2 text-sm text-slate-200">
@@ -594,7 +597,8 @@ const Footer = () => {
                 titleGradient="from-orange-400 to-red-400"
               >
                 <FooterLink href="/about">Về Chúng Tôi</FooterLink>
-                <FooterLink href="/products">Mẫu Demo</FooterLink>
+                <FooterLink href="/products">Starter Kits & Mẫu Demo</FooterLink>
+                <FooterLink href="/products?category=templates">Combo Tài Nguyên</FooterLink>
                 <FooterLink href="/blog">Blog</FooterLink>
                 <FooterLink href="/community">Cộng Đồng</FooterLink>
                 <AffiliateLink />
@@ -629,35 +633,62 @@ const Footer = () => {
             <div className="mt-4 lg:mt-0 space-y-4">
               {/* Newsletter Card */}
               <div
-                className="rounded-2xl p-4 lg:p-5"
+                className="rounded-2xl p-3.5 lg:p-4"
                 style={{
                   background: "#0f172a",
                   border: "1px solid #334155",
                 }}
               >
-                <div className="flex items-center gap-3 mb-2">
+                <div className="mb-2 flex items-center gap-2.5">
                   <div
-                    className="w-9 h-9 lg:w-10 lg:h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                    className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl"
                     style={{
                       background:
                         "linear-gradient(135deg, #f97316 0%, #dc2626 100%)",
                     }}
                   >
-                    <Mail size={16} className="text-white" />
+                    <Mail size={15} className="text-white" strokeWidth={2.4} />
                   </div>
-                  <h4 className="text-sm lg:text-base font-bold text-white">
-                    Đăng Ký Nhận Tin
+                  <h4 className="text-sm font-bold text-white">
+                    Nhận cập nhật
                   </h4>
                 </div>
-                <p className="text-xs text-slate-200 mb-3 leading-relaxed">
-                  Nhận thông báo về mẫu demo mới, tài nguyên hữu ích và gợi ý
-                  triển khai.
+                <p className="mb-2.5 text-xs leading-relaxed text-slate-300">
+                  Starter kits, combo tài nguyên và nội dung mới.
                 </p>
                 <NewsletterForm />
               </div>
 
-              {/* Payment Card */}
-              <div
+              {isCatalogMode && (
+                <div
+                  className="rounded-2xl p-3.5 lg:p-4"
+                  style={{
+                    background: "#0f172a",
+                    border: "1px solid #334155",
+                  }}
+                >
+                  <div className="mb-2 flex items-center gap-2">
+                    <BookOpen size={15} className="text-orange-400" strokeWidth={2.3} />
+                    <h4 className="text-sm font-bold text-orange-200">
+                      Đang ở chế độ catalog
+                    </h4>
+                  </div>
+                  <p className="text-xs leading-relaxed text-slate-300">
+                    Xem demo và gửi yêu cầu tư vấn. License, báo giá và thanh toán được xác nhận riêng.
+                  </p>
+                  <div className="mt-3 flex gap-2 text-xs font-semibold">
+                    <Link href="/policy/license" className="rounded-lg bg-slate-800 px-3 py-2 text-orange-200 transition-colors hover:bg-slate-700">
+                      License
+                    </Link>
+                    <Link href="/contact" className="rounded-lg bg-orange-600 px-3 py-2 text-white transition-colors hover:bg-orange-500">
+                      Tư vấn
+                    </Link>
+                  </div>
+                </div>
+              )}
+
+              {/* Payment Card - only shown in sales mode */}
+              {!isCatalogMode && <div
                 className="rounded-2xl p-4"
                 style={{
                   background: "#0f172a",
@@ -666,11 +697,11 @@ const Footer = () => {
               >
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="text-xs lg:text-sm font-bold text-orange-200">
-                    Kênh Tư Vấn & Bảo Mật
+                    Thanh toán & Bảo mật
                   </h4>
                   <div className="flex items-center gap-1 text-[10px] text-slate-200">
                     <Shield size={9} />
-                    <span>An toàn & Bảo mật</span>
+                    <span>Giao dịch an toàn</span>
                   </div>
                 </div>
                 <div className="grid grid-cols-6 lg:grid-cols-3 gap-1.5 lg:gap-2">
@@ -687,9 +718,7 @@ const Footer = () => {
                   </PaymentBadge>
                   <PaymentBadge>
                     <span className="font-black text-pink-200 text-[9px] lg:text-[11px] leading-none text-center">
-                      mo
-                      <br />
-                      mo
+                      MoMo
                     </span>
                   </PaymentBadge>
                   <PaymentBadge>
@@ -710,7 +739,7 @@ const Footer = () => {
                     </span>
                   </PaymentBadge>
                 </div>
-              </div>
+              </div>}
             </div>
           </div>
 
@@ -736,7 +765,7 @@ const Footer = () => {
                   { href: "/policy/privacy", label: "Bảo mật" },
                   { href: "/policy/terms", label: "Điều khoản" },
                   { href: "/policy/refund", label: "Xử lý yêu cầu" },
-                  { href: "/policy/license", label: "Quyen truy cap" },
+                  { href: "/policy/license", label: "Chính sách license" },
                   { href: "/contact", label: "Liên hệ" },
                   { href: "/sitemap.xml", label: "Sitemap" },
                 ].map((link) => (
