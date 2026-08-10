@@ -1138,16 +1138,16 @@ const Navbar = () => {
           color: "#4285F4",
         },
         {
-          label: "Graphics & Photos",
-          href: "/products?category=graphics",
-          logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/photoshop/photoshop-original.svg",
-          color: "#31a8ff",
+          label: "Canva Templates",
+          href: "/products?search=Canva",
+          logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/canva/canva-original.svg",
+          color: "#00c4cc",
         },
         {
-          label: "Templates",
+          label: "HTML Templates",
           href: "/products?category=templates",
-          logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg",
-          color: "#f24e1e",
+          logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg",
+          color: "#e34f26",
         },
         {
           label: "React / Next.js",

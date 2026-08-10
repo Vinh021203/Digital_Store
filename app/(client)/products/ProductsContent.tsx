@@ -76,6 +76,8 @@ const FilterSidebar = ({
     setRating,
     format,
     setFormat,
+    selectedTechnology,
+    setSelectedTechnology,
     products,
     isOpen,
     onClose,
@@ -90,6 +92,8 @@ const FilterSidebar = ({
     setRating: (v: number | null) => void;
     format: string;
     setFormat: (v: string) => void;
+    selectedTechnology: string;
+    setSelectedTechnology: (v: string) => void;
     products: any[];
     isOpen: boolean;
     onClose: () => void;
@@ -114,19 +118,32 @@ const FilterSidebar = ({
         return counts;
     }, [products]);
 
-    const visibleCategories = showAllCategories ? categories : categories.slice(0, 5);
+    const availableCategories = categories.filter((category) => (categoryCounts[category.slug] || 0) > 0);
+    const visibleCategories = showAllCategories ? availableCategories : availableCategories.slice(0, 5);
     const formatOptions = Array.from(new Set(products.map(product => product.format).filter(Boolean))) as string[];
     const visibleFormats = showAllFormats ? formatOptions : formatOptions.slice(0, 5);
     const platformOptions = [
-        { label: 'React', key: 'react', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg' },
-        { label: 'Next.js', key: 'next', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg' },
-        { label: 'HTML', key: 'html', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg' },
-        { label: 'Figma', key: 'figma', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg' },
-        { label: 'Vue.js', key: 'vue', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vuejs/vuejs-original.svg' },
-        { label: 'Laravel', key: 'laravel', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg' },
-        { label: 'Django', key: 'django', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/django/django-plain.svg' },
-        { label: '.NET', key: '.net', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/dot-net/dot-net-original.svg' },
+        { label: 'HTML', key: 'html', aliases: ['html', 'html5'], logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg' },
+        { label: 'React', key: 'react', aliases: ['react', 'reactjs'], logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg' },
+        { label: 'Next.js', key: 'next', aliases: ['next.js', 'nextjs'], logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg' },
+        { label: 'Figma', key: 'figma', aliases: ['figma'], logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg' },
+        { label: 'Canva', key: 'canva', aliases: ['canva'], logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/canva/canva-original.svg', alwaysVisible: true },
+        { label: 'Vue.js', key: 'vue', aliases: ['vue', 'vue.js', 'vuejs'], logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vuejs/vuejs-original.svg' },
+        { label: 'Nuxt.js', key: 'nuxt', aliases: ['nuxt', 'nuxt.js', 'nuxtjs'], logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nuxtjs/nuxtjs-original.svg' },
+        { label: 'Angular', key: 'angular', aliases: ['angular', 'angularjs'], logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/angularjs/angularjs-original.svg' },
+        { label: 'Laravel', key: 'laravel', aliases: ['laravel'], logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg' },
     ];
+    const productTechnologyText = (product: any) => [
+        product.name,
+        product.description,
+        product.category,
+        product.format,
+        ...(product.tags || []),
+    ].filter(Boolean).join(' ').toLowerCase();
+    const availablePlatforms = platformOptions.map((platform) => ({
+        ...platform,
+        count: products.filter((product) => platform.aliases.some((alias) => productTechnologyText(product).includes(alias))).length,
+    }));
 
     const CheckboxRow = ({
         label,
@@ -136,7 +153,7 @@ const FilterSidebar = ({
         children,
     }: {
         label: string;
-        count?: number;
+        count?: number | string;
         checked?: boolean;
         onClick?: () => void;
         children?: React.ReactNode;
@@ -165,6 +182,7 @@ const FilterSidebar = ({
                     onClick={() => {
                         setSelectedCategory('');
                         setFormat('');
+                        setSelectedTechnology('');
                         setRating(null);
                         setPriceRange([0, 5000000]);
                     }}
@@ -187,7 +205,7 @@ const FilterSidebar = ({
                                 onClick={() => setSelectedCategory(selectedCategory === cat.slug ? '' : cat.slug)}
                             />
                         ))}
-                        {categories.length > 5 && (
+                        {availableCategories.length > 5 && (
                             <button
                                 type="button"
                                 onClick={() => setShowAllCategories((value) => !value)}
@@ -201,7 +219,7 @@ const FilterSidebar = ({
                 </section>
 
                 <section className="border-t border-slate-100 pt-4">
-                    <h3 className="mb-2 text-[12px] font-extrabold text-slate-900">Loại mẫu demo</h3>
+                    <h3 className="mb-2 text-[12px] font-extrabold text-slate-900">Loại tài nguyên</h3>
                     <div className="space-y-0.5">
                         {visibleFormats.map((item) => (
                             <CheckboxRow
@@ -226,10 +244,16 @@ const FilterSidebar = ({
                 </section>
 
                 <section className="border-t border-slate-100 pt-4">
-                    <h3 className="mb-2 text-[12px] font-extrabold text-slate-900">Nền tảng</h3>
+                    <h3 className="mb-2 text-[12px] font-extrabold text-slate-900">Công nghệ & định dạng</h3>
                     <div className="space-y-0.5">
-                        {platformOptions.map((platform) => (
-                            <CheckboxRow key={platform.key} label={platform.label} count={products.filter((p) => `${p.name} ${p.description || ''} ${p.category || ''}`.toLowerCase().includes(platform.key)).length}>
+                        {availablePlatforms.map((platform) => (
+                            <CheckboxRow
+                                key={platform.key}
+                                label={platform.label}
+                                count={platform.count > 0 ? platform.count : 'Sắp có'}
+                                checked={selectedTechnology === platform.key}
+                                onClick={platform.count > 0 ? () => setSelectedTechnology(selectedTechnology === platform.key ? '' : platform.key) : undefined}
+                            >
                                 <span className="inline-flex items-center gap-2">
                                     <span className="flex h-4 w-4 shrink-0 items-center justify-center">
                                         <img src={platform.logo} alt={`${platform.label} logo`} className="h-4 w-4 object-contain" loading="lazy" />
@@ -335,6 +359,7 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
     const [priceRange, setPriceRange] = useState<[number, number]>([0, 5000000]);
     const [ratingFilter, setRatingFilter] = useState<number | null>(null);
     const [formatFilter, setFormatFilter] = useState('');
+    const [selectedTechnology, setSelectedTechnology] = useState('');
     const [currentPage, setCurrentPage] = useState(() => {
         const page = Number(searchParams.get('page') || 1);
         return Number.isFinite(page) && page > 0 ? Math.floor(page) : 1;
@@ -369,7 +394,7 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
 
         setCurrentPage(1);
         updatePageParam(1, 'replace');
-    }, [debouncedSearchTerm, selectedCategory, priceRange, ratingFilter, formatFilter, sortBy, updatePageParam]);
+    }, [debouncedSearchTerm, selectedCategory, priceRange, ratingFilter, formatFilter, selectedTechnology, sortBy, updatePageParam]);
 
     useEffect(() => {
         setSelectedCategory(searchParams.get('category') || '');
@@ -402,6 +427,28 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
             result = result.filter(p => p.format === formatFilter);
         }
 
+        if (selectedTechnology) {
+            const technologyAliases: Record<string, string[]> = {
+                react: ['react', 'reactjs'],
+                next: ['next.js', 'nextjs'],
+                html: ['html', 'html5'],
+                figma: ['figma'],
+                canva: ['canva'],
+                vue: ['vue', 'vue.js', 'vuejs'],
+                nuxt: ['nuxt', 'nuxt.js', 'nuxtjs'],
+                angular: ['angular', 'angularjs'],
+                laravel: ['laravel'],
+            };
+            const aliases = technologyAliases[selectedTechnology] || [selectedTechnology];
+            result = result.filter((p) => {
+                const text = [p.name, p.description, p.category, p.format, ...(p.tags || [])]
+                    .filter(Boolean)
+                    .join(' ')
+                    .toLowerCase();
+                return aliases.some((alias) => text.includes(alias));
+            });
+        }
+
         if (ratingFilter) {
             result = result.filter(p => (p.rating || 0) >= ratingFilter);
         }
@@ -428,7 +475,7 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
         }
 
         return result;
-    }, [products, debouncedSearchTerm, selectedCategory, sortBy, priceRange, ratingFilter, formatFilter, isCatalogMode]);
+    }, [products, debouncedSearchTerm, selectedCategory, sortBy, priceRange, ratingFilter, formatFilter, selectedTechnology, isCatalogMode]);
 
     // Pagination logic
     const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
@@ -541,7 +588,7 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
                             className="flex-1 flex items-center justify-center gap-1.5 bg-white px-3 py-2 sm:py-2.5 rounded-lg sm:rounded-xl border border-slate-200 shadow-sm font-bold text-slate-700 text-xs sm:text-sm active:scale-[0.98] transition-transform"
                         >
                             <SlidersHorizontal size={14} /> Bộ lọc
-                            {(selectedCategory || formatFilter || ratingFilter) && (
+                            {(selectedCategory || formatFilter || selectedTechnology || ratingFilter) && (
                                 <span className="w-4 h-4 bg-orange-500 text-white text-[10px] rounded-full flex items-center justify-center">!</span>
                             )}
                         </button>
@@ -588,6 +635,8 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
 	                        setRating={setRatingFilter}
 	                        format={formatFilter}
 	                        setFormat={setFormatFilter}
+	                        selectedTechnology={selectedTechnology}
+	                        setSelectedTechnology={setSelectedTechnology}
 	                        products={products}
 	                        isOpen={showSidebar}
                                 isCatalogMode={isCatalogMode}
@@ -667,6 +716,7 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
                                         setPriceRange([0, 5000000]);
                                         setRatingFilter(null);
                                         setFormatFilter('');
+                                        setSelectedTechnology('');
                                     }}
                                     className="bg-slate-900 text-white px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg sm:rounded-xl font-bold hover:bg-orange-600 transition-colors text-xs sm:text-sm"
                                 >

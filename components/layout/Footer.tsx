@@ -325,9 +325,9 @@ const CATEGORY_ITEMS = [
     label: "Marketing & SEO",
   },
   {
-    href: "/products?category=graphics",
-    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/photoshop/photoshop-original.svg",
-    label: "Graphics & Photos",
+    href: "/products?search=Canva",
+    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/canva/canva-original.svg",
+    label: "Canva Templates",
   },
 ] as const;
 
@@ -373,9 +373,9 @@ const Footer = () => {
   const brands = React.useMemo(
     () => [
       {
-        name: "Django",
-        color: "#092e20",
-        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/django/django-plain.svg",
+        name: "Angular",
+        color: "#dd0031",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/angularjs/angularjs-original.svg",
       },
       {
         name: "React",
