@@ -1,12 +1,12 @@
 # Shop Web rẻ / Shop Web rẻ
 
-Shop Web rẻ là website marketplace bán giao diện website như template, theme, UI kit, landing page, dashboard, mini app và bundle. Dự án được xây bằng Next.js, Supabase và Tailwind CSS, có đầy đủ luồng client, admin, seller, affiliate, thanh toán, download/license và chatbot AI.
+Shop Web Rẻ là website giới thiệu và bán giao diện website như template, theme, UI kit, landing page, dashboard, mini app và bundle. Dự án được xây bằng Next.js, Supabase và Tailwind CSS, có đầy đủ luồng client, admin, affiliate, thanh toán, download/license và chatbot AI.
 
 ## Tính năng chính
 
 ### Client
 
-- Trang chủ marketplace với hero, danh mục, sản phẩm nổi bật, sản phẩm bán chạy, blog và CTA.
+- Trang chủ catalog với hero, danh mục, sản phẩm nổi bật, sản phẩm bán chạy, blog và CTA.
 - Danh sách sản phẩm, tìm kiếm, lọc, so sánh và wishlist.
 - Trang chi tiết sản phẩm với gallery, mô tả, FAQ, review, sản phẩm liên quan và mua nhanh.
 - Giỏ hàng, checkout, trang thành công đơn hàng.
@@ -26,17 +26,8 @@ Shop Web rẻ là website marketplace bán giao diện website như template, th
 
 - Dashboard quản trị.
 - Quản lý sản phẩm, danh mục, license, đơn hàng, khách hàng.
-- Quản lý seller marketplace: duyệt seller, duyệt sản phẩm, giao dịch.
 - Quản lý marketing: coupon, blog, affiliate.
 - Quản lý notification, community, activity logs, settings, finance.
-
-### Seller
-
-- Đăng ký người bán qua `/seller/register`.
-- API đăng ký seller chạy server-side bằng service role.
-- Seller marketplace trong profile.
-- Tạo sản phẩm seller ở trạng thái chờ duyệt.
-- Trang public seller shop theo slug.
 
 ### Affiliate
 
@@ -83,7 +74,7 @@ app/
   (auth)/                 Trang đăng nhập, đăng ký, reset password
   (client)/               Toàn bộ giao diện client
   admin/                  Giao diện quản trị
-  api/                    API routes, webhook, upload, AI, seller register
+  api/                    API routes, webhook, upload và AI
 components/
   admin/                  Component admin
   affiliate/              Component affiliate
@@ -93,7 +84,6 @@ components/
   marketing/              Widget marketing
   pages/                  Trang chủ
   product/                Product card, review, quick view
-  seller/                 Seller product/version tools
   ui/                     UI base, toast, modal, notification
   widgets/                Floating widgets, chatbot
 context/
@@ -105,7 +95,6 @@ context/
 lib/
   supabase/               Supabase client/server/middleware
   products.ts             Product queries
-  sellers.ts              Seller queries
   orders.ts               Orders
   licenses.ts             Licenses
   notifications.ts        Notification
@@ -215,8 +204,6 @@ Database chính dùng các nhóm bảng:
 - `reviews`
 - `tickets`
 - `notifications`
-- `sellers`
-- `seller_payouts`
 - `transactions`
 - `affiliate_referrals`
 - `affiliate_withdrawals`
@@ -230,14 +217,12 @@ Database chính dùng các nhóm bảng:
 RLS cần bật cho các bảng public. Một số chính sách cần đặc biệt chú ý:
 
 - User chỉ được đọc/sửa dữ liệu của chính mình.
-- Admin mới được quản lý sản phẩm, đơn hàng, seller, coupon, notification toàn hệ thống.
-- Seller chỉ được quản lý seller profile/sản phẩm thuộc seller của mình.
+- Admin mới được quản lý sản phẩm, đơn hàng, coupon, notification và affiliate toàn hệ thống.
 - Service role chỉ dùng trong API server, tuyệt đối không đưa ra client.
 
 ## Bảo mật đã lưu ý
 
 - Đã khóa việc user tự đổi `profiles.role` bằng trigger Supabase.
-- API đăng ký seller dùng server-side service role.
 - Gemini API key chỉ dùng server-side.
 - Upload API cần kiểm tra role/type/size trước khi public thật.
 - Webhook thanh toán cần xác thực `SEPAY_WEBHOOK_SECRET`.
@@ -261,8 +246,6 @@ RLS cần bật cho các bảng public. Một số chính sách cần đặc bi�
 - `/about`
 - `/contact`
 - `/faq`
-- `/seller/[slug]`
-- `/seller/register`
 
 ### Auth
 
@@ -281,8 +264,6 @@ RLS cần bật cho các bảng public. Một số chính sách cần đặc bi�
 - `/profile/settings`
 - `/profile/support`
 - `/profile/community`
-- `/profile/marketplace`
-- `/profile/marketplace/new`
 - `/profile/affiliate`
 
 ### Admin
@@ -292,9 +273,6 @@ RLS cần bật cho các bảng public. Một số chính sách cần đặc bi�
 - `/admin/products/categories`
 - `/admin/orders`
 - `/admin/customers`
-- `/admin/marketplace/sellers`
-- `/admin/marketplace/pending`
-- `/admin/marketplace/transactions`
 - `/admin/marketing`
 - `/admin/notifications`
 - `/admin/settings`
@@ -360,7 +338,7 @@ Upload route:
 POST /api/upload/[type]
 ```
 
-Các type nhạy cảm nên yêu cầu admin/seller đúng quyền.
+Các type nhạy cảm nên yêu cầu admin đúng quyền.
 
 ## Deployment
 
@@ -382,7 +360,7 @@ Checklist trước khi deploy:
 - Siết lại RLS cho các policy còn rộng.
 - Thêm rate limit cho chatbot, login, contact, comment, upload.
 - Rà `npm run lint` vì Next.js mới có thể cần cấu hình lint khác.
-- Viết test cho checkout, license, download, seller register.
+- Viết test cho checkout, license, download và affiliate.
 - Tạo seed/demo data sạch cho public repo.
 - Xóa hoặc thay asset không có bản quyền rõ ràng.
 - Thêm license thương mại cho theme/source code nếu bán.

@@ -280,7 +280,7 @@ const FloatingWidgets = () => {
         </a>
       </div>
 
-      <div className={`fixed bottom-20 right-3 z-[70] flex flex-col items-end gap-3 font-sans pointer-events-none transition-all duration-300 md:bottom-6 md:right-6 ${hideNearFooter ? 'translate-y-6 opacity-0' : 'opacity-100'}`}>
+      <div className={`fixed bottom-20 right-3 z-[2147483647] flex flex-col items-end gap-3 font-sans pointer-events-none transition-all duration-300 md:bottom-6 md:right-6 ${hideNearFooter ? 'translate-y-6 opacity-0' : 'opacity-100'}`}>
         <div
           className={`pointer-events-auto flex w-[calc(100vw-32px)] origin-bottom-right transform flex-col overflow-hidden rounded-2xl border border-orange-100 bg-white shadow-2xl transition-all duration-400 sm:w-[350px] ${
             isChatOpen
@@ -413,7 +413,7 @@ const FloatingWidgets = () => {
 
         <button
           onClick={() => setIsChatOpen((value) => !value)}
-          className="pointer-events-auto relative z-50 flex h-14 w-14 items-center justify-center rounded-3xl border border-slate-200/80 bg-white/95 text-slate-950 shadow-[0_18px_45px_rgba(15,23,42,0.16)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:bg-white active:scale-95 md:h-16 md:w-16"
+          className="pointer-events-auto relative z-[2147483647] flex h-14 w-14 items-center justify-center rounded-3xl border border-slate-200/80 bg-white/95 text-slate-950 shadow-[0_18px_45px_rgba(15,23,42,0.16)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:bg-white active:scale-95 md:h-16 md:w-16"
           aria-label="Mở trợ lý tư vấn"
           type="button"
         >

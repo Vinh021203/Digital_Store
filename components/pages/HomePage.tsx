@@ -844,27 +844,27 @@ const HomePage = ({
             <div className="w-full min-w-0 lg:max-w-[620px]">
               <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-orange-200 bg-white/80 px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-orange-600 shadow-sm">
                 <Sparkles size={13} className="text-[#ea580c]" />
-                <span>Kho giao diện website dành cho người Việt</span>
+                <span>{isCatalogMode ? 'Kho tài nguyên số dành cho người Việt' : 'Cửa hàng starter kits dành cho người Việt'}</span>
               </div>
 
               <h1 className="max-w-full text-[2.1rem] sm:text-5xl md:text-6xl lg:text-[4.15rem] font-extrabold text-slate-950 tracking-normal leading-[1.08] md:leading-[1.06] mb-4 md:mb-5 break-words">
                 {isCatalogMode ? (
                   <>
-                    Tham khảo <span className="text-[#ea580c]">giao diện website</span> đẹp,
-                    dễ tùy chỉnh và hợp nhu cầu
+                    Xây nhanh hơn với <span className="text-[#ea580c]">starter kits</span>
+                    và tài nguyên số thực tế
                   </>
                 ) : (
                   <>
-                    Tham khảo <span className="text-[#ea580c]">giao diện website</span> đẹp,
-                    dễ tùy chỉnh và hợp nhu cầu
+                    Chọn đúng <span className="text-[#ea580c]">starter kit</span> để
+                    bắt đầu dự án nhanh hơn
                   </>
                 )}
               </h1>
 
               <p className="max-w-xl text-sm sm:text-lg text-slate-600 font-normal leading-relaxed mb-5 md:mb-7">
                 {isCatalogMode
-                  ? 'Khám phá template website, landing page, UI kit và dashboard chất lượng cao. Xem demo, lọc mẫu phù hợp và gửi nhu cầu để được tư vấn triển khai.'
-                  : 'Khám phá portfolio giao diện website, landing page, UI kit và dashboard chất lượng cao. Xem demo, tham khảo thông tin kỹ thuật và gửi nhu cầu tư vấn cho dự án của bạn.'}
+                  ? 'Khám phá starter kits, template website, UI kit và dashboard được chọn lọc cho nhu cầu học tập, portfolio và dự án thực tế tại Việt Nam.'
+                  : 'Chọn starter kit, template website, UI kit và dashboard phù hợp. Xem demo, mua license và tải tài nguyên để bắt đầu dự án ngay.'}
               </p>
 
               {/* Search Bar */}
@@ -876,7 +876,7 @@ const HomePage = ({
                   type="text"
                   value={searchVal}
                   onChange={(e) => setSearchVal(e.target.value)}
-                  placeholder="Tìm kiếm theme, landing page, UI Kit..."
+                  placeholder="Tìm starter kit, landing page, UI kit..."
                   className="w-full min-w-0 pl-4 sm:pl-5 pr-12 sm:pr-14 py-3 rounded-full text-slate-700 placeholder-slate-400 font-semibold bg-transparent outline-none text-sm md:text-base"
                 />
                 <button
@@ -891,7 +891,7 @@ const HomePage = ({
               {/* Technology badges list */}
               <div className="flex flex-wrap gap-2.5 items-center">
                 <span className="text-xs md:text-sm font-semibold text-slate-500 mr-1 uppercase tracking-wide block w-full mb-1 md:inline md:w-auto md:mb-0">
-                  Phổ biến:
+                  Công nghệ phổ biến:
                 </span>
                 {[
                   {
@@ -1530,18 +1530,23 @@ const HomePage = ({
                     MẪU DEMO NỔI BẬT
                   </span>
                   <h2 className="text-xl md:text-4xl font-extrabold text-slate-950 leading-snug md:leading-tight mb-3 md:mb-4">
-                    Mẫu giao diện tiêu biểu do chúng tôi chọn lọc
+                    {isCatalogMode ? 'Những starter kits đáng xem cho dự án của bạn' : 'Starter kits nổi bật cho dự án của bạn'}
                   </h2>
                   <p className="text-sm md:text-base text-slate-600 font-normal leading-relaxed mb-5 md:mb-6">
-                    Mỗi tuần, các chuyên gia nội dung của chúng tôi lựa chọn
-                    những giao diện website nổi bật nhất về cả thiết kế lẫn mã nguồn
-                    để giới thiệu. Đảm bảo giao diện hiện đại, dễ tùy biến và
-                    tương thích tốt.
+                    {isCatalogMode ? (
+                      <>Các bộ starter kit được chọn theo tính thực tế, khả năng tùy chỉnh
+                      và chất lượng demo. Bạn có thể xem trước, so sánh và gửi yêu cầu
+                      tư vấn trước khi chọn license phù hợp.</>
+                    ) : (
+                      <>Các bộ starter kit có demo trực tiếp, thông tin kỹ thuật rõ ràng
+                      và license minh bạch. Chọn gói phù hợp, thanh toán và tải tài nguyên
+                      ngay sau khi đơn hàng được xác nhận.</>
+                    )}
                   </p>
                   <div className="grid grid-cols-3 gap-2.5 mb-5 md:mb-6">
                     {[
-                      { value: "4.8+", label: "điểm TB" },
-                      { value: "24h", label: "duyệt mới" },
+                      { value: "4.8+", label: "đánh giá" },
+                      { value: "24h", label: isCatalogMode ? "hỗ trợ" : "cấp quyền" },
                       { value: "100%", label: "có demo" },
                     ].map((stat) => (
                       <div
@@ -1562,15 +1567,15 @@ const HomePage = ({
                     {[
                       {
                         icon: Shield,
-                        text: "Kiểm tra bố cục responsive và chất lượng asset",
+                        text: "Kiểm tra responsive và chất lượng tài nguyên",
                       },
                       {
                         icon: Gauge,
-                        text: "Ưu tiên template tải nhanh, cấu trúc dễ chỉnh",
+                        text: isCatalogMode ? "Ưu tiên starter kit tải nhanh, dễ chỉnh sửa" : "Tải nhanh, cấu trúc rõ ràng, dễ chỉnh sửa",
                       },
                       {
                         icon: Headphones,
-                        text: "Tác giả có lịch sử hỗ trợ và cập nhật ổn định",
+                        text: isCatalogMode ? "Có tài liệu, hỗ trợ và cập nhật rõ ràng" : "Có tài liệu, license và cập nhật rõ ràng",
                       },
                     ].map((item) => (
                       <div
@@ -1636,21 +1641,21 @@ const HomePage = ({
             <div>
               <span className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-white/90 px-3 py-1 text-[#ea580c] text-xs font-extrabold uppercase tracking-widest mb-3 shadow-sm shadow-orange-100">
                 <TrendingUp size={13} />
-                {isCatalogMode ? 'ĐƯỢC QUAN TÂM TUẦN NÀY' : 'ĐƯỢC QUAN TÂM TUẦN NÀY'}
+                {isCatalogMode ? 'ĐƯỢC XEM NHIỀU TUẦN NÀY' : 'BÁN CHẠY TUẦN NÀY'}
               </span>
               <h2 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-slate-950 leading-tight">
-                {isCatalogMode ? 'Mẫu demo được quan tâm hàng đầu' : 'Mẫu demo được quan tâm hàng đầu'}
+                {isCatalogMode ? 'Mẫu demo được xem nhiều' : 'Starter kits được chọn nhiều'}
               </h2>
               <p className="text-slate-600 text-xs md:text-sm font-normal max-w-xl mt-2 leading-relaxed">
                 {isCatalogMode
-                  ? 'Danh sách những mẫu giao diện được người dùng xem demo và quan tâm nhiều trong tuần qua.'
-                  : 'Danh sách những mẫu giao diện được người dùng xem demo và quan tâm nhiều trong tuần qua.'}
+                  ? 'Những mẫu giao diện được xem nhiều trong tuần qua, giúp bạn bắt đầu tìm kiếm nhanh hơn.'
+                  : 'Những starter kits có lượt mua và lượt tải nổi bật trong tuần qua.'}
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
                 {[
-                  { label: isCatalogMode ? "Quan tâm" : "Top sales", value: "7 ngày" },
-                  { label: "Rating", value: "4.8+" },
-                  { label: "Demo", value: "sẵn sàng" },
+                  { label: isCatalogMode ? "Lượt xem" : "Bán chạy", value: "7 ngày" },
+                  { label: "Đánh giá", value: "4.8+" },
+                  { label: "Demo", value: "có sẵn" },
                 ].map((item) => (
                   <span
                     key={item.label}
@@ -2474,12 +2479,12 @@ const HomePage = ({
               </div>
               <div>
                 <h3 className="text-2xl md:text-3xl font-bold text-[#0b0f19] mb-4 leading-tight tracking-tight">
-                  {isCatalogMode ? 'Giới thiệu khách cần giao diện website' : 'Giới thiệu khách cần tư vấn template'}
+                  {isCatalogMode ? 'Giới thiệu người đang cần starter kit' : 'Giới thiệu khách cần tài nguyên số'}
                 </h3>
                 <p className="text-sm md:text-base text-slate-800 font-medium leading-relaxed mb-6 md:mb-8 max-w-xl">
                   {isCatalogMode
-                    ? 'Tham gia kênh đối tác giới thiệu của Web Giá Rẻ - Portfolio, chia sẻ link demo và ghi nhận khi khách để lại nhu cầu tư vấn giao diện website, landing page hoặc dự án web.'
-                    : 'Tham gia kênh đối tác giới thiệu của Web Giá Rẻ - Portfolio, chia sẻ link demo và ghi nhận khi khách để lại nhu cầu tư vấn giao diện website, landing page hoặc dự án web.'}
+                    ? 'Chia sẻ link demo đến bạn bè, sinh viên, freelancer hoặc doanh nghiệp đang cần tài nguyên số và starter kit phù hợp.'
+                    : 'Chia sẻ link starter kit đến người phù hợp và nhận hoa hồng khi khách mua hàng qua link giới thiệu của bạn.'}
                 </p>
               </div>
               <Link
@@ -2502,19 +2507,19 @@ const HomePage = ({
               </div>
               <div>
                 <h3 className="text-2xl md:text-3xl font-bold text-[#0b0f19] mb-4 leading-tight tracking-tight">
-                  Cần chỉnh sửa giao diện theo thương hiệu?
+                  {isCatalogMode ? 'Cần chỉnh sửa giao diện theo thương hiệu?' : 'Cần tùy chỉnh starter kit theo thương hiệu?'}
                 </h3>
                 <p className="text-sm md:text-base text-slate-800 font-medium leading-relaxed mb-6 md:mb-8 max-w-xl">
                   {isCatalogMode
-                    ? 'Bạn có thể gửi mẫu giao diện quan tâm rồi yêu cầu tư vấn thay logo, đổi màu, sửa nội dung, gắn form hoặc deploy lên hosting theo nhu cầu thực tế.'
-                    : 'Bạn có thể chọn mẫu template quan tâm rồi yêu cầu hỗ trợ thay logo, đổi màu, sửa nội dung, gắn form hoặc deploy lên hosting theo nhu cầu thực tế.'}
+                    ? 'Bạn có thể gửi starter kit đang quan tâm để được tư vấn về license, thay logo, đổi màu, chỉnh nội dung hoặc triển khai lên hosting.'
+                    : 'Mua starter kit rồi yêu cầu hỗ trợ thay logo, đổi màu, sửa nội dung, gắn form hoặc deploy lên hosting theo nhu cầu thực tế.'}
                 </p>
               </div>
               <Link
                 href="/contact"
                 className="self-start inline-flex items-center justify-center px-6 py-3 md:px-8 md:py-3.5 rounded-full border-2 border-[#0b0f19] text-[#0b0f19] hover:bg-[#0b0f19] hover:text-white font-semibold text-sm transition-all duration-300 select-none bg-transparent"
               >
-                Liên hệ tùy chỉnh
+                {isCatalogMode ? 'Nhận tư vấn starter kit' : 'Yêu cầu tùy chỉnh'}
               </Link>
             </div>
           </div>
