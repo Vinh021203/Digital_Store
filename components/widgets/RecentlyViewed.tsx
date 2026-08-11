@@ -260,7 +260,7 @@ export const RecentlyViewedBar = memo(() => {
                                 className="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 transition-colors"
                             >
                                 <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 relative">
-                                    <Image src={product.image} alt={product.name} fill className="object-cover" />
+                            <Image src={product.image} alt={product.name} fill sizes="100px" className="object-cover" />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <h4 className="font-medium text-sm text-slate-900 truncate">{product.name}</h4>

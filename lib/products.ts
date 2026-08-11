@@ -2,6 +2,16 @@
 import { createClient } from './supabase/client';
 import type { Product } from '@/types';
 
+export type TechnologyVariantStatus = 'available' | 'custom_request' | 'coming_soon' | 'unavailable';
+
+export interface ProductTechnologyVariant {
+  technology: string;
+  status: TechnologyVariantStatus;
+  demo_url?: string | null;
+  file_url?: string | null;
+  cta_label?: string | null;
+}
+
 // ============================================
 // Types
 // ============================================
@@ -32,6 +42,7 @@ export interface DbProduct {
   tags: string[];
   features: string[];
   tech_stack: string[];
+  technology_variants: ProductTechnologyVariant[];
   rejection_reason: string | null;
   created_at: string;
   updated_at: string;
@@ -67,6 +78,7 @@ export interface ProductPayload {
   tags?: string[];
   features?: string[];
   tech_stack?: string[];
+  technology_variants?: ProductTechnologyVariant[];
   commission_rate?: number; // Affiliate commission rate (default 10%)
 }
 
@@ -160,6 +172,7 @@ export async function fetchActiveProducts(filters?: ProductFilters): Promise<Pro
       image, images, format, rating, reviews_count, downloads_count,
       is_new, is_featured, is_bestseller, author, demo_url, file_format,
       compatibility, tags, features, tech_stack,
+      technology_variants,
       category:category_id (id, name, slug)
     `)
     .eq('status', 'active')
@@ -214,6 +227,7 @@ export async function fetchActiveProducts(filters?: ProductFilters): Promise<Pro
     tags: p.tags || [],
     features: p.features || [],
     techStack: p.tech_stack || [],
+    technologyVariants: p.technology_variants || [],
   }));
 }
 
@@ -308,6 +322,7 @@ export async function createProduct(payload: ProductPayload): Promise<DbProduct 
       tags: payload.tags || [],
       features: payload.features || [],
       tech_stack: payload.tech_stack || [],
+      technology_variants: payload.technology_variants || [],
       commission_rate: payload.commission_rate ?? 10,
     })
     .select(`
@@ -362,6 +377,7 @@ export async function updateProduct(
   if (payload.tags !== undefined) updates.tags = payload.tags;
   if (payload.features !== undefined) updates.features = payload.features;
   if (payload.tech_stack !== undefined) updates.tech_stack = payload.tech_stack;
+  if (payload.technology_variants !== undefined) updates.technology_variants = payload.technology_variants;
   if (payload.commission_rate !== undefined) updates.commission_rate = payload.commission_rate;
 
   const { data, error } = await supabase

@@ -232,7 +232,7 @@ export default function ProfilePage() {
                         <div className="w-20 h-20 md:w-24 md:h-24 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-500 p-0.5 shadow-xl shadow-orange-500/20">
                             <div className="w-full h-full rounded-2xl bg-slate-800 flex items-center justify-center overflow-hidden">
                                 {profile?.avatar ? (
-                                    <Image src={profile.avatar} alt="Avatar" fill className="object-cover rounded-2xl" />
+                      <Image src={profile.avatar} alt="Avatar" fill sizes="160px" className="object-cover rounded-2xl" />
                                 ) : (
                                     <User size={36} className="text-slate-400" />
                                 )}

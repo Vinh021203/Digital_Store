@@ -128,7 +128,7 @@ function CartPageContent() {
                                 <div key={item.id} className="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm hover:shadow-md transition-shadow group">
                                     <div className="flex gap-5">
                                         <div className="w-28 aspect-[4/3] rounded-xl overflow-hidden relative flex-shrink-0 bg-slate-100">
-                                            <Image src={item.image} alt={item.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <Image src={item.image} alt={item.name} fill sizes="96px" className="object-cover group-hover:scale-105 transition-transform duration-500" />
                                         </div>
                                         <div className="flex-1 min-w-0 flex flex-col justify-between py-1">
                                             <div>
@@ -176,7 +176,7 @@ function CartPageContent() {
                                     {suggestedProducts.map(product => (
                                         <Link href={`/product/${product.slug}`} key={product.id} className="group">
                                             <div className="aspect-[4/3] rounded-xl overflow-hidden bg-slate-100 mb-3 relative">
-                                                <Image src={product.image} alt={product.name} fill className="object-cover group-hover:scale-105 transition-transform" />
+                        <Image src={product.image} alt={product.name} fill sizes="96px" className="object-cover group-hover:scale-105 transition-transform" />
                                             </div>
                                             <h4 className="font-bold text-slate-900 text-sm line-clamp-1 group-hover:text-blue-600">{product.name}</h4>
                                             <p className="text-sm font-bold text-slate-500">{product.price.toLocaleString()}₫</p>

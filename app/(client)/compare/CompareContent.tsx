@@ -209,7 +209,7 @@ export default function ComparePage() {
                                     )}
 
                                     <div className="w-full aspect-[16/10] relative rounded-xl overflow-hidden mb-3 mt-6">
-                                        <Image src={item.image} alt={item.name} fill className="object-cover" />
+                            <Image src={item.image} alt={item.name} fill sizes="160px" className="object-cover" />
                                     </div>
                                     <Link href={`/product/${item.slug || item.id}`} className="block text-lg font-bold text-slate-900 hover:text-blue-600 line-clamp-2 min-h-[48px]">
                                         {item.name}
@@ -323,7 +323,7 @@ export default function ComparePage() {
                                             </button>
 
                                             <div className="w-full aspect-[4/3] relative rounded-2xl overflow-hidden mb-4 border border-slate-100 group-hover:shadow-lg transition-all">
-                                                <Image src={item.image} alt={item.name} fill className="object-cover" />
+                            <Image src={item.image} alt={item.name} fill sizes="160px" className="object-cover" />
                                             </div>
                                             <Link href={`/product/${item.slug || item.id}`} className="block text-lg font-bold text-slate-900 hover:text-blue-600 mb-2 line-clamp-2 min-h-[56px]">
                                                 {item.name}

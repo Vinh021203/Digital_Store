@@ -803,7 +803,7 @@ function CheckoutPageContent() {
                                 {safeCart.map((item: any) => (
                                     <div key={item.id} className="flex gap-3 p-2 rounded-xl hover:bg-slate-50 transition-colors group">
                                         <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden relative flex-shrink-0 border border-slate-100">
-                                            <Image src={item.image} alt={item.name} fill className="object-cover group-hover:scale-105 transition-transform" />
+                        <Image src={item.image} alt={item.name} fill sizes="96px" className="object-cover group-hover:scale-105 transition-transform" />
                                         </div>
                                         <div className="flex-1 min-w-0 flex flex-col justify-center">
                                             <h4 className="font-bold text-slate-900 text-sm line-clamp-1 group-hover:text-blue-600 transition-colors">{item.name}</h4>

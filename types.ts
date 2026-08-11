@@ -34,6 +34,13 @@ export interface Product {
   version?: string;
   features?: string[];
   techStack?: string[];
+  technologyVariants?: Array<{
+    technology: string;
+    status: 'available' | 'custom_request' | 'coming_soon' | 'unavailable';
+    demo_url?: string | null;
+    file_url?: string | null;
+    cta_label?: string | null;
+  }>;
 }
 
 export interface CartItem extends Product {

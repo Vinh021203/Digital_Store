@@ -1,11 +1,49 @@
 'use client';
 
 import React, { useCallback, useEffect, useState } from 'react';
-import { Eye, EyeOff, Layers, Loader2, Plus, Save, Trash2 } from 'lucide-react';
+import {
+  AppWindow,
+  BookOpen,
+  Eye,
+  EyeOff,
+  GraduationCap,
+  Layers,
+  LayoutTemplate,
+  Loader2,
+  Package,
+  PanelTop,
+  Palette,
+  Plus,
+  Save,
+  Trash2,
+  type LucideIcon,
+} from 'lucide-react';
 import { createProductType, deleteProductType, fetchProductTypes, updateProductType, type DbProductType } from '@/lib/productTypes';
 import { useToast } from '@/context/ToastContext';
 
 const emptyForm = { name: '', label: '', slug: '', icon: 'package', color: 'indigo', sort_order: 0, is_active: true };
+
+const productTypeIcons: Record<string, LucideIcon> = {
+  palette: Palette,
+  'layout-template': LayoutTemplate,
+  'panel-top': PanelTop,
+  'app-window': AppWindow,
+  package: Package,
+  'graduation-cap': GraduationCap,
+  'book-open': BookOpen,
+};
+
+const productTypeColors: Record<string, string> = {
+  indigo: 'bg-indigo-50 text-indigo-600',
+  purple: 'bg-purple-50 text-purple-600',
+  emerald: 'bg-emerald-50 text-emerald-600',
+  amber: 'bg-amber-50 text-amber-600',
+  rose: 'bg-rose-50 text-rose-600',
+  blue: 'bg-blue-50 text-blue-600',
+  orange: 'bg-orange-50 text-orange-600',
+};
+
+const getProductTypeIcon = (icon?: string | null) => productTypeIcons[icon || 'package'] || Package;
 
 export default function ProductTypesPage() {
   const toast = useToast();
@@ -42,7 +80,9 @@ export default function ProductTypesPage() {
       </div>
       <div className="overflow-hidden rounded-2xl border bg-white">
         {types.map(type => <div key={type.id} className="flex flex-wrap items-center gap-3 border-b p-4 last:border-0 sm:flex-nowrap sm:gap-4">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600"><Layers size={19} /></div>
+          <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${productTypeColors[type.color] || productTypeColors.indigo}`}>
+            {React.createElement(getProductTypeIcon(type.icon), { size: 20, strokeWidth: 2.2 })}
+          </div>
           <div className="min-w-0 flex-1"><p className="truncate font-bold text-slate-900">{type.label}</p><p className="truncate text-xs leading-5 text-slate-500">{type.name} · /{type.slug} · {type.product_count || 0} sản phẩm</p></div>
           <div className="ml-[52px] flex w-full items-center justify-end gap-2 sm:ml-0 sm:w-auto">
           <button onClick={async () => { await updateProductType(type.id, { is_active: !type.is_active }); load(); }} className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-50 text-slate-500" title={type.is_active ? 'Ẩn loại' : 'Hiện loại'}>{type.is_active ? <Eye size={18} /> : <EyeOff size={18} />}</button>

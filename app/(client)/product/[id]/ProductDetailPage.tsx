@@ -22,6 +22,7 @@ import { useSupabaseAuth } from '@/context/SupabaseAuthContext';
 import { useToast } from '@/context/ToastContext';
 import { useSiteMode } from '@/hooks/useSiteSettings';
 import type { Product } from '@/types';
+import { getTechnologyIconUrl } from '@/lib/technologyIcons';
 
 // FAQ data
 const FAQ_DATA = [
@@ -42,6 +43,7 @@ const stripHtml = (value?: string | null) =>
         .replace(/&gt;/g, '>')
         .replace(/\s+/g, ' ')
         .trim();
+
 
 // Demo Preview Modal Component
 const DemoPreviewModal = ({ isOpen, onClose, demoUrl, productName }: {
@@ -230,7 +232,7 @@ const ImageLightbox = ({
                             className={`relative w-16 h-12 rounded-lg overflow-hidden flex-shrink-0 transition-all ${idx === currentIndex ? 'ring-2 ring-orange-500 opacity-100' : 'opacity-50 hover:opacity-80'
                                 }`}
                         >
-                            <Image src={img} alt="" fill className="object-cover" />
+                            <Image src={img} alt="" fill sizes="64px" className="object-cover" />
                         </button>
                     ))}
                 </div>
@@ -419,6 +421,7 @@ const ModernProductDetailLayout = ({
     const [showFullDescription, setShowFullDescription] = useState(false);
     const [mobileQuickBuyOpen, setMobileQuickBuyOpen] = useState(false);
     const [isFooterVisible, setIsFooterVisible] = useState(false);
+    const [isTechnologyVariantVisible, setIsTechnologyVariantVisible] = useState(false);
     const categoryLabel = typeof product.category === 'string'
         ? product.category
         : product.category?.name || 'SaaS Templates';
@@ -427,6 +430,7 @@ const ModernProductDetailLayout = ({
     const fileFormat = product.file_format || product.fileFormat || '';
     const compatibility = product.compatibility || '';
     const techStack = product.tech_stack || product.techStack || [];
+    const technologyVariants = Array.isArray(product.technology_variants) ? product.technology_variants : [];
     const currentProductFile = product.product_files?.find((file: any) => file.is_current)
         || product.product_files?.[0];
     const currentVersion = currentProductFile?.version || product.version || '';
@@ -451,6 +455,13 @@ const ModernProductDetailLayout = ({
         'Responsive-ready cho mọi thiết bị',
         'Tài liệu hướng dẫn sử dụng chi tiết',
     ]).slice(0, 6);
+    const packageFeatures = product.features?.length ? product.features : [
+        'Giao diện responsive trên desktop, tablet và mobile',
+        'Các section được thiết kế sẵn theo từng nhu cầu',
+        'Trang menu và chi tiết sản phẩm',
+        'Trang liên hệ, FAQ và đánh giá khách hàng',
+        'Hướng dẫn chỉnh sửa nội dung cơ bản',
+    ];
     const heroStats = [
         { value: '12+', label: 'Sections', icon: Layers },
         { value: 'SEO', label: 'Optimized', icon: Globe },
@@ -481,6 +492,18 @@ const ModernProductDetailLayout = ({
         observer.observe(footer);
         return () => observer.disconnect();
     }, []);
+    useEffect(() => {
+        const technologySection = document.getElementById('technology-variants');
+        if (!technologySection || typeof IntersectionObserver === 'undefined') return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => setIsTechnologyVariantVisible(entry.isIntersecting),
+            { threshold: 0.12, rootMargin: '-10% 0px -45% 0px' },
+        );
+
+        observer.observe(technologySection);
+        return () => observer.disconnect();
+    }, [product]);
     const tabs = [
         ['description', 'Mô tả mẫu demo'],
         ['features', 'Tính năng nổi bật'],
@@ -495,12 +518,12 @@ const ModernProductDetailLayout = ({
         { icon: Smartphone, title: 'Responsive-ready', stat: 'Mobile first', tag: 'Đủ breakpoint', text: 'Tương thích tốt trên desktop, laptop, tablet và mobile với bố cục dễ kiểm soát.' },
     ];
     const workflowCards = [
-        { icon: Eye, title: 'Phân tích & Lên kế hoạch', tag: 'Nghiên cứu' },
-        { icon: Calendar, title: 'Lên lịch & Tạo nội dung', tag: 'Lịch đăng' },
-        { icon: Users, title: 'Theo dõi & Tương tác', tag: 'Tương tác' },
-        { icon: Palette, title: 'Phân tích & Tối ưu', tag: 'Tối ưu' },
-        { icon: Code, title: 'Tùy biến giao diện', tag: 'Customize' },
-        { icon: Download, title: 'Xuất bản & Bàn giao', tag: 'Deploy' },
+        { icon: Eye, title: 'Chọn bố cục phù hợp', tag: 'Bắt đầu' },
+        { icon: Palette, title: 'Tùy chỉnh thương hiệu', tag: 'Logo & màu sắc' },
+        { icon: Layers, title: 'Cập nhật menu món ăn', tag: 'Nội dung' },
+        { icon: Calendar, title: 'Thiết lập đặt bàn', tag: 'Chuyển đổi' },
+        { icon: Smartphone, title: 'Kiểm tra responsive', tag: 'Hoàn thiện' },
+        { icon: Download, title: 'Xuất bản & bàn giao', tag: 'Triển khai' },
     ];
 
     const reviewItems = [
@@ -529,6 +552,17 @@ const ModernProductDetailLayout = ({
     const selectNextImage = () => {
         setSelectedImageIndex((current: number) => current === images.length - 1 ? 0 : current + 1);
     };
+    const handleTechnologyVariant = (variant: any) => {
+        if (variant.status === 'available' && variant.demo_url) {
+            setShowDemoModal(true);
+            return;
+        }
+        const query = new URLSearchParams({
+            product: String(product.slug || product.id),
+            technology: variant.technology,
+        });
+        window.location.href = `/contact?${query.toString()}`;
+    };
 
     return (
         <div className="relative min-h-screen overflow-hidden bg-[#fffdf9] font-sans">
@@ -543,7 +577,7 @@ const ModernProductDetailLayout = ({
                 />
             </div>
 
-            <main className="relative z-10 mx-auto max-w-7xl px-4 py-5 md:px-8 md:py-7">
+            <main className="relative z-10 mx-auto max-w-7xl px-4 pt-5 pb-8 md:px-8 md:pt-7 md:pb-12">
                 <nav className="mb-7 flex items-center gap-2 overflow-x-auto whitespace-nowrap text-sm text-slate-500 no-scrollbar">
                     <Link href="/" className="flex items-center gap-1.5 hover:text-orange-600"><HomeIcon size={15} /> Trang chủ</Link>
                     <ChevronRight size={15} className="text-slate-300" />
@@ -622,7 +656,7 @@ const ModernProductDetailLayout = ({
                     <div className="min-w-0">
                         <div onClick={() => setShowLightbox(true)} className="group relative aspect-[16/9] w-full cursor-zoom-in overflow-hidden rounded-2xl border border-orange-100 bg-gradient-to-br from-slate-950 via-slate-900 to-orange-950 p-3 shadow-2xl shadow-orange-100/80">
                             <div className="relative h-full overflow-hidden rounded-xl bg-white">
-                                {currentImage && <Image src={currentImage} alt={product.name} fill className="object-contain transition duration-500 group-hover:scale-[1.015]" priority />}
+                                {currentImage && <Image src={currentImage} alt={product.name} fill sizes="(max-width: 768px) 100vw, 58vw" className="object-contain transition duration-500 group-hover:scale-[1.015]" priority />}
                             </div>
                         </div>
                         <div className="mt-5 flex items-center gap-4">
@@ -673,38 +707,89 @@ const ModernProductDetailLayout = ({
 	                    </div>
 	                </section>
 
-                {(fileFormat || compatibility || currentVersion || techStack.length > 0) && (
-                    <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
+                <div>
+                    {(fileFormat || compatibility || currentVersion || techStack.length > 0) && (
+                    <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:p-4">
                         <div className="flex items-center gap-2">
                             <FileCode size={20} className="text-orange-600" />
                             <h2 className="text-lg font-bold text-slate-950">Thông tin kỹ thuật</h2>
                         </div>
-                        <dl className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                        <dl className="mt-4 grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
                             {fileFormat && (
-                                <div className="rounded-xl bg-slate-50 p-3">
-                                    <dt className="text-xs font-bold uppercase tracking-wide text-slate-500">Định dạng file</dt>
-                                    <dd className="mt-1 text-sm font-semibold text-slate-900">{fileFormat}</dd>
+                                <div className="rounded-xl bg-slate-50 p-2.5 sm:p-3">
+                                    <dt className="flex items-center gap-1.5 text-[9px] font-bold uppercase leading-3 tracking-wide text-slate-500 sm:text-xs"><FileCode size={14} className="text-orange-500" /> Định dạng file</dt>
+                                    <dd className="mt-1 break-words text-[10px] font-semibold leading-4 text-slate-900 sm:text-sm sm:leading-5">{fileFormat}</dd>
                                 </div>
                             )}
                             {compatibility && (
-                                <div className="rounded-xl bg-slate-50 p-3">
-                                    <dt className="text-xs font-bold uppercase tracking-wide text-slate-500">Tương thích</dt>
-                                    <dd className="mt-1 text-sm font-semibold text-slate-900">{compatibility}</dd>
+                                <div className="rounded-xl bg-slate-50 p-2.5 sm:p-3">
+                                    <dt className="flex items-center gap-1.5 text-[9px] font-bold uppercase leading-3 tracking-wide text-slate-500 sm:text-xs"><Monitor size={14} className="text-blue-500" /> Tương thích</dt>
+                                    <dd className="mt-1 break-words text-[10px] font-semibold leading-4 text-slate-900 sm:text-sm sm:leading-5">{compatibility}</dd>
                                 </div>
                             )}
                             {currentVersion && (
-                                <div className="rounded-xl bg-slate-50 p-3">
-                                    <dt className="text-xs font-bold uppercase tracking-wide text-slate-500">Phiên bản</dt>
-                                    <dd className="mt-1 text-sm font-semibold text-slate-900">v{currentVersion}</dd>
+                                <div className="rounded-xl bg-slate-50 p-2.5 sm:p-3">
+                                    <dt className="flex items-center gap-1.5 text-[9px] font-bold uppercase leading-3 tracking-wide text-slate-500 sm:text-xs"><Tag size={14} className="text-violet-500" /> Phiên bản</dt>
+                                    <dd className="mt-1 break-words text-[10px] font-semibold leading-4 text-slate-900 sm:text-sm sm:leading-5">v{currentVersion}</dd>
                                 </div>
                             )}
                             {techStack.length > 0 && (
-                                <div className="rounded-xl bg-slate-50 p-3">
-                                    <dt className="text-xs font-bold uppercase tracking-wide text-slate-500">Công nghệ</dt>
-                                    <dd className="mt-1 text-sm font-semibold text-slate-900">{techStack.join(', ')}</dd>
+                                <div className="col-span-2 rounded-xl bg-slate-50 p-2.5 sm:p-3 lg:col-span-1">
+                                    <dt className="flex items-center gap-1.5 text-[9px] font-bold uppercase leading-3 tracking-wide text-slate-500 sm:text-xs"><Code size={14} className="text-emerald-500" /> Công nghệ</dt>
+                                    <dd className="mt-1 break-words text-[10px] font-semibold leading-4 text-slate-900 sm:text-sm sm:leading-5">{techStack.join(', ')}</dd>
                                 </div>
                             )}
                         </dl>
+                    </section>
+                    )}
+                </div>
+
+                {technologyVariants.length > 0 && (
+                    <section id="technology-variants" className="mt-6 rounded-2xl border border-orange-100 bg-white p-3 shadow-sm sm:p-4 md:p-5">
+                        <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                            <div>
+                                <div className="flex items-center gap-2">
+                                    <Code size={20} className="text-orange-600" />
+                                    <h2 className="text-lg font-bold text-slate-950">Chọn phiên bản công nghệ</h2>
+                                </div>
+                                <p className="mt-1 text-sm text-slate-500">Một theme, nhiều lựa chọn công nghệ phù hợp với dự án của bạn.</p>
+                            </div>
+                        </div>
+                        <div className="mt-4 grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
+                            {technologyVariants.map((variant: any) => {
+                                const iconUrl = getTechnologyIconUrl(String(variant.technology || ''));
+                                const isAvailable = variant.status === 'available';
+                                const statusLabel = isAvailable
+                                    ? 'Có sẵn'
+                                    : variant.status === 'coming_soon'
+                                        ? 'Sắp có'
+                                        : variant.status === 'unavailable'
+                                            ? 'Chưa hỗ trợ'
+                                            : 'Theo yêu cầu';
+                                return (
+                                    <div key={variant.technology} className="flex min-w-0 flex-col rounded-xl border border-slate-200 bg-slate-50 p-2.5 transition hover:border-orange-200 hover:bg-orange-50/40 sm:p-3">
+                                        <div className="flex items-center gap-2 sm:gap-3">
+                                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white shadow-sm sm:h-10 sm:w-10 sm:rounded-xl">
+                                                {iconUrl ? <img src={iconUrl} alt="" className="h-5 w-5 object-contain sm:h-6 sm:w-6" /> : <Code size={18} className="text-slate-500 sm:h-[21px] sm:w-[21px]" />}
+                                            </div>
+                                            <div className="min-w-0">
+                                                <p className="truncate text-xs font-bold text-slate-900 sm:text-sm">{variant.technology}</p>
+                                                <p className={`text-[10px] font-semibold leading-4 sm:text-xs ${isAvailable ? 'text-emerald-600' : variant.status === 'coming_soon' ? 'text-amber-600' : 'text-orange-600'}`}>{statusLabel}</p>
+                                            </div>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            disabled={variant.status === 'unavailable'}
+                                            onClick={() => handleTechnologyVariant(variant)}
+                                            className="mt-2 inline-flex min-h-8 items-center justify-center gap-1 rounded-lg bg-white px-1.5 py-1.5 text-[10px] font-bold leading-4 text-orange-700 shadow-sm ring-1 ring-orange-100 transition hover:bg-orange-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 sm:mt-3 sm:px-3 sm:py-2 sm:text-xs"
+                                        >
+                                            {variant.cta_label || (isAvailable ? 'Xem Live Demo' : 'Nhận tư vấn')}
+                                            <ArrowRight size={14} />
+                                        </button>
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </section>
                 )}
 
@@ -752,7 +837,7 @@ const ModernProductDetailLayout = ({
                         {featureList.map((feature: string, index: number) => (
                             <div
                                 key={`${feature}-${index}`}
-                                className={`flex min-h-12 items-start gap-1.5 rounded-xl border border-orange-100 bg-orange-50/60 px-2 py-2.5 text-[11px] font-semibold leading-4 text-slate-700 sm:gap-2 sm:px-3 sm:text-sm sm:leading-5 ${featureList.length % 2 === 1 && index === featureList.length - 1 ? 'col-span-2 sm:col-span-1' : ''}`}
+                                className={`flex min-h-12 items-start gap-1.5 rounded-xl border border-slate-200 bg-white/95 px-2 py-2.5 text-[11px] font-semibold leading-4 text-slate-700 shadow-sm transition hover:border-orange-200 hover:shadow-md sm:gap-2 sm:px-3 sm:text-sm sm:leading-5 ${featureList.length % 2 === 1 && index === featureList.length - 1 ? 'col-span-2 sm:col-span-1' : ''}`}
                             >
                                 <Check size={15} className="mt-0.5 shrink-0 text-orange-600 sm:h-4 sm:w-4" />
                                 <span className="break-words">{feature}</span>
@@ -792,31 +877,31 @@ const ModernProductDetailLayout = ({
 		                        <h2 className="mb-3 text-lg font-bold text-slate-950 md:mb-5 md:text-xl">2. Bộ tài nguyên bao gồm</h2>
 	                        <div className="grid gap-4 md:grid-cols-[0.9fr_1fr] md:gap-5">
 	                            <div className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-orange-50 md:aspect-square">
-	                                {product.image && <Image src={product.image} alt="" fill className="object-cover" />}
+                                {product.image && <Image src={product.image} alt="" fill sizes="(max-width: 768px) 100vw, 45vw" className="object-cover" />}
 	                            </div>
 	                            <ul className="grid grid-cols-2 gap-2 md:block md:space-y-3">
-	                                {['30+ Screens được thiết kế sẵn', '150+ UI Components', 'Light & Dark Theme', 'Responsive Breakpoints', 'Style Guide & Design System', 'Hướng dẫn sử dụng chi tiết', 'Bộ icon và asset minh họa', 'Tài liệu bàn giao dự án'].map((item) => (
+	                                {packageFeatures.map((item: string) => (
 	                                    <li key={item} className="flex gap-2 rounded-xl bg-orange-50/50 px-2.5 py-2 text-[11px] font-semibold leading-4 text-slate-700 md:bg-transparent md:px-0 md:py-0 md:text-sm"><Check size={15} className="mt-0.5 shrink-0 text-orange-600 md:h-[18px] md:w-[18px]" /> {item}</li>
 	                                ))}
 	                            </ul>
 	                        </div>
 	                    </section>
 
-	                    <section id="workflow" className="scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
+                    <section id="workflow" className="scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:p-5 lg:h-full">
 	                        <div className="mb-3 flex items-center justify-between gap-3 md:mb-4">
 		                            <h2 className="text-lg font-bold text-slate-950 md:text-xl">3. Quy trình & Ứng dụng</h2>
 	                            <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-bold uppercase tracking-wide text-orange-700">6 bước</span>
 	                        </div>
-	                        <div className="grid grid-cols-2 gap-2 md:gap-3">
+                        <div className="grid grid-cols-2 gap-2 md:grid-rows-3 md:gap-3">
 	                            {workflowCards.map((item, index) => (
-	                                <div key={index} className="flex min-w-0 items-start gap-2 rounded-2xl border border-orange-100 bg-gradient-to-br from-orange-50/70 to-sky-50/40 p-2.5 md:items-center md:gap-3 md:p-3">
+                                <div key={index} className="flex min-w-0 items-start gap-2 rounded-2xl border border-orange-100 bg-gradient-to-br from-orange-50/70 to-sky-50/40 p-2.5 md:items-center md:gap-3 md:p-3 md:h-full">
 	                                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-orange-600 shadow-sm md:h-11 md:w-11">
 	                                        <item.icon size={17} className="md:h-5 md:w-5" />
 	                                    </div>
 	                                    <div className="min-w-0 flex-1">
 	                                        <div className="flex items-center gap-1.5 md:gap-2">
 	                                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-orange-600 text-[10px] font-bold text-white md:h-6 md:w-6 md:text-xs">{index + 1}</span>
-	                                            <h3 className="line-clamp-2 text-xs font-bold leading-4 text-slate-900 md:truncate md:text-sm">{item.title}</h3>
+                                            <h3 className="line-clamp-2 text-xs font-bold leading-4 text-slate-900 md:text-sm">{item.title}</h3>
 	                                        </div>
 	                                        <p className="mt-1 text-[11px] font-semibold text-orange-700 md:text-xs">{item.tag}</p>
 	                                    </div>
@@ -965,10 +1050,10 @@ const ModernProductDetailLayout = ({
                 </div>
 
                 {!isFooterVisible && <div className="fixed bottom-7 left-1/2 z-[35] hidden -translate-x-1/2 xl:block">
-                    {shouldCompactDesktopQuickBuy ? (
+                    {shouldCompactDesktopQuickBuy || isTechnologyVariantVisible ? (
                         <button
                             type="button"
-                            onClick={() => setQuickBuyCollapsed(false)}
+                            onClick={() => isTechnologyVariantVisible ? handleAddToCart() : setQuickBuyCollapsed(false)}
                             className="group flex items-center gap-3 rounded-2xl border border-orange-100 bg-white/95 px-4 py-3 text-slate-950 shadow-[0_18px_45px_rgba(15,23,42,0.14)] backdrop-blur-xl transition hover:-translate-y-0.5 hover:border-orange-200 hover:shadow-[0_22px_55px_rgba(249,115,22,0.18)]"
                             aria-label="Mở tư vấn nhanh"
                         >

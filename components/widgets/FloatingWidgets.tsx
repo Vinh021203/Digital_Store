@@ -3,6 +3,8 @@
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 import {
   Bot,
   CheckCircle2,
@@ -14,6 +16,7 @@ import {
   Phone,
   Send,
   Star,
+  User,
   X,
 } from 'lucide-react';
 
@@ -105,11 +108,16 @@ const ZaloIcon = ({ className = '' }: { className?: string }) => (
 );
 
 const FloatingWidgets = () => {
+  const pathname = usePathname();
+  const { user, isLoading: authLoading } = useAuth();
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [hideNearFooter, setHideNearFooter] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [inputMsg, setInputMsg] = useState('');
+  const [contactName, setContactName] = useState('');
+  const [contactPhone, setContactPhone] = useState('');
+  const [contactReady, setContactReady] = useState(false);
   const [currentQuickReplies, setCurrentQuickReplies] = useState<string[]>([]);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     {
@@ -118,9 +126,68 @@ const FloatingWidgets = () => {
       text: 'Chào bạn! Mình là trợ lý AI của Web Giá Rẻ - Portfolio. Mình có thể giúp bạn tìm giao diện, template hoặc giải đáp thắc mắc. Bạn cần tư vấn gì hôm nay?',
     },
   ]);
+  const [chatSessionId] = useState(() => {
+    if (typeof window === 'undefined') return '';
+    const storageKey = 'webgiare-chat-session-id';
+    const existing = window.sessionStorage.getItem(storageKey);
+    if (existing) return existing;
+    const id = typeof crypto !== 'undefined' && crypto.randomUUID
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    window.sessionStorage.setItem(storageKey, id);
+    return id;
+  });
+
+  useEffect(() => {
+    if (authLoading) return;
+    if (user) {
+      setContactName(user.name || '');
+      setContactPhone(user.phone || '');
+      setContactReady(true);
+      return;
+    }
+    const saved = window.sessionStorage.getItem('webgiare-chat-contact');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved) as { name?: string; phone?: string };
+        if (parsed.name && parsed.phone) {
+          setContactName(parsed.name);
+          setContactPhone(parsed.phone);
+          setContactReady(true);
+        }
+      } catch { /* Ignore invalid session data. */ }
+    }
+  }, [authLoading, user]);
+
+  const saveContact = (event: React.FormEvent) => {
+    event.preventDefault();
+    const normalizedPhone = contactPhone.replace(/[^0-9+]/g, '');
+    if (contactName.trim().length < 2 || normalizedPhone.replace(/\D/g, '').length < 9) return;
+    window.sessionStorage.setItem('webgiare-chat-contact', JSON.stringify({ name: contactName.trim(), phone: normalizedPhone }));
+    setContactPhone(normalizedPhone);
+    setContactReady(true);
+  };
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!chatSessionId) return;
+    let cancelled = false;
+    fetch(`/api/chat/history?sessionId=${encodeURIComponent(chatSessionId)}`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (cancelled || !Array.isArray(data.messages) || data.messages.length === 0) return;
+        const restored = data.messages.map((message: { id: number; sender: 'user' | 'bot' | 'admin'; message: string }) => ({
+          id: message.id,
+          sender: message.sender === 'user' ? 'user' : 'bot',
+          text: message.message,
+        } as ChatMessage));
+        setChatMessages((current) => [current[0], ...restored]);
+      })
+      .catch(() => undefined);
+    return () => { cancelled = true; };
+  }, [chatSessionId]);
 
   const checkScroll = useCallback(() => {
     const scrollable = document.documentElement.scrollHeight - window.innerHeight;
@@ -191,7 +258,7 @@ const FloatingWidgets = () => {
   const handleSendMessage = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
-      if (!inputMsg.trim() || isTyping) return;
+      if (!inputMsg.trim() || isTyping || !contactReady) return;
 
       const userMessage = inputMsg.trim();
       const newMsg: ChatMessage = { id: Date.now(), sender: 'user', text: userMessage };
@@ -208,7 +275,17 @@ const FloatingWidgets = () => {
         const response = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: userMessage, history }),
+          body: JSON.stringify({
+            message: userMessage,
+            history,
+            sessionId: chatSessionId,
+            sourcePage: pathname,
+            userId: user?.id || null,
+            visitorName: contactName,
+            visitorEmail: user?.email || null,
+            visitorPhone: contactPhone,
+            visitorAvatar: user?.avatar || null,
+          }),
         });
 
         const data = await response.json();
@@ -234,7 +311,7 @@ const FloatingWidgets = () => {
         setIsTyping(false);
       }
     },
-    [chatMessages, inputMsg, isTyping]
+    [chatMessages, chatSessionId, contactName, contactPhone, contactReady, inputMsg, isTyping, pathname, user]
   );
 
   const quickSuggestions = [
@@ -253,7 +330,7 @@ const FloatingWidgets = () => {
     <>
       <div className={`fixed bottom-24 left-3 z-[70] flex flex-col items-center gap-2 rounded-3xl border border-slate-200/80 bg-white/92 p-1.5 font-sans shadow-[0_18px_45px_rgba(15,23,42,0.13)] backdrop-blur-xl transition-all duration-300 md:bottom-6 md:left-6 md:p-2 ${hideNearFooter ? 'pointer-events-none translate-y-6 opacity-0' : 'animate-widget-dock-in opacity-100'}`}>
         <a href={PHONE_LINK} className="group relative flex items-center" aria-label={`Gọi ${DISPLAY_PHONE}`}>
-          <div className="widget-action flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 ring-1 ring-blue-100 transition-all duration-200 hover:-translate-y-0.5 hover:bg-blue-600 hover:text-white hover:shadow-lg hover:shadow-blue-200 md:h-11 md:w-11">
+          <div className="widget-action widget-dock-item flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 ring-1 ring-blue-100 transition-all duration-200 hover:-translate-y-0.5 hover:bg-blue-600 hover:text-white hover:shadow-lg hover:shadow-blue-200 md:h-11 md:w-11">
             <Phone size={19} strokeWidth={2.35} />
           </div>
           <span className="pointer-events-none absolute left-full ml-3 hidden whitespace-nowrap rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 opacity-0 shadow-lg shadow-slate-200/70 transition-all duration-200 group-hover:translate-x-1 group-hover:opacity-100 md:block">
@@ -262,7 +339,7 @@ const FloatingWidgets = () => {
         </a>
 
         <a href={ZALO_LINK} target="_blank" rel="noopener noreferrer" className="group relative flex items-center" aria-label="Chat Zalo">
-          <div className="widget-action flex h-10 w-10 items-center justify-center rounded-2xl bg-[#eef5ff] text-[#0068ff] ring-1 ring-blue-100 transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#dcecff] hover:shadow-lg hover:shadow-blue-200 md:h-11 md:w-11">
+          <div className="widget-action widget-dock-item flex h-10 w-10 items-center justify-center rounded-2xl bg-[#eef5ff] text-[#0068ff] ring-1 ring-blue-100 transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#dcecff] hover:shadow-lg hover:shadow-blue-200 md:h-11 md:w-11">
             <ZaloIcon className="scale-90 transition-transform duration-200 group-hover:scale-100 md:scale-100 md:group-hover:scale-105" />
           </div>
           <span className="pointer-events-none absolute left-full ml-3 hidden whitespace-nowrap rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 opacity-0 shadow-lg shadow-slate-200/70 transition-all duration-200 group-hover:translate-x-1 group-hover:opacity-100 md:block">
@@ -271,7 +348,7 @@ const FloatingWidgets = () => {
         </a>
 
         <a href={EMAIL_LINK} className="group relative flex items-center" aria-label="Gửi email">
-          <div className="widget-action flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-50 text-orange-600 ring-1 ring-orange-100 transition-all duration-200 hover:-translate-y-0.5 hover:bg-orange-600 hover:text-white hover:shadow-lg hover:shadow-orange-200 md:h-11 md:w-11">
+          <div className="widget-action widget-dock-item flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-50 text-orange-600 ring-1 ring-orange-100 transition-all duration-200 hover:-translate-y-0.5 hover:bg-orange-600 hover:text-white hover:shadow-lg hover:shadow-orange-200 md:h-11 md:w-11">
             <Mail size={19} strokeWidth={2.35} />
           </div>
           <span className="pointer-events-none absolute left-full ml-3 hidden whitespace-nowrap rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 opacity-0 shadow-lg shadow-slate-200/70 transition-all duration-200 group-hover:translate-x-1 group-hover:opacity-100 md:block">
@@ -280,7 +357,7 @@ const FloatingWidgets = () => {
         </a>
       </div>
 
-      <div className={`fixed bottom-20 right-3 z-[2147483647] flex flex-col items-end gap-3 font-sans pointer-events-none transition-all duration-300 md:bottom-6 md:right-6 ${hideNearFooter ? 'translate-y-6 opacity-0' : 'opacity-100'}`}>
+      <div className={`fixed right-3 z-[2147483647] flex flex-col items-end font-sans pointer-events-none transition-all duration-300 md:right-6 ${isChatOpen ? 'bottom-20 gap-3 md:bottom-6' : 'bottom-28 gap-8 md:bottom-10 md:gap-10'} ${hideNearFooter ? 'translate-y-6 opacity-0' : 'opacity-100'}`}>
         <div
           className={`pointer-events-auto flex w-[calc(100vw-32px)] origin-bottom-right transform flex-col overflow-hidden rounded-2xl border border-orange-100 bg-white shadow-2xl transition-all duration-400 sm:w-[350px] ${
             isChatOpen
@@ -323,7 +400,19 @@ const FloatingWidgets = () => {
             </div>
           </div>
 
-          <div className="custom-scrollbar flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto bg-gradient-to-b from-orange-50/30 to-white p-2.5">
+          <div className="custom-scrollbar relative flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto overscroll-contain bg-gradient-to-b from-orange-50/30 to-white p-2.5">
+            {!authLoading && !user && !contactReady && (
+              <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/95 p-5 backdrop-blur-sm">
+                <form onSubmit={saveContact} className="w-full max-w-[300px] rounded-2xl border border-orange-100 bg-white p-4 shadow-lg">
+                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-orange-100 text-orange-600"><User size={19} /></div>
+                  <h4 className="text-sm font-black text-slate-900">Để lại thông tin để được tư vấn</h4>
+                  <p className="mt-1 text-xs leading-relaxed text-slate-500">Mình cần tên và số điện thoại để đội ngũ có thể hỗ trợ bạn khi cần.</p>
+                  <input value={contactName} onChange={(event) => setContactName(event.target.value)} required minLength={2} placeholder="Tên của bạn" className="mt-3 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100" />
+                  <input value={contactPhone} onChange={(event) => setContactPhone(event.target.value)} required placeholder="Số điện thoại" inputMode="tel" className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100" />
+                  <button type="submit" className="mt-3 w-full rounded-xl bg-gradient-to-r from-orange-600 to-red-600 px-3 py-2.5 text-sm font-bold text-white shadow-sm">Bắt đầu trò chuyện</button>
+                </form>
+              </div>
+            )}
             <div className="my-0.5 text-center text-[11px] text-slate-400">Hôm nay</div>
             {chatMessages.map((msg) => (
               <div key={msg.id} className="animate-fade-in-up">
@@ -397,12 +486,12 @@ const FloatingWidgets = () => {
                 placeholder="Hỏi về mẫu demo, tư vấn..."
                 className="flex-1 rounded-xl border-none bg-orange-50/50 px-3.5 py-2 text-sm outline-none transition-all placeholder:text-slate-400 focus:ring-2 focus:ring-orange-500"
                 maxLength={500}
-                disabled={isTyping}
+                disabled={isTyping || !contactReady}
               />
               <button
                 type="submit"
                 className="rounded-xl bg-gradient-to-r from-orange-600 to-red-600 p-2.5 text-white shadow-md transition-all hover:from-orange-700 hover:to-red-700 hover:shadow-lg active:scale-90 disabled:cursor-not-allowed disabled:opacity-50"
-                disabled={!inputMsg.trim() || isTyping}
+                disabled={!inputMsg.trim() || isTyping || !contactReady}
                 aria-label="Gửi"
               >
                 {isTyping ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
@@ -413,15 +502,23 @@ const FloatingWidgets = () => {
 
         <button
           onClick={() => setIsChatOpen((value) => !value)}
-          className="pointer-events-auto relative z-[2147483647] flex h-14 w-14 items-center justify-center rounded-3xl border border-slate-200/80 bg-white/95 text-slate-950 shadow-[0_18px_45px_rgba(15,23,42,0.16)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:bg-white active:scale-95 md:h-16 md:w-16"
+          className={`pointer-events-auto relative z-[2147483647] flex items-center justify-center text-slate-950 transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 active:scale-95 ${isChatOpen
+            ? 'h-12 w-12 rounded-full border border-slate-200 bg-white shadow-lg'
+            : 'h-24 w-24 rounded-full border-0 bg-transparent shadow-none md:h-32 md:w-32'
+            }`}
           aria-label="Mở trợ lý tư vấn"
           type="button"
         >
+          {!isChatOpen && (
+            <span className="pointer-events-none absolute bottom-[calc(100%+0.75rem)] right-0 whitespace-nowrap rounded-full border border-orange-100 bg-white/95 px-3 py-2 text-xs font-bold text-orange-700 shadow-lg shadow-orange-100/70 backdrop-blur-sm animate-chatbot-hint md:px-4 md:text-sm">
+              Cần tư vấn? Chat với mình
+            </span>
+          )}
           {isChatOpen ? (
             <ChevronUp size={26} className="rotate-180 text-slate-700" strokeWidth={2.5} />
           ) : (
-            <span className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-orange-50 text-orange-600 ring-1 ring-orange-100 md:h-12 md:w-12">
-              <Bot size={24} strokeWidth={2.35} />
+            <span className="relative flex h-full w-full items-center justify-center">
+              <Image src="/chatbot_webgiare.webp" alt="Trợ lý Web Giá Rẻ" width={220} height={330} className="chatbot-avatar h-[170px] w-[170px] object-contain md:h-[220px] md:w-[220px]" />
             </span>
           )}
 
@@ -436,17 +533,37 @@ const FloatingWidgets = () => {
         {showScrollTop && !isChatOpen && (
           <button
             onClick={scrollToTop}
-            className="pointer-events-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-xl shadow-slate-200/80 transition-all animate-scroll-pop hover:-translate-y-1 hover:bg-slate-950 hover:text-white active:scale-95"
+            className="pointer-events-auto flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-lg shadow-slate-200/70 transition-all animate-scroll-pop hover:-translate-y-1 hover:bg-slate-950 hover:text-white active:scale-95 md:h-11 md:w-11"
             aria-label="Lên đầu trang"
             type="button"
           >
-            <ChevronUp size={24} strokeWidth={2.6} />
+            <ChevronUp size={20} strokeWidth={2.6} />
           </button>
         )}
 
         <style jsx global>{`
           .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
+          }
+
+          @keyframes chatbot-float {
+            0%, 100% { transform: translateY(0) rotate(-1deg); }
+            50% { transform: translateY(-4px) rotate(1deg); }
+          }
+
+          .chatbot-avatar {
+            animation: chatbot-float 3.2s ease-in-out infinite;
+            filter: drop-shadow(0 8px 8px rgba(37, 99, 235, 0.2));
+          }
+
+          @keyframes chatbot-hint {
+            0%, 100% { opacity: 0; transform: translateX(12px) scale(0.94); }
+            12%, 78% { opacity: 1; transform: translateX(0) scale(1); }
+            90% { opacity: 0; transform: translateX(8px) scale(0.96); }
+          }
+
+          .animate-chatbot-hint {
+            animation: chatbot-hint 5.5s ease-in-out infinite;
           }
 
           .custom-scrollbar::-webkit-scrollbar-track {
@@ -493,6 +610,18 @@ const FloatingWidgets = () => {
               transform: translateX(130%) rotate(18deg);
             }
           }
+
+          @keyframes widget-action-in {
+            from { opacity: 0; transform: translateY(8px) scale(0.92); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+          }
+
+          .widget-dock-item {
+            animation: widget-action-in 0.45s ease-out both;
+          }
+
+          .widget-dock-item:nth-child(2) { animation-delay: 0.08s; }
+          .widget-dock-item:nth-child(3) { animation-delay: 0.16s; }
 
           @keyframes scroll-pop {
             from {

@@ -263,7 +263,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
                         }`}
                     >
                       <div className="relative w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 border border-slate-100">
-                        <Image src={product.image} alt={product.name} fill className="object-cover" />
+                            <Image src={product.image} alt={product.name} fill sizes="64px" className="object-cover" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="font-bold text-slate-900 group-hover:text-orange-600 text-sm truncate">{product.name}</h4>

@@ -320,7 +320,7 @@ export default function ProductReviews({ productId, reviews = MOCK_REVIEWS }: Pr
                                     <div className="flex gap-2 mb-3">
                                         {review.images.map((img, idx) => (
                                             <div key={idx} className="relative w-20 h-20 rounded-lg overflow-hidden">
-                                                <Image src={img} alt="" fill className="object-cover" />
+                        <Image src={img} alt="" fill sizes="96px" className="object-cover" />
                                             </div>
                                         ))}
                                     </div>

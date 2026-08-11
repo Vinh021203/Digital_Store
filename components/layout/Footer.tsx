@@ -482,7 +482,7 @@ const Footer = () => {
       )}
 
       {/* ── FOOTER CHÍNH ── */}
-      <footer id="site-footer" className="relative mt-2 overflow-visible bg-slate-950 pb-16 md:mt-3 md:pb-0">
+      <footer id="site-footer" className="relative mt-0 overflow-visible bg-slate-950 pb-16 md:mt-0 md:pb-0">
         {/* Wave */}
         <svg
           className="absolute left-0 right-0 -top-5 md:-top-8 h-5 md:h-8 w-full pointer-events-none"
@@ -492,7 +492,7 @@ const Footer = () => {
         >
           <path
             d="M0 0 H1440 V38 C1220 38 1040 62 720 62 C400 62 220 38 0 38 Z"
-            fill="#ffffff"
+            fill="transparent"
           />
         </svg>
 

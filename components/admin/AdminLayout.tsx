@@ -74,6 +74,12 @@ const MENU_GROUPS: { title: string; items: MenuItem[] }[] = [
             { id: 'finance', label: 'Tài chính & Rút tiền', icon: <CreditCard size={20} />, href: '/admin/settings/finance' },
             { id: 'roles', label: 'Phân quyền', icon: <Shield size={20} />, badge: 'Pro', badgeColor: 'blue', href: '/admin/settings/roles' },
         ]
+    },
+    {
+        title: 'CUSTOMER INSIGHTS',
+        items: [
+            { id: 'chat-history', label: 'AI Chat History', icon: <MessageSquare size={20} />, href: '/admin/customers/chat' },
+        ]
     }
 ];
 

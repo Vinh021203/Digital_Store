@@ -78,7 +78,7 @@ export default function FrequentlyBoughtTogether({ currentProduct, recommendedPr
                                 } ${product.id === currentProduct.id ? 'cursor-default' : ''}`}
                         >
                             <div className="relative w-20 h-20 rounded-xl overflow-hidden bg-white">
-                                <Image src={product.image} alt={product.name} fill className="object-cover" />
+                        <Image src={product.image} alt={product.name} fill sizes="96px" className="object-cover" />
                             </div>
                             {selectedProducts.includes(product.id) && (
                                 <div className="absolute -top-2 -right-2 w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center">

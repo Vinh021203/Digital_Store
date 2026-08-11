@@ -30,11 +30,13 @@ import {
   updateProduct,
   type DbProduct,
   type ProductPayload,
+  type ProductTechnologyVariant,
 } from '@/lib/products';
 import { fetchCategories, type DbCategory } from '@/lib/categories';
 import { fetchProductTypes, type DbProductType } from '@/lib/productTypes';
 import { useToast } from '@/context/ToastContext';
 import { createActivityLog } from '@/lib/activityLogs';
+import { getTechnologyIconUrl } from '@/lib/technologyIcons';
 
 interface ProductEditorProps {
   mode: 'create' | 'edit';
@@ -64,6 +66,7 @@ interface EditorProduct {
   tags: string[];
   features: string[];
   techStack: string[];
+  technologyVariants: ProductTechnologyVariant[];
   // Affiliate
   commissionRate: number;
 }
@@ -116,6 +119,7 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
     tags: [],
     features: [],
     techStack: [],
+    technologyVariants: [],
     commissionRate: 10,
   });
 
@@ -170,6 +174,7 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
             tags: found.tags || [],
             features: found.features || [],
             techStack: found.tech_stack || [],
+            technologyVariants: found.technology_variants || [],
             commissionRate: Number((found as any).commission_rate) || 10,
           });
         } else {
@@ -332,6 +337,7 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
         tags: product.tags,
         features: product.features,
         tech_stack: product.techStack,
+        technology_variants: product.technologyVariants,
         commission_rate: product.commissionRate,
       };
 
@@ -432,6 +438,32 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
 
   const handleRemoveTech = (tech: string) => {
     setProduct({ ...product, techStack: product.techStack.filter(t => t !== tech) });
+  };
+
+  const handleAddTechnologyVariant = () => {
+    setProduct({
+      ...product,
+      technologyVariants: [
+        ...product.technologyVariants,
+        { technology: '', status: 'coming_soon', demo_url: '', cta_label: '' },
+      ],
+    });
+  };
+
+  const updateTechnologyVariant = (index: number, updates: Partial<ProductTechnologyVariant>) => {
+    setProduct({
+      ...product,
+      technologyVariants: product.technologyVariants.map((variant, variantIndex) =>
+        variantIndex === index ? { ...variant, ...updates } : variant
+      ),
+    });
+  };
+
+  const removeTechnologyVariant = (index: number) => {
+    setProduct({
+      ...product,
+      technologyVariants: product.technologyVariants.filter((_, variantIndex) => variantIndex !== index),
+    });
   };
 
   return (
@@ -784,10 +816,138 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
               </button>
             </div>
           </div>
+
+          {/* Technology variants - shown here on mobile; desktop version lives in the right column */}
+          <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-100 lg:hidden">
+            <div className="flex items-start justify-between gap-4 mb-2">
+              <div>
+                <h3 className="font-bold text-base sm:text-lg text-slate-900 flex items-center gap-2">
+                  <Globe size={20} className="text-orange-600" />
+                  Phiên bản công nghệ
+                </h3>
+                <p className="text-xs text-slate-500 mt-1">
+                  Gom HTML, React, Next.js hoặc Nuxt.js trong cùng một sản phẩm.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={handleAddTechnologyVariant}
+                className="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 bg-orange-600 text-white text-xs font-bold rounded-lg hover:bg-orange-700"
+              >
+                <Plus size={15} /> Thêm phiên bản
+              </button>
+            </div>
+
+            {product.technologyVariants.length === 0 ? (
+              <div className="mt-4 rounded-xl border border-dashed border-slate-200 p-4 text-sm text-slate-500">
+                Chưa có phiên bản riêng. Bạn có thể tiếp tục dùng Tech Stack ở trên.
+              </div>
+            ) : (
+              <div className="space-y-3 mt-4">
+                {product.technologyVariants.map((variant, index) => (
+                  <div key={`${index}-${variant.technology}`} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                    <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto] gap-3">
+                      <div className="relative">
+                        <input
+                          value={variant.technology}
+                          onChange={e => updateTechnologyVariant(index, { technology: e.target.value })}
+                          placeholder="HTML, React, Next.js, Canva..."
+                          className="w-full border border-slate-200 rounded-lg pl-10 pr-3 py-2 text-sm outline-none focus:ring-2 focus:ring-orange-500 bg-white"
+                        />
+                        <div className="pointer-events-none absolute left-3 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center">
+                          {getTechnologyIconUrl(variant.technology) ? (
+                            <img src={getTechnologyIconUrl(variant.technology) || ''} alt="" className="h-5 w-5 object-contain" />
+                          ) : (
+                            <Code size={17} className="text-slate-400" />
+                          )}
+                        </div>
+                      </div>
+                      <select
+                        value={variant.status}
+                        onChange={e => updateTechnologyVariant(index, { status: e.target.value as ProductTechnologyVariant['status'] })}
+                        className="border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-orange-500 bg-white"
+                      >
+                        <option value="available">Có sẵn</option>
+                        <option value="custom_request">Theo yêu cầu</option>
+                        <option value="coming_soon">Sắp có</option>
+                        <option value="unavailable">Chưa hỗ trợ</option>
+                      </select>
+                      <button
+                        type="button"
+                        onClick={() => removeTechnologyVariant(index)}
+                        className="inline-flex items-center justify-center h-10 w-10 rounded-lg text-red-500 hover:bg-red-50"
+                        aria-label="Xóa phiên bản"
+                      >
+                        <Trash2 size={17} />
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+                      <input
+                        type="url"
+                        value={variant.demo_url || ''}
+                        onChange={e => updateTechnologyVariant(index, { demo_url: e.target.value })}
+                        placeholder="Live Demo URL (nếu có)"
+                        className="border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-orange-500 bg-white"
+                      />
+                      <input
+                        value={variant.cta_label || ''}
+                        onChange={e => updateTechnologyVariant(index, { cta_label: e.target.value })}
+                        placeholder="CTA, ví dụ: Yêu cầu phiên bản Next.js"
+                        className="border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-orange-500 bg-white"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Right Column */}
         <div className="space-y-6">
+          <div className="hidden lg:block bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-100">
+            <div className="flex items-start justify-between gap-3 mb-4">
+              <div>
+                <h3 className="font-bold text-lg text-slate-900 flex items-center gap-2">
+                  <Globe size={20} className="text-orange-600" />
+                  Phiên bản công nghệ
+                </h3>
+                <p className="text-xs text-slate-500 mt-1">Các phiên bản của cùng một theme.</p>
+              </div>
+              <button type="button" onClick={handleAddTechnologyVariant} className="inline-flex items-center gap-1 px-3 py-2 bg-orange-600 text-white text-xs font-bold rounded-lg hover:bg-orange-700">
+                <Plus size={15} /> Thêm
+              </button>
+            </div>
+            {product.technologyVariants.length === 0 ? (
+              <div className="rounded-xl border border-dashed border-slate-200 p-3 text-sm text-slate-500">
+                Chưa có phiên bản riêng.
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {product.technologyVariants.map((variant, index) => (
+                  <div key={`side-${index}-${variant.technology}`} className="rounded-xl border border-slate-200 bg-slate-50 p-3 space-y-2">
+                    <div className="flex items-center gap-2">
+                      <div className="relative min-w-0 flex-1">
+                        <input value={variant.technology} onChange={e => updateTechnologyVariant(index, { technology: e.target.value })} placeholder="HTML, Next.js, Canva..." className="w-full border border-slate-200 rounded-lg pl-10 pr-3 py-2 text-sm bg-white outline-none focus:ring-2 focus:ring-orange-500" />
+                        <div className="pointer-events-none absolute left-3 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center">
+                          {getTechnologyIconUrl(variant.technology) ? <img src={getTechnologyIconUrl(variant.technology) || ''} alt="" className="h-5 w-5 object-contain" /> : <Code size={17} className="text-slate-400" />}
+                        </div>
+                      </div>
+                      <button type="button" onClick={() => removeTechnologyVariant(index)} className="text-red-500 hover:text-red-700" aria-label="Xóa phiên bản"><Trash2 size={16} /></button>
+                    </div>
+                    <select value={variant.status} onChange={e => updateTechnologyVariant(index, { status: e.target.value as ProductTechnologyVariant['status'] })} className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white outline-none focus:ring-2 focus:ring-orange-500">
+                      <option value="available">Có sẵn</option>
+                      <option value="custom_request">Theo yêu cầu</option>
+                      <option value="coming_soon">Sắp có</option>
+                      <option value="unavailable">Chưa hỗ trợ</option>
+                    </select>
+                    <input type="url" value={variant.demo_url || ''} onChange={e => updateTechnologyVariant(index, { demo_url: e.target.value })} placeholder="Live Demo URL (nếu có)" className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white outline-none focus:ring-2 focus:ring-orange-500" />
+                    <input value={variant.cta_label || ''} onChange={e => updateTechnologyVariant(index, { cta_label: e.target.value })} placeholder="CTA tùy chỉnh" className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white outline-none focus:ring-2 focus:ring-orange-500" />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
           {/* Status */}
           <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-100">
             <h3 className="font-bold text-xs text-slate-900 mb-4 uppercase tracking-wider">

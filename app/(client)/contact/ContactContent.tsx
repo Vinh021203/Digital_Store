@@ -82,6 +82,7 @@ export default function ContactContent() {
 
                 const params = new URLSearchParams(window.location.search);
                 const productParam = params.get('product');
+                const technologyParam = params.get('technology');
                 if (!productParam) return;
 
                 const selected = data.find((product) => {
@@ -94,6 +95,7 @@ export default function ContactContent() {
                     setFormData((current) => ({
                         ...current,
                         productKey: String(selected.slug || selected.id),
+                        techPreference: technologyParam || current.techPreference,
                         message: current.message || `Mình cần tư vấn thêm về mẫu demo "${selected.name}".`,
                     }));
                 }

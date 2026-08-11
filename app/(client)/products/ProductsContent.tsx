@@ -16,6 +16,7 @@ import QuickViewModal from '@/components/product/QuickViewModal';
 import { useCallback } from 'react';
 import type { Product } from '@/types';
 import { useSiteMode } from '@/hooks/useSiteSettings';
+import { getTechnologyIconUrl, normalizeTechnologyName } from '@/lib/technologyIcons';
 
 function useDebouncedValue<T>(value: T, delay = 300) {
     const [debouncedValue, setDebouncedValue] = useState(value);
@@ -101,6 +102,7 @@ const FilterSidebar = ({
 }) => {
     const [showAllCategories, setShowAllCategories] = useState(false);
     const [showAllFormats, setShowAllFormats] = useState(false);
+    const [showAllTechnologies, setShowAllTechnologies] = useState(false);
 
     const categoryCounts = React.useMemo(() => {
         const counts: Record<string, number> = {};
@@ -122,7 +124,7 @@ const FilterSidebar = ({
     const visibleCategories = showAllCategories ? availableCategories : availableCategories.slice(0, 5);
     const formatOptions = Array.from(new Set(products.map(product => product.format).filter(Boolean))) as string[];
     const visibleFormats = showAllFormats ? formatOptions : formatOptions.slice(0, 5);
-    const platformOptions = [
+    const basePlatformOptions = [
         { label: 'HTML', key: 'html', aliases: ['html', 'html5'], logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg' },
         { label: 'React', key: 'react', aliases: ['react', 'reactjs'], logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg' },
         { label: 'Next.js', key: 'next', aliases: ['next.js', 'nextjs'], logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg' },
@@ -133,17 +135,31 @@ const FilterSidebar = ({
         { label: 'Angular', key: 'angular', aliases: ['angular', 'angularjs'], logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/angularjs/angularjs-original.svg' },
         { label: 'Laravel', key: 'laravel', aliases: ['laravel'], logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg' },
     ];
+    const dynamicPlatformOptions = Array.from(new Set(products.flatMap((product: any) =>
+        (product.technologyVariants || []).map((variant: any) => String(variant.technology || '').trim()).filter(Boolean)
+    ))).map((technology) => {
+        const key = normalizeTechnologyName(technology).replace(/[^a-z0-9]+/g, '-');
+        return {
+            label: technology,
+            key,
+            aliases: [normalizeTechnologyName(technology)],
+            logo: getTechnologyIconUrl(technology) || '/favicon.png',
+        };
+    }).filter((dynamic) => !basePlatformOptions.some((base) => base.aliases.some((alias) => normalizeTechnologyName(alias) === normalizeTechnologyName(dynamic.label))));
+    const platformOptions = [...basePlatformOptions, ...dynamicPlatformOptions];
     const productTechnologyText = (product: any) => [
         product.name,
         product.description,
         product.category,
         product.format,
         ...(product.tags || []),
+        ...(product.technologyVariants || []).map((variant: any) => variant.technology),
     ].filter(Boolean).join(' ').toLowerCase();
     const availablePlatforms = platformOptions.map((platform) => ({
         ...platform,
         count: products.filter((product) => platform.aliases.some((alias) => productTechnologyText(product).includes(alias))).length,
     }));
+    const visiblePlatforms = showAllTechnologies ? availablePlatforms : availablePlatforms.slice(0, 5);
 
     const CheckboxRow = ({
         label,
@@ -161,13 +177,13 @@ const FilterSidebar = ({
         <button
             type="button"
             onClick={onClick}
-            className="flex w-full items-center gap-2 rounded-md px-1.5 py-1 text-left text-[12px] font-medium text-slate-600 transition hover:bg-orange-50 hover:text-slate-900"
+            className="grid w-full grid-cols-[20px_minmax(0,1fr)_52px] items-center gap-2 rounded-md px-1.5 py-1 text-left text-[12px] font-medium text-slate-600 transition hover:bg-orange-50 hover:text-slate-900"
         >
             <span className={`flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-[3px] border ${checked ? 'border-orange-600 bg-orange-600 text-white' : 'border-slate-300 bg-white'}`}>
                 {checked && <Check size={10} strokeWidth={3} />}
             </span>
             <span className="min-w-0 flex-1 truncate">{children || label}</span>
-            {typeof count === 'number' && <span className="text-[11px] font-semibold text-slate-400">{count}</span>}
+            <span className="w-full text-right text-[11px] font-semibold tabular-nums text-slate-400">{count ?? ''}</span>
         </button>
     );
 
@@ -246,7 +262,7 @@ const FilterSidebar = ({
                 <section className="border-t border-slate-100 pt-4">
                     <h3 className="mb-2 text-[12px] font-extrabold text-slate-900">Công nghệ & định dạng</h3>
                     <div className="space-y-0.5">
-                        {availablePlatforms.map((platform) => (
+                        {visiblePlatforms.map((platform) => (
                             <CheckboxRow
                                 key={platform.key}
                                 label={platform.label}
@@ -262,6 +278,16 @@ const FilterSidebar = ({
                                 </span>
                             </CheckboxRow>
                         ))}
+                        {availablePlatforms.length > 5 && (
+                            <button
+                                type="button"
+                                onClick={() => setShowAllTechnologies((value) => !value)}
+                                className="flex w-full items-center justify-between px-1.5 py-1 text-[12px] font-semibold text-orange-600 hover:text-orange-700"
+                            >
+                                <span>{showAllTechnologies ? 'Thu gọn' : 'Xem thêm'}</span>
+                                <ChevronDown size={13} className={`transition-transform ${showAllTechnologies ? 'rotate-180' : ''}`} />
+                            </button>
+                        )}
                     </div>
                 </section>
 
@@ -439,7 +465,11 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
                 angular: ['angular', 'angularjs'],
                 laravel: ['laravel'],
             };
-            const aliases = technologyAliases[selectedTechnology] || [selectedTechnology];
+            const dynamicTechnology = products
+                .flatMap((product: any) => (product.technologyVariants || []).map((variant: any) => String(variant.technology || '')))
+                .find((technology) => normalizeTechnologyName(technology).replace(/[^a-z0-9]+/g, '-') === selectedTechnology);
+            const aliases = technologyAliases[selectedTechnology]
+                || (dynamicTechnology ? [normalizeTechnologyName(dynamicTechnology)] : [selectedTechnology]);
             result = result.filter((p) => {
                 const text = [p.name, p.description, p.category, p.format, ...(p.tags || [])]
                     .filter(Boolean)

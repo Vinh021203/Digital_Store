@@ -48,6 +48,11 @@ function mapProduct(product: any): Product {
     publishDate: product.created_at,
     demoUrl: product.demo_url ?? undefined,
     tags: product.tags || [],
+    fileFormat: product.file_format ?? undefined,
+    compatibility: product.compatibility ?? undefined,
+    features: product.features || [],
+    techStack: product.tech_stack || [],
+    technologyVariants: product.technology_variants || [],
   };
 }
 
@@ -65,6 +70,7 @@ async function fetchProductsPageData(): Promise<ProductsPageData> {
         id, name, slug, description, price, original_price,
         image, images, format, rating, reviews_count, downloads_count,
         is_new, is_featured, is_bestseller, author, demo_url, tags, created_at,
+        file_format, compatibility, features, tech_stack, technology_variants,
         category:category_id (id, name, slug)
       `)
       .eq('status', 'active')
@@ -116,7 +122,7 @@ async function fetchProductsPageData(): Promise<ProductsPageData> {
 
 export const getProductsPageData = unstable_cache(
   fetchProductsPageData,
-  ['products-page-public-data-v2'],
+  ['products-page-public-data-v3'],
   {
     revalidate: 180,
     tags: ['products-page', 'products', 'categories'],
