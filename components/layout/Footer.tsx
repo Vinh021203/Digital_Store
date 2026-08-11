@@ -25,27 +25,33 @@ import { usePathname } from "next/navigation";
 import { useSiteMode } from "@/hooks/useSiteSettings";
 
 // ============================================
-// Social Link - Memoized
+// TikTok Icon Component
+// ============================================
+const TikTokIcon = ({ size = 17 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className="shrink-0">
+    <path d="M19.589 6.686a4.793 4.793 0 0 1-3.77-4.245V2h-3.445v13.672a2.896 2.896 0 0 1-2.901 2.88 2.897 2.897 0 0 1-2.897-2.896 2.897 2.897 0 0 1 2.897-2.897c.334 0 .653.06.949.167V9.453a6.31 6.31 0 0 0-.949-.072 6.34 6.34 0 0 0-6.335 6.336 6.34 6.34 0 0 0 6.335 6.336 6.34 6.34 0 0 0 6.336-6.336V8.57a8.214 8.214 0 0 0 4.78 1.547V6.671a4.786 4.786 0 0 1-1.000.015z" />
+  </svg>
+);
+
+// ============================================
+// Social Link - Memoized with authentic brand colors
 // ============================================
 interface SocialLinkProps {
   href: string;
   icon: React.ReactNode;
-  gradient: string;
+  bgClass: string;
   label: string;
 }
 
-const SocialLink = memo<SocialLinkProps>(({ href, icon, gradient, label }) => (
+const SocialLink = memo<SocialLinkProps>(({ href, icon, bgClass, label }) => (
   <a
     href={href}
-    className="group relative w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center overflow-hidden transition-all duration-300 hover:scale-110 active:scale-95"
+    className={`group relative h-10 w-10 shrink-0 rounded-2xl flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 ${bgClass}`}
     aria-label={label}
     target="_blank"
     rel="noopener noreferrer"
   >
-    <span
-      className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-100 transition-opacity`}
-    />
-    <span className="relative z-10 text-slate-400 group-hover:text-white transition-colors">
+    <span className="relative z-10 flex items-center justify-center transition-transform duration-200 group-hover:scale-110">
       {icon}
     </span>
   </a>
@@ -344,27 +350,33 @@ const Footer = () => {
     () => [
       {
         href: "https://www.facebook.com/Ltvinh212",
-        icon: <Facebook size={17} />,
-        gradient: "from-blue-600 to-blue-400",
+        icon: <Facebook size={18} />,
+        bgClass: "bg-[#1877F2] text-white shadow-md shadow-blue-600/30 hover:bg-[#166fe5]",
         label: "Facebook",
       },
       {
         href: "https://www.instagram.com/luongvinh_0212?igsh=MWxtM2RlNm16ZjM2MA==",
-        icon: <Instagram size={17} />,
-        gradient: "from-pink-600 to-orange-500",
+        icon: <Instagram size={18} />,
+        bgClass: "bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#cc2366] text-white shadow-md shadow-pink-600/30 hover:brightness-110",
         label: "Instagram",
       },
       {
-        href: "https://www.linkedin.com/in/vinh-l%C6%B0%C6%A1ng-th%E1%BA%BF-69640734b?utm_source=share_via&utm_content=profile&utm_medium=member_android",
-        icon: <Linkedin size={17} />,
-        gradient: "from-blue-700 to-sky-500",
-        label: "LinkedIn",
+        href: "https://www.tiktok.com",
+        icon: <TikTokIcon size={17} />,
+        bgClass: "bg-[#111111] text-white shadow-md shadow-black/40 hover:bg-[#222222]",
+        label: "TikTok",
       },
       {
         href: "https://www.youtube.com/@VINHDEV_0212",
-        icon: <Youtube size={17} />,
-        gradient: "from-red-600 to-red-400",
+        icon: <Youtube size={18} />,
+        bgClass: "bg-[#FF0000] text-white shadow-md shadow-red-600/30 hover:bg-[#e60000]",
         label: "YouTube",
+      },
+      {
+        href: "https://www.linkedin.com/in/vinh-l%C6%B0%C6%A1ng-th%E1%BA%BF-69640734b?utm_source=share_via&utm_content=profile&utm_medium=member_android",
+        icon: <Linkedin size={18} />,
+        bgClass: "bg-[#0A66C2] text-white shadow-md shadow-blue-700/30 hover:bg-[#08539e]",
+        label: "LinkedIn",
       },
     ],
     [],
@@ -482,7 +494,7 @@ const Footer = () => {
       )}
 
       {/* ── FOOTER CHÍNH ── */}
-      <footer id="site-footer" className="relative mt-0 overflow-visible bg-slate-950 pb-16 md:mt-0 md:pb-0">
+      <footer id="site-footer" className="relative mt-0 overflow-visible bg-slate-950 pb-2 md:mt-0 md:pb-0">
         {/* Wave */}
         <svg
           className="absolute left-0 right-0 -top-5 md:-top-8 h-5 md:h-8 w-full pointer-events-none"
@@ -535,14 +547,14 @@ const Footer = () => {
           {/* ── LAYOUT CHÍNH ── */}
           <div className="lg:grid lg:grid-cols-4 lg:gap-8 lg:mb-12">
             {/* ── CỘT 1: Brand + Contact + Social ── */}
-            <div className="mb-6 lg:mb-0 space-y-4 lg:space-y-6">
-              <div className="group relative h-14 w-[230px]">
+            <div className="mb-8 lg:mb-0 space-y-5 lg:space-y-6">
+              <div className="group relative h-14 w-[230px] mx-auto mb-5 lg:mb-0 lg:mx-0">
                 <Image
                   src="/logo_webgiare_footer.webp"
                   alt="Web Giá Rẻ - Portfolio"
                   fill
                   sizes="230px"
-                  className="object-contain object-left transition-transform duration-300 group-hover:scale-[1.02]"
+                  className="object-contain object-center lg:object-left transition-transform duration-300 group-hover:scale-[1.02]"
                 />
               </div>
 
@@ -551,19 +563,19 @@ const Footer = () => {
                 cho sinh viên, freelancer, developer và doanh nghiệp tại Việt Nam.
               </p>
 
-              <div className="grid grid-cols-2 lg:grid-cols-1 gap-x-4 gap-y-2 text-sm text-slate-200">
+              <div className="grid grid-cols-2 lg:grid-cols-1 gap-x-4 gap-y-3 text-sm text-slate-200">
                 <div className="flex items-center gap-2">
-                  <Phone size={13} className="text-orange-500 flex-shrink-0" />
+                  <Phone size={14} className="text-orange-500 flex-shrink-0" />
                   <span className="text-xs lg:text-sm truncate">
                     0971 386 588
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Clock size={13} className="text-orange-500 flex-shrink-0" />
+                  <Clock size={14} className="text-orange-500 flex-shrink-0" />
                   <span className="text-xs lg:text-sm">T2–T7: 8:00–18:00</span>
                 </div>
                 <div className="flex items-center gap-2 col-span-2 lg:col-span-1">
-                  <Mail size={13} className="text-orange-500 flex-shrink-0" />
+                  <Mail size={14} className="text-orange-500 flex-shrink-0" />
                   <a
                     href="mailto:contact@webgiare.id.vn"
                     className="text-xs lg:text-sm truncate hover:text-orange-400 transition-colors"
@@ -573,7 +585,7 @@ const Footer = () => {
                 </div>
                 <div className="flex items-start gap-2 col-span-2 lg:col-span-1">
                   <MapPin
-                    size={13}
+                    size={14}
                     className="text-orange-500 mt-0.5 flex-shrink-0"
                   />
                   <span className="text-xs lg:text-sm">
@@ -582,7 +594,7 @@ const Footer = () => {
                 </div>
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex justify-center lg:justify-start gap-2.5 pt-3 lg:pt-0">
                 {socialLinks.map((s) => (
                   <SocialLink key={s.label} {...s} />
                 ))}
@@ -744,9 +756,9 @@ const Footer = () => {
           </div>
 
           {/* ── BOTTOM BAR ── */}
-          <div className="border-t border-slate-800/50 pt-5 mt-2 lg:mt-0">
-            <div className="flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-slate-300">
-              <p className="flex flex-wrap items-center justify-center sm:justify-start gap-x-2 gap-y-0.5">
+          <div className="border-t border-slate-800/50 pt-3 pb-1 sm:pb-0 mt-2 lg:mt-0">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-2.5 text-xs text-slate-400">
+              <p className="flex flex-wrap items-center justify-center sm:justify-start gap-x-2 gap-y-0.5 text-[11px] sm:text-xs">
                 <span>&copy; {new Date().getFullYear()} Web Giá Rẻ - Portfolio.</span>
                 <span className="opacity-40">•</span>
                 <span className="flex items-center gap-1">
@@ -760,7 +772,7 @@ const Footer = () => {
                 <span className="hidden sm:inline opacity-40">•</span>
                 <span className="hidden sm:inline">All rights reserved.</span>
               </p>
-              <nav className="flex flex-wrap justify-center gap-2 sm:gap-x-4 sm:gap-y-1" aria-label="Chính sách và thông tin pháp lý">
+              <nav className="flex flex-wrap justify-center items-center gap-x-3 gap-y-1 text-[11px] sm:text-xs text-slate-400" aria-label="Chính sách và thông tin pháp lý">
                 {[
                   { href: "/policy/privacy", label: "Bảo mật" },
                   { href: "/policy/terms", label: "Điều khoản" },
@@ -772,7 +784,7 @@ const Footer = () => {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="inline-flex min-h-11 items-center rounded-lg px-2 py-2 hover:bg-slate-900 hover:text-orange-300 transition-colors hover:underline sm:min-h-0 sm:px-0 sm:py-0 sm:hover:bg-transparent"
+                    className="inline-flex items-center hover:text-orange-300 transition-colors hover:underline py-0.5"
                     prefetch={true}
                   >
                     {link.label}

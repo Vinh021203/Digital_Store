@@ -423,6 +423,28 @@ const DesktopNavItem = memo<DesktopNavItemProps>(
   ({ item, isActive }) => {
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
+    const closeTimer = useRef<number | null>(null);
+
+    const cancelClose = () => {
+      if (closeTimer.current) {
+        window.clearTimeout(closeTimer.current);
+        closeTimer.current = null;
+      }
+    };
+
+    const scheduleClose = () => {
+      cancelClose();
+      closeTimer.current = window.setTimeout(() => {
+        setOpen(false);
+        closeTimer.current = null;
+      }, 650);
+    };
+
+    useEffect(() => {
+      return () => {
+        if (closeTimer.current) window.clearTimeout(closeTimer.current);
+      };
+    }, []);
 
     useEffect(() => {
       if (!open) return;
@@ -462,12 +484,18 @@ const DesktopNavItem = memo<DesktopNavItemProps>(
       <div
         ref={ref}
         className="relative"
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => setOpen(false)}
+        onMouseEnter={() => {
+          cancelClose();
+          setOpen(true);
+        }}
+        onMouseLeave={scheduleClose}
       >
         <button
           type="button"
-          onClick={() => setOpen(current => !current)}
+          onClick={() => {
+            cancelClose();
+            setOpen(current => !current);
+          }}
           className={`relative px-3.5 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-all duration-200 flex items-center gap-1 ${
             isActive
               ? "text-white"

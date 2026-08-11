@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { createPortal } from 'react-dom';
@@ -577,7 +577,7 @@ const ModernProductDetailLayout = ({
                 />
             </div>
 
-            <main className="relative z-10 mx-auto max-w-7xl px-4 pt-5 pb-8 md:px-8 md:pt-7 md:pb-12">
+            <main className="relative z-10 mx-auto max-w-7xl px-4 pt-4 pb-3 md:px-8 md:pt-7 md:pb-12">
                 <nav className="mb-7 flex items-center gap-2 overflow-x-auto whitespace-nowrap text-sm text-slate-500 no-scrollbar">
                     <Link href="/" className="flex items-center gap-1.5 hover:text-orange-600"><HomeIcon size={15} /> Trang chủ</Link>
                     <ChevronRight size={15} className="text-slate-300" />
@@ -633,11 +633,14 @@ const ModernProductDetailLayout = ({
                                 })}
                             </div>
                         </div>
-                        <div className="mt-3 flex flex-wrap gap-2">
+                        <div className="mt-3 grid grid-cols-2 gap-1.5 sm:flex sm:flex-wrap sm:gap-2">
                             {featureList.slice(0, 3).map((feature: string, index: number) => (
-                                <div key={index} className="inline-flex items-center gap-2 rounded-full bg-orange-50 px-3 py-1.5 text-xs font-semibold text-orange-700">
-                                    <Check size={13} />
-                                    <span>{feature}</span>
+                                <div
+                                    key={index}
+                                    className="inline-flex min-w-0 items-center gap-1.5 rounded-full bg-orange-50 px-2.5 py-1.5 text-[11px] font-semibold text-orange-700 sm:px-3 sm:text-xs"
+                                >
+                                    <Check size={13} className="shrink-0 text-orange-600" />
+                                    <span className="truncate">{feature}</span>
                                 </div>
                             ))}
                         </div>
@@ -687,18 +690,18 @@ const ModernProductDetailLayout = ({
                                 <ChevronRight size={20} />
                             </button>
                         </div>
-                        <div className="mt-4 grid grid-cols-3 gap-2 md:mt-5 md:gap-3">
+                        <div className="mt-3 grid grid-cols-3 gap-1.5 md:mt-5 md:gap-3">
                             {[
                                 { icon: Eye, title: 'Preview rõ ràng', desc: 'Xem trước từng màn hình' },
                                 { icon: Eye, title: 'Xem demo rõ ràng', desc: 'Đánh giá trước khi tư vấn' },
                                 { icon: MessageCircle, title: 'Hỗ trợ triển khai', desc: 'Tư vấn chỉnh sửa cơ bản' },
                             ].map((item) => (
-                                <div key={item.title} className="flex min-w-0 flex-col items-center gap-1.5 rounded-2xl border border-orange-100 bg-white/80 p-2 text-center shadow-sm backdrop-blur md:flex-row md:gap-3 md:p-3 md:text-left">
-                                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-50 to-sky-50 text-orange-600 md:h-10 md:w-10">
-                                        <item.icon size={16} className="md:h-[19px] md:w-[19px]" />
+                                <div key={item.title} className="flex min-w-0 flex-col items-center gap-1 rounded-xl border border-orange-100 bg-white/80 p-1.5 text-center shadow-sm backdrop-blur md:flex-row md:gap-3 md:rounded-2xl md:p-3 md:text-left">
+                                    <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-orange-50 to-sky-50 text-orange-600 md:h-10 md:w-10 md:rounded-xl">
+                                        <item.icon size={13} className="md:h-[19px] md:w-[19px]" />
                                     </div>
                                     <div className="min-w-0">
-                                        <p className="text-[11px] font-bold leading-snug text-slate-950 md:text-sm">{item.title}</p>
+                                        <p className="text-[9px] font-bold leading-tight text-slate-950 md:text-sm md:leading-snug">{item.title}</p>
                                         <p className="hidden truncate text-xs font-medium text-slate-500 md:block">{item.desc}</p>
                                     </div>
                                 </div>
@@ -961,7 +964,7 @@ const ModernProductDetailLayout = ({
                     </section>
                 </div>
 
-                <section id="reviews" className="mt-8 scroll-mt-24">
+                <section id="reviews" className="mt-5 scroll-mt-24 md:mt-8">
                     <h2 className="mb-5 text-xl font-bold text-slate-950">4. Khách hàng nói gì về {product.name}</h2>
                     <div className="relative overflow-hidden rounded-2xl">
                         <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 bg-gradient-to-r from-[#fffdf9] to-transparent" />
@@ -985,7 +988,7 @@ const ModernProductDetailLayout = ({
                 </section>
 
                 {relatedProducts.length > 0 && (
-                    <div className="mt-8">
+                    <div className="mt-5 md:mt-8">
                         <RelatedProducts currentProduct={product} relatedProducts={relatedProducts} />
                     </div>
                 )}

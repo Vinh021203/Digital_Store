@@ -69,32 +69,32 @@ const FilterSection = ({
 // Filter Sidebar Component
 const FilterSidebar = ({
     categories,
-    selectedCategory,
-    setSelectedCategory,
+    selectedCategories,
+    setSelectedCategories,
     priceRange,
     setPriceRange,
-    rating,
-    setRating,
-    format,
-    setFormat,
-    selectedTechnology,
-    setSelectedTechnology,
+    ratings,
+    setRatings,
+    formats,
+    setFormats,
+    selectedTechnologies,
+    setSelectedTechnologies,
     products,
     isOpen,
     onClose,
     isCatalogMode
 }: {
     categories: any[];
-    selectedCategory: string;
-    setSelectedCategory: (v: string) => void;
+    selectedCategories: string[];
+    setSelectedCategories: (v: string[]) => void;
     priceRange: [number, number];
     setPriceRange: (v: [number, number]) => void;
-    rating: number | null;
-    setRating: (v: number | null) => void;
-    format: string;
-    setFormat: (v: string) => void;
-    selectedTechnology: string;
-    setSelectedTechnology: (v: string) => void;
+    ratings: number[];
+    setRatings: (v: number[]) => void;
+    formats: string[];
+    setFormats: (v: string[]) => void;
+    selectedTechnologies: string[];
+    setSelectedTechnologies: (v: string[]) => void;
     products: any[];
     isOpen: boolean;
     onClose: () => void;
@@ -147,17 +147,16 @@ const FilterSidebar = ({
         };
     }).filter((dynamic) => !basePlatformOptions.some((base) => base.aliases.some((alias) => normalizeTechnologyName(alias) === normalizeTechnologyName(dynamic.label))));
     const platformOptions = [...basePlatformOptions, ...dynamicPlatformOptions];
-    const productTechnologyText = (product: any) => [
-        product.name,
-        product.description,
-        product.category,
-        product.format,
-        ...(product.tags || []),
-        ...(product.technologyVariants || []).map((variant: any) => variant.technology),
-    ].filter(Boolean).join(' ').toLowerCase();
+    // Count products by matching technologyVariants directly (not text matching)
+    const hasVariantMatch = (product: any, aliases: string[]) => {
+        const variants = product.technologyVariants || [];
+        return variants.some((v: any) =>
+            aliases.some((alias) => normalizeTechnologyName(v.technology) === normalizeTechnologyName(alias))
+        );
+    };
     const availablePlatforms = platformOptions.map((platform) => ({
         ...platform,
-        count: products.filter((product) => platform.aliases.some((alias) => productTechnologyText(product).includes(alias))).length,
+        count: products.filter((product) => hasVariantMatch(product, platform.aliases)).length,
     }));
     const visiblePlatforms = showAllTechnologies ? availablePlatforms : availablePlatforms.slice(0, 5);
 
@@ -196,10 +195,10 @@ const FilterSidebar = ({
                 <button
                     type="button"
                     onClick={() => {
-                        setSelectedCategory('');
-                        setFormat('');
-                        setSelectedTechnology('');
-                        setRating(null);
+                        setSelectedCategories([]);
+                        setFormats([]);
+                        setSelectedTechnologies([]);
+                        setRatings([]);
                         setPriceRange([0, 5000000]);
                     }}
                     className="rounded-full bg-orange-50 px-2.5 py-1 text-[11px] font-bold text-orange-600"
@@ -217,8 +216,8 @@ const FilterSidebar = ({
                                 key={cat.id}
                                 label={cat.name}
                                 count={categoryCounts[cat.slug] || 0}
-                                checked={selectedCategory === cat.slug}
-                                onClick={() => setSelectedCategory(selectedCategory === cat.slug ? '' : cat.slug)}
+                                checked={selectedCategories.includes(cat.slug)}
+                                onClick={() => setSelectedCategories(selectedCategories.includes(cat.slug) ? selectedCategories.filter(v => v !== cat.slug) : [...selectedCategories, cat.slug])}
                             />
                         ))}
                         {availableCategories.length > 5 && (
@@ -242,8 +241,8 @@ const FilterSidebar = ({
                                 key={item}
                                 label={item}
                                 count={formatCounts[item] || 0}
-                                checked={format === item}
-                                onClick={() => setFormat(format === item ? '' : item)}
+                                checked={formats.includes(item)}
+                                onClick={() => setFormats(formats.includes(item) ? formats.filter(v => v !== item) : [...formats, item])}
                             />
                         ))}
                         {formatOptions.length > 5 && (
@@ -267,8 +266,8 @@ const FilterSidebar = ({
                                 key={platform.key}
                                 label={platform.label}
                                 count={platform.count > 0 ? platform.count : 'Sắp có'}
-                                checked={selectedTechnology === platform.key}
-                                onClick={platform.count > 0 ? () => setSelectedTechnology(selectedTechnology === platform.key ? '' : platform.key) : undefined}
+                                checked={selectedTechnologies.includes(platform.key)}
+                                onClick={platform.count > 0 ? () => setSelectedTechnologies(selectedTechnologies.includes(platform.key) ? selectedTechnologies.filter(v => v !== platform.key) : [...selectedTechnologies, platform.key]) : undefined}
                             >
                                 <span className="inline-flex items-center gap-2">
                                     <span className="flex h-4 w-4 shrink-0 items-center justify-center">
@@ -314,7 +313,7 @@ const FilterSidebar = ({
                     <h3 className="mb-2 text-[12px] font-extrabold text-slate-900">Đánh giá</h3>
                     <div className="space-y-0.5">
                         {[5, 4, 3, 2, 1].map((r) => (
-                            <CheckboxRow key={r} label={`${r} sao`} count={products.filter((p) => (p.rating || 0) >= r).length} checked={rating === r} onClick={() => setRating(rating === r ? null : r)}>
+                            <CheckboxRow key={r} label={`${r} sao`} count={products.filter((p) => (p.rating || 0) >= r).length} checked={ratings.includes(r)} onClick={() => setRatings(ratings.includes(r) ? ratings.filter(v => v !== r) : [...ratings, r])}>
                                 <span className="inline-flex items-center gap-1">
                                     {[...Array(5)].map((_, i) => (
                                         <Star key={i} size={12} fill={i < r ? 'currentColor' : 'none'} className={i < r ? 'text-amber-400' : 'text-slate-300'} />
@@ -360,6 +359,7 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
     const router = useRouter();
     const { isCatalogMode } = useSiteMode();
     const didMountFiltersRef = useRef(false);
+    const isUrlSyncRef = useRef(false);
 
     const [products] = useState<Product[]>(initialProducts);
     const [categories] = useState<DbCategory[]>(initialCategories);
@@ -380,12 +380,21 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
     // Filter states
     const [searchTerm, setSearchTerm] = useState(() => searchParams.get('search') || '');
     const debouncedSearchTerm = useDebouncedValue(searchTerm, 300);
-    const [selectedCategory, setSelectedCategory] = useState(() => searchParams.get('category') || '');
+    const [selectedCategories, setSelectedCategories] = useState<string[]>(() => {
+        const cat = searchParams.get('category') || '';
+        return cat ? [cat] : [];
+    });
     const [sortBy, setSortBy] = useState('newest');
     const [priceRange, setPriceRange] = useState<[number, number]>([0, 5000000]);
-    const [ratingFilter, setRatingFilter] = useState<number | null>(null);
-    const [formatFilter, setFormatFilter] = useState('');
-    const [selectedTechnology, setSelectedTechnology] = useState('');
+    const [ratings, setRatings] = useState<number[]>([]);
+    const [formats, setFormats] = useState<string[]>(() => {
+        const fmt = searchParams.get('format') || '';
+        return fmt ? [fmt] : [];
+    });
+    const [selectedTechnologies, setSelectedTechnologies] = useState<string[]>(() => {
+        const tech = searchParams.get('tech') || searchParams.get('technology') || '';
+        return tech ? [tech] : [];
+    });
     const [currentPage, setCurrentPage] = useState(() => {
         const page = Number(searchParams.get('page') || 1);
         return Number.isFinite(page) && page > 0 ? Math.floor(page) : 1;
@@ -417,16 +426,36 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
             didMountFiltersRef.current = true;
             return;
         }
+        if (isUrlSyncRef.current) {
+            isUrlSyncRef.current = false;
+            return;
+        }
 
         setCurrentPage(1);
         updatePageParam(1, 'replace');
-    }, [debouncedSearchTerm, selectedCategory, priceRange, ratingFilter, formatFilter, selectedTechnology, sortBy, updatePageParam]);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [debouncedSearchTerm, selectedCategories, priceRange, ratings, formats, selectedTechnologies, sortBy]);
 
     useEffect(() => {
-        setSelectedCategory(searchParams.get('category') || '');
-        setSearchTerm(searchParams.get('search') || '');
+        isUrlSyncRef.current = true;
+        const category = searchParams.get('category') || '';
+        const newCategories = category ? [category] : [];
+        setSelectedCategories(prev => JSON.stringify(prev) === JSON.stringify(newCategories) ? prev : newCategories);
+
+        const format = searchParams.get('format') || '';
+        const newFormats = format ? [format] : [];
+        setFormats(prev => JSON.stringify(prev) === JSON.stringify(newFormats) ? prev : newFormats);
+
+        const tech = searchParams.get('tech') || searchParams.get('technology') || '';
+        const newTechs = tech ? [tech] : [];
+        setSelectedTechnologies(prev => JSON.stringify(prev) === JSON.stringify(newTechs) ? prev : newTechs);
+
+        const newSearch = searchParams.get('search') || '';
+        setSearchTerm(prev => prev === newSearch ? prev : newSearch);
         const page = Number(searchParams.get('page') || 1);
-        setCurrentPage(Number.isFinite(page) && page > 0 ? Math.floor(page) : 1);
+        const safePage = Number.isFinite(page) && page > 0 ? Math.floor(page) : 1;
+        setCurrentPage(prev => prev === safePage ? prev : safePage);
     }, [searchParams]);
 
     // Filter and sort products
@@ -444,16 +473,15 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
             );
         }
 
-        if (selectedCategory) {
-            // product.category is already the category slug (string)
-            result = result.filter(p => p.category === selectedCategory);
+        if (selectedCategories.length > 0) {
+            result = result.filter(p => selectedCategories.includes(p.category));
         }
 
-        if (formatFilter) {
-            result = result.filter(p => p.format === formatFilter);
+        if (formats.length > 0) {
+            result = result.filter(p => formats.includes(p.format));
         }
 
-        if (selectedTechnology) {
+        if (selectedTechnologies.length > 0) {
             const technologyAliases: Record<string, string[]> = {
                 react: ['react', 'reactjs'],
                 next: ['next.js', 'nextjs'],
@@ -465,22 +493,24 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
                 angular: ['angular', 'angularjs'],
                 laravel: ['laravel'],
             };
-            const dynamicTechnology = products
-                .flatMap((product: any) => (product.technologyVariants || []).map((variant: any) => String(variant.technology || '')))
-                .find((technology) => normalizeTechnologyName(technology).replace(/[^a-z0-9]+/g, '-') === selectedTechnology);
-            const aliases = technologyAliases[selectedTechnology]
-                || (dynamicTechnology ? [normalizeTechnologyName(dynamicTechnology)] : [selectedTechnology]);
             result = result.filter((p) => {
-                const text = [p.name, p.description, p.category, p.format, ...(p.tags || [])]
-                    .filter(Boolean)
-                    .join(' ')
-                    .toLowerCase();
-                return aliases.some((alias) => text.includes(alias));
+                const variants = (p as any).technologyVariants || [];
+                return selectedTechnologies.some((techKey) => {
+                    const dynamicTech = products
+                        .flatMap((product: any) => (product.technologyVariants || []).map((v: any) => String(v.technology || '')))
+                        .find((t) => normalizeTechnologyName(t).replace(/[^a-z0-9]+/g, '-') === techKey);
+                    const aliases = technologyAliases[techKey]
+                        || (dynamicTech ? [normalizeTechnologyName(dynamicTech)] : [techKey]);
+                    return variants.some((v: any) =>
+                        aliases.some((alias) => normalizeTechnologyName(v.technology) === normalizeTechnologyName(alias))
+                    );
+                });
             });
         }
 
-        if (ratingFilter) {
-            result = result.filter(p => (p.rating || 0) >= ratingFilter);
+        if (ratings.length > 0) {
+            const minRating = Math.min(...ratings);
+            result = result.filter(p => (p.rating || 0) >= minRating);
         }
 
         if (!isCatalogMode) {
@@ -505,7 +535,7 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
         }
 
         return result;
-    }, [products, debouncedSearchTerm, selectedCategory, sortBy, priceRange, ratingFilter, formatFilter, selectedTechnology, isCatalogMode]);
+    }, [products, debouncedSearchTerm, selectedCategories, sortBy, priceRange, ratings, formats, selectedTechnologies, isCatalogMode]);
 
     // Pagination logic
     const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
@@ -547,7 +577,7 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
     const currentSortLabel = sortOptions.find((option) => option.value === sortBy)?.label || 'Moi nhat';
 
     return (
-        <div className="min-h-screen bg-slate-50">
+        <div className="min-h-screen bg-slate-50 pb-4 md:pb-6">
             {/* Professional Hero Section - Mobile Optimized */}
             <div className="bg-slate-900 relative overflow-hidden text-white">
                 <div className="absolute inset-0">
@@ -608,7 +638,7 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
                     {/* Results Count */}
                     <div className="text-xs text-slate-500 mb-2">
                         <span className="font-bold text-slate-900">{filteredProducts.length}</span> mẫu demo
-                        {selectedCategory && <span> trong <span className="text-orange-600 font-semibold">{categories.find(c => c.slug === selectedCategory)?.name}</span></span>}
+                        {selectedCategories.length > 0 && <span> trong <span className="text-orange-600 font-semibold">{categories.find(c => c.slug === selectedCategories[0])?.name}{selectedCategories.length > 1 ? ` +${selectedCategories.length - 1}` : ''}</span></span>}
                     </div>
 
                     {/* Filter & Sort Buttons */}
@@ -618,7 +648,7 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
                             className="flex-1 flex items-center justify-center gap-1.5 bg-white px-3 py-2 sm:py-2.5 rounded-lg sm:rounded-xl border border-slate-200 shadow-sm font-bold text-slate-700 text-xs sm:text-sm active:scale-[0.98] transition-transform"
                         >
                             <SlidersHorizontal size={14} /> Bộ lọc
-                            {(selectedCategory || formatFilter || selectedTechnology || ratingFilter) && (
+                            {(selectedCategories.length > 0 || formats.length > 0 || selectedTechnologies.length > 0 || ratings.length > 0) && (
                                 <span className="w-4 h-4 bg-orange-500 text-white text-[10px] rounded-full flex items-center justify-center">!</span>
                             )}
                         </button>
@@ -657,19 +687,19 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
                     {/* Sidebar - Works for both Desktop (visible) and Mobile (fixed overlay) */}
                     <FilterSidebar
                         categories={categories}
-                        selectedCategory={selectedCategory}
-                        setSelectedCategory={setSelectedCategory}
+                        selectedCategories={selectedCategories}
+                        setSelectedCategories={setSelectedCategories}
                         priceRange={priceRange}
                         setPriceRange={setPriceRange}
-	                        rating={ratingFilter}
-	                        setRating={setRatingFilter}
-	                        format={formatFilter}
-	                        setFormat={setFormatFilter}
-	                        selectedTechnology={selectedTechnology}
-	                        setSelectedTechnology={setSelectedTechnology}
-	                        products={products}
-	                        isOpen={showSidebar}
-                                isCatalogMode={isCatalogMode}
+                        ratings={ratings}
+                        setRatings={setRatings}
+                        formats={formats}
+                        setFormats={setFormats}
+                        selectedTechnologies={selectedTechnologies}
+                        setSelectedTechnologies={setSelectedTechnologies}
+                        products={products}
+                        isOpen={showSidebar}
+                        isCatalogMode={isCatalogMode}
                         onClose={() => setShowSidebar(false)}
                     />
 
@@ -742,11 +772,11 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
                                 <button
                                     onClick={() => {
                                         setSearchTerm('');
-                                        setSelectedCategory('');
+                                        setSelectedCategories([]);
                                         setPriceRange([0, 5000000]);
-                                        setRatingFilter(null);
-                                        setFormatFilter('');
-                                        setSelectedTechnology('');
+                                        setRatings([]);
+                                        setFormats([]);
+                                        setSelectedTechnologies([]);
                                     }}
                                     className="bg-slate-900 text-white px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg sm:rounded-xl font-bold hover:bg-orange-600 transition-colors text-xs sm:text-sm"
                                 >

@@ -193,6 +193,14 @@ const FloatingWidgets = () => {
     const scrollable = document.documentElement.scrollHeight - window.innerHeight;
     const progress = scrollable > 0 ? window.scrollY / scrollable : 0;
     setShowScrollTop(progress >= 0.18);
+
+    const footer = document.querySelector('footer');
+    if (footer) {
+      const distFromBottom = document.documentElement.scrollHeight - (window.scrollY + window.innerHeight);
+      setHideNearFooter(distFromBottom < 450 || progress >= 0.85);
+    } else {
+      setHideNearFooter(false);
+    }
   }, []);
 
   const throttledScroll = useThrottle(checkScroll, 160);
@@ -201,34 +209,27 @@ const FloatingWidgets = () => {
     const footer = document.querySelector('footer');
     if (!footer || typeof IntersectionObserver === 'undefined') return;
 
-    const desktopQuery = window.matchMedia('(min-width: 768px)');
-    const syncFooterState = (isIntersecting: boolean) => {
-      setHideNearFooter(desktopQuery.matches && isIntersecting);
-    };
-
-    let footerIntersecting = false;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        footerIntersecting = entry.isIntersecting;
-        syncFooterState(footerIntersecting);
+        if (entry.isIntersecting) {
+          setHideNearFooter(true);
+        } else {
+          checkScroll();
+        }
       },
       {
         root: null,
-        rootMargin: '0px 0px -8% 0px',
-        threshold: 0.02,
+        rootMargin: '120px 0px 0px 0px',
+        threshold: 0,
       },
     );
 
-    const handleMediaChange = () => syncFooterState(footerIntersecting);
-
     observer.observe(footer);
-    desktopQuery.addEventListener('change', handleMediaChange);
 
     return () => {
       observer.disconnect();
-      desktopQuery.removeEventListener('change', handleMediaChange);
     };
-  }, []);
+  }, [checkScroll]);
 
   useEffect(() => {
     checkScroll();
@@ -357,7 +358,7 @@ const FloatingWidgets = () => {
         </a>
       </div>
 
-      <div className={`fixed right-3 z-[2147483647] flex flex-col items-end font-sans pointer-events-none transition-all duration-300 md:right-6 ${isChatOpen ? 'bottom-20 gap-3 md:bottom-6' : 'bottom-28 gap-8 md:bottom-10 md:gap-10'} ${hideNearFooter ? 'translate-y-6 opacity-0' : 'opacity-100'}`}>
+      <div className={`fixed right-3 z-[2147483647] flex flex-col items-end font-sans transition-all duration-300 md:right-6 ${isChatOpen ? 'bottom-20 gap-3 md:bottom-6' : hideNearFooter ? 'bottom-6 gap-0 md:bottom-6' : showScrollTop ? 'bottom-4 gap-8 md:bottom-4 md:gap-10' : 'bottom-24 gap-8 md:bottom-10 md:gap-10'}`}>
         <div
           className={`pointer-events-auto flex w-[calc(100vw-32px)] origin-bottom-right transform flex-col overflow-hidden rounded-2xl border border-orange-100 bg-white shadow-2xl transition-all duration-400 sm:w-[350px] ${
             isChatOpen
@@ -500,40 +501,44 @@ const FloatingWidgets = () => {
           </div>
         </div>
 
-        <button
-          onClick={() => setIsChatOpen((value) => !value)}
-          className={`pointer-events-auto relative z-[2147483647] flex items-center justify-center text-slate-950 transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 active:scale-95 ${isChatOpen
-            ? 'h-12 w-12 rounded-full border border-slate-200 bg-white shadow-lg'
-            : 'h-24 w-24 rounded-full border-0 bg-transparent shadow-none md:h-32 md:w-32'
-            }`}
-          aria-label="Mở trợ lý tư vấn"
-          type="button"
-        >
-          {!isChatOpen && (
-            <span className="pointer-events-none absolute bottom-[calc(100%+0.75rem)] right-0 whitespace-nowrap rounded-full border border-orange-100 bg-white/95 px-3 py-2 text-xs font-bold text-orange-700 shadow-lg shadow-orange-100/70 backdrop-blur-sm animate-chatbot-hint md:px-4 md:text-sm">
-              Cần tư vấn? Chat với mình
-            </span>
-          )}
-          {isChatOpen ? (
-            <ChevronUp size={26} className="rotate-180 text-slate-700" strokeWidth={2.5} />
-          ) : (
-            <span className="relative flex h-full w-full items-center justify-center">
-              <Image src="/chatbot_webgiare.webp" alt="Trợ lý Web Giá Rẻ" width={220} height={330} className="chatbot-avatar h-[170px] w-[170px] object-contain md:h-[220px] md:w-[220px]" />
-            </span>
-          )}
+        {!hideNearFooter && (
+          <button
+            onClick={() => setIsChatOpen((value) => !value)}
+            className={`pointer-events-auto relative z-[2147483647] flex items-center justify-center text-slate-950 transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 active:scale-95 ${isChatOpen
+              ? 'h-12 w-12 rounded-full border border-slate-200 bg-white shadow-lg'
+              : 'h-24 w-24 rounded-full border-0 bg-transparent shadow-none md:h-32 md:w-32'
+              }`}
+            aria-label="Mở trợ lý tư vấn"
+            type="button"
+          >
+            {!isChatOpen && (
+              <span className="pointer-events-none absolute bottom-[calc(100%+0.75rem)] right-0 whitespace-nowrap rounded-full border border-orange-100 bg-white/95 px-3 py-2 text-xs font-bold text-orange-700 shadow-lg shadow-orange-100/70 backdrop-blur-sm animate-chatbot-hint md:px-4 md:text-sm">
+                Cần tư vấn? Chat với mình
+              </span>
+            )}
+            {isChatOpen ? (
+              <ChevronUp size={26} className="rotate-180 text-slate-700" strokeWidth={2.5} />
+            ) : (
+              <span className="relative flex h-full w-full items-center justify-center">
+                <Image src="/chatbot_webgiare.webp" alt="Trợ lý Web Giá Rẻ" width={220} height={330} className="chatbot-avatar h-[170px] w-[170px] object-contain md:h-[220px] md:w-[220px]" />
+              </span>
+            )}
 
-          {!isChatOpen && (
-            <>
-              <span className="absolute -right-1 -top-1 h-4 w-4 rounded-full border-2 border-white bg-gradient-to-r from-rose-500 to-pink-500" />
-              <span className="absolute -bottom-1 -left-1 h-4 w-4 rounded-full border-2 border-white bg-emerald-400" />
-            </>
-          )}
-        </button>
+            {!isChatOpen && (
+              <>
+                <span className="absolute -right-1 -top-1 h-4 w-4 rounded-full border-2 border-white bg-gradient-to-r from-rose-500 to-pink-500" />
+                <span className="absolute -bottom-1 -left-1 h-4 w-4 rounded-full border-2 border-white bg-emerald-400" />
+              </>
+            )}
+          </button>
+        )}
 
         {showScrollTop && !isChatOpen && (
           <button
             onClick={scrollToTop}
-            className="pointer-events-auto flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-lg shadow-slate-200/70 transition-all animate-scroll-pop hover:-translate-y-1 hover:bg-slate-950 hover:text-white active:scale-95 md:h-11 md:w-11"
+            className={`pointer-events-auto flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-lg shadow-slate-200/70 transition-all animate-scroll-pop hover:-translate-y-1 hover:bg-slate-950 hover:text-white active:scale-95 md:h-11 md:w-11 ${
+              hideNearFooter ? 'mb-0' : 'mb-14 md:mb-0'
+            }`}
             aria-label="Lên đầu trang"
             type="button"
           >

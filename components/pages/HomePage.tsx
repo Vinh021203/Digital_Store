@@ -566,10 +566,18 @@ const HomePage = ({
   const textRefPerformance = useRef<HTMLDivElement>(null);
   const authorSliderRef = useRef<HTMLDivElement>(null);
   const bestsellerCarouselRef = useRef<HTMLDivElement>(null);
+  const popularCategoriesRef = useRef<HTMLDivElement>(null);
   const bestsellerDragStartX = useRef(0);
   const bestsellerDragStartScroll = useRef(0);
   const bestsellerDragging = useRef(false);
   const bestsellerPointerInside = useRef(false);
+
+  const scrollPopularCategories = (direction: 'prev' | 'next') => {
+    if (popularCategoriesRef.current) {
+      const scrollAmount = direction === 'next' ? 320 : -320;
+      popularCategoriesRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
 
   useEffect(() => {
     let intervalId: number | undefined;
@@ -1116,11 +1124,14 @@ const HomePage = ({
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-orange-300/70 to-transparent z-0" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
-          <div className="flex md:grid md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4 overflow-x-auto no-scrollbar pb-2 md:pb-0 snap-x">
+          <button type="button" onClick={() => scrollPopularCategories('prev')} className="absolute left-0 top-1/2 z-20 hidden h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-md transition hover:border-orange-300 hover:text-orange-600 md:flex" aria-label="Danh mục trước">
+            <ChevronLeft size={18} />
+          </button>
+          <div ref={popularCategoriesRef} className="flex gap-3 overflow-x-auto scroll-smooth no-scrollbar pb-2 snap-x md:gap-4">
             {[
               {
                 name: "Figma",
-                slug: "figma",
+                tech: "figma",
                 qty: "8,420",
                 gradient: "from-[#f24e1e]/15 to-orange-50",
                 icon: (
@@ -1134,81 +1145,44 @@ const HomePage = ({
               },
               {
                 name: "React",
-                slug: "source-code",
+                tech: "react",
                 qty: "6,543",
                 gradient: "from-[#61dafb]/15 to-cyan-50",
                 icon: (
-                  <svg
-                    className="w-7 h-7 md:w-8 md:h-8"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+                  <svg className="w-7 h-7 md:w-8 md:h-8" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="12" cy="12" r="2.05" fill="#61dafb" />
                     <g fill="none" stroke="#61dafb" strokeWidth="1.1">
                       <ellipse cx="12" cy="12" rx="10" ry="3.8" />
-                      <ellipse
-                        cx="12"
-                        cy="12"
-                        rx="10"
-                        ry="3.8"
-                        transform="rotate(60 12 12)"
-                      />
-                      <ellipse
-                        cx="12"
-                        cy="12"
-                        rx="10"
-                        ry="3.8"
-                        transform="rotate(120 12 12)"
-                      />
+                      <ellipse cx="12" cy="12" rx="10" ry="3.8" transform="rotate(60 12 12)" />
+                      <ellipse cx="12" cy="12" rx="10" ry="3.8" transform="rotate(120 12 12)" />
                     </g>
                   </svg>
                 ),
               },
               {
                 name: "HTML5",
-                slug: "templates",
+                tech: "html",
                 qty: "12,987",
                 gradient: "from-[#e34f26]/15 to-orange-50",
                 icon: (
-                  <svg
-                    className="w-7 h-7 md:w-8 md:h-8"
-                    viewBox="0 0 32 32"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+                  <svg className="w-7 h-7 md:w-8 md:h-8" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
                     <path d="M4 0l2.4 27L16 30l9.6-3L28 0z" fill="#e44d26" />
                     <path d="M16 27.4V2.6H26.1l-2 22.4z" fill="#f16529" />
-                    <path
-                      d="M9.1 6.3h6.9v3.4H12.8l.2 2.4H16v3.4h-6.2zm.3 8.6H12.7l.3 3.1 3 .8 3-0.8.3-3.5h3.3l-.6 7-6 1.7-6-1.7z"
-                      fill="white"
-                    />
-                    <path
-                      d="M16 6.3h6.9l-.2 2.2-.1 1.2H16v-3.4zm0 8.6h3.2l-.3 3.6-2.9.8v3.4l6-1.7.6-7H16z"
-                      fill="#ebebeb"
-                    />
+                    <path d="M9.1 6.3h6.9v3.4H12.8l.2 2.4H16v3.4h-6.2zm.3 8.6H12.7l.3 3.1 3 .8 3-0.8.3-3.5h3.3l-.6 7-6 1.7-6-1.7z" fill="white" />
+                    <path d="M16 6.3h6.9l-.2 2.2-.1 1.2H16v-3.4zm0 8.6h3.2l-.3 3.6-2.9.8v3.4l6-1.7.6-7H16z" fill="#ebebeb" />
                   </svg>
                 ),
               },
               {
                 name: "Next.js",
-                slug: "source-code",
+                tech: "next",
                 qty: "4,217",
                 gradient: "from-slate-200/50 to-slate-50",
                 icon: (
-                  <svg
-                    className="w-7 h-7 md:w-8 md:h-8"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+                  <svg className="w-7 h-7 md:w-8 md:h-8" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="12" cy="12" r="12" fill="black" />
-                    <path
-                      d="M7.7 7.2h1.62l5.86 8.64V7.2h1.62v9.6h-1.62L9.32 8.16v8.64H7.7V7.2z"
-                      fill="white"
-                    />
-                    <path
-                      d="M16.75 16.85 9.22 7.2h1.88l5.65 7.25v2.4z"
-                      fill="white"
-                      fillOpacity="0.75"
-                    />
+                    <path d="M7.7 7.2h1.62l5.86 8.64V7.2h1.62v9.6h-1.62L9.32 8.16v8.64H7.7V7.2z" fill="white" />
+                    <path d="M16.75 16.85 9.22 7.2h1.88l5.65 7.25v2.4z" fill="white" fillOpacity="0.75" />
                   </svg>
                 ),
               },
@@ -1218,101 +1192,74 @@ const HomePage = ({
                 qty: "2,109",
                 gradient: "from-[#0070f3]/15 to-blue-50",
                 icon: (
-                  <svg
-                    className="w-7 h-7 md:w-8 md:h-8"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <rect
-                      x="5"
-                      y="1"
-                      width="14"
-                      height="22"
-                      rx="3"
-                      fill="#0070f3"
-                    />
-                    <rect
-                      x="7"
-                      y="4"
-                      width="10"
-                      height="13"
-                      rx="1"
-                      fill="white"
-                      fillOpacity="0.9"
-                    />
+                  <svg className="w-7 h-7 md:w-8 md:h-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="5" y="1" width="14" height="22" rx="3" fill="#0070f3" />
+                    <rect x="7" y="4" width="10" height="13" rx="1" fill="white" fillOpacity="0.9" />
                     <circle cx="12" cy="19.5" r="1.2" fill="white" />
-                    <rect
-                      x="9"
-                      y="6"
-                      width="6"
-                      height="1"
-                      rx="0.5"
-                      fill="#0070f3"
-                    />
-                    <rect
-                      x="9"
-                      y="8.5"
-                      width="4"
-                      height="1"
-                      rx="0.5"
-                      fill="#0070f3"
-                      fillOpacity="0.5"
-                    />
+                    <rect x="9" y="6" width="6" height="1" rx="0.5" fill="#0070f3" />
+                    <rect x="9" y="8.5" width="4" height="1" rx="0.5" fill="#0070f3" fillOpacity="0.5" />
                   </svg>
                 ),
               },
               {
-                name: "Figma",
-                slug: "figma-templates",
+                name: "Vue.js",
+                tech: "vue",
                 qty: "3,891",
-                gradient: "from-purple-100/50 to-pink-50",
-                icon: (
-                  <svg
-                    className="w-7 h-7 md:w-8 md:h-8"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M8 24c2.2 0 4-1.8 4-4v-4H8c-2.2 0-4 1.8-4 4s1.8 4 4 4z"
-                      fill="#0acf83"
-                    />
-                    <path
-                      d="M4 12c0-2.2 1.8-4 4-4h4v8H8c-2.2 0-4-1.8-4-4z"
-                      fill="#a259ff"
-                    />
-                    <path
-                      d="M4 4c0-2.2 1.8-4 4-4h4v8H8C5.8 8 4 6.2 4 4z"
-                      fill="#f24e1e"
-                    />
-                    <path
-                      d="M12 0h4c2.2 0 4 1.8 4 4s-1.8 4-4 4h-4V0z"
-                      fill="#ff7262"
-                    />
-                    <circle cx="16" cy="12" r="4" fill="#1abcfe" />
-                  </svg>
-                ),
+                gradient: "from-emerald-100/50 to-green-50",
+                icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vuejs/vuejs-original.svg" alt="" className="h-7 w-7 md:h-8 md:w-8" loading="lazy" />,
               },
-            ].map((cat, i) => (
-              <Link
-                key={`${cat.name}-${cat.slug}-${i}`}
-                href={`/products?category=${cat.slug}`}
-                className={`group popular-item flex flex-col items-center text-center p-4 bg-white/95 border border-slate-200/80 rounded-2xl shadow-sm shadow-slate-200/60 hover:shadow-lg hover:-translate-y-1 hover:border-[#ea580c]/30 transition-all duration-300 min-w-[132px] md:min-w-0 flex-shrink-0 snap-start`}
-              >
-                <span
-                  className={`w-12 h-12 md:w-14 md:h-14 rounded-xl bg-gradient-to-br ${cat.gradient} flex items-center justify-center mb-2.5 transition-all duration-300 group-hover:scale-105 shadow-sm ring-1 ring-white`}
+              {
+                name: "Nuxt.js",
+                tech: "nuxt",
+                qty: "2,480",
+                gradient: "from-emerald-100/60 to-teal-50",
+                icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nuxtjs/nuxtjs-original.svg" alt="" className="h-7 w-7 md:h-8 md:w-8" loading="lazy" />,
+              },
+              {
+                name: "Angular",
+                tech: "angular",
+                qty: "1,920",
+                gradient: "from-red-100/60 to-rose-50",
+                icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/angularjs/angularjs-original.svg" alt="" className="h-7 w-7 md:h-8 md:w-8" loading="lazy" />,
+              },
+              {
+                name: "Canva",
+                tech: "canva",
+                qty: "1,640",
+                gradient: "from-cyan-100/60 to-blue-50",
+                icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/canva/canva-original.svg" alt="" className="h-7 w-7 md:h-8 md:w-8" loading="lazy" />,
+              },
+            ].map((cat, i) => {
+              const targetHref = cat.tech
+                ? `/products?tech=${cat.tech}`
+                : cat.slug
+                ? `/products?category=${cat.slug}`
+                : '/products';
+
+              return (
+                <Link
+                  key={`${cat.name}-${i}`}
+                  href={targetHref}
+                  className="group popular-item flex flex-col items-center text-center p-4 bg-white/95 border border-slate-200/80 rounded-2xl shadow-sm shadow-slate-200/60 hover:shadow-lg hover:-translate-y-1 hover:border-[#ea580c]/30 transition-all duration-300 min-w-[132px] md:min-w-0 flex-shrink-0 snap-start"
                 >
-                  {cat.icon}
-                </span>
-                <p className="text-xs md:text-sm font-bold text-slate-900 mb-0.5 group-hover:text-[#ea580c] transition-colors leading-tight">
-                  {cat.name}
-                </p>
-                <span className="text-[10px] md:text-xs text-slate-500 font-medium">
-                  {cat.qty} mẫu demo
-                </span>
-              </Link>
-            ))}
+                  <span
+                    className={`w-12 h-12 md:w-14 md:h-14 rounded-xl bg-gradient-to-br ${cat.gradient} flex items-center justify-center mb-2.5 transition-all duration-300 group-hover:scale-105 shadow-sm ring-1 ring-white`}
+                  >
+                    {cat.icon}
+                  </span>
+                  <p className="text-xs md:text-sm font-bold text-slate-900 mb-0.5 group-hover:text-[#ea580c] transition-colors leading-tight">
+                    {cat.name}
+                  </p>
+                  <span className="text-[10px] md:text-xs text-slate-500 font-medium">
+                    {cat.qty} mẫu demo
+                  </span>
+                </Link>
+              );
+            })}
           </div>
+          <button type="button" onClick={() => scrollPopularCategories('next')} className="absolute right-0 top-1/2 z-20 hidden h-10 w-10 translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-md transition hover:border-orange-300 hover:text-orange-600 md:flex" aria-label="Danh mục tiếp theo">
+            <ChevronRight size={18} />
+          </button>
         </div>
       </section>
 
