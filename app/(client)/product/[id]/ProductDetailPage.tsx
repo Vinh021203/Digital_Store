@@ -59,6 +59,7 @@ const DemoPreviewModal = ({ isOpen, onClose, demoUrl, productName }: {
 
         const previousOverflow = document.body.style.overflow;
         document.body.style.overflow = 'hidden';
+        document.body.classList.add('demo-preview-open');
 
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === 'Escape') onClose();
@@ -68,6 +69,7 @@ const DemoPreviewModal = ({ isOpen, onClose, demoUrl, productName }: {
 
         return () => {
             document.body.style.overflow = previousOverflow;
+            document.body.classList.remove('demo-preview-open');
             window.removeEventListener('keydown', handleKeyDown);
         };
     }, [isOpen, onClose]);

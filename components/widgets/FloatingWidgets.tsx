@@ -327,38 +327,95 @@ const FloatingWidgets = () => {
     inputRef.current?.focus();
   };
 
+  const [isDemoPreviewOpen, setIsDemoPreviewOpen] = useState(false);
+
+  useEffect(() => {
+    const checkDemoPreview = () => {
+      if (typeof document === 'undefined') return;
+      const isDemo =
+        document.body.classList.contains('demo-preview-open') ||
+        Boolean(document.querySelector('iframe[title^="Demo"]'));
+      setIsDemoPreviewOpen(isDemo);
+    };
+
+    checkDemoPreview();
+
+    const observer = new MutationObserver(checkDemoPreview);
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ['class', 'style'],
+      childList: true,
+      subtree: true,
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  if (isDemoPreviewOpen) return null;
+
   return (
     <>
-      <div className={`fixed bottom-24 left-3 z-[70] flex flex-col items-center gap-2 rounded-3xl border border-slate-200/80 bg-white/92 p-1.5 font-sans shadow-[0_18px_45px_rgba(15,23,42,0.13)] backdrop-blur-xl transition-all duration-300 md:bottom-6 md:left-6 md:p-2 ${hideNearFooter ? 'pointer-events-none translate-y-6 opacity-0' : 'animate-widget-dock-in opacity-100'}`}>
-        <a href={PHONE_LINK} className="group relative flex items-center" aria-label={`Gọi ${DISPLAY_PHONE}`}>
-          <div className="widget-action widget-dock-item flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 ring-1 ring-blue-100 transition-all duration-200 hover:-translate-y-0.5 hover:bg-blue-600 hover:text-white hover:shadow-lg hover:shadow-blue-200 md:h-11 md:w-11">
-            <Phone size={19} strokeWidth={2.35} />
+      {/* ── Contact Dock ── Desktop: bottom-left pill | Mobile: right side, vertically centered ── */}
+      <div className={`
+        fixed z-[70] flex flex-col items-center gap-4 font-sans transition-all duration-300
+        right-3 top-[38%] -translate-y-1/2
+        md:right-auto md:left-6 md:bottom-6 md:top-auto md:translate-y-0 md:gap-3
+        md:rounded-3xl md:border md:border-slate-200/80 md:bg-white/92 md:px-2.5 md:py-3 md:shadow-[0_18px_45px_rgba(15,23,42,0.13)] md:backdrop-blur-xl
+        ${hideNearFooter ? 'pointer-events-none opacity-0 translate-x-8 md:translate-x-0 md:translate-y-6' : 'animate-widget-dock-in opacity-100'}
+      `}>
+        {/* Phone */}
+        <a href={PHONE_LINK} className="group relative flex items-center animate-widget-shake" style={{ animationDelay: '0s' }} aria-label={`Gọi ${DISPLAY_PHONE}`}>
+          <span className="absolute inset-0 rounded-full animate-ping-slow bg-blue-400/25 md:hidden" />
+          <div className="widget-action widget-dock-item relative flex h-12 w-12 items-center justify-center rounded-full bg-blue-50 text-blue-600 ring-1 ring-blue-100 shadow-md shadow-blue-100/60 transition-all duration-200 hover:-translate-y-0.5 hover:bg-blue-600 hover:text-white hover:shadow-lg hover:shadow-blue-200">
+            <Phone size={20} strokeWidth={2.2} />
           </div>
-          <span className="pointer-events-none absolute left-full ml-3 hidden whitespace-nowrap rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 opacity-0 shadow-lg shadow-slate-200/70 transition-all duration-200 group-hover:translate-x-1 group-hover:opacity-100 md:block">
+          <span className="pointer-events-none absolute right-full mr-3 whitespace-nowrap rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 opacity-0 shadow-lg transition-all duration-200 group-hover:-translate-x-1 group-hover:opacity-100 hidden md:block md:right-auto md:left-1/2 md:-translate-x-1/2 md:bottom-full md:mb-2 md:group-hover:translate-x-0 md:group-hover:-translate-y-1">
             Gọi {DISPLAY_PHONE}
           </span>
         </a>
 
-        <a href={ZALO_LINK} target="_blank" rel="noopener noreferrer" className="group relative flex items-center" aria-label="Chat Zalo">
-          <div className="widget-action widget-dock-item flex h-10 w-10 items-center justify-center rounded-2xl bg-[#eef5ff] text-[#0068ff] ring-1 ring-blue-100 transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#dcecff] hover:shadow-lg hover:shadow-blue-200 md:h-11 md:w-11">
-            <ZaloIcon className="scale-90 transition-transform duration-200 group-hover:scale-100 md:scale-100 md:group-hover:scale-105" />
+        {/* Zalo */}
+        <a href={ZALO_LINK} target="_blank" rel="noopener noreferrer" className="group relative flex items-center animate-widget-shake" style={{ animationDelay: '0.6s' }} aria-label="Chat Zalo">
+          <span className="absolute inset-0 rounded-full animate-ping-slow bg-blue-300/25 md:hidden" style={{ animationDelay: '0.5s' }} />
+          <div className="widget-action widget-dock-item relative flex h-12 w-12 items-center justify-center rounded-full bg-[#eef5ff] text-[#0068ff] ring-1 ring-blue-100 shadow-md shadow-blue-100/60 transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#dcecff] hover:shadow-lg hover:shadow-blue-200">
+            <ZaloIcon className="transition-transform duration-200 group-hover:scale-105" />
           </div>
-          <span className="pointer-events-none absolute left-full ml-3 hidden whitespace-nowrap rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 opacity-0 shadow-lg shadow-slate-200/70 transition-all duration-200 group-hover:translate-x-1 group-hover:opacity-100 md:block">
+          <span className="pointer-events-none absolute right-full mr-3 whitespace-nowrap rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 opacity-0 shadow-lg transition-all duration-200 group-hover:-translate-x-1 group-hover:opacity-100 hidden md:block md:right-auto md:left-1/2 md:-translate-x-1/2 md:bottom-full md:mb-2 md:group-hover:translate-x-0 md:group-hover:-translate-y-1">
             Chat Zalo
           </span>
         </a>
 
-        <a href={EMAIL_LINK} className="group relative flex items-center" aria-label="Gửi email">
-          <div className="widget-action widget-dock-item flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-50 text-orange-600 ring-1 ring-orange-100 transition-all duration-200 hover:-translate-y-0.5 hover:bg-orange-600 hover:text-white hover:shadow-lg hover:shadow-orange-200 md:h-11 md:w-11">
-            <Mail size={19} strokeWidth={2.35} />
+        {/* Email */}
+        <a href={EMAIL_LINK} className="group relative flex items-center animate-widget-shake" style={{ animationDelay: '1.2s' }} aria-label="Gửi email">
+          <span className="absolute inset-0 rounded-full animate-ping-slow bg-orange-300/25 md:hidden" style={{ animationDelay: '1s' }} />
+          <div className="widget-action widget-dock-item relative flex h-12 w-12 items-center justify-center rounded-full bg-orange-50 text-orange-600 ring-1 ring-orange-100 shadow-md shadow-orange-100/60 transition-all duration-200 hover:-translate-y-0.5 hover:bg-orange-600 hover:text-white hover:shadow-lg hover:shadow-orange-200">
+            <Mail size={20} strokeWidth={2.2} />
           </div>
-          <span className="pointer-events-none absolute left-full ml-3 hidden whitespace-nowrap rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 opacity-0 shadow-lg shadow-slate-200/70 transition-all duration-200 group-hover:translate-x-1 group-hover:opacity-100 md:block">
+          <span className="pointer-events-none absolute right-full mr-3 whitespace-nowrap rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 opacity-0 shadow-lg transition-all duration-200 group-hover:-translate-x-1 group-hover:opacity-100 hidden md:block md:right-auto md:left-1/2 md:-translate-x-1/2 md:bottom-full md:mb-2 md:group-hover:translate-x-0 md:group-hover:-translate-y-1">
             Gửi email
           </span>
         </a>
+
+        {/* Scroll To Top - Desktop (inside left dock below contact buttons) */}
+        {showScrollTop && !isChatOpen && (
+          <button
+            onClick={scrollToTop}
+            className="group relative flex items-center pointer-events-auto hidden md:flex animate-scroll-pop"
+            aria-label="Lên đầu trang"
+            type="button"
+          >
+            <div className="widget-action widget-dock-item relative flex h-11 w-11 items-center justify-center rounded-full bg-slate-900 text-white ring-1 ring-slate-800 shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-orange-600">
+              <ChevronUp size={20} strokeWidth={2.6} />
+            </div>
+            <span className="pointer-events-none absolute right-full mr-3 whitespace-nowrap rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 opacity-0 shadow-lg transition-all duration-200 group-hover:-translate-x-1 group-hover:opacity-100 hidden md:block md:right-auto md:left-1/2 md:-translate-x-1/2 md:bottom-full md:mb-2 md:group-hover:translate-x-0 md:group-hover:-translate-y-1">
+              Lên đầu trang
+            </span>
+          </button>
+        )}
       </div>
 
-      <div className={`fixed right-3 z-[2147483647] flex flex-col items-end font-sans transition-all duration-300 md:right-6 ${isChatOpen ? 'bottom-20 gap-3 md:bottom-6' : hideNearFooter ? 'bottom-6 gap-0 md:bottom-6' : showScrollTop ? 'bottom-4 gap-8 md:bottom-4 md:gap-10' : 'bottom-24 gap-8 md:bottom-10 md:gap-10'}`}>
+      {/* ── Chatbot (bottom-right) ── */}
+      <div className={`fixed right-3 z-[2147483647] flex flex-col items-end font-sans transition-all duration-300 md:right-6 ${isChatOpen ? 'bottom-20 gap-2 md:bottom-6' : hideNearFooter ? 'bottom-20 gap-0 md:bottom-6' : 'bottom-20 gap-2.5 md:bottom-11 md:gap-2.5'}`}>
         <div
           className={`pointer-events-auto flex w-[calc(100vw-32px)] origin-bottom-right transform flex-col overflow-hidden rounded-2xl border border-orange-100 bg-white shadow-2xl transition-all duration-400 sm:w-[350px] ${
             isChatOpen
@@ -506,7 +563,7 @@ const FloatingWidgets = () => {
             onClick={() => setIsChatOpen((value) => !value)}
             className={`pointer-events-auto relative z-[2147483647] flex items-center justify-center text-slate-950 transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 active:scale-95 ${isChatOpen
               ? 'h-12 w-12 rounded-full border border-slate-200 bg-white shadow-lg'
-              : 'h-24 w-24 rounded-full border-0 bg-transparent shadow-none md:h-32 md:w-32'
+              : 'h-20 w-20 rounded-full border-0 bg-transparent shadow-none md:h-32 md:w-32'
               }`}
             aria-label="Mở trợ lý tư vấn"
             type="button"
@@ -520,7 +577,8 @@ const FloatingWidgets = () => {
               <ChevronUp size={26} className="rotate-180 text-slate-700" strokeWidth={2.5} />
             ) : (
               <span className="relative flex h-full w-full items-center justify-center">
-                <Image src="/chatbot_webgiare.webp" alt="Trợ lý Web Giá Rẻ" width={220} height={330} className="chatbot-avatar h-[170px] w-[170px] object-contain md:h-[220px] md:w-[220px]" />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/chatbot.gif" alt="Trợ lý Web Giá Rẻ" width={220} height={330} className="chatbot-avatar h-[140px] w-[140px] object-contain md:h-[220px] md:w-[220px]" />
               </span>
             )}
 
@@ -533,144 +591,100 @@ const FloatingWidgets = () => {
           </button>
         )}
 
-        {showScrollTop && !isChatOpen && (
-          <button
-            onClick={scrollToTop}
-            className={`pointer-events-auto flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-lg shadow-slate-200/70 transition-all animate-scroll-pop hover:-translate-y-1 hover:bg-slate-950 hover:text-white active:scale-95 md:h-11 md:w-11 ${
-              hideNearFooter ? 'mb-0' : 'mb-14 md:mb-0'
-            }`}
-            aria-label="Lên đầu trang"
-            type="button"
-          >
-            <ChevronUp size={20} strokeWidth={2.6} />
-          </button>
-        )}
+
 
         <style jsx global>{`
-          .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-          }
+          .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+          .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+          .custom-scrollbar::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #f97316, #ef4444); border-radius: 10px; }
+          .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #ea580c, #dc2626); }
 
           @keyframes chatbot-float {
             0%, 100% { transform: translateY(0) rotate(-1deg); }
             50% { transform: translateY(-4px) rotate(1deg); }
           }
-
-          .chatbot-avatar {
-            animation: chatbot-float 3.2s ease-in-out infinite;
-            filter: drop-shadow(0 8px 8px rgba(37, 99, 235, 0.2));
-          }
+          .chatbot-avatar { animation: chatbot-float 3.2s ease-in-out infinite; filter: drop-shadow(0 8px 8px rgba(37,99,235,0.2)); }
 
           @keyframes chatbot-hint {
             0%, 100% { opacity: 0; transform: translateX(12px) scale(0.94); }
             12%, 78% { opacity: 1; transform: translateX(0) scale(1); }
             90% { opacity: 0; transform: translateX(8px) scale(0.96); }
           }
-
-          .animate-chatbot-hint {
-            animation: chatbot-hint 5.5s ease-in-out infinite;
-          }
-
-          .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f5f9;
-            border-radius: 10px;
-          }
-
-          .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, #f97316, #ef4444);
-            border-radius: 10px;
-          }
-
-          .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(180deg, #ea580c, #dc2626);
-          }
+          .animate-chatbot-hint { animation: chatbot-hint 5.5s ease-in-out infinite; }
 
           @keyframes fade-in-up {
-            from {
-              opacity: 0;
-              transform: translateY(10px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
           }
+          .animate-fade-in-up { animation: fade-in-up 0.3s ease-out; }
 
           @keyframes widget-dock-in {
-            from {
-              opacity: 0;
-              transform: translateX(-10px) translateY(8px);
-            }
-            to {
-              opacity: 1;
-              transform: translateX(0) translateY(0);
-            }
+            from { opacity: 0; transform: translateX(-10px) translateY(8px); }
+            to { opacity: 1; transform: translateX(0) translateY(0); }
           }
+          .animate-widget-dock-in { animation: widget-dock-in 0.38s ease-out both; }
 
           @keyframes widget-shine {
-            from {
-              transform: translateX(-130%) rotate(18deg);
-            }
-            to {
-              transform: translateX(130%) rotate(18deg);
-            }
+            from { transform: translateX(-130%) rotate(18deg); }
+            to { transform: translateX(130%) rotate(18deg); }
           }
 
           @keyframes widget-action-in {
             from { opacity: 0; transform: translateY(8px) scale(0.92); }
             to { opacity: 1; transform: translateY(0) scale(1); }
           }
-
-          .widget-dock-item {
-            animation: widget-action-in 0.45s ease-out both;
-          }
-
-          .widget-dock-item:nth-child(2) { animation-delay: 0.08s; }
-          .widget-dock-item:nth-child(3) { animation-delay: 0.16s; }
+          .widget-dock-item { animation: widget-action-in 0.45s ease-out both; }
+          .widget-dock-item:nth-child(2) { animation-delay: 0.1s; }
+          .widget-dock-item:nth-child(3) { animation-delay: 0.2s; }
 
           @keyframes scroll-pop {
-            from {
-              opacity: 0;
-              transform: translateY(10px) scale(0.94);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0) scale(1);
-            }
+            from { opacity: 0; transform: translateY(10px) scale(0.94); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
           }
+          .animate-scroll-pop { animation: scroll-pop 0.24s ease-out both; }
 
-          .animate-fade-in-up {
-            animation: fade-in-up 0.3s ease-out;
-          }
-
-          .animate-widget-dock-in {
-            animation: widget-dock-in 0.38s ease-out both;
-          }
-
-          .animate-scroll-pop {
-            animation: scroll-pop 0.24s ease-out both;
-          }
-
-          .widget-action {
-            position: relative;
-            overflow: hidden;
-          }
-
+          .widget-action { position: relative; overflow: hidden; }
           .widget-action::after {
             content: "";
             position: absolute;
             inset: -45% auto -45% -70%;
             width: 46%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.72), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.72), transparent);
             opacity: 0;
           }
+          .widget-action:hover::after { opacity: 1; animation: widget-shine 0.72s ease-out; }
 
-          .widget-action:hover::after {
-            opacity: 1;
-            animation: widget-shine 0.72s ease-out;
+          @keyframes ping-slow {
+            0% { transform: scale(1); opacity: 0.6; }
+            70%, 100% { transform: scale(1.65); opacity: 0; }
           }
+          .animate-ping-slow { animation: ping-slow 2.4s cubic-bezier(0,0,0.2,1) infinite; }
+
+          @keyframes widget-shake {
+            0%, 80%, 100% { transform: rotate(0deg) scale(1); }
+            84% { transform: rotate(-14deg) scale(1.1); }
+            87% { transform: rotate(14deg) scale(1.1); }
+            90% { transform: rotate(-10deg) scale(1.06); }
+            93% { transform: rotate(10deg) scale(1.06); }
+            96% { transform: rotate(-4deg) scale(1.02); }
+          }
+          .animate-widget-shake { animation: widget-shake 3s ease-in-out infinite; }
         `}</style>
       </div>
+
+      {/* Scroll-to-top: fixed LEFT side on mobile */}
+      {showScrollTop && !isChatOpen && !hideNearFooter && (
+        <button
+          onClick={scrollToTop}
+          className="pointer-events-auto fixed left-3 bottom-16 z-[2147483647] flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-lg shadow-slate-200/70 transition-all animate-scroll-pop hover:-translate-y-1 hover:bg-slate-950 hover:text-white active:scale-95 md:hidden"
+          aria-label="Lên đầu trang"
+          type="button"
+        >
+          <ChevronUp size={20} strokeWidth={2.6} />
+        </button>
+      )}
+
+
     </>
   );
 };
