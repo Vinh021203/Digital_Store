@@ -16,7 +16,6 @@ import {
   Phone,
   Send,
   Star,
-  User,
   X,
 } from 'lucide-react';
 
@@ -35,6 +34,7 @@ interface ProductRecommendation {
   price: number;
   image: string;
   rating: number;
+  format?: string;
 }
 
 const DISPLAY_PHONE = '0971 386 588';
@@ -54,7 +54,7 @@ const useThrottle = (callback: () => void, delay: number) => {
   }, [callback, delay]);
 };
 
-const formatPrice = (price: number) => `${price.toLocaleString('vi-VN')}đ`;
+const formatPrice = (price: number) => `${price.toLocaleString('vi-VN')} đ`;
 
 const ProductCard = memo(({ product }: { product: ProductRecommendation }) => (
   <Link
@@ -80,6 +80,7 @@ const ProductCard = memo(({ product }: { product: ProductRecommendation }) => (
       <h4 className="line-clamp-1 text-xs font-bold text-slate-800 group-hover:text-orange-600">
         {product.name}
       </h4>
+      <span className="mt-0.5 block truncate text-[10px] text-slate-400">{product.format || 'Website template'}</span>
       <div className="mt-0.5 flex items-center gap-1">
         <Star size={10} className="fill-amber-400 text-amber-400" />
         <span className="text-[10px] text-slate-500">{product.rating?.toFixed(1) || '5.0'}</span>
@@ -118,12 +119,13 @@ const FloatingWidgets = () => {
   const [contactName, setContactName] = useState('');
   const [contactPhone, setContactPhone] = useState('');
   const [contactReady, setContactReady] = useState(false);
-  const [currentQuickReplies, setCurrentQuickReplies] = useState<string[]>([]);
+  const [currentQuickReplies, setCurrentQuickReplies] = useState<string[]>(['Tìm Landing Page', 'Xem Theme phổ biến', 'Tư vấn theo ngân sách', 'Hỏi về license']);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     {
       id: 1,
       sender: 'bot',
-      text: 'Chào bạn! Mình là trợ lý AI của Web Giá Rẻ - Portfolio. Mình có thể giúp bạn tìm giao diện, template hoặc giải đáp thắc mắc. Bạn cần tư vấn gì hôm nay?',
+      text: 'Xin chào! Mình là trợ lý tư vấn của Web Giá Rẻ. Bạn đang cần tìm mẫu website, landing page, dashboard hay muốn được tư vấn theo ngân sách?',
+      quickReplies: ['Tìm Landing Page', 'Xem Theme phổ biến', 'Tư vấn theo ngân sách', 'Hỏi về license'],
     },
   ]);
   const [chatSessionId] = useState(() => {
@@ -458,15 +460,19 @@ const FloatingWidgets = () => {
             </div>
           </div>
 
-          <div className="custom-scrollbar relative flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto overscroll-contain bg-gradient-to-b from-orange-50/30 to-white p-2.5">
+          <div className={`custom-scrollbar relative flex min-h-0 flex-1 flex-col gap-2 overscroll-contain bg-gradient-to-b from-orange-50/30 to-white p-2.5 ${!authLoading && !user && !contactReady ? 'overflow-hidden' : 'overflow-y-auto'}`}>
             {!authLoading && !user && !contactReady && (
-              <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/95 p-5 backdrop-blur-sm">
-                <form onSubmit={saveContact} className="w-full max-w-[300px] rounded-2xl border border-orange-100 bg-white p-4 shadow-lg">
-                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-orange-100 text-orange-600"><User size={19} /></div>
-                  <h4 className="text-sm font-black text-slate-900">Để lại thông tin để được tư vấn</h4>
-                  <p className="mt-1 text-xs leading-relaxed text-slate-500">Mình cần tên và số điện thoại để đội ngũ có thể hỗ trợ bạn khi cần.</p>
-                  <input value={contactName} onChange={(event) => setContactName(event.target.value)} required minLength={2} placeholder="Tên của bạn" className="mt-3 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100" />
-                  <input value={contactPhone} onChange={(event) => setContactPhone(event.target.value)} required placeholder="Số điện thoại" inputMode="tel" className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100" />
+              <div className="absolute inset-0 z-20 flex items-center justify-center overflow-hidden bg-white px-5 py-4">
+                <form onSubmit={saveContact} className="w-full max-w-[300px] px-1">
+                  <div className="mb-4 flex items-center gap-3">
+                    <Image src="/chatbot_webgiare.webp" alt="Trợ lý Web Giá Rẻ" width={64} height={64} className="h-14 w-14 shrink-0 object-contain" />
+                    <div className="min-w-0">
+                      <h4 className="text-[15px] font-black leading-tight text-slate-900">Tư vấn nhanh cùng Web Giá Rẻ</h4>
+                      <p className="mt-1 text-xs leading-relaxed text-slate-500">Để lại thông tin, mình hỗ trợ bạn ngay nhé.</p>
+                    </div>
+                  </div>
+                  <input value={contactName} onChange={(event) => setContactName(event.target.value)} required minLength={2} placeholder="Tên của bạn" autoComplete="name" className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100" />
+                  <input value={contactPhone} onChange={(event) => setContactPhone(event.target.value)} required placeholder="Số điện thoại" inputMode="tel" autoComplete="tel" className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100" />
                   <button type="submit" className="mt-3 w-full rounded-xl bg-gradient-to-r from-orange-600 to-red-600 px-3 py-2.5 text-sm font-bold text-white shadow-sm">Bắt đầu trò chuyện</button>
                 </form>
               </div>

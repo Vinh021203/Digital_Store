@@ -18,6 +18,7 @@ import {
   QrCode,
   Upload,
   Image as ImageIcon,
+  Bot,
 } from 'lucide-react';
 import { useToast } from '@/context/ToastContext';
 import { getSiteSettings, updateSettings, type SiteSettings } from '@/lib/siteSettings';
@@ -25,7 +26,7 @@ import Image from 'next/image';
 
 const SettingsManager = () => {
   const { addToast } = useToast();
-  const [activeSection, setActiveSection] = useState<'general' | 'payment' | 'email' | 'security' | 'backup'>('general');
+  const [activeSection, setActiveSection] = useState<'general' | 'payment' | 'email' | 'security' | 'backup' | 'ai'>('general');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -69,6 +70,10 @@ const SettingsManager = () => {
     security_2fa_enabled: false,
     security_recaptcha_enabled: false,
     security_session_timeout: 60,
+  });
+
+  const [aiForm, setAiForm] = useState({
+    ai_model: 'deepseek/deepseek-v4-flash-free',
   });
 
   // Load settings
@@ -116,6 +121,8 @@ const SettingsManager = () => {
         security_recaptcha_enabled: data.security_recaptcha_enabled,
         security_session_timeout: data.security_session_timeout,
       });
+
+      setAiForm({ ai_model: data.ai_model });
     } catch (error) {
       console.error('Error loading settings:', error);
       addToast('Không thể tải cài đặt', 'error');
@@ -180,6 +187,18 @@ const SettingsManager = () => {
     }
   };
 
+  const handleSaveAI = async () => {
+    setSaving(true);
+    try {
+      const success = await updateSettings(aiForm);
+      addToast(success ? 'Đã lưu model AI cho chatbot' : 'Không thể lưu model AI', success ? 'success' : 'error');
+    } catch {
+      addToast('Có lỗi khi lưu cấu hình AI', 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   // QR Image upload
   const handleQRUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -209,6 +228,7 @@ const SettingsManager = () => {
     { id: 'email' as const, label: 'Email & SMTP', icon: Mail, desc: 'Máy chủ gửi mail hệ thống.' },
     { id: 'security' as const, label: 'Bảo mật', icon: Shield, desc: 'Mật khẩu mạnh, 2FA, session.' },
     { id: 'backup' as const, label: 'Sao lưu dữ liệu', icon: Database, desc: 'Lịch sao lưu database.' },
+    { id: 'ai' as const, label: 'AI Chatbot', icon: Bot, desc: 'Chọn model cho chatbot tư vấn.' },
   ];
 
   const Toggle = ({
@@ -720,6 +740,58 @@ const SettingsManager = () => {
                 >
                   Mở Supabase Dashboard
                 </a>
+              </div>
+            </section>
+          )}
+
+          {/* AI Chatbot */}
+          {activeSection === 'ai' && (
+            <section className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8 space-y-6">
+              <div>
+                <h3 className="font-bold text-lg text-slate-900 flex items-center gap-2">
+                  <Bot size={20} className="text-indigo-600" />
+                  Model AI cho Chatbot
+                </h3>
+                <p className="text-xs text-slate-500 mt-1.5">
+                  Chọn model OrcaRouter dùng cho chatbot và AI tư vấn. API key chỉ đặt trong biến môi trường server.
+                </p>
+              </div>
+
+              <div className="grid gap-3">
+                {[
+                  { id: 'deepseek/deepseek-v4-flash-free', label: 'DeepSeek V4 Flash Free', description: 'Nhanh, phù hợp tư vấn khách hàng hằng ngày.' },
+                  { id: 'deepseek/deepseek-v4-pro-free', label: 'DeepSeek V4 Pro Free', description: 'Phân tích sâu hơn cho nhu cầu phức tạp.' },
+                ].map((model) => (
+                  <label key={model.id} className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition-colors ${aiForm.ai_model === model.id ? 'border-indigo-500 bg-indigo-50' : 'border-slate-200 hover:border-indigo-300'}`}>
+                    <input
+                      type="radio"
+                      name="ai_model"
+                      value={model.id}
+                      checked={aiForm.ai_model === model.id}
+                      onChange={(e) => setAiForm({ ai_model: e.target.value })}
+                      className="mt-1 accent-indigo-600"
+                    />
+                    <span>
+                      <span className="block text-sm font-bold text-slate-800">{model.label}</span>
+                      <span className="mt-1 block text-xs text-slate-500">{model.description}</span>
+                    </span>
+                  </label>
+                ))}
+              </div>
+
+              <div className="rounded-xl bg-amber-50 p-4 text-xs leading-5 text-amber-800">
+                  Nếu CMS chưa lưu lựa chọn, hệ thống sẽ dùng <code>ORCAROUTER_MODEL</code> trên server làm dự phòng.
+              </div>
+
+              <div className="pt-4 flex justify-end">
+                <button
+                  onClick={handleSaveAI}
+                  disabled={saving}
+                  className="bg-indigo-600 text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-indigo-700 transition-colors flex items-center gap-2 shadow-md shadow-indigo-200 disabled:opacity-50"
+                >
+                  {saving ? <Loader size={16} className="animate-spin" /> : <Save size={16} />}
+                  Lưu model AI
+                </button>
               </div>
             </section>
           )}

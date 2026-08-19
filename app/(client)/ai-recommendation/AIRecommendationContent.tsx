@@ -504,7 +504,7 @@ export default function AIRecommendationPage() {
                         <span className="hidden text-xs font-bold text-slate-300 sm:block">AI Design Advisor</span>
                     </button>
                     <div className="flex items-center gap-1.5 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-2.5 py-1.5 text-[9px] font-bold text-emerald-300 sm:gap-2 sm:px-3 sm:text-[11px]">
-                        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400 sm:h-2 sm:w-2" /> Gemini AI sẵn sàng
+                        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400 sm:h-2 sm:w-2" /> AI sẵn sàng
                     </div>
                 </header>
 
@@ -517,7 +517,7 @@ export default function AIRecommendationPage() {
                             Chọn đúng giao diện cho <span className="text-orange-400">dự án của bạn.</span>
                         </h1>
                         <p className="mt-2 max-w-xl text-xs leading-5 text-slate-300 sm:mt-3 sm:text-sm sm:leading-6 lg:mt-4 lg:text-base lg:leading-7">
-                            Trả lời 4 câu hỏi ngắn. Gemini AI sẽ phân tích mục tiêu, nền tảng, phong cách và ngân sách để đề xuất những mẫu phù hợp nhất.
+                            Trả lời 4 câu hỏi ngắn. AI sẽ phân tích mục tiêu, nền tảng, phong cách và ngân sách để đề xuất những mẫu phù hợp nhất.
                         </p>
                         <div className="mt-3 flex flex-wrap gap-1.5 sm:mt-4 sm:gap-2 lg:mt-6 lg:gap-2.5">
                             {['4 câu hỏi nhanh', 'Dữ liệu mẫu thực tế', 'Kết quả cá nhân hóa'].map((item) => (
@@ -559,7 +559,7 @@ export default function AIRecommendationPage() {
                     <div className="absolute inset-0 animate-spin rounded-full border-4 border-blue-500 border-t-orange-400" />
                     <Brain className="absolute inset-0 m-auto animate-pulse text-cyan-300" size={38} />
                 </div>
-                <div className="relative mb-6 text-center"><p className="text-xs font-black uppercase tracking-[0.2em] text-blue-300">Gemini AI đang làm việc</p><h1 className="mt-2 text-2xl font-black sm:text-3xl">Đang tìm lựa chọn phù hợp nhất</h1></div>
+                <div className="relative mb-6 text-center"><p className="text-xs font-black uppercase tracking-[0.2em] text-blue-300">AI đang làm việc</p><h1 className="mt-2 text-2xl font-black sm:text-3xl">Đang tìm lựa chọn phù hợp nhất</h1></div>
                 <div className="relative w-full max-w-md space-y-2 rounded-3xl border border-white/10 bg-white/[0.055] p-5 font-mono backdrop-blur-xl">
                     {analysisLog.map((log, idx) => (
                         <div
@@ -596,7 +596,7 @@ export default function AIRecommendationPage() {
                                         ? 'bg-emerald-600 text-white'
                                         : 'bg-amber-500 text-white'
                                         }`}>
-                                        <Sparkles size={10} /> {poweredByAi ? 'Gemini AI' : 'Smart Fallback'}
+                                        <Sparkles size={10} /> {poweredByAi ? 'AI Advisor' : 'Smart Fallback'}
                                     </span>
                                     <div className="flex gap-2">
                                         <button

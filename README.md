@@ -13,7 +13,7 @@ Shop Web Rẻ là website giới thiệu và bán giao diện website như templ
 - Profile người dùng: tổng quan, đơn hàng, download, license, community, support, cài đặt.
 - Mobile bottom navigation toàn site client.
 - Widget chat AI nổi, scroll-to-top, recently viewed và các widget marketing.
-- Trang AI Recommendation dùng Gemini + Supabase để tư vấn sản phẩm theo nhu cầu.
+- Trang AI Recommendation dùng OrcaRouter/DeepSeek + Supabase để tư vấn sản phẩm theo nhu cầu.
 
 ### Auth
 
@@ -45,11 +45,11 @@ Shop Web Rẻ là website giới thiệu và bán giao diện website như templ
 
 ### AI
 
-- Chatbot AI dùng Gemini API.
+- Chatbot AI dùng OrcaRouter qua OpenAI-compatible API.
 - Chatbot lấy context sản phẩm thật từ Supabase.
 - Lọc sản phẩm theo nhu cầu, loại sản phẩm và ngân sách.
-- Fallback thông minh khi Gemini quá tải.
-- Trang AI Recommendation dùng Gemini để viết phân tích/lộ trình sản phẩm.
+- Fallback thông minh khi AI quá tải.
+- Trang AI Recommendation dùng AI để viết phân tích/lộ trình sản phẩm.
 
 ## Công nghệ sử dụng
 
@@ -63,7 +63,7 @@ Shop Web Rẻ là website giới thiệu và bán giao diện website như templ
 | Realtime | Supabase Realtime |
 | Upload | Cloudinary |
 | Email | Resend |
-| AI | Google Gemini API |
+| AI | OrcaRouter / DeepSeek V4 |
 | Payment | SePay / VietQR |
 | Animation | Framer Motion, Canvas Confetti |
 
@@ -98,7 +98,7 @@ lib/
   orders.ts               Orders
   licenses.ts             Licenses
   notifications.ts        Notification
-  gemini.ts               Gemini chatbot helper
+  ai.ts                   OrcaRouter AI helper
   sepay.ts                Payment helper
 public/
   assets/images
@@ -111,7 +111,7 @@ public/
 - Supabase project.
 - Cloudinary account nếu dùng upload ảnh/file.
 - Resend account nếu gửi email.
-- Gemini API key nếu dùng AI.
+- OrcaRouter API key nếu dùng AI.
 - SePay/VietQR nếu dùng thanh toán thật.
 
 ## Cài đặt
@@ -157,9 +157,10 @@ RESEND_WEBHOOK_SECRET=your_resend_webhook_signing_secret
 RESEND_INBOUND_ADDRESS=contact@webgiare.id.vn
 RESEND_INBOUND_FORWARD_TO=your_private_inbox@example.com
 
-# Gemini
-GEMINI_API_KEY=your_gemini_api_key
-GEMINI_MODEL=gemini-2.5-flash,gemini-2.5-flash-lite
+# OrcaRouter / DeepSeek
+ORCAROUTER_API_KEY=your_orcarouter_api_key
+# Tuỳ chọn: nếu đặt sẽ ưu tiên hơn lựa chọn model trong CMS
+ORCAROUTER_MODEL=deepseek/deepseek-v4-flash-free
 ```
 
 Không commit `.env.local` lên GitHub.
@@ -223,7 +224,7 @@ RLS cần bật cho các bảng public. Một số chính sách cần đặc bi�
 ## Bảo mật đã lưu ý
 
 - Đã khóa việc user tự đổi `profiles.role` bằng trigger Supabase.
-- Gemini API key chỉ dùng server-side.
+- OrcaRouter API key chỉ dùng server-side.
 - Upload API cần kiểm tra role/type/size trước khi public thật.
 - Webhook thanh toán cần xác thực `SEPAY_WEBHOOK_SECRET`.
 - Không render HTML thô nếu chưa sanitize.
@@ -290,8 +291,8 @@ Luồng xử lý:
 
 1. Client gửi message và history.
 2. Server lấy sản phẩm liên quan từ Supabase.
-3. Server gửi prompt + context sản phẩm sang Gemini.
-4. Nếu Gemini quá tải, fallback vẫn trả lời dựa trên dữ liệu Supabase.
+3. Server gửi prompt + context sản phẩm sang OrcaRouter.
+4. Nếu AI quá tải, fallback vẫn trả lời dựa trên dữ liệu Supabase.
 5. Không gợi ý sản phẩm ngoài điều kiện nếu bộ lọc rõ ràng.
 
 ## AI Recommendation
@@ -312,7 +313,7 @@ Luồng xử lý:
 
 1. Người dùng trả lời các câu hỏi về mục tiêu, nền tảng, phong cách, ngân sách.
 2. Server lọc sản phẩm thật từ Supabase.
-3. Gemini viết phần tư vấn/lộ trình.
+3. AI viết phần tư vấn/lộ trình.
 4. Nếu không có sản phẩm khớp, hệ thống nói rõ là chưa có, không bịa sản phẩm.
 
 ## Thanh toán
@@ -378,4 +379,4 @@ Dự án này là marketplace/theme Shop Web rẻ. Nếu dùng để bán theme/
 
 Shop Web rẻ / Shop Web rẻ.
 
-Built with Next.js, Supabase, Tailwind CSS và Gemini API.
+Built with Next.js, Supabase, Tailwind CSS và OrcaRouter/DeepSeek API.

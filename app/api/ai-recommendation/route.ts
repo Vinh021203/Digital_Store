@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { generateGeminiText } from '@/lib/gemini';
+import { generateAIText } from '@/lib/ai';
 import { fetchAIProducts, type AIRecommendationFilters } from '@/lib/products';
 import { checkRateLimit, getClientIp, getRetryAfterSeconds } from '@/lib/rateLimit';
 
@@ -68,7 +68,7 @@ Yêu cầu trả lời:
 - Tư vấn rõ vì sao bộ sản phẩm phù hợp với tiêu chí.
 - Nếu không có sản phẩm khớp, nói thẳng là chưa có sản phẩm phù hợp và gợi ý cách nới tiêu chí.
 - Không bịa sản phẩm, không nói sản phẩm ngoài danh sách.
-- Không nhắc Gemini hay mô hình AI.
+- Không nhắc nhà cung cấp API hay mô hình AI.
 `.trim();
 }
 
@@ -114,13 +114,13 @@ export async function POST(request: NextRequest) {
         let poweredByAi = false;
 
         try {
-            const aiText = await generateGeminiText(buildPrompt(answers, products), 260);
+            const aiText = await generateAIText(buildPrompt(answers, products), 260);
             if (aiText) {
                 reasoning = aiText;
                 poweredByAi = true;
             }
         } catch (error) {
-            console.warn('AI recommendation Gemini fallback:', error);
+            console.warn('AI recommendation fallback:', error);
         }
 
         return NextResponse.json({

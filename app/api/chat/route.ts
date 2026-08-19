@@ -1,6 +1,6 @@
 // API Route for AI Chatbot
 import { NextRequest, NextResponse } from 'next/server';
-import { chatWithGemini } from '@/lib/gemini';
+import { chatWithAI } from '@/lib/ai';
 import { checkRateLimit, getClientIp, getRetryAfterSeconds } from '@/lib/rateLimit';
 import { saveChatTurn } from '@/lib/chatHistory';
 import { createClient, createAdminClient } from '@/lib/supabase/server';
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
         if (sessionId) {
             await saveChatTurn({ sessionId, sender: 'user', message, sourcePage, interestedProduct, interestedTechnology, userId, visitorName, visitorEmail, visitorPhone, visitorAvatar });
         }
-        const response = await chatWithGemini(message, safeHistory);
+        const response = await chatWithAI(message, safeHistory);
 
         if (sessionId && response.message) {
             await saveChatTurn({ sessionId, sender: 'bot', message: response.message, sourcePage, interestedProduct, interestedTechnology, userId, visitorName, visitorEmail, visitorPhone, visitorAvatar });

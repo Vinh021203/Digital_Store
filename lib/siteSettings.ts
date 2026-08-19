@@ -15,6 +15,7 @@ export interface SiteSetting {
 }
 
 export interface SiteSettings {
+    ai_model: string;
     site_name: string;
     site_tagline: string;
     site_description: string;
@@ -49,6 +50,7 @@ export interface SiteSettings {
 }
 
 const defaultSettings: SiteSettings = {
+    ai_model: 'deepseek/deepseek-v4-flash-free',
     site_name: 'Web Giá Rẻ - Portfolio',
     site_tagline: 'Portfolio giao diện website, landing page và dự án web chuyên nghiệp',
     site_description: 'Portfolio giao diện website, template, landing page, UI kit, dashboard và dự án web chất lượng cao. Xem demo và nhận tư vấn triển khai.',
