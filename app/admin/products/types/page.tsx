@@ -87,7 +87,7 @@ export default function ProductTypesPage() {
           <div className="ml-[52px] flex w-full items-center justify-end gap-2 sm:ml-0 sm:w-auto">
           <button onClick={async () => { await updateProductType(type.id, { is_active: !type.is_active }); load(); }} className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-50 text-slate-500" title={type.is_active ? 'Ẩn loại' : 'Hiện loại'}>{type.is_active ? <Eye size={18} /> : <EyeOff size={18} />}</button>
           <button onClick={() => { setEditingId(type.id); setForm({ name: type.name, label: type.label, slug: type.slug, icon: type.icon || '', color: type.color, sort_order: type.sort_order, is_active: type.is_active }); }} className="h-11 rounded-xl bg-slate-100 px-4 text-sm font-bold">Sửa</button>
-          <button onClick={async () => { if (!confirm(`Xóa loại ${type.label}?`)) return; try { await deleteProductType(type.id); load(); } catch (error: any) { toast.error(error.message); } }} className="flex h-11 w-11 items-center justify-center rounded-xl bg-red-50 text-red-500"><Trash2 size={18} /></button>
+          <button onClick={async () => { if (!(await toast.confirm(`Xóa loại ${type.label}?`))) return; try { await deleteProductType(type.id); toast.success('Đã xóa loại sản phẩm'); load(); } catch (error: any) { toast.error(error.message); } }} className="flex h-11 w-11 items-center justify-center rounded-xl bg-red-50 text-red-500"><Trash2 size={18} /></button>
           </div>
         </div>)}
         {!types.length && <div className="p-12 text-center text-slate-500"><Plus className="mx-auto mb-2" /> Chưa có loại sản phẩm</div>}

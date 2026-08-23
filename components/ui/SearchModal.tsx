@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { fetchActiveProducts } from '@/lib/products';
 import type { Product } from '@/types';
 import { getProductTypeSoftStyle } from '@/lib/productTypeDisplay';
+import { useSiteMode } from '@/hooks/useSiteSettings';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -17,6 +18,7 @@ const POPULAR_SEARCHES = ['Dashboard', 'Landing Page', 'React', 'Admin', 'E-comm
 const POPULAR_CATEGORIES = ['Themes', 'Templates', 'Landing Pages', 'Mini Apps', 'UI Kits', 'Icons'];
 
 const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
+  const { isCatalogMode } = useSiteMode();
   const [searchTerm, setSearchTerm] = useState('');
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [results, setResults] = useState<Product[]>([]);
@@ -271,7 +273,9 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
                           <span className={`rounded border px-2 py-0.5 text-[10px] font-bold uppercase ${getProductTypeSoftStyle(product.format)}`}>
                             {product.format}
                           </span>
-                          <span className="text-sm font-bold text-orange-600">{product.price.toLocaleString('vi-VN')}₫</span>
+                          {!isCatalogMode && (
+                            <span className="text-sm font-bold text-orange-600">{product.price.toLocaleString('vi-VN')}₫</span>
+                          )}
                           <div className="flex items-center gap-0.5 text-amber-400">
                             <Star size={12} fill="currentColor" />
                             <span className="text-xs text-slate-500">{product.rating}</span>

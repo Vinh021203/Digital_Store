@@ -9,7 +9,7 @@ import {
     Star, ShieldCheck, RotateCcw, Heart, Check,
     ChevronRight, Copy, Clock, ShoppingCart, ShoppingBag, Download, Package,
     Share2, Play, FileCode, Layers, Monitor, Smartphone, Tag,
-    MessageCircle, ThumbsUp, ChevronDown, AlertCircle, Plus, Loader2,
+    MessageCircle, Headset, ThumbsUp, ChevronDown, AlertCircle, Plus, Loader2,
     Eye, Users, Calendar, Code, Palette, Zap, Award, Globe, X,
     ArrowRight, Maximize2, Minimize2
 } from 'lucide-react';
@@ -659,9 +659,9 @@ const ModernProductDetailLayout = ({
                     </div>
 
                     <div className="min-w-0">
-                        <div onClick={() => setShowLightbox(true)} className="group relative aspect-[16/9] w-full cursor-zoom-in overflow-hidden rounded-2xl border border-orange-100 bg-gradient-to-br from-slate-950 via-slate-900 to-orange-950 p-3 shadow-2xl shadow-orange-100/80">
-                            <div className="relative h-full overflow-hidden rounded-xl bg-white">
-                                {currentImage && <Image src={currentImage} alt={product.name} fill sizes="(max-width: 768px) 100vw, 58vw" className="object-contain transition duration-500 group-hover:scale-[1.015]" priority />}
+                        <div onClick={() => setShowLightbox(true)} className="group relative aspect-[16/9] w-full cursor-zoom-in overflow-hidden rounded-2xl border border-orange-100 bg-slate-950 shadow-2xl shadow-orange-100/80">
+                            <div className="relative h-full w-full overflow-hidden rounded-2xl bg-white">
+                                {currentImage && <Image src={currentImage} alt={product.name} fill sizes="(max-width: 768px) 100vw, 58vw" className="object-cover transition duration-500 group-hover:scale-[1.015]" priority />}
                             </div>
                         </div>
                         <div className="mt-5 flex items-center gap-4">
@@ -966,7 +966,7 @@ const ModernProductDetailLayout = ({
                     </section>
                 </div>
 
-                <section id="reviews" className="mt-5 scroll-mt-24 md:mt-8">
+                <section id="reviews-testimonials" className="hidden mt-5 scroll-mt-24 md:mt-8">
                     <h2 className="mb-5 text-xl font-bold text-slate-950">4. Khách hàng nói gì về {product.name}</h2>
                     <div className="relative overflow-hidden rounded-2xl">
                         <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 bg-gradient-to-r from-[#fffdf9] to-transparent" />
@@ -988,6 +988,12 @@ const ModernProductDetailLayout = ({
                         </div>
                     </div>
                 </section>
+
+                <ReviewsSection
+                    productId={product.id}
+                    productRating={product.rating}
+                    productReviewCount={product.reviews || product.review_count}
+                />
 
                 {relatedProducts.length > 0 && (
                     <div className="mt-5 md:mt-8">
@@ -1054,65 +1060,65 @@ const ModernProductDetailLayout = ({
                     )}
                 </div>
 
-                {!isFooterVisible && <div className="fixed bottom-7 left-1/2 z-[35] hidden -translate-x-1/2 xl:block">
+                {!isFooterVisible && <div className="fixed bottom-0 left-1/2 z-[35] hidden -translate-x-1/2 xl:block">
                     {shouldCompactDesktopQuickBuy || isTechnologyVariantVisible ? (
                         <button
                             type="button"
                             onClick={() => isTechnologyVariantVisible ? handleAddToCart() : setQuickBuyCollapsed(false)}
-                            className="group flex items-center gap-3 rounded-2xl border border-orange-100 bg-white/95 px-4 py-3 text-slate-950 shadow-[0_18px_45px_rgba(15,23,42,0.14)] backdrop-blur-xl transition hover:-translate-y-0.5 hover:border-orange-200 hover:shadow-[0_22px_55px_rgba(249,115,22,0.18)]"
+                            className="group flex items-center gap-2 rounded-t-lg border border-b-0 border-indigo-800 bg-slate-950/95 px-2.5 py-1.5 text-white shadow-[0_12px_35px_rgba(15,23,42,0.28)] backdrop-blur-xl transition hover:border-indigo-600"
                             aria-label="Mở tư vấn nhanh"
                         >
-                            <span className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-orange-600 text-white shadow-lg shadow-orange-200 transition group-hover:bg-slate-950">
-                                {isCatalogMode ? <MessageCircle size={20} strokeWidth={2.4} /> : <ShoppingBag size={20} strokeWidth={2.4} />}
+                            <span className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white shadow-lg shadow-indigo-950/40 transition group-hover:bg-indigo-500">
+                                {isCatalogMode ? <Headset size={19} strokeWidth={2.4} /> : <ShoppingBag size={19} strokeWidth={2.4} />}
                                 <span className="absolute -right-1 -top-1 h-3.5 w-3.5 rounded-full border-2 border-white bg-emerald-400" />
                             </span>
                             <span className="min-w-0 text-left">
-                                <span className="block text-[10px] font-black uppercase tracking-[0.16em] text-orange-600">Tư vấn nhanh</span>
-                                <span className="block max-w-[220px] truncate text-sm font-extrabold text-slate-950">{product.name}</span>
+                                <span className="block text-[9px] font-black uppercase tracking-[0.14em] text-indigo-300">Tư vấn nhanh</span>
+                                <span className="block max-w-[220px] truncate text-sm font-extrabold text-white">{product.name}</span>
                             </span>
                             <ChevronRight size={18} className="text-slate-400 transition group-hover:translate-x-0.5 group-hover:text-orange-600" />
                         </button>
                     ) : (
-                        <div className="w-[min(860px,calc(100vw-280px))] overflow-hidden rounded-3xl border border-orange-100 bg-white/96 text-slate-950 shadow-[0_24px_70px_rgba(15,23,42,0.16)] backdrop-blur-2xl">
-                            <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 p-3.5">
-                                <div className="flex min-w-0 items-center gap-3.5">
-                                    <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-slate-950 text-white shadow-lg shadow-slate-200">
-                                        {isCatalogMode ? <MessageCircle size={22} strokeWidth={2.4} /> : <ShoppingBag size={22} strokeWidth={2.4} />}
+                        <div className="w-[min(860px,calc(100vw-32px))] overflow-hidden rounded-t-lg border border-b-0 border-indigo-800 bg-slate-950/95 text-white shadow-[0_16px_45px_rgba(15,23,42,0.3)] backdrop-blur-2xl">
+                            <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-2 py-1.5">
+                                <div className="flex min-w-0 items-center gap-2.5">
+                                    <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-indigo-600 text-white shadow-lg shadow-indigo-950/40">
+                                        {isCatalogMode ? <Headset size={20} strokeWidth={2.4} /> : <ShoppingBag size={20} strokeWidth={2.4} />}
                                         <span className="absolute -right-1 -top-1 h-3.5 w-3.5 rounded-full border-2 border-white bg-emerald-400" />
                                     </div>
                                     <div className="min-w-0">
                                         <div className="flex items-center gap-2">
-                                            <p className="text-[11px] font-black uppercase tracking-[0.16em] text-orange-600">Tư vấn nhanh</p>
+                                            <p className="text-[10px] font-black uppercase tracking-[0.14em] text-indigo-300">Tư vấn nhanh</p>
 	                                            {!isCatalogMode && discountPercent > 0 && (
                                                 <span className="rounded-full bg-rose-50 px-2 py-0.5 text-[11px] font-black text-rose-600">-{discountPercent}%</span>
                                             )}
                                         </div>
-                                        <p className="mt-0.5 truncate text-base font-extrabold leading-5 text-slate-950">{product.name}</p>
-                                        <p className="mt-1 line-clamp-1 text-xs font-semibold text-slate-500">
+                                        <p className="mt-0.5 truncate text-base font-extrabold leading-5 text-white">{product.name}</p>
+                                        <p className="mt-0.5 line-clamp-1 text-[11px] font-semibold text-slate-300">
                                             Gửi nhu cầu để nhận tư vấn mẫu phù hợp.
                                         </p>
                                     </div>
                                 </div>
 
                                 <div className="flex shrink-0 items-center gap-2">
-                                    <div className="mr-1 text-right">
-                                        <p className="text-[11px] font-bold text-slate-500">{isCatalogMode ? 'Giá tham khảo' : 'Giá hiện tại'}</p>
-	                                        <p className="text-xl font-black leading-none text-orange-600">{displayPrice}</p>
+                                    <div className="mr-0.5 text-right">
+                                        <p className="text-[10px] font-bold text-slate-300">{isCatalogMode ? 'Giá tham khảo' : 'Giá hiện tại'}</p>
+                                        <p className="text-lg font-black leading-none text-orange-300">{displayPrice}</p>
                                     </div>
 
-                                    <button onClick={handleAddToCart} className="flex h-12 items-center justify-center gap-2 rounded-2xl bg-orange-600 px-5 text-sm font-extrabold text-white shadow-lg shadow-orange-100 transition hover:-translate-y-0.5 hover:bg-orange-700 active:scale-[0.98]">
-                                        {isCatalogMode ? <MessageCircle size={18} strokeWidth={2.4} /> : <ShoppingBag size={18} strokeWidth={2.4} />}
+                                    <button onClick={handleAddToCart} className="flex h-9 items-center justify-center gap-2 rounded-lg bg-orange-600 px-3.5 text-sm font-extrabold text-white shadow-lg shadow-orange-950/30 transition hover:bg-orange-500 active:scale-[0.98]">
+                                        {isCatalogMode ? <Headset size={18} strokeWidth={2.4} /> : <ShoppingBag size={18} strokeWidth={2.4} />}
                                         {isCatalogMode ? 'Nhận tư vấn' : 'Thêm vào danh sách'}
                                     </button>
                                     {demoUrl && (
-                                        <button onClick={() => setShowDemoModal(true)} className="flex h-12 w-12 items-center justify-center rounded-2xl border border-orange-100 bg-white text-orange-700 transition hover:-translate-y-0.5 hover:bg-orange-50" aria-label="Xem demo">
+                                        <button onClick={() => setShowDemoModal(true)} className="flex h-9 w-9 items-center justify-center rounded-lg border border-indigo-700 bg-slate-900 text-indigo-200 transition hover:bg-indigo-900" aria-label="Xem demo">
                                             <Play size={18} />
                                         </button>
                                     )}
                                     <button
                                         type="button"
                                         onClick={() => setQuickBuyCollapsed(true)}
-                                        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-400 transition hover:-translate-y-0.5 hover:border-orange-100 hover:bg-orange-50 hover:text-orange-600"
+                                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-700 bg-slate-900 text-slate-300 transition hover:border-indigo-500 hover:bg-indigo-900 hover:text-white"
                                         aria-label="Thu gọn tư vấn nhanh"
                                     >
                                         <ChevronDown size={19} />

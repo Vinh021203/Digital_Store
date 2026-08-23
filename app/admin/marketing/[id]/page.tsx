@@ -56,7 +56,7 @@ export default function CouponDetailPage({ params }: { params: Promise<{ id: str
 
     const handleDelete = async () => {
         if (!coupon) return;
-        if (!confirm(`Bạn có chắc muốn xóa mã "${coupon.code}"?`)) return;
+        if (!(await toast.confirm(`Bạn có chắc muốn xóa mã "${coupon.code}"?`))) return;
 
         try {
             await deleteCoupon(coupon.id);

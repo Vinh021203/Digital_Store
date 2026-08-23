@@ -12,6 +12,7 @@ import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/context/ToastContext';
 import { useSiteMode } from '@/hooks/useSiteSettings';
+import StarRating from './StarRating';
 import { getProductTypeFilledStyle } from '@/lib/productTypeDisplay';
 
 // Blur placeholder for images
@@ -315,10 +316,18 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
           {product.name}
         </Link>
 
-        {/* Author */}
-        <p className="mb-1.5 line-clamp-1 text-[11px] text-slate-500 md:text-xs">
-          by <span className="font-semibold">{product.author}</span>
-        </p>
+        {/* Author & Rating */}
+        <div className="mb-1.5 flex min-w-0 items-center justify-between gap-2">
+          <p className="min-w-0 truncate text-[11px] text-slate-500 md:text-xs">
+            by <span className="font-semibold">{product.author}</span>
+          </p>
+          <StarRating
+            rating={product.rating}
+            reviewCount={product.reviews_count || product.reviews}
+            size={11}
+            className="shrink-0"
+          />
+        </div>
 
         {/* Price & Button */}
         <div className="flex items-center justify-between mt-auto gap-2">

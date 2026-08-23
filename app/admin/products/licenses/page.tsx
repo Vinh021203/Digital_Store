@@ -6,8 +6,10 @@ import {
     RefreshCw, Loader2, ShieldCheck, Clock3, Ban
 } from 'lucide-react';
 import { fetchLicenses, revokeLicense, type DbLicense } from '@/lib/licenses';
+import { useToast } from '@/context/ToastContext';
 
 export default function LicensesPage() {
+    const { confirm, addToast } = useToast();
     const [licenses, setLicenses] = useState<DbLicense[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
@@ -40,12 +42,14 @@ export default function LicensesPage() {
     };
 
     const handleRevoke = async (id: number) => {
-        if (!confirm('Bạn có chắc muốn thu hồi license này?')) return;
+        if (!(await confirm('Bạn có chắc muốn thu hồi license này?'))) return;
         try {
             await revokeLicense(id);
             loadLicenses(); // Reload
+            addToast('Đã thu hồi license', 'success');
         } catch (error) {
             console.error('Failed to revoke license:', error);
+            addToast('Không thể thu hồi license', 'error');
         }
     };
 

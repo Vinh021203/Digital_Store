@@ -131,12 +131,12 @@ const FloatingWidgets = () => {
   const [chatSessionId] = useState(() => {
     if (typeof window === 'undefined') return '';
     const storageKey = 'webgiare-chat-session-id';
-    const existing = window.sessionStorage.getItem(storageKey);
+    const existing = window.localStorage.getItem(storageKey) || window.sessionStorage.getItem(storageKey);
     if (existing) return existing;
     const id = typeof crypto !== 'undefined' && crypto.randomUUID
       ? crypto.randomUUID()
       : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-    window.sessionStorage.setItem(storageKey, id);
+    window.localStorage.setItem(storageKey, id);
     return id;
   });
 
@@ -174,7 +174,7 @@ const FloatingWidgets = () => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (!chatSessionId) return;
+    if (authLoading || !chatSessionId) return;
     let cancelled = false;
     fetch(`/api/chat/history?sessionId=${encodeURIComponent(chatSessionId)}`)
       .then((response) => response.json())
@@ -185,11 +185,15 @@ const FloatingWidgets = () => {
           sender: message.sender === 'user' ? 'user' : 'bot',
           text: message.message,
         } as ChatMessage));
-        setChatMessages((current) => [current[0], ...restored]);
+        setChatMessages((current) => {
+          const greeting = current[0];
+          const hasSameMessages = current.length === restored.length + 1 && current.slice(1).every((item, index) => item.id === restored[index]?.id);
+          return hasSameMessages ? current : [greeting, ...restored];
+        });
       })
       .catch(() => undefined);
     return () => { cancelled = true; };
-  }, [chatSessionId]);
+  }, [authLoading, chatSessionId, user?.id, contactPhone]);
 
   const checkScroll = useCallback(() => {
     const scrollable = document.documentElement.scrollHeight - window.innerHeight;

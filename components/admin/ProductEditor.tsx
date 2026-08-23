@@ -20,6 +20,7 @@ import {
   ArrowLeft,
   History,
   File,
+  Pencil,
 } from 'lucide-react';
 import ProductVersionManager from '@/components/admin/ProductVersionManager';
 import RichTextEditor from '@/components/admin/RichTextEditor';
@@ -36,7 +37,8 @@ import { fetchCategories, type DbCategory } from '@/lib/categories';
 import { fetchProductTypes, type DbProductType } from '@/lib/productTypes';
 import { useToast } from '@/context/ToastContext';
 import { createActivityLog } from '@/lib/activityLogs';
-import { getTechnologyIconUrl } from '@/lib/technologyIcons';
+import { TECHNOLOGY_OPTIONS } from '@/lib/technologyIcons';
+import TechnologyPicker from './TechnologyPicker';
 
 interface ProductEditorProps {
   mode: 'create' | 'edit';
@@ -127,6 +129,7 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
   const [newFeature, setNewFeature] = useState('');
   const [newTech, setNewTech] = useState('');
   const [newGalleryUrl, setNewGalleryUrl] = useState('');
+  const [editingTechnologyIndex, setEditingTechnologyIndex] = useState<number | null>(null);
 
   // Load data
   const loadData = useCallback(async () => {
@@ -174,7 +177,10 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
             tags: found.tags || [],
             features: found.features || [],
             techStack: found.tech_stack || [],
-            technologyVariants: found.technology_variants || [],
+            technologyVariants: (found.technology_variants || []).map((variant: ProductTechnologyVariant) => ({
+              ...variant,
+              status: variant.status || 'available',
+            })),
             commissionRate: Number((found as any).commission_rate) || 10,
           });
         } else {
@@ -441,11 +447,12 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
   };
 
   const handleAddTechnologyVariant = () => {
+    const technology = TECHNOLOGY_OPTIONS.find((option) => !product.technologyVariants.some((variant) => variant.technology === option)) || TECHNOLOGY_OPTIONS[0];
     setProduct({
       ...product,
       technologyVariants: [
         ...product.technologyVariants,
-        { technology: '', status: 'coming_soon', demo_url: '', cta_label: '' },
+        { technology, status: 'available', demo_url: '', cta_label: '' },
       ],
     });
   };
@@ -465,6 +472,10 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
       technologyVariants: product.technologyVariants.filter((_, variantIndex) => variantIndex !== index),
     });
   };
+
+  const editingTechnology = editingTechnologyIndex === null
+    ? null
+    : product.technologyVariants[editingTechnologyIndex];
 
   return (
     <div className="max-w-6xl mx-auto animate-fade-in space-y-6">
@@ -502,16 +513,18 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
           <button
             type="button"
             onClick={handleSave}
-            className="px-5 sm:px-6 py-2 bg-orange-600 text-white text-sm font-bold rounded-xl hover:bg-orange-700 transition-colors shadow-lg shadow-orange-200 flex items-center gap-2"
+            disabled={saving || uploadingImage || uploadingGallery || uploadingProductFile}
+            className="flex items-center gap-2 rounded-xl bg-orange-600 px-5 py-2 text-sm font-bold text-white shadow-lg shadow-orange-200 transition-colors hover:bg-orange-700 disabled:cursor-wait disabled:opacity-70 sm:px-6"
           >
-            <Save size={18} /> Lưu Sản Phẩm
+            {saving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
+            {saving ? 'Đang lưu...' : 'Lưu Sản Phẩm'}
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[2fr,1.2fr] gap-6 lg:gap-8">
+      <div className="grid min-w-0 grid-cols-1 gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:gap-8">
         {/* Left Column */}
-        <div className="space-y-6">
+        <div className="min-w-0 space-y-6">
           {/* Title & Slug */}
           <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-100">
             <div className="mb-4">
@@ -848,19 +861,7 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
                   <div key={`${index}-${variant.technology}`} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
                     <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto] gap-3">
                       <div className="relative">
-                        <input
-                          value={variant.technology}
-                          onChange={e => updateTechnologyVariant(index, { technology: e.target.value })}
-                          placeholder="HTML, React, Next.js, Canva..."
-                          className="w-full border border-slate-200 rounded-lg pl-10 pr-3 py-2 text-sm outline-none focus:ring-2 focus:ring-orange-500 bg-white"
-                        />
-                        <div className="pointer-events-none absolute left-3 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center">
-                          {getTechnologyIconUrl(variant.technology) ? (
-                            <img src={getTechnologyIconUrl(variant.technology) || ''} alt="" className="h-5 w-5 object-contain" />
-                          ) : (
-                            <Code size={17} className="text-slate-400" />
-                          )}
-                        </div>
+                        <TechnologyPicker value={variant.technology} onChange={technology => updateTechnologyVariant(index, { technology })} />
                       </div>
                       <select
                         value={variant.status}
@@ -904,17 +905,17 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
         </div>
 
         {/* Right Column */}
-        <div className="space-y-6">
+        <div className="min-w-0 space-y-6">
           <div className="hidden lg:block bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-100">
-            <div className="flex items-start justify-between gap-3 mb-4">
-              <div>
-                <h3 className="font-bold text-lg text-slate-900 flex items-center gap-2">
-                  <Globe size={20} className="text-orange-600" />
-                  Phiên bản công nghệ
+            <div className="mb-4 flex items-start justify-between gap-3">
+              <div className="min-w-0 flex-1">
+                <h3 className="flex min-w-0 items-center gap-2 whitespace-nowrap text-base font-bold text-slate-900 sm:text-lg">
+                  <Globe size={20} className="shrink-0 text-orange-600" />
+                  <span className="truncate">Phiên bản công nghệ</span>
                 </h3>
-                <p className="text-xs text-slate-500 mt-1">Các phiên bản của cùng một theme.</p>
+                <p className="mt-1 text-xs text-slate-500">Các phiên bản của cùng một theme.</p>
               </div>
-              <button type="button" onClick={handleAddTechnologyVariant} className="inline-flex items-center gap-1 px-3 py-2 bg-orange-600 text-white text-xs font-bold rounded-lg hover:bg-orange-700">
+              <button type="button" onClick={handleAddTechnologyVariant} className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-orange-600 px-3 py-2 text-xs font-bold text-white hover:bg-orange-700">
                 <Plus size={15} /> Thêm
               </button>
             </div>
@@ -923,34 +924,63 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
                 Chưa có phiên bản riêng.
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {product.technologyVariants.map((variant, index) => (
-                  <div key={`side-${index}-${variant.technology}`} className="rounded-xl border border-slate-200 bg-slate-50 p-3 space-y-2">
+                  <div key={`side-${index}-${variant.technology}`} className="rounded-xl border border-slate-200 bg-slate-50 p-2.5">
                     <div className="flex items-center gap-2">
                       <div className="relative min-w-0 flex-1">
-                        <input value={variant.technology} onChange={e => updateTechnologyVariant(index, { technology: e.target.value })} placeholder="HTML, Next.js, Canva..." className="w-full border border-slate-200 rounded-lg pl-10 pr-3 py-2 text-sm bg-white outline-none focus:ring-2 focus:ring-orange-500" />
-                        <div className="pointer-events-none absolute left-3 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center">
-                          {getTechnologyIconUrl(variant.technology) ? <img src={getTechnologyIconUrl(variant.technology) || ''} alt="" className="h-5 w-5 object-contain" /> : <Code size={17} className="text-slate-400" />}
-                        </div>
+                        <TechnologyPicker value={variant.technology} onChange={technology => updateTechnologyVariant(index, { technology })} />
                       </div>
                       <button type="button" onClick={() => removeTechnologyVariant(index)} className="text-red-500 hover:text-red-700" aria-label="Xóa phiên bản"><Trash2 size={16} /></button>
                     </div>
-                    <select value={variant.status} onChange={e => updateTechnologyVariant(index, { status: e.target.value as ProductTechnologyVariant['status'] })} className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white outline-none focus:ring-2 focus:ring-orange-500">
+                    <select value={variant.status} onChange={e => updateTechnologyVariant(index, { status: e.target.value as ProductTechnologyVariant['status'] })} className="hidden">
                       <option value="available">Có sẵn</option>
                       <option value="custom_request">Theo yêu cầu</option>
                       <option value="coming_soon">Sắp có</option>
                       <option value="unavailable">Chưa hỗ trợ</option>
                     </select>
-                    <input type="url" value={variant.demo_url || ''} onChange={e => updateTechnologyVariant(index, { demo_url: e.target.value })} placeholder="Live Demo URL (nếu có)" className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white outline-none focus:ring-2 focus:ring-orange-500" />
-                    <input value={variant.cta_label || ''} onChange={e => updateTechnologyVariant(index, { cta_label: e.target.value })} placeholder="CTA tùy chỉnh" className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white outline-none focus:ring-2 focus:ring-orange-500" />
+                    <div className="mt-2 flex items-center gap-2">
+                      <input type="url" value={variant.demo_url || ''} onChange={e => updateTechnologyVariant(index, { demo_url: e.target.value })} placeholder="Link demo" className="min-w-0 flex-1 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-orange-500" />
+                      <button type="button" onClick={() => setEditingTechnologyIndex(index)} className="inline-flex shrink-0 items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-xs font-semibold text-slate-600 hover:border-orange-200 hover:text-orange-600"><Pencil size={13} /> Sửa</button>
+                    </div>
+                    <input value={variant.cta_label || ''} onChange={e => updateTechnologyVariant(index, { cta_label: e.target.value })} className="hidden" />
                   </div>
                 ))}
               </div>
             )}
           </div>
+          {editingTechnology && editingTechnologyIndex !== null && (
+            <div className="fixed inset-0 z-[80] flex items-center justify-center bg-slate-950/40 p-4" onClick={() => setEditingTechnologyIndex(null)}>
+              <div className="w-full max-w-md rounded-2xl bg-white p-5 shadow-2xl" onClick={event => event.stopPropagation()}>
+                <div className="mb-4 flex items-start justify-between gap-3">
+                  <div>
+                    <h3 className="text-base font-bold text-slate-900">Thiết lập phiên bản</h3>
+                    <p className="mt-1 text-xs text-slate-500">{editingTechnology.technology}</p>
+                  </div>
+                  <button type="button" onClick={() => setEditingTechnologyIndex(null)} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100"><X size={18} /></button>
+                </div>
+                <div className="space-y-3">
+                  <div>
+                    <label className="mb-1 block text-xs font-bold text-slate-500">Trạng thái</label>
+                    <select value={editingTechnology.status} onChange={event => updateTechnologyVariant(editingTechnologyIndex, { status: event.target.value as ProductTechnologyVariant['status'] })} className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-orange-500">
+                      <option value="available">Có sẵn</option>
+                      <option value="custom_request">Theo yêu cầu</option>
+                      <option value="coming_soon">Sắp có</option>
+                      <option value="unavailable">Chưa hỗ trợ</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-xs font-bold text-slate-500">CTA tùy chỉnh</label>
+                    <input value={editingTechnology.cta_label || ''} onChange={event => updateTechnologyVariant(editingTechnologyIndex, { cta_label: event.target.value })} placeholder="Ví dụ: Nhận tư vấn bản React" className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-orange-500" />
+                  </div>
+                </div>
+                <button type="button" onClick={() => setEditingTechnologyIndex(null)} className="mt-5 w-full rounded-lg bg-orange-600 py-2.5 text-sm font-bold text-white hover:bg-orange-700">Hoàn tất</button>
+              </div>
+            </div>
+          )}
           {/* Status */}
-          <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-100">
-            <h3 className="font-bold text-xs text-slate-900 mb-4 uppercase tracking-wider">
+          <div className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm sm:p-5">
+            <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-900">
               Trạng thái
             </h3>
             <div className="space-y-3 text-sm">
@@ -1037,9 +1067,9 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
             <h3 className="font-bold text-xs text-slate-900 mb-4 uppercase tracking-wider">
               Phân loại
             </h3>
-            <div className="space-y-4 text-sm">
+            <div className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2 lg:grid-cols-1">
               <div>
-                <label className="block text-xs font-bold text-slate-500 mb-1.5">
+                <label className="mb-1 block text-xs font-bold text-slate-500">
                   Loại sản phẩm
                 </label>
                 <select
@@ -1048,7 +1078,7 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
                     const selected = productTypes.find(type => String(type.id) === e.target.value);
                     setProduct({ ...product, productTypeId: selected && selected.id > 0 ? selected.id : null, format: selected?.name || e.target.value });
                   }}
-                  className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-orange-500"
+                  className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none transition focus:ring-2 focus:ring-orange-500"
                 >
                   <option value="" disabled>Chọn loại sản phẩm</option>
                   {productTypes.map(type => <option key={type.id} value={type.id > 0 ? type.id : type.name}>{type.label}</option>)}
@@ -1091,14 +1121,16 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
             </div>
           </div>
 
-          {/* Pricing */}
-          <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-100">
-            <h3 className="font-bold text-xs text-slate-900 mb-4 uppercase tracking-wider">
+          {/* Pricing & affiliate */}
+          <div className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm sm:p-5">
+            <div className="space-y-4">
+            <div className="space-y-3">
+            <h3 className="mb-0 text-xs font-bold uppercase tracking-wider text-slate-900 sm:col-span-2">
               Giá bán
             </h3>
-            <div className="space-y-4 text-sm">
+            <div className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
               <div>
-                <label className="block text-xs font-bold text-slate-500 mb-1.5">
+                <label className="mb-1 block text-xs font-bold text-slate-500">
                   Giá niêm yết
                 </label>
                 <input
@@ -1111,12 +1143,12 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
                       originalPrice: Number(e.target.value),
                     })
                   }
-                  className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-orange-500"
+                  className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none transition focus:ring-2 focus:ring-orange-500"
                   placeholder="0"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-500 mb-1.5">
+                <label className="mb-1 block text-xs font-bold text-slate-500">
                   Giá khuyến mãi
                 </label>
                 <input
@@ -1126,21 +1158,21 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
                   onChange={e =>
                     setProduct({ ...product, price: Number(e.target.value) })
                   }
-                  className="w-full border border-orange-200 bg-orange-50 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-orange-500 font-bold text-orange-700"
+                  className="w-full rounded-lg border border-orange-200 bg-orange-50 px-3 py-2 text-sm font-bold text-orange-700 outline-none transition focus:ring-2 focus:ring-orange-500"
                   placeholder="0"
                 />
               </div>
             </div>
-          </div>
+            </div>
 
           {/* Affiliate Commission */}
-          <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-100">
-            <h3 className="font-bold text-xs text-slate-900 mb-4 uppercase tracking-wider flex items-center gap-2">
+          <div className="border-t border-slate-100 pt-3">
+            <h3 className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-900">
               🤝 Hoa Hồng Affiliate
             </h3>
-            <div className="space-y-4 text-sm">
+            <div className="text-sm">
               <div>
-                <label className="block text-xs font-bold text-slate-500 mb-1.5">
+                <label className="mb-1 block text-xs font-bold text-slate-500">
                   Tỷ lệ hoa hồng (%)
                 </label>
                 <div className="flex items-center gap-2">
@@ -1155,16 +1187,18 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
                         commissionRate: Math.min(50, Math.max(0, Number(e.target.value))),
                       })
                     }
-                    className="w-24 border border-purple-200 bg-purple-50 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-purple-500 font-bold text-purple-700"
+                    className="w-20 rounded-lg border border-purple-200 bg-purple-50 px-3 py-2 text-sm font-bold text-purple-700 outline-none transition focus:ring-2 focus:ring-purple-500"
                     placeholder="10"
                   />
-                  <span className="text-slate-500 font-medium">%</span>
+                  <span className="text-sm font-semibold text-slate-500">%</span>
                 </div>
-                <p className="text-xs text-slate-400 mt-2">
+                <p className="mt-2 text-xs leading-5 text-slate-400">
                   Affiliate sẽ nhận được {product.commissionRate}% ({(product.price * product.commissionRate / 100).toLocaleString('vi-VN')}₫) cho mỗi đơn hàng thành công.
                 </p>
               </div>
             </div>
+          </div>
+          </div>
           </div>
 
           {/* Cover Image */}
@@ -1313,14 +1347,7 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, productId }) => {
 
           {/* Version Management - Only show in Edit mode */}
           {isEditMode && productId && (
-            <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-              <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-                <History size={20} className="text-orange-600" />
-                Quản lý phiên bản file
-              </h3>
-              <p className="text-sm text-slate-500 mb-4">
-                Upload các phiên bản file mới. Khách hàng đã mua sẽ tự động nhận thông báo.
-              </p>
+            <div>
               <ProductVersionManager
                 productId={parseInt(productId)}
                 productName={product.name || 'Sản phẩm'}

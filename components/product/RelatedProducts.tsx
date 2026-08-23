@@ -3,11 +3,12 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Star, ShoppingCart, Heart, ArrowRight, MessageCircle } from 'lucide-react';
+import { ShoppingCart, Heart, ArrowRight, MessageCircle } from 'lucide-react';
 import { Product } from '@/types';
 import { useCart } from '@/context/CartContext';
 import { useToast } from '@/context/ToastContext';
 import { useSiteMode } from '@/hooks/useSiteSettings';
+import StarRating from './StarRating';
 import { getProductTypeFilledStyle } from '@/lib/productTypeDisplay';
 
 interface RelatedProductsProps {
@@ -111,10 +112,7 @@ export default function RelatedProducts({ currentProduct, relatedProducts = [], 
 
                             {/* Info */}
                             <div className="p-3">
-                                <div className="flex items-center gap-1 mb-1">
-                                    <Star size={12} className="text-amber-400 fill-amber-400" />
-                                    <span className="text-xs font-bold text-slate-700">{product.rating}</span>
-                                </div>
+                                <StarRating rating={product.rating} reviewCount={product.reviews_count || product.reviews} size={11} className="mb-1" />
                                 <h4 className="font-bold text-slate-900 text-sm line-clamp-2 mb-2 group-hover:text-orange-600 transition-colors">
                                     {product.name}
                                 </h4>

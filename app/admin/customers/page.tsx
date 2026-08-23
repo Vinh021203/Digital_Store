@@ -245,7 +245,7 @@ const CustomersManager: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">
-                  {pageItems.map(user => (
+                  {pageItems.map((user, userIndex) => (
                     <tr
                       key={user.id}
                       className="hover:bg-slate-50/50 transition-colors group"
@@ -333,7 +333,7 @@ const CustomersManager: React.FC = () => {
                         </button>
 
                         {activeActionId === user.id && (
-                          <div className="absolute right-8 top-12 w-48 bg-white rounded-xl shadow-xl border border-slate-100 z-10 overflow-hidden animate-fade-in">
+                          <div className={`absolute right-8 z-30 w-48 overflow-hidden rounded-xl border border-slate-100 bg-white shadow-xl animate-fade-in ${userIndex >= pageItems.length - 2 ? 'bottom-12' : 'top-12'}`}>
                             <div className="p-1">
                               <button
                                 onClick={() =>

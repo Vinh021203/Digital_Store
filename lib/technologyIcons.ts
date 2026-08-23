@@ -59,6 +59,15 @@ const technologyIconPaths: Record<string, string> = {
   vercel: 'vercel/vercel-original.svg',
 };
 
+export const TECHNOLOGY_OPTIONS = [
+  'HTML', 'CSS', 'JavaScript', 'TypeScript', 'React', 'Next.js', 'Vue.js', 'Nuxt.js',
+  'Angular', 'Svelte', 'Astro', 'Node.js', 'Express', 'Tailwind CSS', 'Bootstrap',
+  'jQuery', 'Figma', 'Canva', 'Laravel', 'PHP', 'Python', 'Django', 'Java', '.NET',
+  'WordPress', 'Shopify', 'Webflow', 'Framer', 'Flutter', 'Dart', 'Kotlin', 'Swift',
+  'Ruby', 'Rails', 'Go', 'Rust', 'MySQL', 'PostgreSQL', 'Firebase', 'Supabase',
+  'Docker', 'Git', 'GitHub', 'Vercel',
+] as const;
+
 export function normalizeTechnologyName(value: string) {
   return value.trim().toLowerCase().replace(/\s+/g, ' ');
 }

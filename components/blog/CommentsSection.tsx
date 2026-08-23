@@ -33,7 +33,7 @@ function formatRelativeTime(dateString: string): string {
 }
 
 export default function CommentsSection({ postId }: CommentsSectionProps) {
-    const { addToast } = useToast();
+    const { addToast, confirm } = useToast();
     const { user, profile } = useSupabaseAuth();
     const isAdmin = profile?.role === 'admin';
 
@@ -146,7 +146,7 @@ export default function CommentsSection({ postId }: CommentsSectionProps) {
     const handleDelete = async (commentId: number) => {
         if (!isAdmin) return;
 
-        if (!confirm('Bạn có chắc muốn xóa bình luận này?')) return;
+        if (!(await confirm('Bạn có chắc muốn xóa bình luận này?'))) return;
 
         try {
             const success = await deleteComment(commentId);

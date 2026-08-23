@@ -1,5 +1,6 @@
 // Product Components - Cards, Reviews, Related
 export { default as ProductCard } from './ProductCard';
+export { default as StarRating } from './StarRating';
 export { default as ProductReviews } from './ProductReviews';
 export { default as RelatedProducts } from './RelatedProducts';
 export { default as FrequentlyBoughtTogether } from './FrequentlyBoughtTogether';

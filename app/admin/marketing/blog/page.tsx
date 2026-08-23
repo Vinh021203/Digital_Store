@@ -66,7 +66,7 @@ export default function BlogManager() {
   };
 
   const handleDelete = async (post: DbBlogPost) => {
-    if (!confirm(`Bạn có chắc muốn xóa bài "${post.title}"?`)) return;
+    if (!(await toast.confirm(`Bạn có chắc muốn xóa bài "${post.title}"?`))) return;
     try {
       await deletePost(post.id);
       toast.success('Đã xóa bài viết');

@@ -22,7 +22,7 @@ export default function ProductVersionManager({
     productName,
     onClose
 }: ProductVersionManagerProps) {
-    const { addToast } = useToast();
+    const { addToast, confirm } = useToast();
     const [versions, setVersions] = useState<DbProductFile[]>([]);
     const [loading, setLoading] = useState(true);
     const [uploading, setUploading] = useState(false);
@@ -161,7 +161,7 @@ export default function ProductVersionManager({
     };
 
     const handleDelete = async (fileId: number, version: string) => {
-        if (!confirm(`Bạn có chắc muốn xóa v${version}?`)) return;
+        if (!(await confirm(`Bạn có chắc muốn xóa v${version}?`))) return;
 
         setDeleting(fileId);
         try {
@@ -198,45 +198,45 @@ export default function ProductVersionManager({
     };
 
     return (
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
             {/* Header */}
-            <div className="bg-gradient-to-r from-orange-500 to-red-500 px-6 py-4 text-white">
+            <div className="bg-gradient-to-r from-orange-500 to-red-500 px-4 py-3 text-white sm:px-5">
                 <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <Package size={24} />
-                        <div>
-                            <h2 className="font-bold text-lg">Quản lý phiên bản</h2>
-                            <p className="text-orange-100 text-sm">{productName}</p>
+                    <div className="flex min-w-0 items-center gap-2.5">
+                        <Package size={20} className="shrink-0" />
+                        <div className="min-w-0">
+                            <h2 className="text-base font-bold sm:text-lg">Quản lý phiên bản</h2>
+                            <p className="truncate text-xs text-orange-100 sm:text-sm">{productName}</p>
                         </div>
                     </div>
                     {onClose && (
-                        <button onClick={onClose} className="p-2 hover:bg-white/20 rounded-lg transition-colors">
-                            <X size={20} />
+                        <button onClick={onClose} className="rounded-lg p-1.5 transition-colors hover:bg-white/20">
+                            <X size={18} />
                         </button>
                     )}
                 </div>
             </div>
 
-            <div className="p-6">
+            <div className="p-4 sm:p-5">
                 {/* Upload Button / Form */}
                 {!showUploadForm ? (
                     <button
                         onClick={() => setShowUploadForm(true)}
-                        className="w-full flex items-center justify-center gap-2 py-4 border-2 border-dashed border-orange-300 rounded-xl text-orange-600 font-bold hover:bg-orange-50 transition-colors"
+                        className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-orange-300 py-3 text-sm font-bold text-orange-600 transition-colors hover:bg-orange-50 sm:text-base"
                     >
-                        <Plus size={20} />
+                        <Plus size={18} />
                         Upload phiên bản mới
                     </button>
                 ) : (
-                    <form onSubmit={handleUpload} className="bg-orange-50 rounded-xl p-5 mb-4">
-                        <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
-                            <Upload size={18} className="text-orange-600" />
+                    <form onSubmit={handleUpload} data-no-navigation-progress="true" className="mb-3 rounded-xl bg-orange-50 p-3">
+                        <h3 className="mb-2 flex items-center gap-2 text-sm font-bold text-slate-900">
+                            <Upload size={17} className="text-orange-600" />
                             Upload phiên bản mới
                         </h3>
 
                         {/* File Upload */}
-                        <div className="mb-4">
-                            <label className="block text-sm font-bold text-slate-700 mb-2">File sản phẩm *</label>
+                        <div className="mb-3">
+                            <label className="mb-1 block text-xs font-bold text-slate-700">File sản phẩm *</label>
                             <input
                                 ref={fileInputRef}
                                 type="file"
@@ -246,11 +246,11 @@ export default function ProductVersionManager({
                             />
 
                             {newVersion.file_url ? (
-                                <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-lg p-3">
-                                    <div className="flex items-center gap-2 text-green-700">
-                                        <File size={18} />
-                                        <span className="font-medium">{newVersion.fileName || 'File uploaded'}</span>
-                                        <span className="text-sm text-green-600">({formatFileSize(newVersion.file_size)})</span>
+                                <div className="flex min-w-0 items-center gap-2 rounded-lg border border-green-200 bg-green-50 px-2.5 py-2">
+                                    <File size={17} className="shrink-0 text-green-700" />
+                                    <div className="flex min-w-0 flex-1 items-center gap-1.5 text-green-700">
+                                        <span className="min-w-0 truncate text-sm font-semibold">{newVersion.fileName || 'File uploaded'}</span>
+                                        <span className="shrink-0 text-xs text-green-600">({formatFileSize(newVersion.file_size)})</span>
                                     </div>
                                     <button
                                         type="button"
@@ -258,9 +258,9 @@ export default function ProductVersionManager({
                                             setNewVersion(prev => ({ ...prev, file_url: '', file_size: 0, fileName: '' }));
                                             if (fileInputRef.current) fileInputRef.current.value = '';
                                         }}
-                                        className="text-red-500 hover:text-red-700"
+                                        className="shrink-0 rounded-md p-1 text-red-500 hover:bg-red-100 hover:text-red-700"
                                     >
-                                        <X size={18} />
+                                        <X size={17} />
                                     </button>
                                 </div>
                             ) : (
@@ -268,16 +268,16 @@ export default function ProductVersionManager({
                                     type="button"
                                     onClick={() => fileInputRef.current?.click()}
                                     disabled={uploadingFile}
-                                    className="w-full border-2 border-dashed border-slate-300 rounded-xl p-6 text-center hover:bg-slate-50 hover:border-orange-300 transition-all cursor-pointer disabled:opacity-50"
+                                    className="w-full cursor-pointer rounded-lg border border-dashed border-slate-300 p-3 text-center transition-all hover:border-orange-300 hover:bg-slate-50 disabled:opacity-50"
                                 >
                                     {uploadingFile ? (
                                         <div className="flex flex-col items-center gap-2">
-                                            <Loader2 size={32} className="animate-spin text-orange-600" />
+                                            <Loader2 size={26} className="animate-spin text-orange-600" />
                                             <span className="text-slate-600 font-medium">Đang upload...</span>
                                         </div>
                                     ) : (
                                         <div className="flex flex-col items-center gap-2">
-                                            <Upload size={32} className="text-slate-400" />
+                                            <Upload size={22} className="text-slate-400" />
                                             <span className="text-slate-600 font-medium">Click để chọn file</span>
                                             <span className="text-xs text-slate-400">ZIP, RAR, 7Z, PDF • Tối đa 500MB</span>
                                         </div>
@@ -285,7 +285,7 @@ export default function ProductVersionManager({
                                 </button>
                             )}
 
-                            <p className="text-xs text-slate-500 mt-2">
+                            <p className="mt-1 text-xs text-slate-500">
                                 Hoặc nhập URL trực tiếp:
                             </p>
                             <input
@@ -293,60 +293,60 @@ export default function ProductVersionManager({
                                 value={newVersion.file_url}
                                 onChange={(e) => setNewVersion({ ...newVersion, file_url: e.target.value })}
                                 placeholder="https://storage.example.com/product-v2.zip"
-                                className="w-full mt-1 px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none text-sm"
+                                className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-orange-500"
                             />
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                             <div>
-                                <label className="block text-sm font-bold text-slate-700 mb-1">Version *</label>
+                                <label className="mb-1 block text-xs font-bold text-slate-700">Version *</label>
                                 <input
                                     type="text"
                                     value={newVersion.version}
                                     onChange={(e) => setNewVersion({ ...newVersion, version: e.target.value })}
                                     placeholder="VD: 2.0.0"
-                                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
+                                    className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-orange-500"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-bold text-slate-700 mb-1">File Size (bytes)</label>
+                                <label className="mb-1 block text-xs font-bold text-slate-700">File Size (bytes)</label>
                                 <input
                                     type="number"
                                     value={newVersion.file_size}
                                     onChange={(e) => setNewVersion({ ...newVersion, file_size: parseInt(e.target.value) || 0 })}
                                     placeholder="Tự động điền khi upload"
-                                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none bg-slate-50"
+                                    className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-orange-500"
                                     readOnly={!!newVersion.fileName}
                                 />
                             </div>
                         </div>
 
-                        <div className="mt-4">
-                            <label className="block text-sm font-bold text-slate-700 mb-1">Changelog</label>
+                        <div className="mt-2">
+                            <label className="mb-1 block text-xs font-bold text-slate-700">Changelog</label>
                             <textarea
                                 value={newVersion.changelog}
                                 onChange={(e) => setNewVersion({ ...newVersion, changelog: e.target.value })}
                                 placeholder="Mô tả những thay đổi trong phiên bản này..."
-                                rows={3}
-                                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none resize-none"
+                                rows={2}
+                                className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none resize-none focus:ring-2 focus:ring-orange-500"
                             />
                         </div>
 
-                        <div className="flex items-center gap-3 p-3 bg-green-50 border border-green-200 rounded-lg mt-4">
-                            <Sparkles size={18} className="text-green-600" />
-                            <p className="text-sm text-green-700">
+                        <div className="mt-2 flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 p-2">
+                            <Sparkles size={16} className="shrink-0 text-green-600" />
+                            <p className="text-xs leading-4 text-green-700">
                                 Khách hàng đã mua sẽ tự động nhận thông báo về bản cập nhật này!
                             </p>
                         </div>
 
-                        <div className="flex gap-3 mt-4">
+                        <div className="mt-2 flex gap-2">
                             <button
                                 type="submit"
                                 disabled={uploading || uploadingFile}
-                                className="flex-1 flex items-center justify-center gap-2 py-3 bg-orange-600 text-white font-bold rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50"
+                                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-orange-600 py-2 text-sm font-bold text-white transition-colors hover:bg-orange-700 disabled:opacity-50"
                             >
-                                {uploading ? <Loader2 size={18} className="animate-spin" /> : <Upload size={18} />}
-                                Lưu phiên bản
+                                {uploading ? <Loader2 size={17} className="animate-spin" /> : <Upload size={17} />}
+                                {uploading ? 'Đang lưu...' : 'Lưu phiên bản'}
                             </button>
                             <button
                                 type="button"
@@ -354,7 +354,7 @@ export default function ProductVersionManager({
                                     setShowUploadForm(false);
                                     setNewVersion({ version: '', file_url: '', file_size: 0, changelog: '', fileName: '' });
                                 }}
-                                className="px-6 py-3 border border-slate-200 text-slate-600 font-bold rounded-lg hover:bg-slate-50 transition-colors"
+                                className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-bold text-slate-600 transition-colors hover:bg-slate-50"
                             >
                                 Hủy
                             </button>
@@ -363,22 +363,22 @@ export default function ProductVersionManager({
                 )}
 
                 {/* Versions List */}
-                <div className="mt-6">
-                    <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
+                <div className="mt-5">
+                    <h3 className="mb-3 flex items-center gap-2 text-sm font-bold text-slate-900 sm:text-base">
                         <History size={18} className="text-orange-600" />
                         Lịch sử phiên bản ({versions.length})
                     </h3>
 
                     {loading ? (
-                        <div className="text-center py-8">
+                        <div className="py-5 text-center">
                             <Loader2 size={24} className="mx-auto animate-spin text-orange-600" />
                         </div>
                     ) : versions.length > 0 ? (
-                        <div className="space-y-3">
+                        <div className="space-y-2">
                             {versions.map((v) => (
                                 <div
                                     key={v.id}
-                                    className={`p-4 rounded-xl border ${v.is_current
+                                    className={`rounded-xl border p-3 ${v.is_current
                                         ? 'bg-orange-50 border-orange-200'
                                         : 'bg-white border-slate-100'
                                         }`}
@@ -444,10 +444,10 @@ export default function ProductVersionManager({
                             ))}
                         </div>
                     ) : (
-                        <div className="text-center py-8 text-slate-500">
-                            <AlertCircle size={32} className="mx-auto text-slate-300 mb-2" />
-                            <p>Chưa có phiên bản nào</p>
-                            <p className="text-sm">Upload phiên bản đầu tiên để khách hàng có thể download</p>
+                        <div className="rounded-xl border border-dashed border-slate-200 py-6 text-center text-slate-500">
+                            <AlertCircle size={28} className="mx-auto mb-2 text-slate-300" />
+                            <p className="text-sm font-semibold">Chưa có phiên bản nào</p>
+                            <p className="mt-1 text-xs">Upload phiên bản đầu tiên để khách hàng có thể download</p>
                         </div>
                     )}
                 </div>

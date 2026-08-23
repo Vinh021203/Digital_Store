@@ -57,7 +57,7 @@ const CouponsManager = () => {
   };
 
   const handleDelete = async (coupon: DbCoupon) => {
-    if (!confirm(`Bạn có chắc muốn xóa mã "${coupon.code}"?`)) return;
+    if (!(await toast.confirm(`Bạn có chắc muốn xóa mã "${coupon.code}"?`))) return;
     try {
       await deleteCoupon(coupon.id);
       toast.success('Đã xóa mã giảm giá');

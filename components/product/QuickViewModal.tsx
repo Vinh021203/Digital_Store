@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback, memo } from 'react';
 import {
-  X, Star, ShoppingCart, Check, Package, FileCode, Clock,
+  X, ShoppingCart, Check, Package, FileCode, Clock,
   ShieldCheck, Download, Users, TrendingUp, Heart, Share2, Key,
   ArrowRightLeft, Eye, Zap, Copy, ExternalLink, MessageCircle
 } from 'lucide-react';
@@ -13,6 +13,7 @@ import { getProductTypeFilledStyle } from '@/lib/productTypeDisplay';
 import { useCart } from '@/context/CartContext';
 import { useToast } from '@/context/ToastContext';
 import { useSiteMode } from '@/hooks/useSiteSettings';
+import StarRating from './StarRating';
 
 // Blur placeholder
 const BLUR_DATA_URL = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMCwsLCgwMDhEODQ4RDgwMEhQSFhITExMOFRcZGxkWGhQWFhL/2wBDAQMEBAUEBQkFBQkWDwwPFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhL/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAYH/8QAJRAAAQMDAwMFAAAAAAAAAAAAAQIDBAAFEQYSIQcTMRQiQVFh/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAXEQEBAQEAAAAAAAAAAAAAAAABAgAD/9oADAMBERACEEQ8T//UAJwKkKV0NQAG0ADE8CuKH//Z';
@@ -203,11 +204,7 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, isOpen, onClos
               <span className="text-[10px] font-bold text-orange-600 uppercase tracking-wider">
                 {product.category}
               </span>
-              <div className="flex items-center gap-1">
-                <Star size={14} className="text-amber-400 fill-amber-400" />
-                <span className="text-sm font-bold text-slate-900">{product.rating}</span>
-                <span className="text-xs text-slate-400">({product.reviews || 120})</span>
-              </div>
+              <StarRating rating={product.rating} reviewCount={product.reviews_count || product.reviews} size={13} />
             </div>
 
             {/* Title */}

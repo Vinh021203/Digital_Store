@@ -23,7 +23,7 @@ import { useToast } from '@/context/ToastContext';
 type RatingFilter = number | 'all';
 
 const ReviewsManager = () => {
-  const { addToast } = useToast();
+  const { addToast, confirm } = useToast();
 
   const [reviews, setReviews] = useState<DbReview[]>([]);
   const [loading, setLoading] = useState(true);
@@ -95,7 +95,7 @@ const ReviewsManager = () => {
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Bạn có chắc muốn xóa đánh giá này?')) return;
+    if (!(await confirm('Bạn có chắc muốn xóa đánh giá này?'))) return;
     try {
       await deleteReview(id);
       setReviews(prev => prev.filter(r => r.id !== id));
@@ -202,7 +202,7 @@ const ReviewsManager = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4">
-          {paginatedReviews.map(review => (
+          {paginatedReviews.map((review, reviewIndex) => (
             <div
               key={review.id}
               className="bg-white p-5 sm:p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all"
@@ -266,7 +266,7 @@ const ReviewsManager = () => {
                   </button>
 
                   {actionMenuId === review.id && (
-                    <div className="absolute right-0 top-10 z-20 w-40 bg-white border border-slate-100 rounded-xl shadow-lg text-xs">
+                    <div className={`absolute right-0 z-30 w-40 rounded-xl border border-slate-100 bg-white text-xs shadow-lg ${reviewIndex >= paginatedReviews.length - 2 ? 'bottom-10' : 'top-10'}`}>
                       <button
                         type="button"
                         onClick={() => handleToggleApproval(review.id)}

@@ -96,7 +96,9 @@ function NavigationProgressInner() {
         };
 
         // Intercept form submissions
-        const handleSubmit = () => {
+        const handleSubmit = (event: SubmitEvent) => {
+            const form = event.target as HTMLFormElement | null;
+            if (form?.dataset.noNavigationProgress === 'true') return;
             isNavigatingRef.current = true;
             NProgress.start();
         };

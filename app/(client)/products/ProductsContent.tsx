@@ -313,7 +313,12 @@ const FilterSidebar = ({
                     <h3 className="mb-2 text-[12px] font-extrabold text-slate-900">Đánh giá</h3>
                     <div className="space-y-0.5">
                         {[5, 4, 3, 2, 1].map((r) => (
-                            <CheckboxRow key={r} label={`${r} sao`} count={products.filter((p) => (p.rating || 0) >= r).length} checked={ratings.includes(r)} onClick={() => setRatings(ratings.includes(r) ? ratings.filter(v => v !== r) : [...ratings, r])}>
+                            <CheckboxRow key={r} label={`${r} sao`} count={products.filter((p) => {
+                                const value = Number(p.rating) || 0;
+                                const lowerBound = r === 5 ? 4.5 : r - 0.5;
+                                const upperBound = r === 5 ? 5.01 : r + 0.5;
+                                return value >= lowerBound && value < upperBound;
+                            }).length} checked={ratings.includes(r)} onClick={() => setRatings(ratings.includes(r) ? ratings.filter(v => v !== r) : [...ratings, r])}>
                                 <span className="inline-flex items-center gap-1">
                                     {[...Array(5)].map((_, i) => (
                                         <Star key={i} size={12} fill={i < r ? 'currentColor' : 'none'} className={i < r ? 'text-amber-400' : 'text-slate-300'} />
@@ -509,8 +514,14 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
         }
 
         if (ratings.length > 0) {
-            const minRating = Math.min(...ratings);
-            result = result.filter(p => (p.rating || 0) >= minRating);
+            result = result.filter(p => {
+                const value = Number(p.rating) || 0;
+                return ratings.some((r) => {
+                    const lowerBound = r === 5 ? 4.5 : r - 0.5;
+                    const upperBound = r === 5 ? 5.01 : r + 0.5;
+                    return value >= lowerBound && value < upperBound;
+                });
+            });
         }
 
         if (!isCatalogMode) {

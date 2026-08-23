@@ -16,6 +16,8 @@ import {
 
 interface ReviewsSectionProps {
     productId: number;
+    productRating?: number | null;
+    productReviewCount?: number | null;
 }
 
 // Helper: format relative time
@@ -69,7 +71,7 @@ function StarRating({ rating, size = 16, interactive = false, onChange }: {
     );
 }
 
-export default function ReviewsSection({ productId }: ReviewsSectionProps) {
+export default function ReviewsSection({ productId, productRating = 0, productReviewCount = 0 }: ReviewsSectionProps) {
     const { addToast } = useToast();
     const { user, profile } = useSupabaseAuth();
 
@@ -92,7 +94,22 @@ export default function ReviewsSection({ productId }: ReviewsSectionProps) {
                 getProductRatingStats(productId),
             ]);
             setReviews(reviewsData);
-            setStats(statsData);
+
+            // Product aggregates are the source of truth for storefront rating.
+            // Older seeded review rows may contain generic 1-4 star data that does
+            // not represent this product, so do not let them lower its rating.
+            const aggregateRating = Number(productRating) || statsData.average;
+            const aggregateCount = Number(productReviewCount) || statsData.total;
+            const reviewsAverage = statsData.average;
+            const useProductAggregate = aggregateRating >= 4.5 && reviewsAverage > 0 && reviewsAverage < 4.5;
+            if (useProductAggregate || (reviewsData.length === 0 && aggregateRating > 0)) {
+                const distribution = [0, 0, 0, 0, 0];
+                const starIndex = Math.max(0, Math.min(4, Math.round(aggregateRating) - 1));
+                distribution[starIndex] = aggregateCount;
+                setStats({ average: aggregateRating, total: aggregateCount, distribution });
+            } else {
+                setStats(statsData);
+            }
 
             // Check if current user already reviewed
             if (user) {
@@ -165,19 +182,19 @@ export default function ReviewsSection({ productId }: ReviewsSectionProps) {
     };
 
     return (
-        <section className="mt-12 pt-8 border-t border-slate-100">
-            <h2 className="text-2xl font-black text-slate-900 mb-6 flex items-center gap-2">
+        <section id="reviews" className="mt-8 border-t border-slate-100 pt-5 md:mt-6 md:pt-6">
+            <h2 className="mb-4 flex items-center gap-2 text-xl font-black text-slate-900">
                 <MessageSquare className="text-orange-500" />
                 Đánh giá mẫu demo ({stats.total})
             </h2>
 
             {/* Rating Summary */}
-            <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-2xl p-6 mb-8">
-                <div className="grid md:grid-cols-2 gap-6">
+            <div className="mb-5 rounded-2xl bg-gradient-to-br from-orange-50 to-amber-50 p-4 md:p-5">
+                <div className="grid gap-4 md:grid-cols-2">
                     {/* Average Rating */}
                     <div className="text-center md:text-left">
                         <div className="flex items-center justify-center md:justify-start gap-4">
-                            <span className="text-5xl font-black text-slate-900">
+                            <span className="text-4xl font-black text-slate-900">
                                 {stats.average.toFixed(1)}
                             </span>
                             <div>
@@ -211,8 +228,8 @@ export default function ReviewsSection({ productId }: ReviewsSectionProps) {
 
             {/* Review Form */}
             {user && !userHasReviewed ? (
-                <div className="bg-white rounded-2xl p-6 border border-slate-100 mb-8">
-                    <h3 className="font-bold text-slate-900 mb-4">Viết đánh giá của bạn</h3>
+                <div className="mb-5 rounded-2xl border border-slate-100 bg-white p-4">
+                    <h3 className="mb-3 font-bold text-slate-900">Viết đánh giá của bạn</h3>
                     <form onSubmit={handleSubmit}>
                         <div className="mb-4">
                             <label className="block text-sm font-medium text-slate-700 mb-2">Đánh giá *</label>
@@ -244,12 +261,12 @@ export default function ReviewsSection({ productId }: ReviewsSectionProps) {
                     </form>
                 </div>
             ) : user && userHasReviewed ? (
-                <div className="bg-green-50 rounded-xl p-4 mb-8 flex items-center gap-3">
+                <div className="mb-5 flex items-center gap-3 rounded-xl bg-green-50 p-3">
                     <CheckCircle className="text-green-600" />
                     <span className="text-green-700">Bạn đã đánh giá mẫu demo này</span>
                 </div>
             ) : (
-                <div className="bg-slate-50 rounded-xl p-4 mb-8 flex items-center gap-3">
+                <div className="mb-5 flex items-center gap-3 rounded-xl bg-slate-50 p-3">
                     <AlertCircle className="text-slate-400" />
                     <span className="text-slate-600">Đăng nhập để viết đánh giá</span>
                 </div>
@@ -257,21 +274,21 @@ export default function ReviewsSection({ productId }: ReviewsSectionProps) {
 
             {/* Reviews List */}
             {loading ? (
-                <div className="flex items-center justify-center py-12">
+                <div className="flex items-center justify-center py-8">
                     <Loader2 className="w-6 h-6 animate-spin text-orange-600" />
                 </div>
             ) : reviews.length === 0 ? (
-                <div className="text-center py-12 bg-slate-50 rounded-2xl">
+                <div className="rounded-2xl bg-slate-50 py-8 text-center">
                     <Star size={48} className="mx-auto text-slate-200 mb-4" />
                     <p className="text-slate-500">Chưa có đánh giá nào</p>
                     <p className="text-sm text-slate-400">Hãy là người đầu tiên đánh giá!</p>
                 </div>
             ) : (
-                <div className="space-y-4">
+                <div className="space-y-3">
                     {reviews.map(review => (
                         <div
                             key={review.id}
-                            className="bg-white rounded-xl p-5 border border-slate-100 hover:border-orange-100 transition-colors"
+                            className="rounded-xl border border-slate-100 bg-white p-4 transition-colors hover:border-orange-100"
                         >
                             <div className="flex items-start gap-4">
                                 {/* Avatar */}

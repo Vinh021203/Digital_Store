@@ -207,7 +207,7 @@ export default function SocialProofNotifications() {
         <span className="absolute bottom-3.5 left-[13px] h-1.5 w-1.5 rounded-full bg-slate-300 ring-2 ring-white" />
 
         <div className="flex items-center gap-2.5">
-          <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl bg-slate-100 ring-1 ring-slate-200">
+          <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl border-2 border-white bg-slate-100 shadow-sm ring-1 ring-slate-200 transition-transform duration-300 group-hover:scale-[1.03]">
             {currentNotification.productImage ? (
               <Image
                 src={currentNotification.productImage}
@@ -253,7 +253,11 @@ export default function SocialProofNotifications() {
           </div>
 
           <button
-            onClick={handleDismiss}
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              handleDismiss();
+            }}
             className="absolute right-2 top-2 rounded-full p-1 text-slate-300 transition hover:bg-slate-100 hover:text-slate-600"
             aria-label="Ẩn thông báo"
             type="button"

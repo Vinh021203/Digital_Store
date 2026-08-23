@@ -450,8 +450,8 @@ const CategoryEditor: React.FC<CategoryEditorProps> = ({ mode, categoryId }) => 
                     {/* Delete Button (Edit Mode Only) */}
                     {isEditMode && (
                         <button
-                            onClick={() => {
-                                if (confirm('Bạn có chắc chắn muốn xóa danh mục này?')) {
+                            onClick={async () => {
+                                if (await toast.confirm('Bạn có chắc chắn muốn xóa danh mục này?')) {
                                     // TODO: Implement delete
                                     router.push('/admin/products/categories');
                                 }

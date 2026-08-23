@@ -8,10 +8,12 @@ import {
     TrendingUp, Wallet, Sparkles, Filter, X, ArrowRight
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
+import { useToast } from '@/context/ToastContext';
 import ProductCard from '@/components/product/ProductCard';
 
 export default function WishlistPage() {
     const { wishlist, removeFromWishlist } = useCart();
+    const { confirm, addToast } = useToast();
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
     const [searchQuery, setSearchQuery] = useState('');
     const [activeFilter, setActiveFilter] = useState('all'); // all, onSale, themes, templates
@@ -219,9 +221,10 @@ export default function WishlistPage() {
 
                             {filteredItems.length > 0 && (
                                 <button
-                                    onClick={() => {
-                                        if (window.confirm('Xóa tất cả mẫu demo?')) {
+                                    onClick={async () => {
+                                        if (await confirm('Xóa tất cả mẫu demo?')) {
                                             wishlist.forEach(i => removeFromWishlist(i.id));
+                                            addToast('Đã xóa tất cả mẫu demo khỏi danh sách', 'success');
                                         }
                                     }}
                                     className="flex items-center gap-2 px-4 py-2.5 text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-xl text-sm font-bold transition-colors"

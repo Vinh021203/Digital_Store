@@ -491,7 +491,7 @@ const DpMarketProductCard = memo(
                       key={i}
                       size={11}
                       fill={
-                        i < Math.round(product.rating || 5)
+                        i < Math.round(Math.max(0, Math.min(5, Number(product.rating) || 0)))
                           ? "currentColor"
                           : "none"
                       }
@@ -550,6 +550,7 @@ const HomePage = ({
   const [categories] = useState<DbCategory[]>(initialCategories);
   const [blogPosts] = useState<DbBlogPost[]>(initialBlogPosts);
   const { isCatalogMode } = useSiteMode();
+  const { addToast } = useToast();
   const loading = false;
 
   // States for interactive tabs
@@ -1819,7 +1820,7 @@ const HomePage = ({
                 </Link>
                 <button
                   type="button"
-                  onClick={() => alert("Đã theo dõi!")}
+                  onClick={() => addToast("Đã theo dõi!", 'success')}
                   className="inline-flex items-center justify-center px-5 py-2.5 rounded-full border border-slate-300 hover:border-[#ea580c] bg-white hover:bg-[#ea580c]/5 text-slate-600 hover:text-[#ea580c] font-semibold text-sm transition-all duration-200 select-none shadow-sm"
                 >
                   Theo dõi

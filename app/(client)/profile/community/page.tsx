@@ -21,7 +21,7 @@ import {
 
 export default function ProfileCommunityPage() {
     const { user, profile, loading: authLoading } = useSupabaseAuth();
-    const { addToast } = useToast();
+    const { addToast, confirm } = useToast();
     const router = useRouter();
 
     const [posts, setPosts] = useState<DbCommunityPost[]>([]);
@@ -83,7 +83,7 @@ export default function ProfileCommunityPage() {
     };
 
     const handleDelete = async (postId: number) => {
-        if (!confirm('Bạn có chắc muốn xóa bài viết này?')) return;
+        if (!(await confirm('Bạn có chắc muốn xóa bài viết này?'))) return;
 
         setDeletingId(postId);
         try {

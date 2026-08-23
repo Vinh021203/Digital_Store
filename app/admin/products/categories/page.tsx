@@ -65,7 +65,7 @@ const CategoriesManager = () => {
 
     // Delete category
     const handleDelete = async (cat: DbCategory) => {
-        if (!confirm(`Bạn có chắc chắn muốn xóa danh mục "${cat.name}"?`)) return;
+        if (!(await toast.confirm(`Bạn có chắc chắn muốn xóa danh mục "${cat.name}"?`))) return;
 
         try {
             await deleteCategory(cat.id);

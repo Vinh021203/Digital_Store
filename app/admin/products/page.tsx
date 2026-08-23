@@ -142,7 +142,7 @@ const ProductsManager = () => {
   };
 
   const handleDelete = async (product: DbProduct) => {
-    if (!confirm(`Bạn có chắc chắn muốn xóa "${product.name}"?`)) return;
+    if (!(await toast.confirm(`Bạn có chắc chắn muốn xóa "${product.name}"?`))) return;
 
     try {
       await deleteProduct(product.id);
@@ -389,7 +389,7 @@ const ProductsManager = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50">
-                {paginatedProducts.map(product => {
+                {paginatedProducts.map((product, productIndex) => {
                   const statusInfo = getStatusStyle(product.status);
                   return (
                     <tr
@@ -483,7 +483,7 @@ const ProductsManager = () => {
                         </button>
 
                         {activeActionId === product.id && (
-                          <div className="absolute right-8 top-12 w-44 bg-white rounded-xl shadow-xl border border-slate-100 z-10 overflow-hidden animate-fade-in">
+                          <div className={`absolute right-8 z-30 w-44 overflow-hidden rounded-xl border border-slate-100 bg-white shadow-xl animate-fade-in ${productIndex >= paginatedProducts.length - 2 ? 'bottom-12' : 'top-12'}`}>
                             <div className="p-1">
                               <button
                                 onClick={() => router.push(`/admin/products/${product.id}`)}

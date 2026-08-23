@@ -125,6 +125,69 @@ export async function getChatHistoryBySessionKey(sessionKey: string) {
   return (data || []) as ChatMessage[];
 }
 
+export async function getChatHistoryByUserId(userId: string) {
+  const supabase = getAdminClient();
+  if (!supabase || !userId) return [] as ChatMessage[];
+
+  const { data: sessions, error: sessionError } = await supabase
+    .from('chat_sessions')
+    .select('id')
+    .eq('user_id', userId)
+    .order('last_message_at', { ascending: false })
+    .limit(20);
+  if (sessionError || !sessions?.length) return [] as ChatMessage[];
+
+  const sessionIds = sessions.map((session) => session.id);
+  const { data, error } = await supabase
+    .from('chat_messages')
+    .select('*')
+    .in('session_id', sessionIds)
+    .order('created_at', { ascending: true })
+    .limit(120);
+  if (error) throw error;
+  return (data || []) as ChatMessage[];
+}
+
+export async function getChatHistoryByVisitorEmail(email: string) {
+  const supabase = getAdminClient();
+  if (!supabase || !email) return [] as ChatMessage[];
+  const { data: sessions, error } = await supabase
+    .from('chat_sessions')
+    .select('id')
+    .eq('visitor_email', email)
+    .order('last_message_at', { ascending: false })
+    .limit(20);
+  if (error || !sessions?.length) return [] as ChatMessage[];
+  const { data, error: messageError } = await supabase
+    .from('chat_messages')
+    .select('*')
+    .in('session_id', sessions.map((session) => session.id))
+    .order('created_at', { ascending: true })
+    .limit(120);
+  if (messageError) throw messageError;
+  return (data || []) as ChatMessage[];
+}
+
+export async function getChatHistoryByVisitorPhone(phone: string) {
+  const supabase = getAdminClient();
+  if (!supabase || !phone) return [] as ChatMessage[];
+  const { data: sessions, error } = await supabase
+    .from('chat_sessions')
+    .select('id')
+    .eq('visitor_phone', phone)
+    .order('last_message_at', { ascending: false })
+    .limit(20);
+  if (error || !sessions?.length) return [] as ChatMessage[];
+  const { data, error: messageError } = await supabase
+    .from('chat_messages')
+    .select('*')
+    .in('session_id', sessions.map((session) => session.id))
+    .order('created_at', { ascending: true })
+    .limit(120);
+  if (messageError) throw messageError;
+  return (data || []) as ChatMessage[];
+}
+
 export async function updateChatSession(id: string, values: Partial<Pick<ChatSession, 'status' | 'visitor_name' | 'visitor_email'>>) {
   const supabase = getAdminClient();
   if (!supabase) return null;

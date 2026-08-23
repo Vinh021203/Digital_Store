@@ -86,7 +86,7 @@ interface CouponCardProps {
 }
 
 const CouponCard = memo(({ coupon, onEdit, onDelete, onToggle }: CouponCardProps) => {
-    const { addToast } = useToast();
+    const { addToast, confirm } = useToast();
     const [copied, setCopied] = useState(false);
 
     const isExpired = new Date(coupon.endDate) < new Date();
@@ -229,8 +229,8 @@ export default function CouponManagement() {
         addToast('Đã cập nhật trạng thái!', 'success');
     };
 
-    const handleDelete = (id: string) => {
-        if (confirm('Bạn có chắc muốn xóa mã giảm giá này?')) {
+    const handleDelete = async (id: string) => {
+        if (await confirm('Bạn có chắc muốn xóa mã giảm giá này?')) {
             setCoupons(prev => prev.filter(c => c.id !== id));
             addToast('Đã xóa mã giảm giá!', 'success');
         }
