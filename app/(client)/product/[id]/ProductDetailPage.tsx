@@ -580,7 +580,7 @@ const ModernProductDetailLayout = ({
             </div>
 
             <main className="relative z-10 mx-auto max-w-7xl px-4 pt-4 pb-3 md:px-8 md:pt-7 md:pb-12">
-                <nav className="mb-7 flex items-center gap-2 overflow-x-auto whitespace-nowrap text-sm text-slate-500 no-scrollbar">
+                <nav className="mb-6 flex items-center gap-2 overflow-x-auto whitespace-nowrap text-sm text-slate-500 no-scrollbar">
                     <Link href="/" className="flex items-center gap-1.5 hover:text-orange-600"><HomeIcon size={15} /> Trang chủ</Link>
                     <ChevronRight size={15} className="text-slate-300" />
                     <Link href="/products" className="hover:text-orange-600">Templates</Link>
@@ -590,15 +590,15 @@ const ModernProductDetailLayout = ({
                     <span className="font-semibold text-orange-700">{product.name}</span>
                 </nav>
 
-                <section className="grid items-start gap-8 lg:grid-cols-[0.84fr_1.16fr] xl:gap-10">
+                <section className="grid items-start gap-6 lg:grid-cols-[0.84fr_1.16fr] lg:gap-8">
                     <div>
                         <span className="inline-flex rounded-full border border-orange-100 bg-orange-50 px-4 py-2 text-xs font-bold uppercase tracking-wide text-orange-700">
                             Mẫu được quan tâm
                         </span>
-                        <h1 className="mt-5 max-w-2xl text-3xl font-extrabold leading-[1.2] tracking-normal text-slate-950 md:text-4xl xl:text-[44px]">
+                        <h1 className="mt-4 max-w-2xl text-3xl font-extrabold leading-[1.2] tracking-normal text-slate-950 md:text-4xl xl:text-[44px]">
                             {product.name}
                         </h1>
-                        <div className="mt-5 flex flex-wrap items-center gap-4 text-sm text-slate-600">
+                        <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-slate-600">
                             <div className="flex items-center gap-1">
                                 {[...Array(5)].map((_, i) => (
                                     <Star key={i} size={18} className={i < Math.round(rating) ? 'fill-amber-400 text-amber-400' : 'text-slate-200'} />
@@ -611,15 +611,15 @@ const ModernProductDetailLayout = ({
                                 <Eye size={16} /> {soldCount} lượt quan tâm
                             </span>
                         </div>
-                        <div className="mt-6 flex items-end gap-3">
+                        <div className="mt-4 flex items-end gap-3">
                             <span className="text-4xl font-extrabold text-orange-600 md:text-5xl">{displayPrice}</span>
                             {!isCatalogMode && originalPrice && <span className="mb-1 text-xl font-semibold text-slate-400 line-through">{formatPrice(originalPrice)}</span>}
                             {!isCatalogMode && discountPercent > 0 && <span className="mb-2 rounded-full bg-rose-100 px-3 py-1 text-sm font-bold text-rose-600">-{discountPercent}%</span>}
                         </div>
-                        <p className="mt-5 max-w-xl text-base font-medium leading-8 text-slate-600">
+                        <p className="mt-4 max-w-xl text-base font-medium leading-8 text-slate-600">
                             {shortDescription}
                         </p>
-                        <div className="mt-5 rounded-2xl border border-orange-100 bg-white/80 p-2 shadow-sm backdrop-blur">
+                        <div className="mt-4 rounded-2xl border border-orange-100 bg-white/80 p-2 shadow-sm backdrop-blur">
                             <div className="grid grid-cols-5 divide-x divide-orange-100">
                                 {heroStats.map((item) => {
                                     const StatIcon = item.icon;
@@ -646,7 +646,7 @@ const ModernProductDetailLayout = ({
                                 </div>
                             ))}
                         </div>
-                        <div className={`mt-7 grid gap-3 sm:flex sm:flex-wrap ${demoUrl ? 'grid-cols-2' : 'grid-cols-1'}`}>
+                        <div className={`mt-6 grid gap-3 sm:flex sm:flex-wrap ${demoUrl ? 'grid-cols-2' : 'grid-cols-1'}`}>
                             <button onClick={handleAddToCart} className="inline-flex min-w-0 items-center justify-center gap-2 rounded-xl bg-orange-600 px-3 py-3 text-xs font-bold text-white shadow-xl shadow-orange-200 transition hover:bg-orange-700 sm:px-7 sm:py-4 sm:text-sm">
                                 {isCatalogMode ? <MessageCircle size={18} /> : <ShoppingCart size={18} />} {isCatalogMode ? 'Nhận tư vấn' : 'Thêm vào danh sách'}
                             </button>
@@ -664,7 +664,7 @@ const ModernProductDetailLayout = ({
                                 {currentImage && <Image src={currentImage} alt={product.name} fill sizes="(max-width: 768px) 100vw, 58vw" className="object-cover transition duration-500 group-hover:scale-[1.015]" priority />}
                             </div>
                         </div>
-                        <div className="mt-5 flex items-center gap-4">
+                        <div className="mt-4 flex items-center gap-3">
                             <button
                                 type="button"
                                 onClick={selectPrevImage}
@@ -673,7 +673,7 @@ const ModernProductDetailLayout = ({
                             >
                                 <ChevronRight size={20} className="rotate-180" />
                             </button>
-                            <div className="grid min-w-0 flex-1 grid-cols-4 gap-4 overflow-hidden">
+                            <div className="grid min-w-0 flex-1 grid-cols-4 gap-3 overflow-hidden">
                                 {visibleThumbnails.map((img: string, i: number) => {
                                     const imageIndex = thumbnailStart + i;
                                     return (
@@ -692,7 +692,7 @@ const ModernProductDetailLayout = ({
                                 <ChevronRight size={20} />
                             </button>
                         </div>
-                        <div className="mt-3 grid grid-cols-3 gap-1.5 md:mt-5 md:gap-3">
+                        <div className="mt-4 grid grid-cols-3 gap-2 md:gap-3">
                             {[
                                 { icon: Eye, title: 'Preview rõ ràng', desc: 'Xem trước từng màn hình' },
                                 { icon: Eye, title: 'Xem demo rõ ràng', desc: 'Đánh giá trước khi tư vấn' },
@@ -719,7 +719,7 @@ const ModernProductDetailLayout = ({
                             <FileCode size={20} className="text-orange-600" />
                             <h2 className="text-lg font-bold text-slate-950">Thông tin kỹ thuật</h2>
                         </div>
-                        <dl className="mt-4 grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
+                        <dl className="mt-3 grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
                             {fileFormat && (
                                 <div className="rounded-xl bg-slate-50 p-2.5 sm:p-3">
                                     <dt className="flex items-center gap-1.5 text-[9px] font-bold uppercase leading-3 tracking-wide text-slate-500 sm:text-xs"><FileCode size={14} className="text-orange-500" /> Định dạng file</dt>
@@ -760,7 +760,7 @@ const ModernProductDetailLayout = ({
                                 <p className="mt-1 text-sm text-slate-500">Một theme, nhiều lựa chọn công nghệ phù hợp với dự án của bạn.</p>
                             </div>
                         </div>
-                        <div className="mt-4 grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
+                        <div className="mt-3 grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
                             {technologyVariants.map((variant: any) => {
                                 const iconUrl = getTechnologyIconUrl(String(variant.technology || ''));
                                 const isAvailable = variant.status === 'available';
@@ -798,7 +798,7 @@ const ModernProductDetailLayout = ({
                     </section>
                 )}
 
-	                <div className="mt-8 overflow-x-auto rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
+                <div className="mt-6 overflow-x-auto rounded-xl border border-slate-200 bg-white p-2 shadow-sm md:mt-8">
                     <div className="flex min-w-max gap-2">
                         {tabs.map(([id, label]) => (
                             <button key={id} onClick={() => goToTab(id)} className={`rounded-lg px-5 py-3 text-sm font-semibold transition ${activeTab === id ? 'bg-orange-50 text-orange-700' : 'text-slate-600 hover:bg-slate-50'}`}>
@@ -808,7 +808,7 @@ const ModernProductDetailLayout = ({
                     </div>
                 </div>
 
-                <section id="description" className="mt-8 scroll-mt-24">
+                <section id="description" className="mt-6 scroll-mt-24 md:mt-8">
                     <h2 className="mb-5 text-xl font-bold text-slate-950">1. Mô tả mẫu demo</h2>
                     <div className="mb-6 rounded-2xl border border-orange-100 bg-white/95 p-4 shadow-sm md:p-6">
 	                        <div className={`relative max-w-none text-sm font-medium leading-7 text-slate-600 md:text-base md:leading-8 ${showFullDescription ? '' : 'max-h-[340px] overflow-hidden md:max-h-none'}`}>
@@ -837,8 +837,8 @@ const ModernProductDetailLayout = ({
 		                            </div>
 	                        )}
                     </div>
-                    <h3 id="features" className="mb-5 scroll-mt-24 text-xl font-bold text-slate-950">Tổng quan mẫu demo</h3>
-                    <div className="mb-5 grid grid-cols-2 gap-2">
+                    <h3 id="features" className="mb-4 scroll-mt-24 text-xl font-bold text-slate-950">Tổng quan mẫu demo</h3>
+                    <div className="mb-6 grid grid-cols-2 gap-2">
                         {featureList.map((feature: string, index: number) => (
                             <div
                                 key={`${feature}-${index}`}
@@ -996,14 +996,14 @@ const ModernProductDetailLayout = ({
                 />
 
                 {relatedProducts.length > 0 && (
-                    <div className="mt-5 md:mt-8">
+                    <div className="mt-6 md:mt-8">
                         <RelatedProducts currentProduct={product} relatedProducts={relatedProducts} />
                     </div>
                 )}
 
-                <div className="fixed right-0 top-1/2 z-30 -translate-y-1/2 md:hidden">
+                <div className="fixed left-0 top-1/2 z-30 -translate-y-1/2 md:hidden">
                     {mobileQuickBuyOpen ? (
-                        <div className="mr-3 w-[min(82vw,280px)] overflow-hidden rounded-2xl border border-orange-100 bg-white/95 text-slate-950 shadow-[0_18px_48px_rgba(15,23,42,0.22)] backdrop-blur-xl">
+                        <div className="ml-3 w-[min(82vw,280px)] overflow-hidden rounded-2xl border border-orange-100 bg-white/95 text-slate-950 shadow-[0_18px_48px_rgba(15,23,42,0.22)] backdrop-blur-xl">
                             <div className="border-b border-orange-50 bg-gradient-to-r from-white to-orange-50/80 p-3">
                                 <div className="flex items-start gap-3">
                                     <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-950 text-white shadow-lg shadow-slate-200">
@@ -1050,7 +1050,7 @@ const ModernProductDetailLayout = ({
                         <button
                             type="button"
                             onClick={() => setMobileQuickBuyOpen(true)}
-                            className="group flex h-16 w-12 flex-col items-center justify-center gap-1 rounded-l-2xl border border-r-0 border-orange-100 bg-slate-950 text-white shadow-[0_12px_32px_rgba(15,23,42,0.24)] transition active:scale-95"
+                            className="group flex h-12 min-w-16 flex-row items-center justify-center gap-2 rounded-r-2xl border border-l-0 border-orange-100 bg-slate-950 px-3 text-white shadow-[0_12px_32px_rgba(15,23,42,0.24)] transition active:scale-95"
                             aria-label="Mở tư vấn nhanh"
                             aria-expanded={mobileQuickBuyOpen}
                         >

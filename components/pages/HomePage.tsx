@@ -1119,7 +1119,7 @@ const HomePage = ({
         </div>
       </section>
 
-      <section className="relative overflow-hidden border-y border-slate-200/70 bg-white py-4 md:py-6">
+      <section className="relative overflow-hidden border-y border-slate-200/70 bg-white py-5 md:py-6">
         {/* Premium gradient background */}
         <div className="absolute inset-0 bg-[linear-gradient(180deg,#ffffff_0%,#fff7ed_48%,#ffffff_100%)] opacity-70 z-0" />
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-orange-300/70 to-transparent z-0" />
@@ -1128,7 +1128,7 @@ const HomePage = ({
           <button type="button" onClick={() => scrollPopularCategories('prev')} className="absolute left-0 top-1/2 z-20 hidden h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-md transition hover:border-orange-300 hover:text-orange-600 md:flex" aria-label="Danh mục trước">
             <ChevronLeft size={18} />
           </button>
-          <div ref={popularCategoriesRef} className="flex gap-3 overflow-x-auto scroll-smooth no-scrollbar pb-2 snap-x md:gap-4">
+          <div ref={popularCategoriesRef} className="flex items-stretch gap-3 overflow-x-auto scroll-smooth no-scrollbar snap-x md:gap-4">
             {[
               {
                 name: "Figma",
@@ -1241,7 +1241,7 @@ const HomePage = ({
                 <Link
                   key={`${cat.name}-${i}`}
                   href={targetHref}
-                  className="group popular-item flex flex-col items-center text-center p-4 bg-white/95 border border-slate-200/80 rounded-2xl shadow-sm shadow-slate-200/60 hover:shadow-lg hover:-translate-y-1 hover:border-[#ea580c]/30 transition-all duration-300 min-w-[132px] md:min-w-0 flex-shrink-0 snap-start"
+                  className="group popular-item flex min-h-[104px] flex-shrink-0 snap-start flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white/95 p-3.5 text-center shadow-sm shadow-slate-200/60 transition-all duration-300 hover:-translate-y-1 hover:border-[#ea580c]/30 hover:shadow-lg md:min-h-[112px] md:min-w-0 md:p-4"
                 >
                   <span
                     className={`w-12 h-12 md:w-14 md:h-14 rounded-xl bg-gradient-to-br ${cat.gradient} flex items-center justify-center mb-2.5 transition-all duration-300 group-hover:scale-105 shadow-sm ring-1 ring-white`}
