@@ -1229,11 +1229,18 @@ const HomePage = ({
                 icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/angularjs/angularjs-original.svg" alt="" className="h-7 w-7 md:h-8 md:w-8" loading="lazy" />,
               },
               {
-                name: "Canva",
-                tech: "canva",
-                qty: "1,640",
-                gradient: "from-cyan-100/60 to-blue-50",
-                icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/canva/canva-original.svg" alt="" className="h-7 w-7 md:h-8 md:w-8" loading="lazy" />,
+                name: "n8n",
+                tech: "n8n",
+                qty: "Tự động hóa",
+                gradient: "from-rose-100/60 to-orange-50",
+                icon: <img src="/icons/n8n.svg" alt="" className="h-7 w-7 md:h-8 md:w-8" loading="lazy" />,
+              },
+              {
+                name: "Google Apps Script",
+                tech: "google-apps-script",
+                qty: "Tích hợp Google",
+                gradient: "from-green-100/60 to-blue-50",
+                icon: <img src="/icons/google-apps-script.svg" alt="" className="h-7 w-7 md:h-8 md:w-8" loading="lazy" />,
               },
             ].map((cat, i) => {
               const targetHref = cat.tech

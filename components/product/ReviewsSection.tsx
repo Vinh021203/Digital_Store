@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import Image from 'next/image';
-import { Star, ThumbsUp, Loader2, User, CheckCircle, AlertCircle, MessageSquare, Pencil } from 'lucide-react';
+import { Star, ThumbsUp, Loader2, CheckCircle, AlertCircle, MessageSquare, Pencil } from 'lucide-react';
 import { useToast } from '@/context/ToastContext';
 import { useSupabaseAuth } from '@/context/SupabaseAuthContext';
 import {
@@ -13,11 +12,15 @@ import {
     getProductRatingStats,
     type DbReview,
 } from '@/lib/reviews';
+import { createProductMockReviews, getMockReviewStats } from '@/lib/mockReviews';
 
 interface ReviewsSectionProps {
     productId: number;
     productRating?: number | null;
     productReviewCount?: number | null;
+    productName?: string;
+    productCategory?: string;
+    productTechnologies?: string[];
 }
 
 // Helper: format relative time
@@ -71,7 +74,7 @@ function StarRating({ rating, size = 16, interactive = false, onChange }: {
     );
 }
 
-export default function ReviewsSection({ productId, productRating = 0, productReviewCount = 0 }: ReviewsSectionProps) {
+export default function ReviewsSection({ productId, productRating = 0, productReviewCount = 0, productName, productCategory, productTechnologies = [] }: ReviewsSectionProps) {
     const { addToast } = useToast();
     const { user, profile } = useSupabaseAuth();
 
@@ -82,6 +85,8 @@ export default function ReviewsSection({ productId, productRating = 0, productRe
     const [userHasReviewed, setUserHasReviewed] = useState(false);
     const [helpedReviews, setHelpedReviews] = useState<Set<number>>(new Set());
     const [isReviewFormOpen, setIsReviewFormOpen] = useState(false);
+    const [showAllReviews, setShowAllReviews] = useState(false);
+    const productTechnologiesKey = productTechnologies.join('|');
 
     // Form state
     const [rating, setRating] = useState(5);
@@ -94,16 +99,26 @@ export default function ReviewsSection({ productId, productRating = 0, productRe
                 fetchProductReviews(productId),
                 getProductRatingStats(productId),
             ]);
-            setReviews(reviewsData);
+            const mockReviews = createProductMockReviews({
+                productId,
+                productName,
+                category: productCategory,
+                technologies: productTechnologiesKey.split('|').filter(Boolean),
+            });
+            const displayReviews = reviewsData.length > 0 ? reviewsData : mockReviews;
+            setReviews(displayReviews);
 
             // Product aggregates are the source of truth for storefront rating.
             // Older seeded review rows may contain generic 1-4 star data that does
             // not represent this product, so do not let them lower its rating.
-            const aggregateRating = Number(productRating) || statsData.average;
-            const aggregateCount = Number(productReviewCount) || statsData.total;
+            const mockStats = getMockReviewStats(mockReviews);
+            const aggregateRating = Number(productRating) || statsData.average || mockStats.average;
+            const aggregateCount = Number(productReviewCount) || statsData.total || mockStats.total;
             const reviewsAverage = statsData.average;
             const useProductAggregate = aggregateRating >= 4.5 && reviewsAverage > 0 && reviewsAverage < 4.5;
-            if (useProductAggregate || (reviewsData.length === 0 && aggregateRating > 0)) {
+            if (reviewsData.length === 0 && !productReviewCount) {
+                setStats({ average: aggregateRating, total: mockStats.total, distribution: mockStats.distribution });
+            } else if (useProductAggregate || (reviewsData.length === 0 && aggregateRating > 0)) {
                 const distribution = [0, 0, 0, 0, 0];
                 const starIndex = Math.max(0, Math.min(4, Math.round(aggregateRating) - 1));
                 distribution[starIndex] = aggregateCount;
@@ -122,7 +137,7 @@ export default function ReviewsSection({ productId, productRating = 0, productRe
         } finally {
             setLoading(false);
         }
-    }, [productId, user]);
+    }, [productId, productName, productCategory, productTechnologiesKey, productRating, productReviewCount, user]);
 
     useEffect(() => {
         loadData();
@@ -183,7 +198,7 @@ export default function ReviewsSection({ productId, productRating = 0, productRe
     };
 
     return (
-        <section id="reviews" className="mt-8 border-t border-slate-100 pt-5 md:mt-6 md:pt-6">
+        <section id="reviews" className="mt-8 scroll-mt-24 border-t border-slate-100 pt-5 md:mt-6 md:pt-6">
             <h2 className="mb-4 flex items-center gap-2 text-xl font-black text-slate-900">
                 <MessageSquare className="text-orange-500" />
                 Đánh giá mẫu demo ({stats.total})
@@ -231,7 +246,7 @@ export default function ReviewsSection({ productId, productRating = 0, productRe
                 <button
                     type="button"
                     onClick={() => setIsReviewFormOpen((open) => !open)}
-                    className="mb-4 inline-flex items-center gap-2 rounded-lg border border-orange-200 bg-white px-3 py-2 text-xs font-bold text-orange-700 shadow-sm transition hover:bg-orange-50 md:hidden"
+                    className="mb-4 inline-flex items-center gap-2 rounded-lg border border-orange-200 bg-white px-3 py-2 text-xs font-bold text-orange-700 shadow-sm transition hover:bg-orange-50"
                     aria-expanded={isReviewFormOpen}
                 >
                     <Pencil size={14} />
@@ -241,7 +256,7 @@ export default function ReviewsSection({ productId, productRating = 0, productRe
 
             {/* Review Form */}
             {user && !userHasReviewed ? (
-                <div className={`${isReviewFormOpen ? 'block' : 'hidden'} mb-5 rounded-2xl border border-slate-100 bg-white p-4 md:block`}>
+                <div className={`${isReviewFormOpen ? 'block' : 'hidden'} mb-5 rounded-2xl border border-slate-100 bg-white p-4`}>
                     <h3 className="mb-3 font-bold text-slate-900">Viết đánh giá của bạn</h3>
                     <form onSubmit={handleSubmit}>
                         <div className="mb-4">
@@ -297,32 +312,17 @@ export default function ReviewsSection({ productId, productRating = 0, productRe
                     <p className="text-sm text-slate-400">Hãy là người đầu tiên đánh giá!</p>
                 </div>
             ) : (
-                <div className="space-y-3">
-                    {reviews.map(review => (
+                <div className="space-y-2 md:space-y-3">
+                    {(showAllReviews ? reviews : reviews.slice(0, 3)).map(review => (
                         <div
                             key={review.id}
-                            className="rounded-xl border border-slate-100 bg-white p-4 transition-colors hover:border-orange-100"
+                            className="rounded-lg border border-slate-100 bg-white p-3 transition-colors hover:border-orange-100 md:rounded-xl md:p-4"
                         >
-                            <div className="flex items-start gap-4">
-                                {/* Avatar */}
-                                {review.user?.avatar ? (
-                                    <Image
-                                        src={review.user.avatar}
-                                        alt={review.user.name || 'User'}
-                                        width={48}
-                                        height={48}
-                                        className="rounded-full"
-                                    />
-                                ) : (
-                                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-400 to-red-400 flex items-center justify-center">
-                                        <User size={20} className="text-white" />
-                                    </div>
-                                )}
-
+                            <div className="flex items-start">
                                 {/* Content */}
-                                <div className="flex-1">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <div className="flex items-center gap-2">
+                                <div className="w-full flex-1">
+                                    <div className="mb-1.5 flex items-center justify-between gap-2 md:mb-2">
+                                        <div className="flex min-w-0 items-center gap-2">
                                             <span className="font-bold text-slate-900">{review.user?.name || 'Người dùng'}</span>
                                             {review.is_verified_purchase && (
                                                 <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full flex items-center gap-1">
@@ -330,19 +330,19 @@ export default function ReviewsSection({ productId, productRating = 0, productRe
                                                 </span>
                                             )}
                                         </div>
-                                        <span className="text-xs text-slate-400">{formatRelativeTime(review.created_at)}</span>
+                                        <span className="shrink-0 text-[10px] text-slate-400 md:text-xs">{formatRelativeTime(review.created_at)}</span>
                                     </div>
 
-                                    <StarRating rating={review.rating} size={16} />
+                                    <StarRating rating={review.rating} size={14} />
 
                                     {review.comment && (
-                                        <p className="text-slate-600 mt-3 whitespace-pre-wrap">{review.comment}</p>
+                                        <p className="mt-2 whitespace-pre-wrap text-xs leading-5 text-slate-600 md:mt-3 md:text-base md:leading-normal">{review.comment}</p>
                                     )}
 
-                                    <div className="flex items-center gap-4 mt-3">
+                                    <div className="mt-2 flex items-center gap-4 md:mt-3">
                                         <button
                                             onClick={() => handleHelpful(review.id)}
-                                            className={`flex items-center gap-1.5 text-sm transition-colors ${helpedReviews.has(review.id)
+                                            className={`flex items-center gap-1.5 text-xs transition-colors md:text-sm ${helpedReviews.has(review.id)
                                                     ? 'text-orange-600'
                                                     : 'text-slate-400 hover:text-orange-600'
                                                 }`}
@@ -355,6 +355,23 @@ export default function ReviewsSection({ productId, productRating = 0, productRe
                             </div>
                         </div>
                     ))}
+                    {reviews.length > 3 && (
+                        <button
+                            type="button"
+                            onClick={() => {
+                                const shouldCollapse = showAllReviews;
+                                setShowAllReviews((open) => !open);
+                                if (shouldCollapse) {
+                                    window.requestAnimationFrame(() => {
+                                        document.getElementById('reviews')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                    });
+                                }
+                            }}
+                            className="mx-auto flex items-center rounded-xl border border-orange-200 bg-white px-4 py-2.5 text-sm font-bold text-orange-700 transition hover:bg-orange-50"
+                        >
+                            {showAllReviews ? 'Thu gọn đánh giá' : `Xem thêm ${reviews.length - 3} đánh giá`}
+                        </button>
+                    )}
                 </div>
             )}
         </section>

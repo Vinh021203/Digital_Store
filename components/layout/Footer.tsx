@@ -331,9 +331,9 @@ const CATEGORY_ITEMS = [
     label: "Marketing & SEO",
   },
   {
-    href: "/products?search=Canva",
-    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/canva/canva-original.svg",
-    label: "Canva Templates",
+    href: "/products?tech=n8n",
+    logo: "/icons/n8n.svg",
+    label: "n8n Automation",
   },
 ] as const;
 

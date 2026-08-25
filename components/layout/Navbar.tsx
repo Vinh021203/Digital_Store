@@ -1166,10 +1166,10 @@ const Navbar = () => {
           color: "#4285F4",
         },
         {
-          label: "Canva Templates",
-          href: "/products?search=Canva",
-          logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/canva/canva-original.svg",
-          color: "#00c4cc",
+          label: "Google Apps Script",
+          href: "/products?tech=google-apps-script",
+          logo: "/icons/google-apps-script.svg",
+          color: "#34a853",
         },
         {
           label: "HTML Templates",

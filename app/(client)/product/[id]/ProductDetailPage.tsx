@@ -993,6 +993,9 @@ const ModernProductDetailLayout = ({
                     productId={product.id}
                     productRating={product.rating}
                     productReviewCount={product.reviews || product.review_count}
+                    productName={product.name}
+                    productCategory={typeof product.category === 'string' ? product.category : product.category?.name}
+                    productTechnologies={(product.technology_variants || []).map((variant: any) => String(variant.technology || '')).filter(Boolean)}
                 />
 
                 {relatedProducts.length > 0 && (
