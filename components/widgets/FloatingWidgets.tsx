@@ -440,7 +440,7 @@ const FloatingWidgets = () => {
               <div>
                 <h3 className="text-sm font-bold">Trợ lý Web Giá Rẻ - Portfolio</h3>
                 <p className="flex items-center gap-1 text-[10px] text-orange-100 opacity-90">
-                  <CheckCircle2 size={10} /> Sẵn sàng hỗ trợ 24/7
+                  <CheckCircle2 size={10} /> Sẵn sàng tiếp nhận yêu cầu
                 </p>
               </div>
             </div>

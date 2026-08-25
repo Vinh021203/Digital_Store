@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
-import { Star, ThumbsUp, Loader2, User, CheckCircle, AlertCircle, MessageSquare } from 'lucide-react';
+import { Star, ThumbsUp, Loader2, User, CheckCircle, AlertCircle, MessageSquare, Pencil } from 'lucide-react';
 import { useToast } from '@/context/ToastContext';
 import { useSupabaseAuth } from '@/context/SupabaseAuthContext';
 import {
@@ -81,6 +81,7 @@ export default function ReviewsSection({ productId, productRating = 0, productRe
     const [submitting, setSubmitting] = useState(false);
     const [userHasReviewed, setUserHasReviewed] = useState(false);
     const [helpedReviews, setHelpedReviews] = useState<Set<number>>(new Set());
+    const [isReviewFormOpen, setIsReviewFormOpen] = useState(false);
 
     // Form state
     const [rating, setRating] = useState(5);
@@ -189,30 +190,30 @@ export default function ReviewsSection({ productId, productRating = 0, productRe
             </h2>
 
             {/* Rating Summary */}
-            <div className="mb-5 rounded-2xl bg-gradient-to-br from-orange-50 to-amber-50 p-4 md:p-5">
-                <div className="grid gap-4 md:grid-cols-2">
+            <div className="mb-4 rounded-2xl bg-gradient-to-br from-orange-50 to-amber-50 p-3 md:mb-5 md:p-5">
+                <div className="grid gap-3 md:grid-cols-2 md:gap-4">
                     {/* Average Rating */}
                     <div className="text-center md:text-left">
                         <div className="flex items-center justify-center md:justify-start gap-4">
-                            <span className="text-4xl font-black text-slate-900">
+                            <span className="text-3xl font-black text-slate-900 md:text-4xl">
                                 {stats.average.toFixed(1)}
                             </span>
                             <div>
-                                <StarRating rating={Math.round(stats.average)} size={24} />
-                                <p className="text-sm text-slate-500 mt-1">{stats.total} đánh giá</p>
+                                <StarRating rating={Math.round(stats.average)} size={20} />
+                                <p className="mt-1 text-xs text-slate-500 md:text-sm">{stats.total} đánh giá</p>
                             </div>
                         </div>
                     </div>
 
                     {/* Distribution */}
-                    <div className="space-y-2">
+                    <div className="space-y-1.5 md:space-y-2">
                         {[5, 4, 3, 2, 1].map(star => {
                             const count = stats.distribution[star - 1];
                             const percent = stats.total > 0 ? (count / stats.total) * 100 : 0;
                             return (
-                                <div key={star} className="flex items-center gap-2 text-sm">
+                                <div key={star} className="flex items-center gap-2 text-xs md:text-sm">
                                     <span className="w-12 text-slate-600">{star} sao</span>
-                                    <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
+                                    <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-200 md:h-2">
                                         <div
                                             className="h-full bg-yellow-400 rounded-full transition-all"
                                             style={{ width: `${percent}%` }}
@@ -226,9 +227,21 @@ export default function ReviewsSection({ productId, productRating = 0, productRe
                 </div>
             </div>
 
+            {user && !userHasReviewed && (
+                <button
+                    type="button"
+                    onClick={() => setIsReviewFormOpen((open) => !open)}
+                    className="mb-4 inline-flex items-center gap-2 rounded-lg border border-orange-200 bg-white px-3 py-2 text-xs font-bold text-orange-700 shadow-sm transition hover:bg-orange-50 md:hidden"
+                    aria-expanded={isReviewFormOpen}
+                >
+                    <Pencil size={14} />
+                    {isReviewFormOpen ? 'Đóng phần đánh giá' : 'Viết đánh giá'}
+                </button>
+            )}
+
             {/* Review Form */}
             {user && !userHasReviewed ? (
-                <div className="mb-5 rounded-2xl border border-slate-100 bg-white p-4">
+                <div className={`${isReviewFormOpen ? 'block' : 'hidden'} mb-5 rounded-2xl border border-slate-100 bg-white p-4 md:block`}>
                     <h3 className="mb-3 font-bold text-slate-900">Viết đánh giá của bạn</h3>
                     <form onSubmit={handleSubmit}>
                         <div className="mb-4">

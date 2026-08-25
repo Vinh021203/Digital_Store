@@ -538,7 +538,7 @@ export default function AIRecommendationPage() {
                         </div>
                         <Image src="/ai-assistant-studio.webp" alt="Trợ lý AI tư vấn giao diện website" fill priority sizes="(max-width: 1024px) 100vw, 650px" className="object-cover" />
                         <div className="absolute inset-x-2 bottom-2 grid grid-cols-3 gap-1.5 sm:inset-x-5 sm:bottom-5 sm:gap-2">
-                            {[['1.200+', 'Mẫu giao diện'], ['98%', 'Khớp nhu cầu'], ['24/7', 'Tư vấn AI']].map(([value, label]) => (
+                            {[["13+", "Mẫu demo tuyển chọn"], ["4.8+", "Rating tham khảo"], ["24h", "Phản hồi tư vấn"]].map(([value, label]) => (
                                 <div key={label} className="rounded-xl border border-white/10 bg-slate-950/75 px-1 py-1.5 text-center backdrop-blur-md sm:rounded-2xl sm:px-2 sm:py-2.5"><p className="text-xs font-black text-white sm:text-lg">{value}</p><p className="text-[7px] font-semibold text-slate-400 sm:text-[10px]">{label}</p></div>
                             ))}
                         </div>

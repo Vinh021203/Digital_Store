@@ -694,21 +694,25 @@ const HomePage = ({
         : allProducts.filter((p) => p.format === arrivalTab);
 
     if (filtered.length > 0) {
-      return filtered.slice(0, 8);
+      return filtered.slice(0, 6);
     }
     // Fallback: shuffle all products if tabs are empty
     if (allProducts.length > 0) {
-      return [...allProducts].sort(() => 0.5 - Math.random()).slice(0, 8);
+      return [...allProducts].slice(0, 6);
     }
-    return mockProducts.slice(0, 8);
+    return mockProducts.slice(0, 6);
   };
 
-  const getFeaturedProducts = () => {
-    return allProducts.filter((p) => p.isFeatured).slice(0, 4);
+  const getFeaturedProducts = (excludedIds: Set<number>) => {
+    const featured = allProducts.filter((p) => p.isFeatured && !excludedIds.has(p.id));
+    if (featured.length > 0) return featured.slice(0, 4);
+    return allProducts.filter((p) => !excludedIds.has(p.id)).sort((a, b) => b.rating - a.rating).slice(0, 4);
   };
 
-  const getBestSellers = () => {
-    return allProducts.filter((p) => p.isBestseller).slice(0, 6);
+  const getBestSellers = (excludedIds: Set<number>) => {
+    const bestSellers = allProducts.filter((p) => p.isBestseller && !excludedIds.has(p.id));
+    if (bestSellers.length > 0) return bestSellers.slice(0, 6);
+    return allProducts.filter((p) => !excludedIds.has(p.id)).sort((a, b) => (b.students || b.downloads_count || 0) - (a.students || a.downloads_count || 0)).slice(0, 6);
   };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -719,8 +723,10 @@ const HomePage = ({
   };
 
   const displayArrivalProducts = getNewArrivalProducts();
-  const displayFeaturedProducts = getFeaturedProducts();
-  const displayBestSellers = getBestSellers();
+  const arrivalIds = new Set(displayArrivalProducts.map((product) => product.id));
+  const displayFeaturedProducts = getFeaturedProducts(arrivalIds);
+  const featuredIds = new Set(displayFeaturedProducts.map((product) => product.id));
+  const displayBestSellers = getBestSellers(new Set([...arrivalIds, ...featuredIds]));
   const shouldLoopBestSellers = displayBestSellers.length > 4;
   const displayBlogs =
     blogPosts.length >= 4
@@ -809,9 +815,8 @@ const HomePage = ({
 
   // Find a featured creator or show mock top author
   const topAuthorName = allProducts[0]?.author || "CodeCrafter Studio";
-  const authorProducts = allProducts
-    .filter((p) => p.author === topAuthorName)
-    .slice(0, 5);
+  const authorPool = allProducts.filter((p) => p.author === topAuthorName && !p.isNew && !p.isFeatured && !p.isBestseller);
+  const authorProducts = (authorPool.length >= 3 ? authorPool : allProducts.filter((p) => p.author === topAuthorName)).slice(0, 5);
   const displayAuthorProducts =
     authorProducts.length >= 5
       ? authorProducts
@@ -824,7 +829,7 @@ const HomePage = ({
       {/* ============================================================
          1. HERO SECTION (BannerOne)
          ============================================================ */}
-      <section className="relative bg-gradient-to-br from-[#fff7ed] via-white to-[#f8fafc] pt-5 pb-8 md:pt-10 md:pb-12 lg:pt-20 lg:pb-16 overflow-hidden">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#fff7ed] via-white to-[#f8fafc] py-8 md:py-12 lg:py-16">
         {/* Soft Background Gradients */}
         <div className="absolute inset-0 z-0">
           <div
@@ -1097,20 +1102,20 @@ const HomePage = ({
                 {/* Floating Badge 1 (Purple - Left Float) */}
                 <div className="absolute left-1 md:left-[-14px] bottom-5 md:bottom-[44px] z-10 animate-float px-3 md:px-5 py-2.5 md:py-3 rounded-2xl bg-[#c2410c] text-center text-white shadow-xl shadow-orange-300/30 min-w-[88px] md:min-w-[125px] border border-white/30 select-none pointer-events-auto cursor-default">
                   <p className="text-base md:text-xl font-extrabold mb-0">
-                    50K+
+                    13+
                   </p>
                   <span className="text-[9px] md:text-[10px] font-semibold text-white uppercase tracking-widest leading-none block mt-0.5">
-                    Khách hàng
+                    Mẫu demo
                   </span>
                 </div>
 
                 {/* Floating Badge 2 (White - Right Float) */}
                 <div className="absolute right-1 md:right-[-12px] top-5 md:top-[34px] z-10 animate-[float_3.5s_ease-in-out_infinite] px-3 md:px-5 py-2.5 md:py-3 rounded-2xl bg-white text-center text-slate-900 shadow-xl shadow-slate-200/80 min-w-[98px] md:min-w-[140px] border border-slate-100 select-none pointer-events-auto cursor-default">
                   <p className="text-base md:text-xl font-extrabold text-slate-900 mb-0">
-                    22K+
+                    100%
                   </p>
                   <span className="text-[9px] md:text-[10px] font-semibold text-[#c2410c] uppercase tracking-widest leading-none block mt-0.5">
-                    Theme & Plugin
+                    Tư vấn trực tiếp
                   </span>
                 </div>
               </div>
@@ -1264,7 +1269,7 @@ const HomePage = ({
         </div>
       </section>
 
-      <section className="relative overflow-hidden border-b border-slate-200/80 bg-white py-7 md:py-12">
+      <section className="relative overflow-hidden border-b border-slate-200/80 bg-white py-8 md:py-12">
         {/* Soft Background Gradient */}
         <div className="absolute inset-0 z-0 pointer-events-none">
           <Image
@@ -1358,7 +1363,7 @@ const HomePage = ({
         </div>
       </section>
 
-      <section className="relative px-5 py-3 sm:px-6 md:py-5 lg:px-0">
+      <section className="relative px-5 py-4 sm:px-6 md:py-6 lg:px-0">
         <div className="mx-auto flex max-w-7xl gap-3 overflow-x-auto pb-1 no-scrollbar snap-x scroll-px-5 sm:scroll-px-6 lg:grid lg:grid-cols-2 lg:gap-4 lg:overflow-visible lg:px-8">
           {[
             {
@@ -1390,7 +1395,7 @@ const HomePage = ({
       </section>
 
       {(loading || displayFeaturedProducts.length > 0) && (
-      <section className="relative pb-7 pt-4 md:pb-12 md:pt-8 overflow-hidden">
+      <section className="relative overflow-hidden py-8 md:py-12">
         {/* Premium warm gradient */}
         <div className="absolute inset-0 bg-gradient-to-b from-white via-[#fff7f0] to-white z-0" />
         <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-gradient-to-bl from-violet-200/20 to-transparent blur-[120px] pointer-events-none z-0" />
@@ -2044,17 +2049,17 @@ const HomePage = ({
                 </span>
                 <div className="relative z-10">
                   <p className="text-slate-500 text-xs font-medium mb-2">
-                    Email đăng ký
+                    Mẫu demo tuyển chọn
                   </p>
                   <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-slate-800 leading-none">
-                    49,000+
+                    13+
                   </h3>
                   <div className="mt-4 flex flex-wrap items-center gap-2">
                     <span className="rounded-full bg-white/55 px-3 py-1 text-[11px] font-semibold text-slate-700 ring-1 ring-white/60">
-                      +18% tháng này
+                      Cập nhật định kỳ
                     </span>
                     <span className="text-[11px] font-medium text-slate-500">
-                      Lead mới
+                      Bộ sưu tập
                     </span>
                   </div>
                 </div>
@@ -2075,17 +2080,17 @@ const HomePage = ({
                 </span>
                 <div className="relative z-10">
                   <p className="text-slate-500 text-xs font-medium mb-2">
-                    Tổng mẫu demo
+                    Rating tham khảo
                   </p>
                   <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-slate-800 leading-none">
-                    45,000+
+                    4.8+
                   </h3>
                   <div className="mt-4 flex flex-wrap items-center gap-2">
                     <span className="rounded-full bg-white/55 px-3 py-1 text-[11px] font-semibold text-slate-700 ring-1 ring-white/60">
-                      320+ danh mục
+                      Đánh giá tốt
                     </span>
                     <span className="text-[11px] font-medium text-slate-500">
-                      Kho số
+                      Chất lượng
                     </span>
                   </div>
                 </div>
@@ -2109,14 +2114,14 @@ const HomePage = ({
                       Luot xem demo
                   </p>
                   <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-slate-800 leading-none">
-                    98,000+
+                    24h
                   </h3>
                   <div className="mt-4 flex flex-wrap items-center gap-2">
                     <span className="rounded-full bg-white/55 px-3 py-1 text-[11px] font-semibold text-slate-700 ring-1 ring-white/60">
-                      2.4K hôm nay
+                      Hỗ trợ 24/7
                     </span>
                     <span className="text-[11px] font-medium text-slate-500">
-                      Tu van nhanh
+                      Tư vấn trực tiếp
                     </span>
                   </div>
                 </div>
@@ -2137,17 +2142,17 @@ const HomePage = ({
                 </span>
                 <div className="relative z-10">
                   <p className="text-slate-500 text-xs font-medium mb-2">
-                    Truy cập / tháng
+                    Có trang demo
                   </p>
                   <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-slate-800 leading-none">
-                    65,000+
+                    100%
                   </h3>
                   <div className="mt-4 flex flex-wrap items-center gap-2">
                     <span className="rounded-full bg-white/55 px-3 py-1 text-[11px] font-semibold text-slate-700 ring-1 ring-white/60">
-                      99.9% ổn định
+                      Xem trước rõ ràng
                     </span>
                     <span className="text-[11px] font-medium text-slate-500">
-                      Traffic
+                      Quy trình
                     </span>
                   </div>
                 </div>
@@ -2229,9 +2234,9 @@ const HomePage = ({
 
               <div className="space-y-2.5 mb-7">
                 {[
-                  "Cập nhật tài nguyên liên tục mỗi ngày",
+                  "Cập nhật tài nguyên theo từng bộ sưu tập",
                   "Bảo mật đa lớp chuẩn quốc tế",
-                  "Hỗ trợ kỹ thuật 24/7 miễn phí",
+                  "Hỗ trợ kỹ thuật trong ngày làm việc",
                 ].map((feat) => (
                   <div
                     key={feat}
@@ -2402,7 +2407,7 @@ const HomePage = ({
       </section>
 
       {/* === AFFILIATE & SUPPORT SECTION === */}
-      <section className="relative pt-4 md:pt-6 pb-8 md:pb-12 overflow-hidden bg-gradient-to-b from-white via-[#f8fafc] to-white">
+      <section className="relative overflow-hidden bg-gradient-to-b from-white via-[#f8fafc] to-white py-8 md:py-12">
         <div
           className="absolute inset-0 opacity-[0.035]"
           style={{
@@ -2528,17 +2533,16 @@ const HomePage = ({
               {/* Content */}
               <div className="col-span-1 md:col-span-8 lg:col-span-7 text-center md:text-left flex flex-col items-center md:items-start">
                 <h3 className="text-2xl md:text-3.5xl font-black text-[#0b0f19] mb-2 leading-tight">
-                  Hỗ trợ khách hàng 24/7
+                  Hỗ trợ khách hàng
                 </h3>
                 <p className="text-slate-700 text-sm md:text-base font-semibold mb-6">
-                  Bạn có bất kỳ câu hỏi nào cần giải đáp? Hãy gửi tin nhắn cho
-                  chúng tôi bất cứ lúc nào.
+                  Gửi câu hỏi về mẫu demo, license hoặc nhu cầu triển khai để được hỗ trợ 24/7.
                 </p>
                 <Link
-                  href="mailto:support@shopwebre.vn"
+                  href="mailto:contact@webgiare.id.vn"
                   className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-[#0b0f19] text-white hover:bg-transparent border-2 border-[#0b0f19] hover:text-[#0b0f19] font-semibold text-sm transition-all duration-300 shadow-md shadow-slate-950/15"
                 >
-                  support@shopwebre.vn
+                  contact@webgiare.id.vn
                 </Link>
               </div>
             </div>

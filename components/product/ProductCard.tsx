@@ -299,7 +299,7 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
       </Link>
 
       {/* Content Section - Ultra Compact */}
-      <div className="p-2.5 md:p-3 flex flex-col flex-grow">
+      <div className="flex flex-grow flex-col p-3 md:p-3.5">
         {/* Category */}
         <Link
           href={`/products?category=${product.category}`}
@@ -311,7 +311,7 @@ const ProductCard: React.FC<ProductCardProps> = memo(({ product, onQuickView, vi
         {/* Title */}
         <Link
           href={`/product/${(product as any).slug || product.id}`}
-          className="font-bold text-slate-900 text-xs md:text-sm mb-0.5 line-clamp-2 hover:text-orange-600 transition-colors leading-tight py-0.5 block"
+          className="line-clamp-2 block min-h-[32px] py-0.5 text-xs font-bold leading-tight text-slate-900 transition-colors hover:text-orange-600 md:min-h-[40px] md:text-sm"
         >
           {product.name}
         </Link>

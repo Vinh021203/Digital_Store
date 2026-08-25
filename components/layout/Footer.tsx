@@ -572,7 +572,7 @@ const Footer = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <Clock size={14} className="text-orange-500 flex-shrink-0" />
-                  <span className="text-xs lg:text-sm">T2–T7: 8:00–18:00</span>
+                  <span className="text-xs lg:text-sm">Hỗ trợ 24/7</span>
                 </div>
                 <div className="flex items-center gap-2 col-span-2 lg:col-span-1">
                   <Mail size={14} className="text-orange-500 flex-shrink-0" />

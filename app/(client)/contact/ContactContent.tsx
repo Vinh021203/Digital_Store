@@ -180,7 +180,7 @@ export default function ContactContent() {
             <section className="relative overflow-hidden border-b border-orange-100 bg-[#fffaf6]">
                 <div className="absolute inset-0 bg-[linear-gradient(rgba(234,88,12,0.055)_1px,transparent_1px),linear-gradient(90deg,rgba(234,88,12,0.055)_1px,transparent_1px)] bg-[size:48px_48px]" />
 
-                <div className="relative mx-auto max-w-7xl px-4 pb-12 pt-6 sm:px-6 sm:pb-16 lg:px-8">
+                <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
                     <nav className="mb-8 flex items-center gap-2 text-sm font-semibold text-slate-500" aria-label="Breadcrumb">
                         <Link href="/" className="inline-flex items-center gap-1.5 transition hover:text-orange-600">
                             <Home size={15} /> Trang chủ
@@ -246,7 +246,7 @@ export default function ContactContent() {
                                 <div className="border-r border-white/10 p-5">
                                     <Clock3 size={19} className="text-orange-400" />
                                     <p className="mt-3 text-xs font-bold text-white">Thời gian phản hồi</p>
-                                    <p className="mt-1 text-xs leading-5 text-slate-400">Trong ngày làm việc</p>
+                                    <p className="mt-1 text-xs leading-5 text-slate-400">Hỗ trợ 24/7</p>
                                 </div>
                                 <div className="p-5">
                                     <MapPin size={19} className="text-orange-400" />
@@ -290,7 +290,7 @@ export default function ContactContent() {
                 </div>
             </section>
 
-            <section className="mx-auto grid max-w-7xl items-start gap-5 px-4 pb-8 pt-4 sm:gap-7 sm:px-6 sm:py-14 lg:grid-cols-[1fr_360px] lg:px-8">
+            <section className="mx-auto grid max-w-7xl items-start gap-5 px-4 py-8 sm:gap-7 sm:px-6 sm:py-12 lg:grid-cols-[1fr_360px] lg:px-8">
                 <motion.div
                     initial="hidden"
                     whileInView="visible"

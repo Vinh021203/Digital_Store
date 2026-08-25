@@ -37,9 +37,9 @@ interface ProductSearchResult {
 }
 
 const QUICK_REPLIES = {
-  greeting: ['Tìm Landing Page', 'Xem Theme phổ biến', 'Tư vấn theo ngân sách', 'Liên hệ chuyên viên'],
-  product: ['Xem thêm mẫu demo', 'Hỏi về license', 'Nhận báo giá', 'So sánh các mẫu'],
-  support: ['Tư vấn mẫu demo', 'Hỏi về license', 'Liên hệ hotline', 'Gửi yêu cầu hỗ trợ'],
+  greeting: ['Tìm mẫu phù hợp', 'Tư vấn theo ngân sách', 'Hỏi về license', 'Gặp chuyên viên'],
+  product: ['Xem thêm mẫu demo', 'Nhận báo giá', 'So sánh các mẫu', 'Gửi yêu cầu tư vấn'],
+  support: ['Nhận báo giá', 'Hỏi về license', 'Gặp chuyên viên', 'Gửi yêu cầu hỗ trợ'],
 };
 
 const DEFAULT_WEBSITE_FACTS = {
@@ -48,11 +48,18 @@ const DEFAULT_WEBSITE_FACTS = {
   email: 'contact@webgiare.id.vn',
   phone: '0971 386 588',
   address: 'Hạ Long, Quảng Ninh, Việt Nam',
-  hours: 'Thứ 2 - Thứ 7, 8:00 - 18:00',
+  hours: 'Hỗ trợ chatbot 24/7; tư vấn viên tiếp nhận theo nhu cầu',
   url: 'https://webgiare.id.vn',
 };
 
+let websiteContextCache: { value: string; expiresAt: number } | null = null;
+let activeProductsCache: { value: any[]; expiresAt: number } | null = null;
+
 async function getWebsiteContext() {
+  if (websiteContextCache && websiteContextCache.expiresAt > Date.now()) {
+    return websiteContextCache.value;
+  }
+
   const facts = { ...DEFAULT_WEBSITE_FACTS };
   try {
     const admin = createAdminClient();
@@ -70,7 +77,7 @@ async function getWebsiteContext() {
     console.warn('Unable to load website facts:', error);
   }
 
-  return `Thông tin chính thức của website:
+  const context = `Thông tin chính thức của website:
 - Tên: ${facts.siteName}
 - Người sáng lập/đại diện hiển thị: ${facts.owner}
 - Website: ${facts.url}
@@ -79,7 +86,9 @@ async function getWebsiteContext() {
 - Địa chỉ: ${facts.address}
 - Giờ hỗ trợ: ${facts.hours}
 - Lĩnh vực: starter kit, theme, template, landing page, UI kit, dashboard và tài nguyên số cho website.
-- Hỗ trợ: xem demo, tư vấn công nghệ, license, tùy biến giao diện và triển khai website.`;
+- Hỗ trợ: chatbot 24/7, xem demo, tư vấn công nghệ, license, tùy biến giao diện và triển khai website.`;
+  websiteContextCache = { value: context, expiresAt: Date.now() + 5 * 60 * 1000 };
+  return context;
 }
 
 function normalizeText(value: string) {
@@ -128,7 +137,10 @@ function getIntent(message: string) {
 
 async function getRelevantProducts(message: string): Promise<ProductSearchResult> {
   const filters = parseProductFilters(message);
-  const products = await fetchActiveProducts({ limit: 40 });
+  if (!activeProductsCache || activeProductsCache.expiresAt <= Date.now()) {
+    activeProductsCache = { value: await fetchActiveProducts({ limit: 40 }), expiresAt: Date.now() + 60 * 1000 };
+  }
+  const products = activeProductsCache.value;
   const filtered = products.filter((product) => {
     if (filters.maxPrice !== null && Number(product.price || 0) > filters.maxPrice) return false;
     return filters.keywords.length === 0 || filters.keywords.some((keyword) => productHaystack(product).includes(keyword));
@@ -164,11 +176,13 @@ Chỉ dùng thông tin website và sản phẩm được cung cấp trong contex
 Nếu không có dữ liệu, nói rõ chưa có thông tin và hướng khách liên hệ chuyên viên.
 Nếu khách hỏi ngoài chủ đề website, từ chối ngắn gọn và đưa cuộc trò chuyện về nhu cầu làm website.
 Trả lời tiếng Việt tự nhiên, chuyên nghiệp, ngắn gọn; không nhắc tên nhà cung cấp API hay quá trình suy luận.
-Khi tư vấn sản phẩm, trả lời theo 3 ý ngắn: xác nhận nhu cầu, nói đã lọc mẫu phù hợp, rồi hướng khách bấm card để xem demo hoặc liên hệ.
+Khi tư vấn sản phẩm, dùng nhịp bán hàng mềm: xác nhận nhu cầu, nêu 1-2 lợi ích phù hợp, rồi hướng khách xem card demo hoặc gửi yêu cầu tư vấn.
+Nếu nhu cầu còn mơ hồ, chỉ hỏi tối đa một câu làm rõ về loại website, ngân sách hoặc công nghệ.
+Không gây áp lực mua hàng, không tự hứa giảm giá, thời gian bàn giao hoặc tính năng chưa có trong dữ liệu.
 Không tự tạo danh sách sản phẩm, giá hoặc link trong phần trả lời vì giao diện sẽ hiển thị card riêng bên dưới. Không dùng Markdown đậm, tiêu đề dài hoặc bảng.`;
 }
 
-export async function generateAIText(prompt: string, maxOutputTokens = 420) {
+export async function generateAIText(prompt: string, maxOutputTokens = 360) {
   const apiKey = process.env.ORCAROUTER_API_KEY;
   if (!apiKey) return null;
   const client = new OpenAI({ baseURL: 'https://api.orcarouter.ai/v1', apiKey });

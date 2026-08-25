@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const safeHistory = Array.isArray(body.history) ? body.history.slice(-12) : [];
+        const safeHistory = Array.isArray(body.history) ? body.history.slice(-6) : [];
         if (sessionId) {
             await saveChatTurn({ sessionId, sender: 'user', message, sourcePage, interestedProduct, interestedTechnology, userId, visitorName, visitorEmail, visitorPhone, visitorAvatar });
         }

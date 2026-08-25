@@ -114,7 +114,7 @@ const faqs: FAQItem[] = [
     {
         category: 'support',
         question: 'Thời gian phản hồi hỗ trợ là bao lâu?',
-        answer: 'Yêu cầu thường được tiếp nhận trong ngày làm việc. Thời gian xử lý cụ thể phụ thuộc mức độ của vấn đề và thông tin bạn cung cấp. Đây là dự án cá nhân nên không vận hành như tổng đài 24/7.',
+        answer: 'Chatbot luôn sẵn sàng hỗ trợ 24/7. Với yêu cầu cần chuyên viên xử lý trực tiếp, thời gian phản hồi phụ thuộc nội dung và thông tin bạn cung cấp.',
     },
 ];
 
@@ -167,7 +167,7 @@ export default function FAQContent() {
 
             <section className="relative overflow-hidden border-b border-orange-100 bg-[#fffaf6]">
                 <div className="absolute inset-0 bg-[linear-gradient(rgba(234,88,12,0.055)_1px,transparent_1px),linear-gradient(90deg,rgba(234,88,12,0.055)_1px,transparent_1px)] bg-[size:48px_48px]" />
-                <div className="relative mx-auto max-w-7xl px-4 pb-11 pt-6 sm:px-6 sm:pb-14 lg:px-8">
+                <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
                     <nav className="mb-8 flex items-center gap-2 text-sm font-semibold text-slate-500" aria-label="Breadcrumb">
                         <Link href="/" className="inline-flex items-center gap-1.5 transition hover:text-orange-600">
                             <Home size={15} /> Trang chủ
@@ -259,7 +259,7 @@ export default function FAQContent() {
                 </div>
             </section>
 
-            <section className="mx-auto grid max-w-7xl items-start gap-7 px-4 py-10 sm:px-6 sm:py-14 lg:grid-cols-[minmax(0,1fr)_320px] lg:px-8">
+            <section className="mx-auto grid max-w-7xl items-start gap-7 px-4 py-8 sm:px-6 sm:py-12 lg:grid-cols-[minmax(0,1fr)_320px] lg:px-8">
                 <div>
                     <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
                         <p className="text-sm font-semibold text-slate-500">

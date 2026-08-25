@@ -608,7 +608,7 @@ function ProductsPageContent({ initialProducts, initialCategories }: ProductsPag
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/45 via-transparent to-slate-950/25" />
                 </div>
 
-                <div className="relative max-w-7xl mx-auto px-4 py-8 sm:py-12 md:py-16 lg:py-20 z-10">
+                <div className="relative z-10 mx-auto max-w-7xl px-4 py-10 sm:py-12 md:py-16 lg:py-16">
                     <div className="max-w-3xl">
                         {/* Badge - Smaller on mobile */}
                         <div className="inline-flex items-center gap-1.5 bg-orange-500/10 border border-orange-500/20 text-orange-400 px-2.5 py-1 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-3 sm:mb-4">

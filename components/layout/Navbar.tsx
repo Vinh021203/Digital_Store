@@ -249,7 +249,7 @@ const TopBar = memo<TopBarProps>(
             <span className="w-px h-3 bg-slate-700" />
             <span className="flex items-center gap-1.5 text-slate-300">
               <TrendingUp size={13} className="text-green-400" />
-              1,200+ giao diện website
+              Bộ sưu tập giao diện được tuyển chọn
             </span>
           </div>
 
