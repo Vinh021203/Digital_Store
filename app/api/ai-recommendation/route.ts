@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateAIText } from '@/lib/ai';
 import { fetchAIProducts, type AIRecommendationFilters } from '@/lib/products';
-import { checkRateLimit, getClientIp, getRetryAfterSeconds } from '@/lib/rateLimit';
+import { checkDistributedRateLimit, getClientIp, getRetryAfterSeconds } from '@/lib/rateLimit';
 
 const LABELS = {
     goal: {
@@ -90,7 +90,7 @@ function sanitizeAnswers(body: unknown): AIRecommendationFilters {
 export async function POST(request: NextRequest) {
     try {
         const clientIp = getClientIp(request);
-        const rateLimit = checkRateLimit(`ai-recommendation:${clientIp}`, {
+        const rateLimit = await checkDistributedRateLimit(`ai-recommendation:${clientIp}`, {
             windowMs: 10 * 60 * 1000,
             max: 15,
         });

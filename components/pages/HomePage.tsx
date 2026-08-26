@@ -668,13 +668,20 @@ const HomePage = ({
     ) => {
       if (element) {
         const rawText = element.innerText;
-        element.innerHTML = rawText
-          .split("")
-          .map(
-            (char, i) =>
-              `<span style="position: absolute; left: 50%; transform-origin: 0 75px; transform: rotate(${i * offsetAngle}deg); font-size: 10px; font-weight: 800; text-transform: uppercase; color: #ea580c;">${char}</span>`,
-          )
-          .join("");
+        const characters = rawText.split("").map((char, index) => {
+          const span = document.createElement("span");
+          span.textContent = char;
+          span.style.position = "absolute";
+          span.style.left = "50%";
+          span.style.transformOrigin = "0 75px";
+          span.style.transform = `rotate(${index * offsetAngle}deg)`;
+          span.style.fontSize = "10px";
+          span.style.fontWeight = "800";
+          span.style.textTransform = "uppercase";
+          span.style.color = "#ea580c";
+          return span;
+        });
+        element.replaceChildren(...characters);
       }
     };
 
@@ -1782,10 +1789,15 @@ const HomePage = ({
                       onError={(e) => {
                         (e.currentTarget as HTMLImageElement).style.display =
                           "none";
-                        (
-                          e.currentTarget as HTMLImageElement
-                        ).parentElement!.innerHTML =
-                          `<span style="font-size:1.5rem;font-weight:800;color:#ea580c">${(topAuthorName || "A")[0]}</span>`;
+                        const parent = (e.currentTarget as HTMLImageElement).parentElement;
+                        if (parent) {
+                          const fallback = document.createElement("span");
+                          fallback.textContent = (topAuthorName || "A")[0];
+                          fallback.style.fontSize = "1.5rem";
+                          fallback.style.fontWeight = "800";
+                          fallback.style.color = "#ea580c";
+                          parent.replaceChildren(fallback);
+                        }
                       }}
                     />
                   </div>

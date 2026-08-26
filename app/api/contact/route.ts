@@ -1,9 +1,25 @@
 import { NextResponse } from 'next/server';
 import { sendEmail } from '@/lib/email';
+import { checkDistributedRateLimit, getClientIp, getRetryAfterSeconds } from '@/lib/rateLimit';
 
 export const runtime = 'nodejs';
 
 const CONTACT_EMAIL = process.env.CONTACT_EMAIL || process.env.RESEND_CONTACT_EMAIL || 'contact@webgiare.id.vn';
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function cleanString(value: unknown, maxLength: number) {
+  return typeof value === 'string' ? value.trim().slice(0, maxLength) : '';
+}
+
+function safeHttpUrl(value: string) {
+  if (!value) return '';
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' || url.protocol === 'http:' ? url.toString() : '';
+  } catch {
+    return '';
+  }
+}
 
 function escapeHtml(value: string) {
   return value
@@ -16,21 +32,35 @@ function escapeHtml(value: string) {
 
 export async function POST(request: Request) {
   try {
-    const payload = await request.json();
-    const name = String(payload.name || '').trim();
-    const email = String(payload.email || '').trim();
-    const subject = String(payload.subject || '').trim();
-    const message = String(payload.message || '').trim();
-    const productName = String(payload.productName || '').trim();
-    const productUrl = String(payload.productUrl || '').trim();
-    const productImage = String(payload.productImage || '').trim();
-    const productFormat = String(payload.productFormat || '').trim();
-    const projectNeed = String(payload.projectNeed || '').trim();
-    const techPreference = String(payload.techPreference || '').trim();
-    const budget = String(payload.budget || '').trim();
-    const timeline = String(payload.timeline || '').trim();
+    const clientIp = getClientIp(request);
+    const rateLimit = await checkDistributedRateLimit(`contact:${clientIp}`, {
+      windowMs: 15 * 60 * 1000,
+      max: 5,
+    });
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { success: false, message: 'Bạn đã gửi yêu cầu quá nhanh. Vui lòng thử lại sau ít phút.' },
+        { status: 429, headers: { 'Retry-After': String(getRetryAfterSeconds(rateLimit.resetAt)) } },
+      );
+    }
 
-    if (!name || !email || !subject || !message) {
+    const payload = await request.json();
+    if (cleanString(payload.website, 200)) return NextResponse.json({ success: true });
+
+    const name = cleanString(payload.name, 120);
+    const email = cleanString(payload.email, 160).toLowerCase();
+    const subject = cleanString(payload.subject, 180);
+    const message = cleanString(payload.message, 3000);
+    const productName = cleanString(payload.productName, 180);
+    const productUrl = safeHttpUrl(cleanString(payload.productUrl, 500));
+    const productImage = safeHttpUrl(cleanString(payload.productImage, 500));
+    const productFormat = cleanString(payload.productFormat, 80);
+    const projectNeed = cleanString(payload.projectNeed, 300);
+    const techPreference = cleanString(payload.techPreference, 120);
+    const budget = cleanString(payload.budget, 80);
+    const timeline = cleanString(payload.timeline, 80);
+
+    if (!name || !EMAIL_PATTERN.test(email) || !subject || !message) {
       return NextResponse.json(
         { success: false, message: 'Thiếu thông tin bắt buộc.' },
         { status: 400 }
@@ -114,9 +144,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Contact email error:', error);
-    const message = error instanceof Error ? error.message : 'Không gửi được email.';
     return NextResponse.json(
-      { success: false, message },
+      { success: false, message: 'Không gửi được yêu cầu. Vui lòng thử lại sau.' },
       { status: 500 }
     );
   }

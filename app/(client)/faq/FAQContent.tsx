@@ -163,7 +163,7 @@ export default function FAQContent() {
 
     return (
         <main className="min-h-screen bg-[#f8fafc] text-slate-950">
-            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, '\\u003c') }} />
 
             <section className="relative overflow-hidden border-b border-orange-100 bg-[#fffaf6]">
                 <div className="absolute inset-0 bg-[linear-gradient(rgba(234,88,12,0.055)_1px,transparent_1px),linear-gradient(90deg,rgba(234,88,12,0.055)_1px,transparent_1px)] bg-[size:48px_48px]" />

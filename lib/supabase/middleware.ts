@@ -91,7 +91,7 @@ export async function updateSession(request: NextRequest) {
             return NextResponse.redirect(new URL('/', request.url));
         }
 
-        if (profile?.role !== 'admin') {
+        if (!['admin', 'super_admin'].includes(profile?.role || '')) {
             // Redirect non-admin users to homepage
             console.warn('Non-admin user attempted to access admin route');
             return NextResponse.redirect(new URL('/', request.url));

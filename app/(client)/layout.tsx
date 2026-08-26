@@ -61,17 +61,23 @@ const ClientLayout = ({ children }: ClientLayoutProps) => {
     const cancelIdle = window.cancelIdleCallback;
 
     const schedule = (callback: () => void, delay: number, idleTimeout: number) => {
-      if (typeof requestIdle === 'function') {
-        const idleId = requestIdle(callback, { timeout: idleTimeout });
-        idleIds.push(idleId);
-        return;
-      }
-
-      timers.push(window.setTimeout(callback, delay));
+      // Wait until the page has settled before asking the browser to load
+      // non-critical widgets. Calling requestIdleCallback immediately can
+      // still compete with the first render on fast devices.
+      timers.push(window.setTimeout(() => {
+        if (typeof requestIdle === 'function') {
+          const idleId = requestIdle(callback, { timeout: idleTimeout });
+          idleIds.push(idleId);
+          return;
+        }
+        callback();
+      }, delay));
     };
 
     if (canShowMarketingWidgets) {
-      schedule(() => setShowFloatingWidgets(true), 9000, 12000);
+      // Keep the launcher available shortly after the first paint. The heavy
+      // chat panel is still lazy-loaded by FloatingWidgets itself.
+      schedule(() => setShowFloatingWidgets(true), 1400, 5000);
     }
 
     if (canShowMarketingWidgets) {

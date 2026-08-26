@@ -130,6 +130,7 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+CHAT_SESSION_SECRET=generate_a_long_random_secret_for_signed_guest_chat_sessions
 
 # Cloudinary
 CLOUDINARY_CLOUD_NAME=your_cloud_name
@@ -162,6 +163,10 @@ ORCAROUTER_API_KEY=your_orcarouter_api_key
 # Tuỳ chọn: nếu đặt sẽ ưu tiên hơn lựa chọn model trong CMS
 ORCAROUTER_MODEL=deepseek/deepseek-v4-flash-free
 ```
+
+Before deploying, run `supabase/migrations/202608260001_api_rate_limits.sql`
+in Supabase SQL Editor to enable rate limiting shared by every app instance.
+Without this migration, the API safely falls back to the process-local limiter.
 
 Không commit `.env.local` lên GitHub.
 

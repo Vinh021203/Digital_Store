@@ -21,6 +21,7 @@ interface ReviewsSectionProps {
     productName?: string;
     productCategory?: string;
     productTechnologies?: string[];
+    isCatalogMode?: boolean;
 }
 
 // Helper: format relative time
@@ -74,7 +75,7 @@ function StarRating({ rating, size = 16, interactive = false, onChange }: {
     );
 }
 
-export default function ReviewsSection({ productId, productRating = 0, productReviewCount = 0, productName, productCategory, productTechnologies = [] }: ReviewsSectionProps) {
+export default function ReviewsSection({ productId, productRating = 0, productReviewCount = 0, productName, productCategory, productTechnologies = [], isCatalogMode = false }: ReviewsSectionProps) {
     const { addToast } = useToast();
     const { user, profile } = useSupabaseAuth();
 
@@ -201,7 +202,7 @@ export default function ReviewsSection({ productId, productRating = 0, productRe
         <section id="reviews" className="mt-8 scroll-mt-24 border-t border-slate-100 pt-5 md:mt-6 md:pt-6">
             <h2 className="mb-4 flex items-center gap-2 text-xl font-black text-slate-900">
                 <MessageSquare className="text-orange-500" />
-                Đánh giá mẫu demo ({stats.total})
+                {isCatalogMode ? 'Đánh giá tham khảo' : 'Đánh giá mẫu demo'} ({stats.total})
             </h2>
 
             {/* Rating Summary */}
@@ -215,7 +216,7 @@ export default function ReviewsSection({ productId, productRating = 0, productRe
                             </span>
                             <div>
                                 <StarRating rating={Math.round(stats.average)} size={20} />
-                                <p className="mt-1 text-xs text-slate-500 md:text-sm">{stats.total} đánh giá</p>
+                                <p className="mt-1 text-xs text-slate-500 md:text-sm">{stats.total} {isCatalogMode ? 'đánh giá tham khảo' : 'đánh giá'}</p>
                             </div>
                         </div>
                     </div>

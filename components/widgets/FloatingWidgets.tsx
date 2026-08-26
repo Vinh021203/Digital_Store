@@ -176,7 +176,7 @@ const FloatingWidgets = () => {
   useEffect(() => {
     if (authLoading || !chatSessionId) return;
     let cancelled = false;
-    fetch(`/api/chat/history?sessionId=${encodeURIComponent(chatSessionId)}`)
+    fetch('/api/chat/history', { credentials: 'same-origin', cache: 'no-store' })
       .then((response) => response.json())
       .then((data) => {
         if (cancelled || !Array.isArray(data.messages) || data.messages.length === 0) return;
@@ -296,6 +296,10 @@ const FloatingWidgets = () => {
         });
 
         const data = await response.json();
+
+        if (typeof data.sessionId === 'string' && data.sessionId) {
+          window.localStorage.setItem('webgiare-chat-session-id', data.sessionId);
+        }
 
         const botResponse: ChatMessage = {
           id: Date.now() + 1,

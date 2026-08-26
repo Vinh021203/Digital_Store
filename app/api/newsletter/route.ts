@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { sendEmail } from '@/lib/email';
 import { getSiteUrl } from '@/lib/site-url';
+import { checkDistributedRateLimit, getClientIp, getRetryAfterSeconds } from '@/lib/rateLimit';
 
 export const runtime = 'nodejs';
 
@@ -12,8 +13,20 @@ function escapeHtml(value: string) {
 
 export async function POST(request: Request) {
   try {
+    const clientIp = getClientIp(request);
+    const rateLimit = await checkDistributedRateLimit(`newsletter:${clientIp}`, {
+      windowMs: 60 * 60 * 1000,
+      max: 3,
+    });
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { success: false, message: 'Bạn đã đăng ký quá nhanh. Vui lòng thử lại sau.' },
+        { status: 429, headers: { 'Retry-After': String(getRetryAfterSeconds(rateLimit.resetAt)) } },
+      );
+    }
+
     const payload = await request.json();
-    const email = String(payload.email || '').trim().toLowerCase();
+    const email = String(payload.email || '').trim().toLowerCase().slice(0, 160);
 
     if (!EMAIL_PATTERN.test(email)) {
       return NextResponse.json({ success: false, message: 'Email không hợp lệ.' }, { status: 400 });

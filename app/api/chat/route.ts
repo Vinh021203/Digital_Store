@@ -1,14 +1,19 @@
 // API Route for AI Chatbot
 import { NextRequest, NextResponse } from 'next/server';
 import { chatWithAI } from '@/lib/ai';
-import { checkRateLimit, getClientIp, getRetryAfterSeconds } from '@/lib/rateLimit';
+import { checkDistributedRateLimit, getClientIp, getRetryAfterSeconds } from '@/lib/rateLimit';
 import { saveChatTurn } from '@/lib/chatHistory';
 import { createClient, createAdminClient } from '@/lib/supabase/server';
+import {
+    attachGuestChatSessionCookie,
+    createGuestChatSession,
+    readGuestChatSession,
+} from '@/lib/chatSession';
 
 export async function POST(request: NextRequest) {
     try {
         const clientIp = getClientIp(request);
-        const rateLimit = checkRateLimit(`chat:${clientIp}`, {
+        const rateLimit = await checkDistributedRateLimit(`chat:${clientIp}`, {
             windowMs: 10 * 60 * 1000,
             max: 20,
         });
@@ -27,7 +32,8 @@ export async function POST(request: NextRequest) {
 
         const body = await request.json();
         const message = typeof body.message === 'string' ? body.message.trim() : '';
-        const sessionId = typeof body.sessionId === 'string' ? body.sessionId.trim().slice(0, 120) : '';
+        let sessionId = '';
+        let newGuestSessionCookie = '';
         const sourcePage = typeof body.sourcePage === 'string' ? body.sourcePage.trim().slice(0, 500) : null;
         const interestedProduct = typeof body.product === 'string' ? body.product.trim().slice(0, 160) : null;
         const interestedTechnology = typeof body.technology === 'string' ? body.technology.trim().slice(0, 80) : null;
@@ -40,6 +46,7 @@ export async function POST(request: NextRequest) {
         const authClient = await createClient();
         const { data: { user: authenticatedUser } } = await authClient.auth.getUser();
         if (authenticatedUser) {
+            sessionId = authenticatedUser.id;
             userId = authenticatedUser.id;
             visitorEmail = authenticatedUser.email || visitorEmail;
             const adminClient = createAdminClient();
@@ -54,6 +61,17 @@ export async function POST(request: NextRequest) {
             visitorEmail = profile?.email || visitorEmail;
         } else if (!visitorName || !visitorPhone || visitorPhone.replace(/\D/g, '').length < 9) {
             return NextResponse.json({ error: 'Vui lòng nhập tên và số điện thoại trước khi chat.' }, { status: 400 });
+        } else {
+            sessionId = readGuestChatSession(request) || '';
+            if (!sessionId) {
+                const guestSession = createGuestChatSession();
+                if (!guestSession) {
+                    console.error('A server-side chat session secret is required.');
+                    return NextResponse.json({ error: 'Chat session is unavailable.' }, { status: 503 });
+                }
+                sessionId = guestSession.sessionId;
+                newGuestSessionCookie = guestSession.cookieValue;
+            }
         }
 
         if (!message) {
@@ -80,7 +98,9 @@ export async function POST(request: NextRequest) {
             await saveChatTurn({ sessionId, sender: 'bot', message: response.message, sourcePage, interestedProduct, interestedTechnology, userId, visitorName, visitorEmail, visitorPhone, visitorAvatar });
         }
 
-        return NextResponse.json({ ...response, sessionId: sessionId || null });
+        const result = NextResponse.json({ ...response, sessionId: sessionId || null });
+        if (newGuestSessionCookie) attachGuestChatSessionCookie(result, newGuestSessionCookie);
+        return result;
     } catch (error) {
         console.error('Chat API error:', error);
         return NextResponse.json(

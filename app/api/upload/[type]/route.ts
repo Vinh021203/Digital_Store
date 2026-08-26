@@ -163,6 +163,40 @@ function validateFile(file: File, config: UploadConfig) {
     return null;
 }
 
+function startsWith(buffer: Buffer, bytes: number[]) {
+    return bytes.every((byte, index) => buffer[index] === byte);
+}
+
+function validateFileSignature(buffer: Buffer, extension: string) {
+    if (buffer.length < 12) return false;
+
+    const signatures: Record<string, () => boolean> = {
+        jpg: () => startsWith(buffer, [0xff, 0xd8, 0xff]),
+        jpeg: () => startsWith(buffer, [0xff, 0xd8, 0xff]),
+        png: () => startsWith(buffer, [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+        gif: () => buffer.subarray(0, 6).toString('ascii') === 'GIF87a' || buffer.subarray(0, 6).toString('ascii') === 'GIF89a',
+        webp: () => buffer.subarray(0, 4).toString('ascii') === 'RIFF' && buffer.subarray(8, 12).toString('ascii') === 'WEBP',
+        pdf: () => buffer.subarray(0, 5).toString('ascii') === '%PDF-',
+        zip: () => startsWith(buffer, [0x50, 0x4b, 0x03, 0x04]) || startsWith(buffer, [0x50, 0x4b, 0x05, 0x06]) || startsWith(buffer, [0x50, 0x4b, 0x07, 0x08]),
+        fig: () => startsWith(buffer, [0x50, 0x4b]),
+        sketch: () => startsWith(buffer, [0x50, 0x4b]),
+        xd: () => startsWith(buffer, [0x50, 0x4b]),
+        rar: () => startsWith(buffer, [0x52, 0x61, 0x72, 0x21, 0x1a, 0x07]),
+        '7z': () => startsWith(buffer, [0x37, 0x7a, 0xbc, 0xaf, 0x27, 0x1c]),
+        gz: () => startsWith(buffer, [0x1f, 0x8b]),
+        tar: () => buffer.length > 262 && buffer.subarray(257, 262).toString('ascii') === 'ustar',
+    };
+
+    return signatures[extension]?.() ?? false;
+}
+
+function assertValidFileSignature(buffer: Buffer, fileName: string) {
+    const extension = getFileExtension(fileName);
+    if (!validateFileSignature(buffer, extension)) {
+        throw new Error('Invalid file content. The file signature does not match its extension.');
+    }
+}
+
 async function uploadSingleFile(buffer: Buffer, config: UploadConfig): Promise<string> {
     return new Promise((resolve, reject) => {
         cloudinary.uploader
@@ -260,6 +294,7 @@ export async function POST(
 
                 const arrayBuffer = await file.arrayBuffer();
                 const buffer = Buffer.from(arrayBuffer);
+                assertValidFileSignature(buffer, file.name);
                 return uploadSingleFile(buffer, config);
             });
 
@@ -281,6 +316,7 @@ export async function POST(
 
         const arrayBuffer = await file.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
+        assertValidFileSignature(buffer, file.name);
         const url = await uploadSingleFile(buffer, config);
 
         return NextResponse.json({ url });

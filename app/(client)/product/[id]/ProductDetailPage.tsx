@@ -3,19 +3,18 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { useParams, useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
-    Star, ShieldCheck, RotateCcw, Heart, Check,
+    Star, RotateCcw, Heart, Check,
     ChevronRight, Copy, Clock, ShoppingCart, ShoppingBag, Download, Package,
-    Share2, Play, FileCode, Layers, Monitor, Smartphone, Tag,
+    Share2, Play, FileCode, FileCheck2, Layers, Monitor, Smartphone, Tag,
     MessageCircle, Headset, ThumbsUp, ChevronDown, AlertCircle, Plus, Loader2,
     Eye, Users, Calendar, Code, Palette, Zap, Award, Globe, X,
     ArrowRight, Maximize2, Minimize2
 } from 'lucide-react';
 import { getProductBySlug, getProductById, fetchActiveProducts } from '@/lib/products';
-import ReviewsSection from '@/components/product/ReviewsSection';
-import RelatedProducts from '@/components/product/RelatedProducts';
 import SafeHTML from '@/components/ui/SafeHTML';
 import { useCart } from '@/context/CartContext';
 import { useSupabaseAuth } from '@/context/SupabaseAuthContext';
@@ -24,12 +23,22 @@ import { useSiteMode } from '@/hooks/useSiteSettings';
 import type { Product } from '@/types';
 import { getTechnologyIconUrl } from '@/lib/technologyIcons';
 
-// FAQ data
+const ReviewsSection = dynamic(() => import('@/components/product/ReviewsSection'), {
+    ssr: false,
+    loading: () => <div className="mt-8 min-h-56 animate-pulse rounded-2xl bg-slate-50" />,
+});
+
+const RelatedProducts = dynamic(() => import('@/components/product/RelatedProducts'), {
+    ssr: false,
+    loading: () => <div className="mt-6 min-h-64 animate-pulse rounded-2xl bg-slate-50" />,
+});
+
 const FAQ_DATA = [
-    { q: 'Mẫu demo có được cập nhật miễn phí không?', a: 'Có, bạn sẽ nhận được tất cả các bản cập nhật miễn phí trong tương lai.' },
-    { q: 'Tôi có thể dùng mẫu demo cho dự án thương mại không?', a: 'Có thể tư vấn theo phạm vi dự án. Quyền truy cập mẫu demo và tài nguyên tham khảo sẽ được xác nhận theo từng nhu cầu triển khai.' },
-    { q: 'Có hỗ trợ kỹ thuật không?', a: 'Có, Web Giá Rẻ - Portfolio hỗ trợ qua email theo phạm vi mẫu demo và nhu cầu triển khai.' },
-    { q: 'Khi nào có thể nhận file mẫu demo?', a: 'Khi mẫu demo được mở quyền truy cập, bạn có thể nhận hướng dẫn qua email hoặc xem trong khu vực hồ sơ tài khoản.' },
+    { q: 'Mẫu demo này phù hợp với dự án nào?', a: 'Mẫu được dùng để tham khảo giao diện và tư vấn triển khai theo nhu cầu website, landing page hoặc dự án thương mại phù hợp.' },
+    { q: 'Có thể chọn công nghệ khác không?', a: 'Bạn có thể xem các phiên bản công nghệ có sẵn trong mục bên trên. Nếu chưa có phiên bản phù hợp, hãy gửi yêu cầu để được tư vấn.' },
+    { q: 'Tôi nhận được hỗ trợ ở mức nào?', a: 'Web Giá Rẻ hỗ trợ tư vấn phạm vi triển khai, cấu trúc giao diện và các tùy chỉnh cơ bản theo từng mẫu.' },
+    { q: 'Có được phân phối lại tài nguyên gốc không?', a: 'Không. Tài nguyên gốc chỉ được sử dụng trong phạm vi dự án đã được tư vấn và xác nhận.' },
+    { q: 'Tôi có thể xem demo trước khi liên hệ không?', a: 'Có. Bạn có thể bấm nút xem demo hoặc chọn phiên bản công nghệ tương ứng để kiểm tra giao diện trước khi trao đổi.' },
 ];
 
 const stripHtml = (value?: string | null) =>
@@ -256,7 +265,6 @@ export default function ProductDetailPage() {
     const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('description');
-    const [openFaq, setOpenFaq] = useState<number | null>(null);
     const [showDemoModal, setShowDemoModal] = useState(false);
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
     const [showLightbox, setShowLightbox] = useState(false);
@@ -279,17 +287,21 @@ export default function ProductDetailPage() {
                 }
                 setProduct(data);
 
-                // Load related products
+                // Related products are non-critical content. Load them after the
+                // main product has been painted so they do not delay LCP.
                 if (data) {
-                    const allProducts = await fetchActiveProducts();
-                    const categoryName = typeof data.category === 'object' ? data.category?.name : data.category;
-                    const related = allProducts
-                        .filter((p: any) => {
-                            const pCatName = typeof p.category === 'object' ? p.category?.name : p.category;
-                            return p.id !== data.id && pCatName === categoryName;
+                    fetchActiveProducts()
+                        .then((allProducts) => {
+                            const categoryName = typeof data.category === 'object' ? data.category?.name : data.category;
+                            const related = allProducts
+                                .filter((p: any) => {
+                                    const pCatName = typeof p.category === 'object' ? p.category?.name : p.category;
+                                    return p.id !== data.id && pCatName === categoryName;
+                                })
+                                .slice(0, 4);
+                            setRelatedProducts(related);
                         })
-                        .slice(0, 4);
-                    setRelatedProducts(related);
+                        .catch((error) => console.error('Error loading related products:', error));
                 }
             } catch (error) {
                 console.error('Error loading product:', error);
@@ -421,6 +433,7 @@ const ModernProductDetailLayout = ({
     isCatalogMode,
 }: any) => {
     const [showFullDescription, setShowFullDescription] = useState(false);
+    const [openFaq, setOpenFaq] = useState<number | null>(null);
     const [mobileQuickBuyOpen, setMobileQuickBuyOpen] = useState(false);
     const [isFooterVisible, setIsFooterVisible] = useState(false);
     const [isTechnologyVariantVisible, setIsTechnologyVariantVisible] = useState(false);
@@ -481,18 +494,26 @@ const ModernProductDetailLayout = ({
 
     useEffect(() => {
         const footer = document.querySelector('footer');
-        if (!footer || typeof IntersectionObserver === 'undefined') return;
+        if (!footer) return;
 
-        const observer = new IntersectionObserver(
-            ([entry]) => setIsFooterVisible(entry.isIntersecting),
-            {
-                threshold: 0.08,
-                rootMargin: '0px 0px -8% 0px',
-            }
-        );
+        let frameId = 0;
+        const updateFooterVisibility = () => {
+            frameId = 0;
+            setIsFooterVisible(footer.getBoundingClientRect().top <= window.innerHeight);
+        };
+        const handleScroll = () => {
+            if (!frameId) frameId = window.requestAnimationFrame(updateFooterVisibility);
+        };
 
-        observer.observe(footer);
-        return () => observer.disconnect();
+        updateFooterVisibility();
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        window.addEventListener('resize', handleScroll, { passive: true });
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('resize', handleScroll);
+            if (frameId) window.cancelAnimationFrame(frameId);
+        };
     }, []);
     useEffect(() => {
         const technologySection = document.getElementById('technology-variants');
@@ -512,12 +533,7 @@ const ModernProductDetailLayout = ({
         ['package', 'Bộ tài nguyên'],
         ['workflow', 'Quy trình & Ứng dụng'],
         ['reviews', 'Đánh giá'],
-    ];
-    const overviewCards = [
-        { icon: Monitor, title: 'Hiện đại & chuyên nghiệp', stat: 'UI chuẩn demo', tag: 'Layout ready', text: 'Bố cục rõ ràng, hình ảnh lớn và nhịp nội dung phù hợp để giới thiệu giao diện website.' },
-        { icon: Zap, title: 'Tối ưu hiệu suất', stat: 'Tải nhanh hơn', tag: 'Clean structure', text: 'Cấu trúc gọn, dễ mở rộng, giúp rút ngắn thời gian triển khai và bàn giao dự án.' },
-        { icon: Layers, title: 'Dễ dàng tùy biến', stat: 'Component linh hoạt', tag: 'Design system', text: 'Các khối giao diện được tách lớp hợp lý, thuận tiện chỉnh màu, nội dung và branding.' },
-        { icon: Smartphone, title: 'Responsive-ready', stat: 'Mobile first', tag: 'Đủ breakpoint', text: 'Tương thích tốt trên desktop, laptop, tablet và mobile với bố cục dễ kiểm soát.' },
+        ['license', 'Quyền sử dụng'],
     ];
     const workflowCards = [
         { icon: Eye, title: 'Chọn bố cục phù hợp', tag: 'Bắt đầu' },
@@ -604,7 +620,7 @@ const ModernProductDetailLayout = ({
                                     <Star key={i} size={18} className={i < Math.round(rating) ? 'fill-amber-400 text-amber-400' : 'text-slate-200'} />
                                 ))}
                                 <span className="ml-2 font-bold text-slate-900">{rating}</span>
-                                <span>({reviewCount} đánh giá)</span>
+                                <span>{isCatalogMode ? 'Đánh giá tham khảo' : `(${reviewCount} đánh giá)`}</span>
                             </div>
                             <span className="h-4 w-px bg-slate-200" />
                             <span className="inline-flex items-center gap-1.5">
@@ -849,32 +865,6 @@ const ModernProductDetailLayout = ({
                             </div>
                         ))}
                     </div>
-	                    <div className="grid grid-cols-2 gap-3 md:gap-5 xl:grid-cols-4">
-                        {overviewCards.map((item, index) => (
-                            <div
-                                key={index}
-                                className="group relative overflow-hidden rounded-2xl border border-orange-100/80 bg-white p-3 shadow-[0_16px_45px_rgba(15,23,42,0.06)] transition duration-300 hover:-translate-y-1 hover:border-orange-200 hover:shadow-[0_24px_60px_rgba(234,88,12,0.14)] md:p-5"
-                            >
-                                <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-orange-500 via-amber-400 to-sky-300" />
-                                <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-orange-100/70 blur-2xl transition duration-300 group-hover:bg-orange-200/80" />
-	                                <div className="relative flex items-start justify-between gap-2 md:gap-4">
-	                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-50 to-amber-50 text-orange-600 shadow-sm ring-1 ring-orange-100 transition duration-300 group-hover:scale-105 group-hover:from-orange-100 group-hover:to-amber-100 group-hover:text-orange-600 group-hover:ring-orange-200 md:h-14 md:w-14">
-	                                        <item.icon size={19} className="md:h-6 md:w-6" />
-	                                    </div>
-	                                    <span className="hidden rounded-full bg-slate-50 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.08em] text-slate-500 ring-1 ring-slate-100 sm:inline-flex">{item.tag}</span>
-	                                </div>
-	                                <div className="relative mt-4 md:mt-6">
-	                                    <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.08em] text-orange-600 md:mb-2 md:text-xs md:tracking-[0.1em]">{item.stat}</p>
-	                                    <h3 className="text-sm font-bold leading-snug text-slate-950 md:text-lg">{item.title}</h3>
-	                                    <p className="mt-2 line-clamp-2 text-xs font-medium leading-5 text-slate-600 md:mt-3 md:line-clamp-none md:text-sm md:leading-6">{item.text}</p>
-	                                </div>
-	                                <div className="relative mt-3 hidden items-center gap-2 text-xs font-bold text-slate-500 md:mt-5 md:flex">
-                                    <span className="h-1.5 w-1.5 rounded-full bg-orange-500" />
-                                    Đã kiểm tra trước khi bàn giao
-                                </div>
-                            </div>
-                        ))}
-                    </div>
                 </section>
 
 	                <div className="mt-6 grid gap-6 md:mt-8 lg:grid-cols-[0.95fr_1.05fr]">
@@ -916,8 +906,8 @@ const ModernProductDetailLayout = ({
                     </section>
                 </div>
 
-		                <div id="license" className="hidden">
-	                    <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
+	                <div id="license" className="mt-6 grid scroll-mt-24 gap-4 lg:grid-cols-[1.05fr_0.95fr]">
+	                    <section className="hidden overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
 	                        <h2 className="mb-3 text-lg font-bold text-slate-950 md:mb-4 md:text-xl">5. So sánh phiên bản</h2>
 	                        <div className="overflow-x-auto rounded-xl border border-slate-100">
 	                            <table className="w-full min-w-[560px] table-fixed border-collapse text-xs md:text-sm">
@@ -950,18 +940,49 @@ const ModernProductDetailLayout = ({
                         </div>
                     </section>
 
-	                    <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:p-6">
-		                        <h2 className="mb-3 text-lg font-bold text-slate-950 md:mb-5 md:text-xl">6. Quyền truy cập mẫu demo</h2>
-	                        <div className="mb-4 flex h-16 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-50 to-sky-50 text-orange-600 md:mb-5 md:h-28">
-	                            <ShieldCheck size={42} className="md:h-[70px] md:w-[70px]" />
+	                    <section className="rounded-2xl border border-indigo-100 bg-white p-4 shadow-sm md:p-6">
+	                        <h2 className="mb-3 text-lg font-bold text-slate-950 md:mb-5 md:text-xl">Quyền sử dụng & phạm vi tư vấn</h2>
+	                        <div className="mb-4 flex h-16 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-50 via-sky-50 to-white text-indigo-600 ring-1 ring-indigo-100 md:mb-5 md:h-28">
+	                            <FileCheck2 size={42} className="md:h-[70px] md:w-[70px]" />
 	                        </div>
 	                        <div className="space-y-2 md:space-y-3">
-		                            {['Truy cập mẫu demo để tham khảo', 'Tư vấn triển khai theo nhu cầu', 'Không phân phối lại tài nguyên gốc', 'Cập nhật theo phạm vi từng mẫu', 'Hỗ trợ kỹ thuật theo nhu cầu'].map((item) => (
+	                            {['Truy cập mẫu demo để tham khảo', 'Tư vấn triển khai theo nhu cầu', 'Không phân phối lại tài nguyên gốc', 'Bàn giao theo phạm vi từng mẫu', 'Hỗ trợ kỹ thuật theo nhu cầu'].map((item) => (
 	                                <div key={item} className="flex items-center gap-2.5 text-xs font-semibold leading-5 text-slate-700 md:gap-3 md:text-sm"><Check size={16} className="shrink-0 text-orange-600 md:h-[18px] md:w-[18px]" /> {item}</div>
 	                            ))}
 	                        </div>
-	                        <div className="mt-4 rounded-xl border border-orange-100 bg-orange-50 p-3 text-xs leading-5 text-slate-600 md:mt-6 md:p-4 md:text-sm md:leading-6">
-	                            <b className="text-orange-700">Lưu ý quan trọng:</b> Quyền truy cập mẫu demo dùng để tham khảo và tư vấn triển khai theo nhu cầu dự án.
+	                        <div className="mt-4 rounded-xl border border-indigo-100 bg-indigo-50/70 p-3 text-xs leading-5 text-slate-600 md:mt-6 md:p-4 md:text-sm md:leading-6">
+	                            <b className="text-indigo-700">Lưu ý quan trọng:</b> Quyền truy cập mẫu demo dùng để tham khảo và tư vấn triển khai theo nhu cầu dự án.
+                        </div>
+                    </section>
+
+                    <section className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 shadow-sm md:p-6">
+                        <div className="mb-4 flex items-center gap-2 md:mb-5">
+                            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-orange-600 shadow-sm ring-1 ring-orange-100">
+                                <MessageCircle size={19} />
+                            </div>
+                            <div>
+                                <h2 className="text-lg font-bold text-slate-950 md:text-xl">Câu hỏi thường gặp</h2>
+                                <p className="text-xs font-medium text-slate-500 md:text-sm">Thông tin nhanh trước khi bạn liên hệ tư vấn.</p>
+                            </div>
+                        </div>
+                        <div className="divide-y divide-slate-200 overflow-hidden rounded-xl border border-slate-200 bg-white">
+                            {FAQ_DATA.map((item, index) => {
+                                const isOpen = openFaq === index;
+                                return (
+                                    <div key={item.q}>
+                                        <button
+                                            type="button"
+                                            onClick={() => setOpenFaq(isOpen ? null : index)}
+                                            className="flex w-full items-center justify-between gap-3 px-3 py-3 text-left text-xs font-bold text-slate-800 transition hover:bg-orange-50/60 md:px-4 md:py-3.5 md:text-sm"
+                                            aria-expanded={isOpen}
+                                        >
+                                            <span>{item.q}</span>
+                                            <ChevronDown size={16} className={`shrink-0 text-slate-400 transition-transform ${isOpen ? 'rotate-180 text-orange-600' : ''}`} />
+                                        </button>
+                                        {isOpen && <p className="px-3 pb-3 text-xs leading-5 text-slate-600 md:px-4 md:pb-4 md:text-sm md:leading-6">{item.a}</p>}
+                                    </div>
+                                );
+                            })}
                         </div>
                     </section>
                 </div>
@@ -996,6 +1017,7 @@ const ModernProductDetailLayout = ({
                     productName={product.name}
                     productCategory={typeof product.category === 'string' ? product.category : product.category?.name}
                     productTechnologies={(product.technology_variants || []).map((variant: any) => String(variant.technology || '')).filter(Boolean)}
+                    isCatalogMode={isCatalogMode}
                 />
 
                 {relatedProducts.length > 0 && (
