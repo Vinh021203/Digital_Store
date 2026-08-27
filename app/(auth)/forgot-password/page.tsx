@@ -186,16 +186,16 @@ const ForgotPasswordPage = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-orange-900/90 via-slate-900/70 to-slate-900/40 flex flex-col justify-end p-16">
           <div className="grid grid-cols-3 gap-6 mb-12">
             <div className="text-center">
-              <p className="text-3xl font-black text-white">1000+</p>
-              <p className="text-orange-200 text-sm font-medium">Sản Phẩm</p>
+              <p className="text-3xl font-black text-white">Demo</p>
+              <p className="text-orange-200 text-sm font-medium">Xem trực tiếp</p>
             </div>
             <div className="text-center">
-              <p className="text-3xl font-black text-white">50K+</p>
-              <p className="text-orange-200 text-sm font-medium">Downloads</p>
+              <p className="text-3xl font-black text-white">24/7</p>
+              <p className="text-orange-200 text-sm font-medium">AI hỗ trợ</p>
             </div>
             <div className="text-center">
-              <p className="text-3xl font-black text-white">4.9</p>
-              <p className="text-orange-200 text-sm font-medium">Rating</p>
+              <p className="text-3xl font-black text-white">CMS</p>
+              <p className="text-orange-200 text-sm font-medium">Quản lý đồng bộ</p>
             </div>
           </div>
 

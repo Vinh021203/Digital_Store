@@ -373,9 +373,9 @@ export default function LoginPage() {
           {/* Stats */}
           <div className="flex items-end gap-10 mb-8">
             {[
-              { value: "1000+", label: "Sản Phẩm" },
-              { value: "50K+", label: "Downloads" },
-              { value: "4.9", label: "Rating" },
+              { value: "Demo", label: "Xem trực tiếp" },
+              { value: "24/7", label: "AI hỗ trợ" },
+              { value: "CMS", label: "Quản lý đồng bộ" },
             ].map((stat) => (
               <div key={stat.label}>
                 <p className="text-3xl xl:text-4xl font-black text-white leading-none">

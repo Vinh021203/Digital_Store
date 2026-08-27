@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useCallback, memo, useEffect } from 'react';
+import React, { useState, useMemo, useCallback, memo, useEffect, useRef } from 'react';
 import {
     MessageCircle, Search, Filter, User, Home,
     Flame, Sparkles, Heart, MessageSquare, Share2, Bookmark, MoreHorizontal,
@@ -35,17 +35,22 @@ const FloatingIcon = memo(({ icon: Icon, delay, className }: { icon: any; delay:
 ));
 FloatingIcon.displayName = 'FloatingIcon';
 
-export default function CommunityPage() {
+interface CommunityPageProps {
+    initialPosts: DbCommunityPost[];
+}
+
+export default function CommunityPage({ initialPosts }: CommunityPageProps) {
     const { user, profile } = useSupabaseAuth();
     const { addToast } = useToast();
     const router = useRouter();
 
-    const [posts, setPosts] = useState<DbCommunityPost[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [posts, setPosts] = useState<DbCommunityPost[]>(initialPosts);
+    const [loading, setLoading] = useState(false);
     const [activeTag, setActiveTag] = useState('all');
     const [isPostModalOpen, setIsPostModalOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [likedPosts, setLikedPosts] = useState<Set<number>>(new Set());
+    const hasHydratedInitialPosts = useRef(false);
 
     const loadPosts = useCallback(async () => {
         setLoading(true);
@@ -75,6 +80,10 @@ export default function CommunityPage() {
     }, [user?.id, activeTag, searchTerm]);
 
     useEffect(() => {
+        if (!hasHydratedInitialPosts.current) {
+            hasHydratedInitialPosts.current = true;
+            return;
+        }
         loadPosts();
     }, [loadPosts]);
 
@@ -129,6 +138,45 @@ export default function CommunityPage() {
         }
     }, [user, addToast]);
 
+    const communityStats = useMemo(() => {
+        const contributors = new Set(posts.map(post => post.author_id).filter(Boolean));
+        const responses = posts.reduce((total, post) => total + Number(post.comments_count || 0), 0);
+
+        return [
+            { icon: MessageSquare, value: posts.length, label: 'Đang hiển thị' },
+            { icon: Users, value: contributors.size, label: 'Người tham gia' },
+            { icon: Award, value: responses, label: 'Phản hồi' },
+        ];
+    }, [posts]);
+
+    const topContributors = useMemo(() => {
+        const contributors = new Map<string, {
+            id: string;
+            name: string;
+            avatar: string;
+            posts: number;
+            interactions: number;
+        }>();
+
+        posts.forEach(post => {
+            if (!post.author_id) return;
+            const current = contributors.get(post.author_id);
+            const interactions = Number(post.likes_count || 0) + Number(post.comments_count || 0);
+
+            contributors.set(post.author_id, {
+                id: post.author_id,
+                name: post.author?.name || 'Thành viên cộng đồng',
+                avatar: post.author?.avatar || '/favicon.png',
+                posts: (current?.posts || 0) + 1,
+                interactions: (current?.interactions || 0) + interactions,
+            });
+        });
+
+        return Array.from(contributors.values())
+            .sort((a, b) => b.interactions - a.interactions || b.posts - a.posts)
+            .slice(0, 5);
+    }, [posts]);
+
     return (
         <div className="min-h-screen bg-gradient-to-b from-purple-50/50 via-white to-orange-50/30">
             {/* Animated Hero Header */}
@@ -161,7 +209,7 @@ export default function CommunityPage() {
                                     <MessageCircle size={28} />
                                 </div>
                                 <span className="text-sm font-bold bg-white/20 px-3 py-1 rounded-full">
-                                    🔥 {posts.length}+ thảo luận
+                                    🔥 {posts.length} thảo luận đang hiển thị
                                 </span>
                             </div>
                             <h1 className="text-4xl md:text-5xl font-black mb-4 leading-tight">
@@ -175,11 +223,7 @@ export default function CommunityPage() {
 
                         {/* Stats */}
                         <div className="grid grid-cols-3 gap-4">
-                            {[
-                                { icon: Users, value: '5.2K', label: 'Thành viên' },
-                                { icon: MessageSquare, value: '12K', label: 'Thảo luận' },
-                                { icon: Award, value: '890', label: 'Chuyên gia' },
-                            ].map((stat, idx) => (
+                            {communityStats.map((stat, idx) => (
                                 <div key={idx} className="text-center p-4 bg-white/10 backdrop-blur-sm rounded-2xl hover:bg-white/20 transition-all hover:scale-105 cursor-default">
                                     <stat.icon className="mx-auto mb-2 animate-bounce-slow" size={24} style={{ animationDelay: `${idx * 0.2}s` }} />
                                     <p className="text-2xl font-black">{stat.value}</p>
@@ -259,15 +303,15 @@ export default function CommunityPage() {
                         <div className="bg-gradient-to-br from-purple-600 via-violet-600 to-orange-500 rounded-3xl p-6 text-white shadow-xl relative overflow-hidden">
                             <div className="absolute -top-4 -right-4 w-20 h-20 bg-white/10 rounded-full animate-pulse" />
                             <Flame className="mb-3 animate-bounce-slow" size={28} />
-                            <h3 className="font-black text-xl mb-2">Đua Top Tháng 12 🏆</h3>
+                            <h3 className="font-black text-xl mb-2">Chủ đề nổi bật</h3>
                             <p className="text-purple-100 text-sm mb-4">
-                                Chia sẻ kiến thức để nhận Voucher 500k!
+                                Khám phá những bài chia sẻ mới và cùng trao đổi kinh nghiệm thực tế.
                             </p>
                             <Link
                                 href="#bai-viet-cong-dong"
                                 className="block w-full text-center bg-white text-purple-600 font-bold py-3 rounded-xl hover:bg-purple-50 transition-colors"
                             >
-                                Xem Bảng Xếp Hạng
+                                Xem thảo luận
                             </Link>
                         </div>
 
@@ -354,30 +398,32 @@ export default function CommunityPage() {
                                 <Award className="text-amber-500" size={16} /> Top Contributors
                             </h3>
                             <div className="space-y-4">
-                                {[1, 2, 3, 4, 5].map(i => (
-                                    <div key={i} className="flex items-center justify-between group">
+                                {topContributors.length > 0 ? topContributors.map((contributor, index) => (
+                                    <div key={contributor.id} className="flex items-center justify-between group">
                                         <div className="flex items-center gap-3">
                                             <div className="relative">
                                                 <Image
-                                                    src={`https://i.pravatar.cc/100?img=${i + 30}`}
-                                                    alt={`User ${i}`}
+                                                    src={contributor.avatar}
+                                                    alt={contributor.name}
                                                     width={40}
                                                     height={40}
                                                     className="rounded-full ring-2 ring-transparent group-hover:ring-purple-300 transition-all"
                                                 />
-                                                <div className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center text-white ${i === 1 ? 'bg-amber-400' : i === 2 ? 'bg-slate-400' : i === 3 ? 'bg-orange-400' : 'bg-slate-300'
+                                                <div className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center text-white ${index === 0 ? 'bg-amber-400' : index === 1 ? 'bg-slate-400' : index === 2 ? 'bg-orange-400' : 'bg-slate-300'
                                                     }`}>
-                                                    {i}
+                                                    {index + 1}
                                                 </div>
                                             </div>
                                             <div>
-                                                <p className="text-sm font-bold text-slate-900 group-hover:text-purple-600 transition-colors">User {i}</p>
-                                                <p className="text-xs text-slate-500">{6 - i}.{i}k tương tác</p>
+                                                <p className="text-sm font-bold text-slate-900 group-hover:text-purple-600 transition-colors">{contributor.name}</p>
+                                                <p className="text-xs text-slate-500">{contributor.posts} bài · {contributor.interactions} tương tác</p>
                                             </div>
                                         </div>
-                                        <span className="text-xs font-bold text-slate-400">Gợi ý</span>
+                                        <span className="text-xs font-bold text-slate-400">Nổi bật</span>
                                     </div>
-                                ))}
+                                )) : (
+                                    <p className="text-sm leading-6 text-slate-500">Chưa có dữ liệu đóng góp để xếp hạng.</p>
+                                )}
                             </div>
                         </div>
 

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
-import { getProductById, getProductBySlug } from '@/lib/products';
+import { notFound } from 'next/navigation';
+import { getPublicProduct } from '@/lib/publicProductData';
 import { getSiteUrl } from '@/lib/site-url';
 import { buildProductSeoKeywords } from '@/lib/seo';
 import ProductDetailPage from './ProductDetailPage';
@@ -11,15 +12,7 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     const { id } = await params;
-
-    let product = await getProductBySlug(id);
-
-    if (!product) {
-      const numericId = Number.parseInt(id, 10);
-      if (!Number.isNaN(numericId)) {
-        product = await getProductById(numericId);
-      }
-    }
+    const product = await getPublicProduct(id);
 
     if (!product) {
       return {
@@ -88,17 +81,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Page({ params }: Props) {
   const { id } = await params;
-  let product = await getProductBySlug(id);
+  const product = await getPublicProduct(id);
 
   if (!product) {
-    const numericId = Number.parseInt(id, 10);
-    if (!Number.isNaN(numericId)) {
-      product = await getProductById(numericId);
-    }
-  }
-
-  if (!product) {
-    return <ProductDetailPage />;
+    notFound();
   }
 
   const siteUrl = getSiteUrl();
@@ -163,7 +149,7 @@ export default async function Page({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, '\\u003c') }}
       />
-      <ProductDetailPage />
+      <ProductDetailPage initialProduct={product} />
     </>
   );
 }

@@ -199,7 +199,7 @@ export default function ReviewsSection({ productId, productRating = 0, productRe
     };
 
     return (
-        <section id="reviews" className="mt-8 scroll-mt-24 border-t border-slate-100 pt-5 md:mt-6 md:pt-6">
+        <section id="reviews" className="mt-6 scroll-mt-24 border-t border-slate-100 pt-4 md:mt-8 md:pt-6">
             <h2 className="mb-4 flex items-center gap-2 text-xl font-black text-slate-900">
                 <MessageSquare className="text-orange-500" />
                 {isCatalogMode ? 'Đánh giá tham khảo' : 'Đánh giá mẫu demo'} ({stats.total})

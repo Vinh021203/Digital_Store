@@ -483,7 +483,9 @@ const DpMarketProductCard = memo(
                 <span
                   className={`${variant === "mobileHorizontal" ? "text-[10px]" : "text-[10px] sm:text-xs"} md:text-[11px] font-bold text-slate-500 mb-0.5`}
                 >
-                  {(product.reviews || 0) * 8 + 12} {isCatalogMode ? "Quan tam" : "Sales"}
+                  {(product.downloads_count || product.students || 0) > 0
+                    ? `${product.downloads_count || product.students} ${isCatalogMode ? "Quan tâm" : "Lượt tải"}`
+                    : "Mẫu mới cập nhật"}
                 </span>
                 <div className="flex items-center gap-0.5 text-amber-400">
                   {[...Array(5)].map((_, i) => (
@@ -2130,7 +2132,7 @@ const HomePage = ({
                 </span>
                 <div className="relative z-10">
                   <p className="text-slate-500 text-xs font-medium mb-2">
-                      Luot xem demo
+                      Lượt xem demo
                   </p>
                   <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-slate-800 leading-none">
                     24h

@@ -180,7 +180,7 @@ const AccordionSection = memo<AccordionSectionProps>(
           />
         </button>
 
-        {/* Desktop: luôn hiện */}
+        {/* Desktop heading */}
         <div className="hidden lg:block">
           <h4
             className={`text-base font-bold bg-gradient-to-r ${titleGradient} bg-clip-text text-transparent mb-1.5`}
@@ -191,14 +191,13 @@ const AccordionSection = memo<AccordionSectionProps>(
             className="w-8 h-0.5 mb-5 rounded-full"
             style={{ background: "linear-gradient(90deg, #f97316, #ef4444)" }}
           />
-          <ul className="space-y-2.5">{children}</ul>
         </div>
 
-        {/* Mobile: collapse/expand */}
+        {/* One shared menu tree for both desktop and mobile */}
         <div
-          className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${open ? "max-h-96 pb-4" : "max-h-0"}`}
+          className={`overflow-hidden transition-all duration-300 ease-in-out lg:max-h-none lg:overflow-visible lg:pb-0 ${open ? "max-h-96 pb-4" : "max-h-0"}`}
         >
-          <ul className="space-y-1">{children}</ul>
+          <ul className="space-y-1 lg:space-y-2.5">{children}</ul>
         </div>
       </div>
     );

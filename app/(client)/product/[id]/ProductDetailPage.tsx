@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -14,7 +14,7 @@ import {
     Eye, Users, Calendar, Code, Palette, Zap, Award, Globe, X,
     ArrowRight, Maximize2, Minimize2
 } from 'lucide-react';
-import { getProductBySlug, getProductById, fetchActiveProducts } from '@/lib/products';
+import { fetchActiveProducts, type DbProduct } from '@/lib/products';
 import SafeHTML from '@/components/ui/SafeHTML';
 import { useCart } from '@/context/CartContext';
 import { useSupabaseAuth } from '@/context/SupabaseAuthContext';
@@ -25,7 +25,7 @@ import { getTechnologyIconUrl } from '@/lib/technologyIcons';
 
 const ReviewsSection = dynamic(() => import('@/components/product/ReviewsSection'), {
     ssr: false,
-    loading: () => <div className="mt-8 min-h-56 animate-pulse rounded-2xl bg-slate-50" />,
+    loading: () => <div className="mt-6 min-h-56 animate-pulse rounded-2xl bg-slate-50 md:mt-8" />,
 });
 
 const RelatedProducts = dynamic(() => import('@/components/product/RelatedProducts'), {
@@ -253,64 +253,78 @@ const ImageLightbox = ({
     );
 };
 
-export default function ProductDetailPage() {
-    const params = useParams();
+interface ProductDetailPageProps {
+    initialProduct: DbProduct;
+}
+
+export default function ProductDetailPage({ initialProduct: product }: ProductDetailPageProps) {
     const router = useRouter();
     const { addToCart, addToWishlist, isInWishlist, addToCompare, isInCompare, compareList } = useCart();
     const { user } = useSupabaseAuth();
     const { addToast } = useToast();
     const { isCatalogMode } = useSiteMode();
 
-    const [product, setProduct] = useState<any>(null);
     const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('description');
     const [showDemoModal, setShowDemoModal] = useState(false);
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
     const [showLightbox, setShowLightbox] = useState(false);
     const [quickBuyCollapsed, setQuickBuyCollapsed] = useState(false);
 
-    const productId = params.id as string;
-
-    // Load product data
+    // Related products are non-critical content. Load them after the main
+    // server-rendered product has painted so they do not delay LCP.
     useEffect(() => {
-        const loadProduct = async () => {
-            setLoading(true);
-            try {
-                // Try slug first, then ID
-                let data = await getProductBySlug(productId);
-                if (!data) {
-                    const numId = parseInt(productId, 10);
-                    if (!isNaN(numId)) {
-                        data = await getProductById(numId);
-                    }
-                }
-                setProduct(data);
+        let cancelled = false;
+        const categoryName = typeof product.category === 'object' ? product.category?.slug : product.category;
 
-                // Related products are non-critical content. Load them after the
-                // main product has been painted so they do not delay LCP.
-                if (data) {
-                    fetchActiveProducts()
-                        .then((allProducts) => {
-                            const categoryName = typeof data.category === 'object' ? data.category?.name : data.category;
-                            const related = allProducts
-                                .filter((p: any) => {
-                                    const pCatName = typeof p.category === 'object' ? p.category?.name : p.category;
-                                    return p.id !== data.id && pCatName === categoryName;
-                                })
-                                .slice(0, 4);
-                            setRelatedProducts(related);
-                        })
-                        .catch((error) => console.error('Error loading related products:', error));
-                }
-            } catch (error) {
-                console.error('Error loading product:', error);
-            } finally {
-                setLoading(false);
-            }
+        fetchActiveProducts()
+            .then((allProducts) => {
+                if (cancelled) return;
+                const related = allProducts
+                    .filter((candidate: any) => {
+                        const candidateCategory = typeof candidate.category === 'object'
+                            ? candidate.category?.name
+                            : candidate.category;
+                        return candidate.id !== product.id && candidateCategory === categoryName;
+                    })
+                    .slice(0, 4);
+                setRelatedProducts(related);
+            })
+            .catch((error) => console.error('Error loading related products:', error));
+
+        return () => {
+            cancelled = true;
         };
-        loadProduct();
-    }, [productId]);
+    }, [product.id, product.category]);
+
+    const storefrontProduct = useMemo<Product>(() => ({
+        id: product.id,
+        name: product.name,
+        slug: product.slug,
+        price: Number(product.price),
+        originalPrice: product.original_price ? Number(product.original_price) : undefined,
+        description: product.description || '',
+        category: product.category?.slug || '',
+        image: product.image,
+        gallery: product.images || [],
+        rating: Number(product.rating || 0),
+        reviews: Number(product.reviews_count || 0),
+        reviews_count: Number(product.reviews_count || 0),
+        isNew: product.is_new,
+        isBestseller: product.is_bestseller,
+        isFeatured: product.is_featured,
+        author: product.author || 'Web Giá Rẻ - Portfolio',
+        format: product.format as Product['format'],
+        students: Number(product.downloads_count || 0),
+        downloads_count: Number(product.downloads_count || 0),
+        demoUrl: product.demo_url || undefined,
+        tags: product.tags || [],
+        fileFormat: product.file_format || undefined,
+        compatibility: product.compatibility || undefined,
+        features: product.features || [],
+        techStack: product.tech_stack || [],
+        technologyVariants: product.technology_variants || [],
+    }), [product]);
 
     const handleAddToCart = useCallback(() => {
         if (product) {
@@ -319,20 +333,20 @@ export default function ProductDetailPage() {
                 router.push(`/contact?product=${encodeURIComponent(String(product.slug || product.id))}`);
                 return;
             }
-            addToCart(product);
+            addToCart(storefrontProduct);
             addToast(`Đã thêm "${product.name}" vào danh sách quan tâm`, 'success');
         }
-    }, [product, addToCart, addToast, isCatalogMode, router]);
+    }, [product, storefrontProduct, addToCart, addToast, isCatalogMode, router]);
 
     const handleToggleWishlist = useCallback(() => {
         if (product) {
-            addToWishlist(product);
+            addToWishlist(storefrontProduct);
             addToast(
                 isInWishlist(product.id) ? 'Đã xóa khỏi yêu thích' : 'Đã thêm vào yêu thích',
                 'success'
             );
         }
-    }, [product, addToWishlist, isInWishlist, addToast]);
+    }, [product, storefrontProduct, addToWishlist, isInWishlist, addToast]);
 
     const handleToggleCompare = useCallback(() => {
         if (product) {
@@ -340,47 +354,21 @@ export default function ProductDetailPage() {
                 addToast('Chỉ có thể so sánh tối đa 3 mẫu demo', 'error');
                 return;
             }
-            addToCompare(product);
+            addToCompare(storefrontProduct);
             addToast(
                 isInCompare(product.id) ? 'Đã xóa khỏi so sánh' : 'Đã thêm vào so sánh',
                 'success'
             );
         }
-    }, [product, addToCompare, isInCompare, compareList, addToast]);
+    }, [product, storefrontProduct, addToCompare, isInCompare, compareList, addToast]);
 
     const discountPercent = useMemo(() => {
-        const origPrice = product?.originalPrice || product?.original_price;
+        const origPrice = product.original_price;
         if (origPrice && origPrice > product.price) {
             return Math.round(((origPrice - product.price) / origPrice) * 100);
         }
         return 0;
     }, [product]);
-
-    if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-slate-50">
-                <div className="flex flex-col items-center gap-4">
-                    <Loader2 className="w-10 h-10 animate-spin text-orange-600" />
-                    <p className="text-slate-500 font-medium">Đang tải thông tin mẫu demo...</p>
-                </div>
-            </div>
-        );
-    }
-
-    if (!product) {
-        return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50">
-                <div className="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mb-6">
-                    <Package size={40} className="text-slate-400" />
-                </div>
-                <h2 className="text-2xl font-bold text-slate-900 mb-2">Mẫu demo không tồn tại</h2>
-                <p className="text-slate-500 mb-8 max-w-md text-center">Mẫu này có thể đã bị xóa hoặc đường dẫn không chính xác. Vui lòng kiểm tra lại.</p>
-                <Link href="/products" className="bg-slate-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-orange-600 transition-colors shadow-lg">
-                    Khám phá cửa hàng
-                </Link>
-            </div>
-        );
-    }
 
     const isWishlisted = isInWishlist(product.id);
     const isComparing = isInCompare(product.id);
@@ -456,9 +444,9 @@ const ModernProductDetailLayout = ({
     const currentImage = images[selectedImageIndex] || images[0];
     const thumbnailStart = Math.floor(selectedImageIndex / 4) * 4;
     const visibleThumbnails = images.slice(thumbnailStart, thumbnailStart + 4);
-    const rating = product.rating || 4.9;
-    const reviewCount = product.reviews || product.review_count || 56;
-    const soldCount = product.students || product.downloads_count || product.sales || 128;
+    const rating = Number(product.rating || 0);
+    const reviewCount = Number(product.reviews ?? product.reviews_count ?? product.review_count ?? 0);
+    const soldCount = product.students || product.downloads_count || product.sales || 0;
     const formatPrice = (value: number) => `${Number(value || 0).toLocaleString('vi-VN')}đ`;
     const consultationPriceLabel = 'Liên hệ tư vấn';
     const displayPrice = isCatalogMode ? consultationPriceLabel : formatPrice(product.price);
@@ -595,7 +583,7 @@ const ModernProductDetailLayout = ({
                 />
             </div>
 
-            <main className="relative z-10 mx-auto max-w-7xl px-4 pt-4 pb-3 md:px-8 md:pt-7 md:pb-12">
+            <main className="relative z-10 mx-auto max-w-7xl px-4 pt-4 pb-8 md:px-8 md:pt-7 md:pb-12">
                 <nav className="mb-6 flex items-center gap-2 overflow-x-auto whitespace-nowrap text-sm text-slate-500 no-scrollbar">
                     <Link href="/" className="flex items-center gap-1.5 hover:text-orange-600"><HomeIcon size={15} /> Trang chủ</Link>
                     <ChevronRight size={15} className="text-slate-300" />
@@ -624,7 +612,7 @@ const ModernProductDetailLayout = ({
                             </div>
                             <span className="h-4 w-px bg-slate-200" />
                             <span className="inline-flex items-center gap-1.5">
-                                <Eye size={16} /> {soldCount} lượt quan tâm
+                                <Eye size={16} /> {soldCount > 0 ? `${soldCount} lượt quan tâm` : 'Mẫu mới cập nhật'}
                             </span>
                         </div>
                         <div className="mt-4 flex items-end gap-3">
@@ -730,7 +718,7 @@ const ModernProductDetailLayout = ({
 
                 <div>
                     {(fileFormat || compatibility || currentVersion || techStack.length > 0) && (
-                    <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:p-4">
+                    <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:p-4 md:mt-8">
                         <div className="flex items-center gap-2">
                             <FileCode size={20} className="text-orange-600" />
                             <h2 className="text-lg font-bold text-slate-950">Thông tin kỹ thuật</h2>
@@ -766,7 +754,7 @@ const ModernProductDetailLayout = ({
                 </div>
 
                 {technologyVariants.length > 0 && (
-                    <section id="technology-variants" className="mt-6 rounded-2xl border border-orange-100 bg-white p-3 shadow-sm sm:p-4 md:p-5">
+                    <section id="technology-variants" className="mt-6 rounded-2xl border border-orange-100 bg-white p-3 shadow-sm sm:p-4 md:mt-8 md:p-5">
                         <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                             <div>
                                 <div className="flex items-center gap-2">
@@ -906,7 +894,7 @@ const ModernProductDetailLayout = ({
                     </section>
                 </div>
 
-	                <div id="license" className="mt-6 grid scroll-mt-24 gap-4 lg:grid-cols-[1.05fr_0.95fr]">
+                <div id="license" className="mt-6 grid scroll-mt-24 gap-6 md:mt-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8">
 	                    <section className="hidden overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
 	                        <h2 className="mb-3 text-lg font-bold text-slate-950 md:mb-4 md:text-xl">5. So sánh phiên bản</h2>
 	                        <div className="overflow-x-auto rounded-xl border border-slate-100">
@@ -987,7 +975,7 @@ const ModernProductDetailLayout = ({
                     </section>
                 </div>
 
-                <section id="reviews-testimonials" className="hidden mt-5 scroll-mt-24 md:mt-8">
+                <section id="reviews-testimonials" className="hidden mt-0 scroll-mt-24">
                     <h2 className="mb-5 text-xl font-bold text-slate-950">4. Khách hàng nói gì về {product.name}</h2>
                     <div className="relative overflow-hidden rounded-2xl">
                         <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 bg-gradient-to-r from-[#fffdf9] to-transparent" />

@@ -38,7 +38,7 @@ const POLICIES: Record<string, Policy> = {
         eyebrow: 'Quyền riêng tư và dữ liệu',
         icon: ShieldCheck,
         description: 'Cách Web Giá Rẻ - Portfolio thu thập, sử dụng và bảo vệ thông tin trong quá trình bạn sử dụng website.',
-        summary: 'Mình chỉ thu thập dữ liệu cần thiết để vận hành tài khoản, xử lý yêu cầu và hỗ trợ khách hàng.',
+        summary: 'Web Giá Rẻ - Portfolio chỉ thu thập dữ liệu cần thiết để vận hành tài khoản, xử lý yêu cầu và hỗ trợ khách hàng.',
         sections: [
             {
                 title: 'Thông tin được thu thập',
@@ -252,7 +252,7 @@ const POLICIES: Record<string, Policy> = {
                     'Chia sẻ hoặc phân phối lại tài nguyên nguồn dưới mọi hình thức.',
                     'Đưa file lên kho tải công khai, nhóm chia sẻ hoặc dịch vụ lưu trữ dùng chung.',
                     'Chuyển nhượng quyền truy cập độc lập với dự án được cấp phép.',
-                    'Tuyên bố mình là tác giả của toàn bộ mẫu demo gốc.',
+                    'Tuyên bố người gửi là tác giả hoặc chủ thể có quyền hợp pháp đối với toàn bộ mẫu demo gốc.',
                 ],
             },
             {

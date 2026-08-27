@@ -1,27 +1,11 @@
 import { unstable_cache } from 'next/cache';
-import { createClient } from '@supabase/supabase-js';
 import type { Product } from '@/types';
 import type { DbCategory } from '@/lib/categories';
+import { createPublicServerClient } from '@/lib/supabase/public-server';
 
 export interface ProductsPageData {
   products: Product[];
   categories: DbCategory[];
-}
-
-function createPublicSupabaseClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  if (!supabaseUrl || !supabaseAnonKey) {
-    return null;
-  }
-
-  return createClient(supabaseUrl, supabaseAnonKey, {
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false,
-    },
-  });
 }
 
 function mapProduct(product: any): Product {
@@ -57,11 +41,7 @@ function mapProduct(product: any): Product {
 }
 
 async function fetchProductsPageData(): Promise<ProductsPageData> {
-  const supabase = createPublicSupabaseClient();
-
-  if (!supabase) {
-    return { products: [], categories: [] };
-  }
+  const supabase = createPublicServerClient();
 
   const [productsResult, categoriesResult, categoryCountsResult] = await Promise.all([
     supabase
@@ -88,7 +68,7 @@ async function fetchProductsPageData(): Promise<ProductsPageData> {
   ]);
 
   if (productsResult.error) {
-    console.error('Products page products query error:', productsResult.error);
+    throw new Error(`Unable to load products page data: ${productsResult.error.message}`);
   }
 
   if (categoriesResult.error) {

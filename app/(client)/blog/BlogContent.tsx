@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -11,12 +11,11 @@ import {
     Eye,
     Flame,
     Home,
-    Loader2,
     Search,
     Sparkles,
     Tag,
 } from 'lucide-react';
-import { collectBlogTaxonomy, fetchPublishedPosts, type DbBlogPost } from '@/lib/blog';
+import { collectBlogTaxonomy, type DbBlogPost } from '@/lib/blog';
 
 const ALL_CATEGORY = 'Tất cả';
 
@@ -52,27 +51,13 @@ const BlogImage = ({ post, priority = false }: { post: DbBlogPost; priority?: bo
     </div>
 );
 
-export default function BlogPage() {
-    const [posts, setPosts] = useState<DbBlogPost[]>([]);
-    const [loading, setLoading] = useState(true);
+interface BlogPageProps {
+    initialPosts: DbBlogPost[];
+}
+
+export default function BlogPage({ initialPosts: posts }: BlogPageProps) {
     const [searchTerm, setSearchTerm] = useState('');
     const [activeCategory, setActiveCategory] = useState(ALL_CATEGORY);
-
-    const loadPosts = useCallback(async () => {
-        setLoading(true);
-        try {
-            const data = await fetchPublishedPosts();
-            setPosts(data);
-        } catch (error) {
-            console.error('Error loading posts:', error);
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        loadPosts();
-    }, [loadPosts]);
 
     const categories = useMemo(() => [ALL_CATEGORY, ...collectBlogTaxonomy(posts, false).categories], [posts]);
 
@@ -185,11 +170,7 @@ export default function BlogPage() {
             </section>
 
             <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
-                {loading ? (
-                    <div className="flex justify-center py-24">
-                        <Loader2 className="h-8 w-8 animate-spin text-orange-600" />
-                    </div>
-                ) : filteredPosts.length === 0 ? (
+                {filteredPosts.length === 0 ? (
                     <div className="rounded-2xl border border-slate-200 bg-white py-20 text-center shadow-sm">
                         <BookOpen size={50} className="mx-auto mb-4 text-slate-200" />
                         <h2 className="text-xl font-black text-slate-950">Không tìm thấy bài viết</h2>

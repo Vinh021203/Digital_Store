@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import BlogPage from './BlogContent';
 import { buildSeoMetadata, seoKeywords } from '@/lib/seo';
+import { getBlogPagePosts } from '@/lib/publicContentData';
 
 export const metadata: Metadata = buildSeoMetadata({
     title: 'Blog thiết kế website, landing page và triển khai dự án web',
@@ -10,6 +11,7 @@ export const metadata: Metadata = buildSeoMetadata({
     ogTitle: 'Blog thiết kế website và landing page | Web Giá Rẻ - Portfolio',
 });
 
-export default function Page() {
-    return <BlogPage />;
+export default async function Page() {
+    const posts = await getBlogPagePosts();
+    return <BlogPage initialPosts={posts} />;
 }

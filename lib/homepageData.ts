@@ -1,29 +1,13 @@
 import { unstable_cache } from 'next/cache';
-import { createClient } from '@supabase/supabase-js';
 import type { Product } from '@/types';
 import type { DbCategory } from '@/lib/categories';
 import type { DbBlogPost } from '@/lib/blog';
+import { createPublicServerClient } from '@/lib/supabase/public-server';
 
 export interface HomepageData {
   products: Product[];
   categories: DbCategory[];
   blogPosts: DbBlogPost[];
-}
-
-function createPublicSupabaseClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  if (!supabaseUrl || !supabaseAnonKey) {
-    return null;
-  }
-
-  return createClient(supabaseUrl, supabaseAnonKey, {
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false,
-    },
-  });
 }
 
 function mapProduct(product: any): Product {
@@ -53,11 +37,7 @@ function mapProduct(product: any): Product {
 }
 
 async function fetchHomepageData(): Promise<HomepageData> {
-  const supabase = createPublicSupabaseClient();
-
-  if (!supabase) {
-    return { products: [], categories: [], blogPosts: [] };
-  }
+  const supabase = createPublicServerClient();
 
   const [productsResult, categoriesResult, categoryCountsResult, blogResult] = await Promise.all([
     supabase
@@ -92,7 +72,7 @@ async function fetchHomepageData(): Promise<HomepageData> {
   ]);
 
   if (productsResult.error) {
-    console.error('Homepage products query error:', productsResult.error);
+    throw new Error(`Unable to load homepage products: ${productsResult.error.message}`);
   }
 
   if (categoriesResult.error) {
@@ -104,7 +84,7 @@ async function fetchHomepageData(): Promise<HomepageData> {
   }
 
   if (blogResult.error) {
-    console.error('Homepage blog query error:', blogResult.error);
+    throw new Error(`Unable to load homepage blog posts: ${blogResult.error.message}`);
   }
 
   const countMap: Record<number, number> = {};

@@ -150,16 +150,16 @@ const RegisterPage = () => {
                 <div className="absolute inset-0 flex flex-col justify-end px-14 pb-16 xl:px-20">
                     <div className="mb-8 grid max-w-lg grid-cols-3 gap-8">
                         <div>
-                            <p className="text-4xl font-black text-white xl:text-5xl">1000+</p>
-                            <p className="mt-1 text-sm font-semibold text-orange-200">Sản Phẩm</p>
+                            <p className="text-4xl font-black text-white xl:text-5xl">Demo</p>
+                            <p className="mt-1 text-sm font-semibold text-orange-200">Xem trực tiếp</p>
                         </div>
                         <div>
-                            <p className="text-4xl font-black text-white xl:text-5xl">50K+</p>
-                            <p className="mt-1 text-sm font-semibold text-orange-200">Downloads</p>
+                            <p className="text-4xl font-black text-white xl:text-5xl">24/7</p>
+                            <p className="mt-1 text-sm font-semibold text-orange-200">AI hỗ trợ</p>
                         </div>
                         <div>
-                            <p className="text-4xl font-black text-white xl:text-5xl">4.9</p>
-                            <p className="mt-1 text-sm font-semibold text-orange-200">Rating</p>
+                            <p className="text-4xl font-black text-white xl:text-5xl">CMS</p>
+                            <p className="mt-1 text-sm font-semibold text-orange-200">Quản lý đồng bộ</p>
                         </div>
                     </div>
                     <blockquote className="mb-7 max-w-3xl">

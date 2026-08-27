@@ -95,6 +95,16 @@ const nextConfig = {
       },
     ];
   },
+
+  async redirects() {
+    return [
+      {
+        source: '/product/bookle-book-store-html-template',
+        destination: '/product/books-library-ecommerce-store-template',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;
